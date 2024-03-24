@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4cb576b9bc0c9946b59d6277d43d49e, type: 3}
+  m_Name: Boots
+  m_EditorClassIdentifier: 
+  itemName: 
+  itemDescription: 
+  itemTexture: {fileID: 2800000, guid: 46bc185cadcc677479eeb63a4d20b34d, type: 3}
+  itemWorldModel: {fileID: 2385854599690797672, guid: 8a448b690bfb6a74caf8a0ddcb664ab6,
+    type: 3}
+  itemType: 2
+  itemCooldown: 0
+  itemDamageMin: 0
+  itemDamageMax: 0
+  itemDamageType: 
+  isTwoHanded: 0
+  itemWeight: 0
+  itemValue: 0
+  isItemStackable: 0
+  maxItemStackSize: 0
+  ammoType: 0
+  itemProjectile: {fileID: 0}
+  slotType: 3
+  armourBonus: 8
+  evasionBonus: 20

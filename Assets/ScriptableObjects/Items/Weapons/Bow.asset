@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4cb576b9bc0c9946b59d6277d43d49e, type: 3}
+  m_Name: Bow
+  m_EditorClassIdentifier: 
+  itemName: Bow
+  itemDescription: A common bow used for hunting the local fauna.
+  itemTexture: {fileID: 2800000, guid: 675678eb05fc05f478ed5b439521ff5a, type: 3}
+  itemWorldModel: {fileID: 1929080655250792285, guid: 72176e75e1874d74e9b6f8820ba7b71e,
+    type: 3}
+  itemType: 1
+  itemCooldown: 4
+  itemDamageMin: 12
+  itemDamageMax: 25
+  itemDamageType: Physical
+  itemWeight: 2.3
+  itemValue: 236
+  isItemStackable: 0
+  maxItemStackSize: 0
+  ammoType: 0
+  itemProjectile: {fileID: 11400000, guid: eee7f51f89db4e646b6379bfb95a5638, type: 2}
+  slotType: 8
+  armourBonus: 0
+  evasionBonus: 0
