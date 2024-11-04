@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0027f25eebf4cc34bb9084d2b99b8c8d, type: 3}
+  m_Name: SPAS
+  m_EditorClassIdentifier: 
+  itemName: 
+  itemDescription: 
+  itemSprite: {fileID: 21300000, guid: d96970face96cf8449ea7733dc0c3638, type: 3}
+  itemWorldModel: {fileID: 8134781463145685093, guid: 72176e75e1874d74e9b6f8820ba7b71e,
+    type: 3}
+  itemPrefab: {fileID: 2087960524477570954, guid: 5cc46e808915b9143ac1ea8e02d0f637,
+    type: 3}
+  itemType: 1
+  itemCooldown: 3
+  itemDamageMin: 4
+  itemDamageMax: 5
+  critChance: 2
+  critDamageMultiplier: 1
+  itemDamageType: 
+  isTwoHanded: 1
+  itemWeight: 3
+  itemValue: 4
+  isItemStackable: 0
+  maxItemStackSize: 0
+  isBurst: 0
+  perShotInBurstDelay: 0
+  burstLength: 0
+  usesProjectiles: 0
+  projectileAmount: 0
+  itemRange: 0
+  ammoType: 0
+  itemProjectile: {fileID: 0}
+  fireSFX:
+  - {fileID: 8300000, guid: 75969f62278ac744d875f460ba9e1bde, type: 3}
+  drawSFX: {fileID: 8300000, guid: 56fa2ac4774f57b42bd934e5568eedcf, type: 3}
+  hideSFX: {fileID: 8300000, guid: c71487212091ea34db8387c3d85bf164, type: 3}
+  reloadSFX: {fileID: 8300000, guid: d53356c6d893c9a4b937707bfb2c62d7, type: 3}
+  slotType: 0
+  armourBonus: 0
+  evasionBonus: 0
+  keyType: 0

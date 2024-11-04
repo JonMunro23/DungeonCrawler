@@ -1,0 +1,71 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class HandUIController : MonoBehaviour
+{
+    [SerializeField] Image leftHandHeldItemImage;
+    [SerializeField] Image rightHandHeldItemImage;
+    [SerializeField] Image leftHandItemCooldownImage;
+    [SerializeField] Image rightHandItemCooldownImage;
+
+    [SerializeField] ItemData defaultHandItem;
+
+    private void OnEnable()
+    {
+        UseEquipment.onHandUsed += HandUsed;
+        InventorySlot.onNewHandItem += NewHandItem;
+        InventorySlot.onHandItemRemoved += HandItemRemoved;
+    }
+
+    private void OnDisable()
+    {
+        UseEquipment.onHandUsed -= HandUsed;
+        InventorySlot.onNewHandItem -= NewHandItem;
+        InventorySlot.onHandItemRemoved -= HandItemRemoved;
+    }
+
+    public void InitHands()
+    {
+        NewHandItem(Hands.left, defaultHandItem);
+        NewHandItem(Hands.right, defaultHandItem);
+    }
+
+    public void HandItemRemoved(Hands hand)
+    {
+        if (hand == Hands.left)
+            leftHandHeldItemImage.sprite = defaultHandItem.itemSprite;
+        else
+            rightHandHeldItemImage.sprite = defaultHandItem.itemSprite;
+    }
+
+    public void NewHandItem(Hands hand, ItemData newItem)
+    {
+        if (hand == Hands.left)
+            leftHandHeldItemImage.sprite = newItem.itemSprite;
+        else
+            rightHandHeldItemImage.sprite = newItem.itemSprite;
+    }
+
+    public void HandUsed(Hands hand, ItemData itemUsed)
+    {
+        StartCoroutine(ItemUICooldown(hand, itemUsed));
+    }
+
+    IEnumerator ItemUICooldown(Hands hand, ItemData itemUsed)
+    {
+        if(hand == Hands.left)
+        {
+            leftHandItemCooldownImage.enabled = true;
+            yield return new WaitForSeconds(itemUsed.itemCooldown);
+            leftHandItemCooldownImage.enabled = false;
+        }
+        else
+        {
+            rightHandItemCooldownImage.enabled = true;
+            yield return new WaitForSeconds(itemUsed.itemCooldown);
+            rightHandItemCooldownImage.enabled = false;
+        }
+    }
+}
