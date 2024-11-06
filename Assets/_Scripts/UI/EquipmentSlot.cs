@@ -1,10 +1,14 @@
+using System;
 using UnityEngine;
 
 public class EquipmentSlot : InventorySlot
 {
-    public SlotType slotType;
+    public EquipmentSlotType slotType;
     [Tooltip("Used when initialising a single handed weapon, only used if slotType = Hands")]
     [SerializeField] Hands Hand;
+
+    public static Action<EquipmentSlotType, EquipmentItemData> onNewEquipmentItem;
+    public static Action<EquipmentSlotType> onEquipmentItemRemoved;
 
     public override void AddItem(Item itemToAdd)
     {
@@ -30,22 +34,31 @@ public class EquipmentSlot : InventorySlot
 
     public void InitialiseItem(Item itemToInitialise)
     {
-        if(slotType == SlotType.hands)
+        if(slotType == EquipmentSlotType.hands)
         {
-            if (Hand == Hands.right)
+            HandItemData handItemData = itemToInitialise.itemData as HandItemData;
+            if (handItemData.isTwoHanded)
             {
-                onNewHandItem?.Invoke(Hands.right, itemToInitialise.itemData);
+                onNewHandItem?.Invoke(Hands.both, handItemData);
             }
             else
-                onNewHandItem?.Invoke(Hands.left, itemToInitialise.itemData);
+            {
+                if (Hand == Hands.right)
+                {
+                    onNewHandItem?.Invoke(Hands.right, handItemData);
+                }
+                else
+                    onNewHandItem?.Invoke(Hands.left, handItemData);
+            }
 
-            return;
         }
+
+        onNewEquipmentItem?.Invoke(slotType, itemToInitialise.itemData as EquipmentItemData);
     }
 
     public void DeinitialiseCurrentItem()
     {
-        if (slotType == SlotType.hands)
+        if (slotType == EquipmentSlotType.hands)
         {
             if (Hand == Hands.right)
             {
@@ -53,23 +66,20 @@ public class EquipmentSlot : InventorySlot
             }
             else
                 onHandItemRemoved?.Invoke(Hands.left);
-
-            return;
         }
+
+        onEquipmentItemRemoved?.Invoke(slotType);
     }
 
     public void DisableSlot()
     {
         isSlotActive = false;
         slotImage.color = Color.red;
-        Debug.Log("Disabled slot");
     }
 
     public void EnableSlot()
     {
         isSlotActive = true;
         slotImage.color = Color.white;
-        Debug.Log("Renabled slot");
-
     }
 }

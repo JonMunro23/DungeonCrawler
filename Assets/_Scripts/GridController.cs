@@ -1,13 +1,20 @@
+using _Scripts.Tiles;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
+    public static GridController Instance;
+
     [Header("Player Spawning")]
     [SerializeField] PlayerSpawnPoint playerSpawnPointPrefab;
+    [SerializeField] EnemySpawnPoint enemySpawnPointPrefab;
     [SerializeField] int playerSpawnPointIndex;
+    [SerializeField] int[] enemySpawnPointIndices;
     [SerializeField] GridNode spawnPointNode;
+    [SerializeField] List<GridNode> enemySpawnPointNodes = new List<GridNode>();
     [SerializeField] CharacterData playerCharData;
 
     [Header("Grid Data")]
@@ -15,10 +22,15 @@ public class GridController : MonoBehaviour
     [SerializeField] float gridSize;
     [SerializeField] float gridCellGap;
     [SerializeField] int xLength, yLength;
-    [SerializeField] List<GridNode> spawnedNodes = new List<GridNode>();
+    [SerializeField] Dictionary<Vector2, GridNode> spawnedNodes = new Dictionary<Vector2, GridNode>();
 
     [Header("NodeData")]
-    [SerializeField] GridNodeData defaultGridNode;
+    [SerializeField] GridNodeData[] defaultGridNodeLayout;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,18 +57,32 @@ public class GridController : MonoBehaviour
         {
             for(int j = 0; j < yLength; j++)
             {
-                GridNode clone = Instantiate(defaultGridNode.gridNodePrefab, grid.GetCellCenterLocal(new Vector3Int(i, j)), Quaternion.identity, transform);
-                clone.InitNode(defaultGridNode);
-                spawnedNodes.Add(clone);
+                GridNode clone = Instantiate(defaultGridNodeLayout[nodeIndex].gridNodePrefab, grid.GetCellCenterLocal(new Vector3Int(i, j)), Quaternion.identity, transform);
+                Vector2 spawnCoords = new Vector2(i, j);
+                clone.InitNode(defaultGridNodeLayout[nodeIndex], new SquareCoords { Pos = new Vector2(i, j) });
+                spawnedNodes.Add(spawnCoords, clone);
 
                 if (nodeIndex == playerSpawnPointIndex)
                 {
                     clone.CreatePlayerSpawnPoint(playerSpawnPointPrefab);
                     spawnPointNode = clone;
                 }
+                else
+                {
+                    if(enemySpawnPointIndices.Contains(nodeIndex))
+                    {
+                        clone.CreateEnemySpawnPoint(enemySpawnPointPrefab);
+                        enemySpawnPointNodes.Add(clone);
+                    }
+                }
 
                 nodeIndex++;
             }
+        }
+
+        foreach (GridNode node in spawnedNodes.Values)
+        {
+            node.CacheNeighbours();
         }
     }
 
@@ -64,11 +90,18 @@ public class GridController : MonoBehaviour
     {
         if (spawnPointNode != null)
             spawnPointNode.SpawnPlayer(playerCharData);
+
+        if(enemySpawnPointNodes.Count > 0)
+            foreach (GridNode spawnPointNode in enemySpawnPointNodes)
+            {
+                spawnPointNode.SpawnEnemy();
+            }
     }
 
-    // Update is called once per frame
-    void Update()
+    public GridNode GetNodeAtPosition(Vector2 pos) => spawnedNodes.TryGetValue(pos, out var node) ? node : null;
+
+    public GridNode GetNodeFromWorldPos(Vector3 worldPos)
     {
-        
+        return GetNodeAtPosition(new Vector2(grid.WorldToCell(worldPos).x, grid.WorldToCell(worldPos).y));
     }
 }

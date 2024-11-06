@@ -139,7 +139,7 @@ public class ItemPickupManager : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hit))
                 {
-                    Debug.Log(hit.distance);
+                    //Debug.Log(hit.distance);
                     if (hit.transform.CompareTag("Ground") && hit.distance < maxGrabDistance)
                     {
                         PlaceGrabbedItemInWorld(hit.point);

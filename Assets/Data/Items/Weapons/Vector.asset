@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0027f25eebf4cc34bb9084d2b99b8c8d, type: 3}
+  m_Script: {fileID: 11500000, guid: 612737782d799c04d8ff76690bb51987, type: 3}
   m_Name: Vector
   m_EditorClassIdentifier: 
   itemName: Vector
@@ -17,37 +17,34 @@ MonoBehaviour:
   itemSprite: {fileID: 21300000, guid: e786c534ea99d8444ae9494e498b50b6, type: 3}
   itemWorldModel: {fileID: 5545412917158435578, guid: 0a1182d2cc54f854cab135724542b458,
     type: 3}
-  itemPrefab: {fileID: 5015189803522481237, guid: 99acbf84f17962845a02eb098b57f53b,
-    type: 3}
-  itemType: 1
-  itemCooldown: 2
-  itemDamageMin: 15
-  itemDamageMax: 30
-  critChance: 1.2
-  critDamageMultiplier: 2
-  itemDamageType: 
-  isTwoHanded: 1
-  itemWeight: 4
-  itemValue: 300
+  itemWeight: 7
+  itemValue: 824
   isItemStackable: 0
   maxItemStackSize: 1
-  isBurst: 1
-  perShotInBurstDelay: 0.12
-  burstLength: 5
-  usesProjectiles: 0
-  projectileAmount: 0
-  itemRange: 0
+  EquipmentSlotType: 8
+  itemCooldown: 4
+  statModifiers: []
+  itemPrefab: {fileID: 5015189803522481237, guid: 99acbf84f17962845a02eb098b57f53b,
+    type: 3}
+  isTwoHanded: 1
+  isMeleeWeapon: 0
+  itemDamageMinMax: {x: 25, y: 50}
+  itemRange: 3
+  critChance: 18
+  critDamageMultiplier: 2
   ammoType: 0
-  itemProjectile: {fileID: 0}
-  fireSFX:
+  projectileCount: 1
+  isProjectile: 0
+  projectileData: {fileID: 0}
+  isBurst: 1
+  perShotInBurstDelay: 0.1
+  burstLength: 7
+  attackSFX:
   - {fileID: 8300000, guid: 406e8486c88ba1941aaf35f44f86e570, type: 3}
   - {fileID: 8300000, guid: 03cb07fd4c96c764d87c7dcf9f6f2e9b, type: 3}
   - {fileID: 8300000, guid: 032fc9b06d7ff5846af96dffbca5befe, type: 3}
   - {fileID: 8300000, guid: 48bcf432f4181f742a345a42897712f0, type: 3}
+  specialSFX: {fileID: 0}
   drawSFX: {fileID: 8300000, guid: 3ae9f4e1105518d49885a89387f87197, type: 3}
   hideSFX: {fileID: 8300000, guid: c7112d16f68f0df44b469600d0c4e516, type: 3}
   reloadSFX: {fileID: 8300000, guid: 1dbf55a176cda0846ae096aa344efb3b, type: 3}
-  slotType: 8
-  armourBonus: 0
-  evasionBonus: 0
-  keyType: 0

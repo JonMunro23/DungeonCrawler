@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Tarodev_Pathfinding._Scripts;
+using TMPro;
 using Unity.PlasticSCM.Editor.WebApi;
+using UnityEditor;
 using UnityEngine;
 
 public class NPCMovementController : MonoBehaviour
@@ -8,23 +11,86 @@ public class NPCMovementController : MonoBehaviour
     NPCGroupController groupController;
     public float gridSize = 3f;
 
+    PlayerController playerController;
+
     [Header("Movement")]
     public float moveDuration;
     [SerializeField] bool isMoving;
     [SerializeField] float minDelayBetweenMovement;
+    [SerializeField] GridNode currentOccupiedGridNode;
+    [SerializeField] List<GridNode> path = new List<GridNode>();
 
     [Space]
     [Header("Turning")]
     public float turnDuration;
     //0 = North, 1 = East, 2 = South, 3 = West
-    [SerializeField] Vector3 currentLookDir = Vector3.zero; 
+    [SerializeField] Transform currentOrientation; 
     [SerializeField] bool isTurning;
-    [SerializeField] float mindDelayBetweenTurning;
+    [SerializeField] float minDelayBetweenTurning;
+
+    [SerializeField] GridNode playerGridNode;
+
+    private void OnEnable()
+    {
+        AdvancedGridMovement.onPlayerMoved += OnPlayerMoved;
+    }
+
+    private void OnDisable()
+    {
+        AdvancedGridMovement.onPlayerMoved -= OnPlayerMoved;
+    }
+
+    void OnPlayerMoved()
+    {
+        FindNewPathToPlayer();
+        playerGridNode = PlayerController.currentOccupiedNode;
+    }
+
+    void FindNewPathToPlayer()
+    {
+        foreach (GridNode node in path)
+        {
+            node.RevertTile();
+        }
+
+        path = Pathfinding_Custom.FindPath(groupController.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
+        NavigateToPlayer();
+    }
+
+    public void NavigateToPlayer()
+    {
+        if (isMoving || isTurning)
+            return;
+
+        GridNode nodeToMoveTo = path[path.Count - 1];
+        Vector3 dirToTarget = Vector3.Normalize(currentOrientation.position - nodeToMoveTo.moveToTransform.position);
+        float leftOrRight = Vector3.Dot(currentOrientation.right, dirToTarget);
+        float dot = Vector3.Dot(currentOrientation.forward, dirToTarget);
+
+        Debug.Log("Left/Right: " + Mathf.RoundToInt(leftOrRight));
+        Debug.Log("Front/Back: " + Mathf.RoundToInt(dot));
+
+        if (!nodeToMoveTo.isOccupied && Mathf.RoundToInt(dot) == -1)
+        {
+            MoveToGridNode(nodeToMoveTo);
+        }
+        else
+        {
+            if (Mathf.RoundToInt(leftOrRight) == -1 || Mathf.RoundToInt(leftOrRight) == 0 && Mathf.RoundToInt(dot) == 1)
+            {
+                Turn(1);
+            }
+            else if(Mathf.RoundToInt(leftOrRight) == 1)
+            {
+                Turn(-1);
+            }
+        }
+
+    }
 
     public void Init(NPCGroupController _groupController)
     {
         groupController = _groupController;
-        currentLookDir = transform.forward;
     }
 
     // Update is called once per frame
@@ -32,42 +98,33 @@ public class NPCMovementController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            Move(transform.forward);
+            FindNewPathToPlayer();
         }
-        //if (Input.GetKeyDown(KeyCode.DownArrow))
-        //{
-        //    Move(-transform.forward);
-        //}
-        //if (Input.GetKeyDown(KeyCode.LeftArrow))
-        //{
-        //    Move(-transform.right);
-        //}
-        //if (Input.GetKeyDown(KeyCode.RightArrow))
-        //{
-        //    Move(transform.right);
-        //}
-        if (Input.GetKeyDown(KeyCode.P))
+        if(Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            //turn right
-            Turn(1);
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            //turn left
             Turn(-1);
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            Turn(1);
         }
     }
 
-    void Move(Vector3 moveDir)
+    void MoveToGridNode(GridNode targetNode)
     {
         if (isMoving)
             return;
 
+        groupController.currentlyOccupiedGridnode.SetOccupied(false);
+
         isMoving = true;
-        StartCoroutine(LerpPos(transform.localPosition, transform.localPosition + moveDir * gridSize, moveDuration));
+        StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, moveDuration));
         StartCoroutine(DelayBetweenMovement());
-        AnimateMovement(moveDir);
+        groupController.currentlyOccupiedGridnode = targetNode;
+        groupController.currentlyOccupiedGridnode.SetOccupied(true);
+        AnimateMovement();
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -83,7 +140,7 @@ public class NPCMovementController : MonoBehaviour
         StartCoroutine(DelayBetweenTurning());
     }
 
-    void AnimateMovement(Vector3 moveDir)
+    void AnimateMovement()
     {
         groupController.animController.PlayAnimation("Walk");
     }
@@ -103,7 +160,8 @@ public class NPCMovementController : MonoBehaviour
 
     void UpdateLookDir(int turnDir)
     {
-        currentLookDir = Vector3.up * 90 * turnDir;
+        Debug.Log("Turning orientation");
+        currentOrientation.Rotate(new Vector3(0, turnDir * 90, 0));
         //if(currentLookDir > 3)
         //{
         //    currentLookDir = 0;
@@ -120,12 +178,12 @@ public class NPCMovementController : MonoBehaviour
         while (timeElapsed < lerpDuration)
         {
             float t = timeElapsed / lerpDuration;
-            transform.localPosition = Vector3.Lerp(startPos, endPos, t);
+            transform.position = Vector3.Lerp(startPos, endPos, t);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
 
-        transform.localPosition = endPos;
+        transform.position = endPos;
     }
 
     IEnumerator LerpRot(Quaternion startRot, Quaternion endRot, float lerpDuration)
@@ -147,11 +205,13 @@ public class NPCMovementController : MonoBehaviour
     {
         yield return new WaitForSeconds(moveDuration + minDelayBetweenMovement);
         isMoving = false;
+        FindNewPathToPlayer();
     }
 
     IEnumerator DelayBetweenTurning()
     {
         yield return new WaitForSeconds(turnDuration + minDelayBetweenMovement);
         isTurning = false;
+        NavigateToPlayer();
     }
 }

@@ -15,7 +15,7 @@ namespace Tarodev_Pathfinding._Scripts.Grid {
         [SerializeField] private ScriptableGrid _scriptableGrid;
         [SerializeField] private bool _drawConnections;
 
-        public Dictionary<Vector2, NodeBase> Tiles { get; private set; }
+        public Dictionary<Vector3, NodeBase> Tiles { get; private set; }
 
         private NodeBase _playerNodeBase, _goalNodeBase;
         private Unit _spawnedPlayer, _spawnedGoal;

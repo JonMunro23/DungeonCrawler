@@ -29,7 +29,7 @@ public class WorldItem : MonoBehaviour, IPickup
 
     public void GrabPickup()
     {
-        Debug.Log($"Grabbed {item.itemData.itemName}");
+        //Debug.Log($"Grabbed {item.itemData.itemName}");
         onWorldItemGrabbed?.Invoke(this);
     }
 }

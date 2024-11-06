@@ -30,17 +30,13 @@ public class PlayerStatsUIController : MonoBehaviour
         playerCharData = charData;
 
         SetPlayerPortraitSprite(playerCharData.charPortrait);
-        UpdateMaxHealthValue(playerCharData.maxHealth);
-        UpdateCurrentHealthValue(playerCharData.maxHealth);
+        UpdateMaxHealthValue(playerCharData.GetStat(ModifiableStats.MaxHealth).GetCurrentStatValue());
+        UpdateCurrentHealthValue(maxHealth);
     }
 
     void OnInventoryOpened()
     {
-        inventoryPlayerHealthbar.maxValue = maxHealth;
         inventoryPlayerHealthbar.value = currentHealth;
-
-        inventoryHealthbarText.text = $"{currentHealth} / {maxHealth}";
-
         inventoryPlayerPortrait.sprite = playerCharData.charPortrait;
     }
 
@@ -78,8 +74,13 @@ public class PlayerStatsUIController : MonoBehaviour
     {
         maxHealth = newMaxHealthValue;
         playerHealthbar.maxValue = maxHealth;
+        inventoryPlayerHealthbar.maxValue = maxHealth;
         UpdateHealthbarText();
     }
 
-    void UpdateHealthbarText() => healthbarText.text = $"{currentHealth} / {maxHealth}";
+    void UpdateHealthbarText()
+    {
+        healthbarText.text = $"{currentHealth} / {maxHealth}";
+        inventoryHealthbarText.text = $"{currentHealth} / {maxHealth}";
+    }
 }

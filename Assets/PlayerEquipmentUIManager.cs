@@ -18,8 +18,9 @@ public class PlayerEquipmentUIManager : MonoBehaviour
 
     void OnNewItemAttachedToCursor(Item newItem)
     {
-        Debug.Log("new item attached: " + newItem.itemData.itemName);
-        DisableSlotNotOfType(newItem.itemData.slotType);
+        EquipmentItemData yeet = newItem.itemData as EquipmentItemData;
+        if (yeet != null)
+            DisableSlotNotOfType(yeet.EquipmentSlotType);
     }
 
     void OnCurrentItemDettachedFromCursor()
@@ -27,7 +28,7 @@ public class PlayerEquipmentUIManager : MonoBehaviour
         RenableSlots();
     }
 
-    public void DisableSlotNotOfType(SlotType slotTypeNotToDisable)
+    public void DisableSlotNotOfType(EquipmentSlotType slotTypeNotToDisable)
     {
         foreach (EquipmentSlot slot in equipmentSlots)
         {

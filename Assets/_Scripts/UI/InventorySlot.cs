@@ -20,7 +20,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public bool isSlotOccupied;
     public bool isSlotActive = true;
 
-    public static Action<Hands ,ItemData> onNewHandItem;
+    public static Action<Hands ,HandItemData> onNewHandItem;
     public static Action<Hands> onHandItemRemoved;
     public static Action<InventorySlot> onInventorySlotClicked;
 

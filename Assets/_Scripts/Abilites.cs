@@ -8,7 +8,7 @@ public class Abilites : MonoBehaviour
     PlayerMana playerMana;
 
     [SerializeField]
-    ProjectileObject projectileFireball;
+    ProjectileData projectileFireball;
 
     bool canUsePlayerClassAbility = true, canUseCompanion1Ability = true, canUseCompanion2Ability = true;
     

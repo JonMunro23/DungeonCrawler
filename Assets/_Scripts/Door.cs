@@ -5,7 +5,7 @@ using UnityEngine;
 public class Door : MonoBehaviour, IInteractable
 {
     public bool requiresKey;
-    public ItemData.KeyType keyType;
+    //public ItemData.KeyType keyType;
     [SerializeField]
     bool isOpen;
 

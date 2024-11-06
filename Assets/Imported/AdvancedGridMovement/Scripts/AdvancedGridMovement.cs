@@ -53,6 +53,7 @@ public class AdvancedGridMovement : MonoBehaviour
     [SerializeField] private UnityEvent stepEvent;
 
     public static event Action<int> turnEvent;
+    public static Action onPlayerMoved;
 
     // Animation target values.
     private Vector3 moveTowardsPosition;
@@ -180,6 +181,7 @@ public class AdvancedGridMovement : MonoBehaviour
 
         transform.position = newPosition;
         CompensateRoundingErrors();
+        onPlayerMoved?.Invoke();
     }
 
     private void CompensateRoundingErrors()
@@ -239,6 +241,7 @@ public class AdvancedGridMovement : MonoBehaviour
             {
                 moveFromPosition = transform.position;
                 moveTowardsPosition = targetPosition;
+                
             }
             else
             {

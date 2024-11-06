@@ -7,7 +7,8 @@ using Random = UnityEngine.Random;
 public enum Hands
 {
     right,
-    left
+    left,
+    both
 }
 
 public class UseEquipment : MonoBehaviour
@@ -20,14 +21,14 @@ public class UseEquipment : MonoBehaviour
     Transform weaponSpawnParent;
 
     [SerializeField]
-    ItemData fists;
+    HandItemData fists;
 
     [SerializeField]
-    ItemData leftHandItem, rightHandItem;
+    HandItemData leftHandItem, rightHandItem;
     [SerializeField]
     GameObject playerTorchLight;
 
-    bool canUseRightHand = true, canUseLeftHand = true;
+    [SerializeField] bool canUseRightHand = true, canUseLeftHand = true, isInventoryOpen = false;
     float leftHandItemCooldown, rightHandItemCooldown;
     [SerializeField]
     int bullets, rockets, shells;
@@ -40,7 +41,7 @@ public class UseEquipment : MonoBehaviour
     private Coroutine burstCoroutine;
     private bool canShootShot = true;
 
-    public static event Action<Hands, ItemData> onHandUsed;
+    public static event Action<Hands, HandItemData> onHandUsed;
 
     private void Awake()
     {
@@ -53,21 +54,25 @@ public class UseEquipment : MonoBehaviour
     {
         InventorySlot.onNewHandItem += OnNewHandItem;
         InventorySlot.onHandItemRemoved += OnHandItemRemoved;
+        PlayerInventory.onInventoryOpened += OnInventoryOpened;
+        PlayerInventory.onInventoryClosed += OnInventoryClosed;
     }
 
     private void OnDisable()
     {
         InventorySlot.onNewHandItem -= OnNewHandItem;
         InventorySlot.onHandItemRemoved -= OnHandItemRemoved;
+        PlayerInventory.onInventoryOpened -= OnInventoryOpened;
+        PlayerInventory.onInventoryClosed -= OnInventoryClosed;
     }
 
     private void Start()
     {
-        InitialiseHandItem(Hands.right, fists);
-        if (fists.isTwoHanded)
-            return;
+        InitialiseHandItem(Hands.both, fists);
+        //if (fists.isTwoHanded)
+        //    return;
 
-        InitialiseHandItem(Hands.left, fists);
+        //InitialiseHandItem(Hands.left, fists);
     }
 
     // Update is called once per frame
@@ -75,12 +80,12 @@ public class UseEquipment : MonoBehaviour
     {
         if(Input.GetMouseButton(0))
         {
-            if(worldInteraction.isClickable == false && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
+            if(!isInventoryOpen && worldInteraction.isClickable == false && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
                 UseLeftHand(leftHandItem);
         }
         if (Input.GetMouseButton(1))
         {
-            if(worldInteraction.isClickable == false && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
+            if(!isInventoryOpen && worldInteraction.isClickable == false && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
                 UseRightHand(rightHandItem);
         }
         if(Input.GetKeyDown(KeyCode.R))
@@ -89,13 +94,23 @@ public class UseEquipment : MonoBehaviour
         }
     }
 
+    void OnInventoryOpened()
+    {
+        isInventoryOpen = true;
+    }
+
+    void OnInventoryClosed()
+    {
+        isInventoryOpen = false;
+    }
+
     private void Reload()
     {
         currentWeapon.GetComponent<Animator>().Play("Reload");
-        transform.GetChild(0).GetComponent<AudioSource>().PlayOneShot(leftHandItem.reloadSFX);
+        //transform.GetChild(0).GetComponent<AudioSource>().PlayOneShot(leftHandItem.reloadSFX);
     }
 
-    public void OnNewHandItem(Hands hand, ItemData newItem)
+    public void OnNewHandItem(Hands hand, HandItemData newItem)
     {
         InitialiseHandItem(hand, newItem);
     }
@@ -104,55 +119,43 @@ public class UseEquipment : MonoBehaviour
         RemoveHandItem(hand);
     }
 
-    public void InitialiseHandItem(Hands handUsed, ItemData item)
+    public void InitialiseHandItem(Hands handUsed, HandItemData handItemData)
     {
         if(currentWeapon)
         {
             Destroy(currentWeapon);
         }
 
-        if (item.itemPrefab)
-            currentWeapon = Instantiate(item.itemPrefab, weaponSpawnParent);
+        if (handItemData.itemPrefab)
+            currentWeapon = Instantiate(handItemData.itemPrefab, weaponSpawnParent);
 
         if(currentWeapon)
         {
             currentWeapon.GetComponent<Animator>().Play("Draw");
-            transform.GetChild(0).GetComponent<AudioSource>().PlayOneShot(item.drawSFX);
+            //transform.GetChild(0).GetComponent<AudioSource>().PlayOneShot(handItemData.drawSFX);
         }
 
         if (handUsed == Hands.left)
         {
-            if(item == null)
+            if(handItemData == null)
             {
                 leftHandItem = fists;
             }
-            else if(item.itemType == ItemType.torch)
-            {
-                playerTorchLight.SetActive(true);
-            }
-            leftHandItem = item;
-            //leftHandItemImage.texture = item.itemSprite;
+            leftHandItem = handItemData;
         }
         else if (handUsed == Hands.right)
         {
-            if (item == null)
+            if (handItemData == null)
             {
                 rightHandItem = fists;
             }
-            else if (item.itemType == ItemType.torch)
-            {
-                playerTorchLight.SetActive(true);
-            }
-            rightHandItem = item;
-            //rightHandItemImage.texture = item.itemSprite;
+            rightHandItem = handItemData;
         }
-        //else if (handUsed == "both")
-        //{
-        //    rightHandItem = item;
-        //    leftHandItem = item;
-        //    rightHandItemImage.texture = item.itemTexture;
-        //    leftHandItemImage.texture = item.itemTexture;
-        //}
+        else if (handUsed == Hands.both)
+        {
+            rightHandItem = handItemData;
+            leftHandItem = handItemData;
+        }
     }
 
     public void RemoveHandItem(Hands handUsed)
@@ -160,10 +163,10 @@ public class UseEquipment : MonoBehaviour
         if (handUsed == Hands.left)
         {
             transform.GetChild(0).GetComponent<AudioSource>().PlayOneShot(leftHandItem.hideSFX);
-            currentWeapon.GetComponent<Animator>().Play("Hide");
+            //currentWeapon.GetComponent<Animator>().Play("Hide");
             leftHandItem = fists;
             //leftHandItemImage.texture = fists.itemSprite;
-            Destroy(currentWeapon, 2);
+            Destroy(currentWeapon);
             //if(rightHandItem.itemType != ItemObject.ItemType.torch)
             //{
             //    playerTorchLight.SetActive(false);
@@ -172,10 +175,10 @@ public class UseEquipment : MonoBehaviour
         else if (handUsed == Hands.right)
         {
             transform.GetChild(0).GetComponent<AudioSource>().PlayOneShot(rightHandItem.hideSFX);
-            currentWeapon.GetComponent<Animator>().Play("Hide");
+            //currentWeapon.GetComponent<Animator>().Play("Hide");
             rightHandItem = fists;
             //rightHandItemImage.texture = fists.itemSprite;
-            Destroy(currentWeapon, 2);
+            Destroy(currentWeapon);
             //if (leftHandItem.itemType != ItemObject.ItemType.torch)
             //{
             //    playerTorchLight.SetActive(false);
@@ -183,51 +186,68 @@ public class UseEquipment : MonoBehaviour
         }
     }
 
-    public void UseLeftHand(ItemData item)
+    public void UseLeftHand(HandItemData handItemData)
     {
-        if (!item)
+        if (!handItemData || !canUseLeftHand)
             return;
 
-        if (item.itemType == ItemType.meleeWeapon || item.itemType == ItemType.torch)
+
+        if (handItemData.isMeleeWeapon)
         {
             if (canUseLeftHand == true)
             {
-                //UseMeleeWeapon(item, "left");
+                UseMeleeWeapon(handItemData, Hands.left);
             }
         }
-        else if (item.itemType == ItemType.rangedWeapon)
+        else
         {
             if (canUseLeftHand == true)
             {
-                UseRangedWeapon(item, Hands.left);
+                if (handItemData.isTwoHanded)
+                {
+                    UseRangedWeapon(handItemData, Hands.both);
+                    onHandUsed?.Invoke(Hands.both, handItemData);
+                }
+                else
+                {
+                    onHandUsed?.Invoke(Hands.left, handItemData);
+                    UseRangedWeapon(handItemData, Hands.left);
+                }
             }
         }
-        onHandUsed?.Invoke(Hands.left, item);
+
+        
+
     }
 
-    public void UseRightHand(ItemData item)
+    public void UseRightHand(HandItemData handItemData)
     {
-        if (!item)
+        if (!handItemData || !canUseRightHand)
             return;
 
-        if (item.itemType == ItemType.meleeWeapon || item.itemType == ItemType.torch)
+        if (handItemData.isMeleeWeapon)
         {
             if (canUseRightHand == true)
             {
-                UseMeleeWeapon(item, Hands.right);
+                UseMeleeWeapon(handItemData, Hands.right);
             }
         }
-        else if (item.itemType == ItemType.rangedWeapon)
+        else
         {
-            if (canUseRightHand == true)
+            if (handItemData.isTwoHanded)
             {
-                UseRangedWeapon(item, Hands.right);
+                UseRangedWeapon(handItemData, Hands.both);
+                onHandUsed?.Invoke(Hands.both, handItemData);
+            }
+            else
+            {
+                onHandUsed?.Invoke(Hands.right, handItemData);
+                UseRangedWeapon(handItemData, Hands.right);
             }
         }
-        onHandUsed?.Invoke(Hands.right, item);
     }
 
-    public void UseMeleeWeapon(ItemData weapon, Hands handUsed)
+    public void UseMeleeWeapon(HandItemData handItem, Hands handUsed)
     {
         //if (playerMovement.CheckForward("Enemy"))
         //{
@@ -246,7 +266,6 @@ public class UseEquipment : MonoBehaviour
         {
             currentWeapon.GetComponent<Animator>().Play("Swing Left 1");
             canUseLeftHand = false;
-            leftHandItemCooldown = weapon.itemCooldown;
             StartCoroutine(LeftHandItemCooldown());
             //StartCoroutine(LeftHandCooldownImageDeactivation());
 
@@ -255,82 +274,93 @@ public class UseEquipment : MonoBehaviour
         {
             currentWeapon.GetComponent<Animator>().Play("Swing Right 1");
             canUseRightHand = false;
-            rightHandItemCooldown = weapon.itemCooldown;
             StartCoroutine(RightHandItemCooldown());
             //StartCoroutine(RightHandCooldownImageDeactivation());
 
         }
     }
 
-    public void UseRangedWeapon(ItemData weapon, Hands handUsed)
+    public void UseRangedWeapon(HandItemData handItemData, Hands handUsed)
     {
-        if (CheckAmmo(weapon.ammoType) != 0)
+        if (CheckAmmo(handItemData.ammoType) != 0)
         {
-            if (weapon.usesProjectiles)
+            if (handItemData.isProjectile)
             {
-                GameObject projectile = Instantiate(weapon.itemProjectile.projModel, projectileSpawnLocation.position, projectileSpawnLocation.rotation);
-                projectile.GetComponentInChildren<Projectile>().projectile = weapon.itemProjectile;
-                projectile.GetComponentInChildren<Projectile>().damage = CalculateDamage(weapon);
-                if (handUsed == Hands.left)
+                GameObject projectile = Instantiate(handItemData.projectileData.projModel, projectileSpawnLocation.position, projectileSpawnLocation.rotation);
+                //projectile.GetComponentInChildren<Projectile>().projectile = handItemData.itemProjectile;
+                projectile.GetComponentInChildren<Projectile>().damage = CalculateDamage(handItemData);
+                if(handUsed == Hands.both)
                 {
                     canUseLeftHand = false;
-                    leftHandItemCooldown = weapon.itemCooldown;
+                    canUseRightHand = false;
+                    leftHandItemCooldown = handItemData.itemCooldown;
+                    rightHandItemCooldown = handItemData.itemCooldown;
                     StartCoroutine(LeftHandItemCooldown());
-                    //StartCoroutine(LeftHandCooldownImageDeactivation());
+                    StartCoroutine(RightHandItemCooldown());
+                }
+                else if (handUsed == Hands.left)
+                {
+                    canUseLeftHand = false;
+                    leftHandItemCooldown = handItemData.itemCooldown;
+                    StartCoroutine(LeftHandItemCooldown());
                 }
                 else if (handUsed == Hands.right)
                 {
                     canUseRightHand = false;
-                    rightHandItemCooldown = weapon.itemCooldown;
+                    rightHandItemCooldown = handItemData.itemCooldown;
                     StartCoroutine(RightHandItemCooldown());
-                    //StartCoroutine(RightHandCooldownImageDeactivation());
                 }
             }
             else
             {
-                if(weapon.isBurst)
+                if(handItemData.isBurst)
                 {
-                    TryShootBurst(weapon);
+                    TryShootBurst(handItemData);
                 }
                 else
-                    Shoot(weapon);
+                    Shoot(handItemData);
 
-                if (handUsed == Hands.left)
+                if (handUsed == Hands.both)
                 {
                     canUseLeftHand = false;
-                    leftHandItemCooldown = weapon.itemCooldown;
+                    canUseRightHand = false;
+                    leftHandItemCooldown = handItemData.itemCooldown;
+                    rightHandItemCooldown = handItemData.itemCooldown;
                     StartCoroutine(LeftHandItemCooldown());
-                    //StartCoroutine(LeftHandCooldownImageDeactivation());
+                    StartCoroutine(RightHandItemCooldown());
+                }
+                else if (handUsed == Hands.left)
+                {
+                    canUseLeftHand = false;
+                    StartCoroutine(LeftHandItemCooldown());
                 }
                 else if (handUsed == Hands.right)
                 {
                     canUseRightHand = false;
-                    rightHandItemCooldown = weapon.itemCooldown;
                     StartCoroutine(RightHandItemCooldown());
-                    //StartCoroutine(RightHandCooldownImageDeactivation());
                 }
             }
         }
     }
 
-    private void Shoot(ItemData weapon)
+    private void Shoot(HandItemData handItemData)
     {
         currentWeapon.GetComponent<Animator>().Play("Fire");
-        transform.GetChild(0).GetComponent<AudioSource>().PlayOneShot(weapon.fireSFX[Random.Range(0, weapon.fireSFX.Length)]);
+        transform.GetChild(0).GetComponent<AudioSource>().PlayOneShot(handItemData.attackSFX[Random.Range(0, handItemData.attackSFX.Length)]);
 
         RaycastHit hit;
-        for (int i = 0; i < weapon.projectileAmount; i++)
+        for (int i = 0; i < handItemData.projectileCount; i++)
         {
-            if (Physics.Raycast(weaponSpawnParent.position, weaponSpawnParent.forward, out hit, weapon.itemRange * 3))
+            if (Physics.Raycast(weaponSpawnParent.position, weaponSpawnParent.forward, out hit, handItemData.itemRange * 3))
             {
 
                 IDamageable damageable = hit.transform.GetComponent<IDamageable>();
                 if (damageable != null)
                 {
-                    int damage = CalculateDamage(weapon);
-                    bool isCrit = RollForCrit(weapon);
+                    int damage = CalculateDamage(handItemData);
+                    bool isCrit = RollForCrit(handItemData);
                     if(isCrit)
-                        damage *= Mathf.CeilToInt(weapon.critDamageMultiplier);
+                        damage *= Mathf.CeilToInt(handItemData.critDamageMultiplier);
 
                     damageable.TakeDamage(damage, isCrit);    
                 }
@@ -338,12 +368,12 @@ public class UseEquipment : MonoBehaviour
         }
     }
 
-    void TryShootBurst(ItemData weapon)
+    void TryShootBurst(HandItemData handItemData)
     {
         if (canShootBurst)
         {
             canShootBurst = false;
-            burstCoroutine = StartCoroutine(ShootBurst(weapon));
+            burstCoroutine = StartCoroutine(ShootBurst(handItemData));
         }
     }
 
@@ -357,18 +387,18 @@ public class UseEquipment : MonoBehaviour
         }
     }
 
-    IEnumerator ShootBurst(ItemData weapon)
+    IEnumerator ShootBurst(HandItemData handItemData)
     {
         IsShootingBurst = true;
 
-        for (int i = 0; i < weapon.burstLength; i++)
+        for (int i = 0; i < handItemData.burstLength; i++)
         {
             
             if (canShootShot)
             {
                 canShootShot = false;
-                Shoot(weapon);
-                yield return new WaitForSeconds(weapon.perShotInBurstDelay);
+                Shoot(handItemData);
+                yield return new WaitForSeconds(handItemData.perShotInBurstDelay);
                 canShootShot = true;
             }
         }
@@ -378,20 +408,19 @@ public class UseEquipment : MonoBehaviour
     }
 
 
-    int CalculateDamage(ItemData weapon)
+    int CalculateDamage(HandItemData handItemData)
     {
-        int damage = Random.Range(weapon.itemDamageMin, weapon.itemDamageMax + 1);
-        return damage;
+        float damage = Random.Range(handItemData.itemDamageMinMax.x, handItemData.itemDamageMinMax.y);
+        return Mathf.CeilToInt(damage);
     }
 
-    bool RollForCrit(ItemData weapon)
+    bool RollForCrit(HandItemData handItemData)
     {
-        
         bool wasCrit = false;
-        if (weapon.critChance > 0)
+        if (handItemData.critChance > 0)
         {
             float rand = Random.Range(0, 101);
-            if (rand <= weapon.critChance)
+            if (rand <= handItemData.critChance)
             {
                 wasCrit = true;
             }
@@ -433,37 +462,13 @@ public class UseEquipment : MonoBehaviour
 
     IEnumerator LeftHandItemCooldown()
     {
-        for (int i = 0; i < leftHandItemCooldown; i++)
-        {
-            //Debug.Log("Current left hand cooldown: " + i);
-            yield return new WaitForSeconds(1);
-        }
-        //Debug.Log("Cooldown left hand ended");
+        yield return new WaitForSeconds(leftHandItem.itemCooldown);
         canUseLeftHand = true;
     }
 
     IEnumerator RightHandItemCooldown()
     {
-        for (int i = 0; i < rightHandItemCooldown; i++)
-        {
-            //Debug.Log("Current right hand cooldown: " + i);
-            yield return new WaitForSeconds(1);
-        }
-        //Debug.Log("Cooldown right hand ended");
+        yield return new WaitForSeconds(rightHandItem.itemCooldown);
         canUseRightHand = true;
-    }
-
-    //IEnumerator LeftHandCooldownImageDeactivation()
-    //{
-    //    yield return new WaitForSeconds(leftHandItemCooldown);
-    //    leftHandCooldownImage.SetActive(false);
-    //}
-
-    //IEnumerator RightHandCooldownImageDeactivation()
-    //{
-    //    yield return new WaitForSeconds(rightHandItemCooldown);
-    //    rightHandCooldownImage.SetActive(false);
-    //}
-
-    
+    }    
 }

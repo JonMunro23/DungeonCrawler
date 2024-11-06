@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public ProjectileObject projectile;
+    public ProjectileData projectile;
     Rigidbody rb;
     float speed;
     [HideInInspector]
@@ -39,7 +39,7 @@ public class Projectile : MonoBehaviour
         rb.AddForce(spawnLocation.forward * speed * Time.deltaTime, ForceMode.Impulse);
     }
 
-    int CalculateDamage(ProjectileObject projectile)
+    int CalculateDamage(ProjectileData projectile)
     {
         int damage = Random.Range(projectile.minDamage, projectile.maxDamage + 1);
         return damage;

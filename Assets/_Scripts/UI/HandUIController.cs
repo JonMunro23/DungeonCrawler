@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,7 @@ public class HandUIController : MonoBehaviour
     [SerializeField] Image leftHandItemCooldownImage;
     [SerializeField] Image rightHandItemCooldownImage;
 
-    [SerializeField] ItemData defaultHandItem;
+    [SerializeField] HandItemData defaultHandItem;
 
     private void OnEnable()
     {
@@ -34,26 +35,44 @@ public class HandUIController : MonoBehaviour
 
     public void HandItemRemoved(Hands hand)
     {
-        if (hand == Hands.left)
+        if (hand == Hands.both)
+        {
+            leftHandHeldItemImage.sprite = defaultHandItem.itemSprite;
+            rightHandHeldItemImage.sprite = defaultHandItem.itemSprite;
+
+        }
+        else if (hand == Hands.left)
             leftHandHeldItemImage.sprite = defaultHandItem.itemSprite;
         else
             rightHandHeldItemImage.sprite = defaultHandItem.itemSprite;
     }
 
-    public void NewHandItem(Hands hand, ItemData newItem)
+    public void NewHandItem(Hands hand, HandItemData newItem)
     {
-        if (hand == Hands.left)
+        if(hand == Hands.both)
+        {
+            leftHandHeldItemImage.sprite = newItem.itemSprite;
+            rightHandHeldItemImage.sprite = newItem.itemSprite;
+
+        }
+        else if (hand == Hands.left)
             leftHandHeldItemImage.sprite = newItem.itemSprite;
         else
             rightHandHeldItemImage.sprite = newItem.itemSprite;
     }
 
-    public void HandUsed(Hands hand, ItemData itemUsed)
+    public void HandUsed(Hands hand, HandItemData itemUsed)
     {
-        StartCoroutine(ItemUICooldown(hand, itemUsed));
+        if(hand == Hands.both)
+        {
+            StartCoroutine(ItemUICooldown(Hands.left, itemUsed));
+            StartCoroutine(ItemUICooldown(Hands.right, itemUsed));
+        }
+        else
+            StartCoroutine(ItemUICooldown(hand, itemUsed));
     }
 
-    IEnumerator ItemUICooldown(Hands hand, ItemData itemUsed)
+    IEnumerator ItemUICooldown(Hands hand, EquipmentItemData itemUsed)
     {
         if(hand == Hands.left)
         {

@@ -15,6 +15,9 @@ public class NPCGroupController : MonoBehaviour, IDamageable
     [SerializeField] Transform centerSpawnPoint;
     [SerializeField] Transform[] spawnPoints;
 
+    [Header("Grid Data")]
+    public GridNode currentlyOccupiedGridnode;
+
     [Header("Group Data")]
     public NPCData NPCToSpawn;
     public int amountToSpawnInStack;
@@ -36,8 +39,10 @@ public class NPCGroupController : MonoBehaviour, IDamageable
         animController = GetComponent<NPCAnimationController>();
     }
 
-    private void Start()
+    public void InitGroup(GridNode spawnGridNode)
     {
+        currentlyOccupiedGridnode = spawnGridNode;
+
         SpawnNPCs();
         InitControllers();
     }

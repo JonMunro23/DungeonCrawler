@@ -6,6 +6,18 @@ using UnityEngine;
 public class CharacterData : ScriptableObject
 {
     public string charName;
-    public int maxHealth;
     public Sprite charPortrait;
+
+    public List<Stat> baseCharStats = new List<Stat>();
+
+    public Stat GetStat(ModifiableStats statToGet)
+    {
+        Stat statToReturn = null;
+        foreach (Stat stat in baseCharStats)
+        {
+            if (stat.stat == statToGet)
+                statToReturn = stat;
+        }
+        return statToReturn;
+    }
 }

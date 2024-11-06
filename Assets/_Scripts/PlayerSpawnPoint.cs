@@ -4,15 +4,16 @@ using UnityEngine;
 public class PlayerSpawnPoint : MonoBehaviour
 {
     [SerializeField] PlayerController playerPrefab;
-
     public PlayerController spawnedPlayer;
 
     public static Action<PlayerController> onPlayerSpawned;
 
-    public void SpawnPlayer(CharacterData playerCharData)
+    public void SpawnPlayer(CharacterData playerCharData, GridNode spawnGridNode)
     {
         spawnedPlayer = Instantiate(playerPrefab, transform.position, transform.rotation);
-        spawnedPlayer.InitPlayer(playerCharData);
+        spawnedPlayer.InitPlayer(playerCharData, spawnGridNode);
+
+        spawnGridNode.SetOccupied(true);
         //onPlayerSpawned?.Invoke(spawnedPlayer);
     }
 }
