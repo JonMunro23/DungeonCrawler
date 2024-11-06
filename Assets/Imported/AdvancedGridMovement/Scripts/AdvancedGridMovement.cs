@@ -181,7 +181,6 @@ public class AdvancedGridMovement : MonoBehaviour
 
         transform.position = newPosition;
         CompensateRoundingErrors();
-        onPlayerMoved?.Invoke();
     }
 
     private void CompensateRoundingErrors()
@@ -241,7 +240,12 @@ public class AdvancedGridMovement : MonoBehaviour
             {
                 moveFromPosition = transform.position;
                 moveTowardsPosition = targetPosition;
-                
+
+                GridController.Instance.GetNodeFromWorldPos(moveFromPosition).ClearOccupant();
+                var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
+                targetNode.SetOccupant(GridNodeOccupant.Player);
+                PlayerController.SetCurrentOccupiedNode(targetNode);
+                onPlayerMoved?.Invoke();
             }
             else
             {
@@ -250,16 +254,10 @@ public class AdvancedGridMovement : MonoBehaviour
         }
     }
 
-    // should be refactored into an new class
     private bool FreeSpace(Vector3 targetPosition)
     {
-        // this is pretty lousy way to perform collision checks, its just here for demonstration purposes.
-        // Hint: layers are much faster then tags ;-)
-        Vector3 delta = targetPosition - moveTowardsPosition;
-        delta *= .6f;
-        Collider[] intersectingColliders = Physics.OverlapBox(moveTowardsPosition + delta, new Vector3((gridSize / 2.0f) - .1f, 1.0f, (gridSize / 2.0f) - .1f), gameObject.transform.rotation);
-        Collider[] filteredColliders = System.Array.FindAll(intersectingColliders, collider => collider.CompareTag("Enemy") || collider.CompareTag("Level"));
-        return filteredColliders.Length == 0;
+        var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
+        return (targetNode.nodeData.isWalkable && targetNode.currentOccupant == GridNodeOccupant.None);
     }
 
     public void TurnRight()

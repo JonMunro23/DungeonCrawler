@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-public class HealthController : MonoBehaviour, IDamageable
+public class PlayerHealthController : MonoBehaviour, IDamageable
 {
     CharacterData characterData;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Abilites : MonoBehaviour
 {
-    HealthController playerHealth;
+    PlayerHealthController playerHealth;
     PlayerMana playerMana;
 
     [SerializeField]
@@ -23,7 +23,7 @@ public class Abilites : MonoBehaviour
 
     private void Awake()
     {
-        playerHealth = GetComponent<HealthController>();
+        playerHealth = GetComponent<PlayerHealthController>();
         playerMana = GetComponent<PlayerMana>();
     }
 

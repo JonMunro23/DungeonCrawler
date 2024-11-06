@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
+using Random = UnityEngine.Random;
 
 public class NPCGroupController : MonoBehaviour, IDamageable
 {
@@ -32,7 +34,7 @@ public class NPCGroupController : MonoBehaviour, IDamageable
     public List<ItemData> guaranteedDrops = new List<ItemData>();
     public List<ItemData> randomDrops = new List<ItemData>();
 
-
+    public static Action onNPCDeath;
     private void Awake()
     {
         movementController = GetComponent<NPCMovementController>();
@@ -106,6 +108,8 @@ public class NPCGroupController : MonoBehaviour, IDamageable
                     }
 
                 }
+                currentlyOccupiedGridnode.ClearOccupant();
+                onNPCDeath?.Invoke();
                 Destroy(gameObject);
             }
         }

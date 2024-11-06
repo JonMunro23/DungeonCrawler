@@ -13,6 +13,6 @@ public class EnemySpawnPoint : MonoBehaviour
         spawnedEnemies = Instantiate(enemyToSpawn, transform.position, transform.rotation);
         spawnedEnemies.InitGroup(spawnGridNode);
 
-        spawnGridNode.SetOccupied(true);
+        spawnGridNode.SetOccupant(GridNodeOccupant.Enemy);
     }
 }

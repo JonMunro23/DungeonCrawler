@@ -20,7 +20,7 @@ public class NPCAnimationController : MonoBehaviour
         }
     }
 
-    public void PlayAnimation(string animationName)
+    public void PlayAnimation(string animationName, float animationDuration = 0f)
     {
         foreach (Animator animator in animators)
         {
@@ -31,11 +31,11 @@ public class NPCAnimationController : MonoBehaviour
 
             if(animationName == "TurnLeft")
             {
-                StartCoroutine(LerpNPCRot(npc, npc.transform.localRotation, npc.transform.localRotation * Quaternion.Euler(-Vector3.up * 90), 1));
+                StartCoroutine(LerpNPCRot(npc, npc.transform.localRotation, npc.transform.localRotation * Quaternion.Euler(-Vector3.up * 90), animationDuration));
             }
             else if (animationName == "TurnRight")
             {
-                StartCoroutine(LerpNPCRot(npc, npc.transform.localRotation, npc.transform.localRotation * Quaternion.Euler(Vector3.up * 90), 1));
+                StartCoroutine(LerpNPCRot(npc, npc.transform.localRotation, npc.transform.localRotation * Quaternion.Euler(Vector3.up * 90), animationDuration));
             }
             else
                 animator.Play(animationName);

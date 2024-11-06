@@ -88,8 +88,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 3, y: 3, z: 3}
+  m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!114 &2212457037591207786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,13 +136,13 @@ MonoBehaviour:
   gridSize: 3
   moveDuration: 1
   isMoving: 0
-  minDelayBetweenMovement: 0.25
+  minDelayBetweenMovement: 0.1
   currentOccupiedGridNode: {fileID: 0}
   path: []
   turnDuration: 0.75
   currentOrientation: {fileID: 4587715752689572025}
   isTurning: 0
-  minDelayBetweenTurning: 0
+  minDelayBetweenTurning: 0.25
   playerGridNode: {fileID: 0}
 --- !u!114 &1006225082393101937
 MonoBehaviour:
@@ -183,7 +183,7 @@ Transform:
   m_GameObject: {fileID: 3696039647671984509}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.36}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -14,15 +14,15 @@ public class PlayerStatsUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        HealthController.onCurrentHealthUpdated += OnCurrentHealthUpdated;
-        HealthController.onMaxHealthUpdated += OnMaxHealthUpdated;
+        PlayerHealthController.onCurrentHealthUpdated += OnCurrentHealthUpdated;
+        PlayerHealthController.onMaxHealthUpdated += OnMaxHealthUpdated;
         PlayerInventory.onInventoryOpened += OnInventoryOpened;
     }
 
     private void OnDisable()
     {
-        HealthController.onCurrentHealthUpdated -= OnCurrentHealthUpdated;
-        HealthController.onMaxHealthUpdated -= OnMaxHealthUpdated;
+        PlayerHealthController.onCurrentHealthUpdated -= OnCurrentHealthUpdated;
+        PlayerHealthController.onMaxHealthUpdated -= OnMaxHealthUpdated;
     }
 
     public void InitStatsUI(CharacterData charData)

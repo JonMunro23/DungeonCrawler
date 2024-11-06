@@ -748,7 +748,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3180298802843086112}
   - component: {fileID: 4750780804372824305}
-  - component: {fileID: 4545056290366904221}
   - component: {fileID: 162635141120244599}
   - component: {fileID: 3417093745071717000}
   - component: {fileID: 1956475427981713433}
@@ -759,6 +758,7 @@ GameObject:
   - component: {fileID: 8472107880212972518}
   - component: {fileID: 6917960533262647579}
   - component: {fileID: 5301202906750780191}
+  - component: {fileID: -2222088351250389698}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -796,21 +796,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e75e2821f622fc34fb54ad3cc47cd974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHealthController: {fileID: 4545056290366904221}
+  playerHealthController: {fileID: -2222088351250389698}
   playerInventory: {fileID: 5977534421063011795}
   playerStatsManager: {fileID: 5301202906750780191}
---- !u!114 &4545056290366904221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6206634459118426657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 775836f957d931f41a7db5b09ec5bd0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &162635141120244599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1150,6 +1138,9 @@ MonoBehaviour:
   leftHandItem: {fileID: 0}
   rightHandItem: {fileID: 0}
   playerTorchLight: {fileID: 0}
+  canUseRightHand: 1
+  canUseLeftHand: 1
+  isInventoryOpen: 0
   bullets: 30
   rockets: 4
   shells: 12
@@ -1234,6 +1225,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412f4e0106876ee41aa2aecb251c5acb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCharData: {fileID: 0}
+  playerStats: []
+--- !u!114 &-2222088351250389698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6206634459118426657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caecb57aeac3dd64eac2e70f34392f54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentHealth: 0
+  maxHealth: 0
 --- !u!1 &6784583342407161477
 GameObject:
   m_ObjectHideFlags: 0

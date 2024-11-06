@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] HealthController playerHealthController;
+    [SerializeField] PlayerHealthController playerHealthController;
     [SerializeField] PlayerInventory playerInventory;
     [SerializeField] PlayerStatsManager playerStatsManager;
     [HideInInspector] public CharacterData playerCharacterData { get; private set; }
@@ -16,12 +16,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        AdvancedGridMovement.onPlayerMoved += OnMoved;
+        //AdvancedGridMovement.onPlayerMoved += OnMoved;
     }
 
     private void OnDisable()
     {
-        AdvancedGridMovement.onPlayerMoved -= OnMoved;
+        //AdvancedGridMovement.onPlayerMoved -= OnMoved;
     }
 
     public void InitPlayer(CharacterData playerCharData, GridNode spawnGridNode)
@@ -35,10 +35,13 @@ public class PlayerController : MonoBehaviour
         onPlayerInitialised?.Invoke(this);
     }
 
-    void OnMoved()
+    public static void SetCurrentOccupiedNode(GridNode newGridNode)
     {
-        currentOccupiedNode.SetOccupied(false);
-        currentOccupiedNode = GridController.Instance.GetNodeFromWorldPos(transform.position);
-        currentOccupiedNode.SetOccupied(true);
+        currentOccupiedNode = newGridNode;
     }
+
+    //void OnMoved()
+    //{
+        
+    //}
 }

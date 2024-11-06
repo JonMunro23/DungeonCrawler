@@ -4,11 +4,19 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
+public enum GridNodeOccupant
+{
+    None,
+    Enemy,
+    Obstacle,
+    Player
+}
+
 public class GridNode : MonoBehaviour
 {
     [HideInInspector]
     public GridNodeData nodeData;
-    public ICoords coords;
+    public ICoords Coords;
     PlayerSpawnPoint playerSpawnPoint;
     EnemySpawnPoint enemySpawnPoint;
     MeshRenderer meshRenderer;
@@ -18,7 +26,7 @@ public class GridNode : MonoBehaviour
     public List<GridNode> neighbouringNodes = new List<GridNode>();
 
     public Transform moveToTransform;
-    public bool isOccupied;
+    public GridNodeOccupant currentOccupant = GridNodeOccupant.None;
 
     [Header("Pathfinding")]
     [SerializeField]
@@ -28,9 +36,14 @@ public class GridNode : MonoBehaviour
     public float H { get; private set; }
     public float F => G + H;
 
-    public void SetOccupied(bool _isOccupied)
+    public void SetOccupant(GridNodeOccupant newOccupant)
     {
-        isOccupied = _isOccupied;
+        currentOccupant = newOccupant;
+    }
+
+    public void ClearOccupant()
+    {
+        currentOccupant = GridNodeOccupant.None;
     }
 
     private void Awake()
@@ -43,7 +56,7 @@ public class GridNode : MonoBehaviour
         Connection = nodeBase;
     }
 
-    public float GetDistance(GridNode other) => coords.GetDistance(other.coords); // Helper to reduce noise in pathfinding
+    public float GetDistance(GridNode other) => Coords.GetDistance(other.Coords); // Helper to reduce noise in pathfinding
 
     public void SetG(float g)
     {
@@ -99,17 +112,17 @@ public class GridNode : MonoBehaviour
 
     public void InitNode(GridNodeData newNodeData, ICoords _coords)
     {
-        coords = _coords;
+        Coords = _coords;
         nodeData = newNodeData;
 
-        coordText.text = $"({coords.Pos.x},{coords.Pos.y})";
+        coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
     }
 
     public void CacheNeighbours()
     {
         neighbouringNodes = new List<GridNode>();
 
-        foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtPosition(coords.Pos + dir)).Where(tile => tile != null))
+        foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
         {
             neighbouringNodes.Add(neighbouringNode);
         }

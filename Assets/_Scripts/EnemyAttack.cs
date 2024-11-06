@@ -15,7 +15,7 @@ public class EnemyAttack : MonoBehaviour
         {
             canAttack = false;
             StartCoroutine(AttackCooldown());
-            other.GetComponent<HealthController>().TakeDamage(damage);
+            other.GetComponent<PlayerHealthController>().TakeDamage(damage);
         }
     }
 

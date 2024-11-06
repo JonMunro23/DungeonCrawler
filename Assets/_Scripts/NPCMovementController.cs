@@ -33,11 +33,18 @@ public class NPCMovementController : MonoBehaviour
     private void OnEnable()
     {
         AdvancedGridMovement.onPlayerMoved += OnPlayerMoved;
+        NPCGroupController.onNPCDeath += OnNPCDeath;
     }
 
     private void OnDisable()
     {
         AdvancedGridMovement.onPlayerMoved -= OnPlayerMoved;
+        NPCGroupController.onNPCDeath -= OnNPCDeath;
+    }
+
+    void OnNPCDeath()
+    {
+        FindNewPathToPlayer();
     }
 
     void OnPlayerMoved()
@@ -48,10 +55,11 @@ public class NPCMovementController : MonoBehaviour
 
     void FindNewPathToPlayer()
     {
-        foreach (GridNode node in path)
-        {
-            node.RevertTile();
-        }
+        if(path != null)
+            foreach (GridNode node in path)
+            {
+                node.RevertTile();
+            }
 
         path = Pathfinding_Custom.FindPath(groupController.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
         NavigateToPlayer();
@@ -59,6 +67,12 @@ public class NPCMovementController : MonoBehaviour
 
     public void NavigateToPlayer()
     {
+        if(path == null)
+        {
+            Debug.Log("NAE PATH");
+            return;
+        }
+
         if (isMoving || isTurning)
             return;
 
@@ -67,10 +81,10 @@ public class NPCMovementController : MonoBehaviour
         float leftOrRight = Vector3.Dot(currentOrientation.right, dirToTarget);
         float dot = Vector3.Dot(currentOrientation.forward, dirToTarget);
 
-        Debug.Log("Left/Right: " + Mathf.RoundToInt(leftOrRight));
-        Debug.Log("Front/Back: " + Mathf.RoundToInt(dot));
+        //Debug.Log("Left/Right: " + Mathf.RoundToInt(leftOrRight));
+        //Debug.Log("Front/Back: " + Mathf.RoundToInt(dot));
 
-        if (!nodeToMoveTo.isOccupied && Mathf.RoundToInt(dot) == -1)
+        if (nodeToMoveTo.currentOccupant == GridNodeOccupant.None && Mathf.RoundToInt(dot) == -1)
         {
             MoveToGridNode(nodeToMoveTo);
         }
@@ -100,14 +114,15 @@ public class NPCMovementController : MonoBehaviour
         {
             FindNewPathToPlayer();
         }
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            Turn(-1);
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            Turn(1);
-        }
+
+        //if(Input.GetKeyDown(KeyCode.LeftArrow))
+        //{
+        //    Turn(-1);
+        //}
+        //if (Input.GetKeyDown(KeyCode.RightArrow))
+        //{
+        //    Turn(1);
+        //}
     }
 
     void MoveToGridNode(GridNode targetNode)
@@ -115,13 +130,13 @@ public class NPCMovementController : MonoBehaviour
         if (isMoving)
             return;
 
-        groupController.currentlyOccupiedGridnode.SetOccupied(false);
+        groupController.currentlyOccupiedGridnode.ClearOccupant();
 
         isMoving = true;
         StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, moveDuration));
         StartCoroutine(DelayBetweenMovement());
         groupController.currentlyOccupiedGridnode = targetNode;
-        groupController.currentlyOccupiedGridnode.SetOccupied(true);
+        groupController.currentlyOccupiedGridnode.SetOccupant(GridNodeOccupant.Enemy);
         AnimateMovement();
     }
 
@@ -149,18 +164,18 @@ public class NPCMovementController : MonoBehaviour
     {
         if(turnDir  == -1)
         {
-            groupController.animController.PlayAnimation("TurnLeft");
+            groupController.animController.PlayAnimation("TurnLeft", turnDuration);
             
         }
         else if(turnDir == 1)
-            groupController.animController.PlayAnimation("TurnRight");
+            groupController.animController.PlayAnimation("TurnRight", turnDuration);
 
         UpdateLookDir(turnDir);
     }
 
     void UpdateLookDir(int turnDir)
     {
-        Debug.Log("Turning orientation");
+        //Debug.Log("Turning orientation");
         currentOrientation.Rotate(new Vector3(0, turnDir * 90, 0));
         //if(currentLookDir > 3)
         //{
@@ -210,7 +225,7 @@ public class NPCMovementController : MonoBehaviour
 
     IEnumerator DelayBetweenTurning()
     {
-        yield return new WaitForSeconds(turnDuration + minDelayBetweenMovement);
+        yield return new WaitForSeconds(turnDuration + minDelayBetweenTurning);
         isTurning = false;
         NavigateToPlayer();
     }

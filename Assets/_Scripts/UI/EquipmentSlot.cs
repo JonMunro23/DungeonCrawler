@@ -19,7 +19,7 @@ public class EquipmentSlot : InventorySlot
     public override Item SwapItem(Item itemToSwap)
     {
         Item itemToReturn = base.SwapItem(itemToSwap);
-        DeinitialiseCurrentItem();
+        DeinitialiseItem(itemToReturn);
         InitialiseItem(itemToSwap);
         return itemToReturn;
     }
@@ -27,7 +27,7 @@ public class EquipmentSlot : InventorySlot
     public override Item TakeItem()
     {
         Item itemToTake = base.TakeItem();
-        DeinitialiseCurrentItem();
+        DeinitialiseItem(itemToTake);
         return itemToTake;
 
     }
@@ -56,11 +56,16 @@ public class EquipmentSlot : InventorySlot
         onNewEquipmentItem?.Invoke(slotType, itemToInitialise.itemData as EquipmentItemData);
     }
 
-    public void DeinitialiseCurrentItem()
+    public void DeinitialiseItem(Item item)
     {
         if (slotType == EquipmentSlotType.hands)
         {
-            if (Hand == Hands.right)
+            HandItemData handItemData = item.itemData as HandItemData;
+            if(handItemData.isTwoHanded)
+            {
+                onHandItemRemoved?.Invoke(Hands.both);
+            }
+            else if (Hand == Hands.right)
             {
                 onHandItemRemoved?.Invoke(Hands.right);
             }
