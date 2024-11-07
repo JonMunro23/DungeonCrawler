@@ -1133,19 +1133,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77566f3140c1019499a7354e2189869a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSpawnParent: {fileID: 6183601309913987406}
-  fists: {fileID: 11400000, guid: 6db1391fd6b91d84996e4464914a9cee, type: 2}
   leftHandItem: {fileID: 0}
   rightHandItem: {fileID: 0}
-  playerTorchLight: {fileID: 0}
   canUseRightHand: 1
   canUseLeftHand: 1
   isInventoryOpen: 0
-  bullets: 300
-  rockets: 40
-  shells: 120
-  currentWeapon: {fileID: 0}
-  IsShootingBurst: 0
 --- !u!114 &5977534421063011795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1214,6 +1206,13 @@ MonoBehaviour:
   currentWeight: 0
   maxWeight: 150
   equippedItems: []
+  leftHandEquippedItem:
+    slotType: 0
+    equipmentItemData: {fileID: 0}
+  rightHandEquippedItem:
+    slotType: 0
+    equipmentItemData: {fileID: 0}
+  weaponSpawnParent: {fileID: 6183601309913987406}
 --- !u!114 &5301202906750780191
 MonoBehaviour:
   m_ObjectHideFlags: 0

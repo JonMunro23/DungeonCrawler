@@ -13,75 +13,93 @@ public class HandUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        UseEquipment.onHandUsed += HandUsed;
-        InventorySlot.onNewHandItem += NewHandItem;
-        InventorySlot.onHandItemRemoved += HandItemRemoved;
+        InventorySlot.onNewHandItem += OnNewHandItem;
+        InventorySlot.onHandItemRemoved += OnHandItemRemoved;
+
+        RangedWeapon.OnHandCooldownBegins += OnHandCooldownBegins;
+        RangedWeapon.OnHandCooldownEnds += OnHandCooldownEnds;
     }
 
     private void OnDisable()
     {
-        UseEquipment.onHandUsed -= HandUsed;
-        InventorySlot.onNewHandItem -= NewHandItem;
-        InventorySlot.onHandItemRemoved -= HandItemRemoved;
+        InventorySlot.onNewHandItem -= OnNewHandItem;
+        InventorySlot.onHandItemRemoved -= OnHandItemRemoved;
+
+        RangedWeapon.OnHandCooldownBegins -= OnHandCooldownBegins;
+        RangedWeapon.OnHandCooldownEnds -= OnHandCooldownEnds;
     }
 
     public void InitHands()
     {
-        NewHandItem(Hands.left, defaultHandItem);
-        NewHandItem(Hands.right, defaultHandItem);
+        OnNewHandItem(EquipmentSlotType.leftHand, defaultHandItem);
+        OnNewHandItem(EquipmentSlotType.rightHand, defaultHandItem);
     }
 
-    public void HandItemRemoved(Hands hand)
+    public void OnHandItemRemoved(EquipmentSlotType slotType, HandItemData removedItemData)
     {
-        if (hand == Hands.both)
+        if (removedItemData.isTwoHanded)
         {
             leftHandHeldItemImage.sprite = defaultHandItem.itemSprite;
             rightHandHeldItemImage.sprite = defaultHandItem.itemSprite;
 
         }
-        else if (hand == Hands.left)
+        else if (slotType == EquipmentSlotType.leftHand)
+        {
             leftHandHeldItemImage.sprite = defaultHandItem.itemSprite;
+            OnHandCooldownEnds(Hands.left);
+        }
         else
+        {
             rightHandHeldItemImage.sprite = defaultHandItem.itemSprite;
+            OnHandCooldownEnds(Hands.right);
+        }
+
     }
 
-    public void NewHandItem(Hands hand, HandItemData newItem)
+    public void OnNewHandItem(EquipmentSlotType slotType, HandItemData newItem)
     {
-        if(hand == Hands.both)
+        if(newItem.isTwoHanded)
         {
             leftHandHeldItemImage.sprite = newItem.itemSprite;
             rightHandHeldItemImage.sprite = newItem.itemSprite;
 
         }
-        else if (hand == Hands.left)
+        else if (slotType == EquipmentSlotType.leftHand)
             leftHandHeldItemImage.sprite = newItem.itemSprite;
         else
             rightHandHeldItemImage.sprite = newItem.itemSprite;
     }
 
-    public void HandUsed(Hands hand, HandItemData itemUsed)
+    void OnHandCooldownBegins(Hands hand)
     {
         if(hand == Hands.both)
-        {
-            StartCoroutine(ItemUICooldown(Hands.left, itemUsed));
-            StartCoroutine(ItemUICooldown(Hands.right, itemUsed));
-        }
-        else
-            StartCoroutine(ItemUICooldown(hand, itemUsed));
-    }
-
-    IEnumerator ItemUICooldown(Hands hand, EquipmentItemData itemUsed)
-    {
-        if(hand == Hands.left)
         {
             leftHandItemCooldownImage.enabled = true;
-            yield return new WaitForSeconds(itemUsed.itemCooldown);
-            leftHandItemCooldownImage.enabled = false;
+            rightHandItemCooldownImage.enabled = true;
+        }
+        else if (hand == Hands.left)
+        {
+            leftHandItemCooldownImage.enabled = true;
         }
         else
         {
             rightHandItemCooldownImage.enabled = true;
-            yield return new WaitForSeconds(itemUsed.itemCooldown);
+        }
+    }
+
+    void OnHandCooldownEnds(Hands hand)
+    {
+        if(hand == Hands.both)
+        {
+            leftHandItemCooldownImage.enabled = false;
+            rightHandItemCooldownImage.enabled = false;
+        }
+        else if (hand == Hands.left)
+        {
+            leftHandItemCooldownImage.enabled = false;
+        }
+        else
+        {
             rightHandItemCooldownImage.enabled = false;
         }
     }
