@@ -28,8 +28,8 @@ MonoBehaviour:
     type: 3}
   isTwoHanded: 1
   isMeleeWeapon: 0
-  itemDamageMinMax: {x: 25, y: 50}
-  itemRange: 3
+  itemDamageMinMax: {x: 15, y: 30}
+  itemRange: 5
   critChance: 18
   critDamageMultiplier: 2
   ammoType: 0

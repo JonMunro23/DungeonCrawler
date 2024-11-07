@@ -380,7 +380,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 300
-  field of view: 71
+  field of view: 85
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -1141,9 +1141,9 @@ MonoBehaviour:
   canUseRightHand: 1
   canUseLeftHand: 1
   isInventoryOpen: 0
-  bullets: 30
-  rockets: 4
-  shells: 12
+  bullets: 300
+  rockets: 40
+  shells: 120
   currentWeapon: {fileID: 0}
   IsShootingBurst: 0
 --- !u!114 &5977534421063011795
@@ -1172,6 +1172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isClickable: 0
+  maxInteractionDistance: 3
 --- !u!114 &8472107880212972518
 MonoBehaviour:
   m_ObjectHideFlags: 0

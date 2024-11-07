@@ -8,6 +8,8 @@ public class WorldInteraction : MonoBehaviour
 
     public bool isClickable;
 
+    [SerializeField] float maxInteractionDistance = 3f;
+
     private void Awake()
     {
         useEquipment = GetComponent<UseEquipment>();
@@ -19,7 +21,7 @@ public class WorldInteraction : MonoBehaviour
     {
         RaycastHit hit;
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, maxInteractionDistance))
         {
             if (hit.collider.TryGetComponent(out IPickup pickup))
             {

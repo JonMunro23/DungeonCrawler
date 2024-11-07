@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -30,8 +29,7 @@ public class UseEquipment : MonoBehaviour
 
     [SerializeField] bool canUseRightHand = true, canUseLeftHand = true, isInventoryOpen = false;
     float leftHandItemCooldown, rightHandItemCooldown;
-    [SerializeField]
-    int bullets, rockets, shells;
+    [SerializeField] int bullets, rockets, shells;
 
     public GameObject currentWeapon;
     private bool canShootBurst = true;
@@ -68,7 +66,8 @@ public class UseEquipment : MonoBehaviour
 
     private void Start()
     {
-        InitialiseHandItem(Hands.both, fists);
+        InitialiseHandItem(Hands.right, fists);
+        InitialiseHandItem(Hands.left, fists);
         //if (fists.isTwoHanded)
         //    return;
 
@@ -197,6 +196,7 @@ public class UseEquipment : MonoBehaviour
             if (canUseLeftHand == true)
             {
                 UseMeleeWeapon(handItemData, Hands.left);
+                onHandUsed?.Invoke(Hands.left, handItemData);
             }
         }
         else
@@ -210,8 +210,8 @@ public class UseEquipment : MonoBehaviour
                 }
                 else
                 {
-                    onHandUsed?.Invoke(Hands.left, handItemData);
                     UseRangedWeapon(handItemData, Hands.left);
+                    onHandUsed?.Invoke(Hands.left, handItemData);
                 }
             }
         }
@@ -230,6 +230,7 @@ public class UseEquipment : MonoBehaviour
             if (canUseRightHand == true)
             {
                 UseMeleeWeapon(handItemData, Hands.right);
+                onHandUsed?.Invoke(Hands.right, handItemData);
             }
         }
         else
@@ -247,20 +248,29 @@ public class UseEquipment : MonoBehaviour
         }
     }
 
-    public void UseMeleeWeapon(HandItemData handItem, Hands handUsed)
-    {
-        //if (playerMovement.CheckForward("Enemy"))
-        //{
-        //    Enemy enemy = playerMovement.GetForwardObject().GetComponent<Enemy>();
-        //    int damage = CalculateDamage(weapon);
-        //    enemy.TakeDamage(damage);
-        //}
-        //else if(playerMovement.CheckForward("BreakableWall"))
-        //{
-        //    BreakableWall wall = playerMovement.GetForwardObject().GetComponent<BreakableWall>();
-        //    wall.Break();
-        //}
+    public void UseMeleeWeapon(HandItemData handItemData, Hands handUsed)
+    {        
+        GridNode nodeToCheck = GridController.Instance.GetNodeInDirection(PlayerController.currentOccupiedNode, transform.forward);
+        if (nodeToCheck)
+        {
+            if(nodeToCheck.currentOccupant == GridNodeOccupant.Enemy)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(weaponSpawnParent.position, weaponSpawnParent.forward, out hit, handItemData.itemRange * 3)) //multiplied by grid size
+                {
+                    IDamageable damageable = hit.transform.GetComponent<IDamageable>();
+                    if (damageable != null)
+                    {
+                        int damage = CalculateDamage(handItemData);
+                        bool isCrit = RollForCrit(handItemData);
+                        if (isCrit)
+                            damage *= Mathf.CeilToInt(handItemData.critDamageMultiplier);
 
+                        damageable.TakeDamage(damage, isCrit);
+                    }
+                }
+            }
+        }
 
         if (handUsed == Hands.left)
         {
@@ -432,8 +442,8 @@ public class UseEquipment : MonoBehaviour
     {
         if(ammoType == AmmoType.bullets)
         {
-            //check inventory for arrows and return amount
-            if(bullets > 0)
+            //check inventory for bullets and return amount
+            if (bullets > 0)
             {
                 bullets--;
             }
@@ -441,7 +451,7 @@ public class UseEquipment : MonoBehaviour
         }
         else if (ammoType == AmmoType.rockets)
         {
-            //check inventory for Bolts and return amount
+            //check inventory for rockets and return amount
             if (rockets > 0)
             {
                 rockets--;
@@ -450,7 +460,7 @@ public class UseEquipment : MonoBehaviour
         }
         else if (ammoType == AmmoType.shells)
         {
-            //check inventory for MusketBalls and return amount
+            //check inventory for shells and return amount
             if (shells > 0)
             {
                 shells--;

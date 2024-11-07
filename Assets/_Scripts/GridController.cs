@@ -105,24 +105,24 @@ public class GridController : MonoBehaviour
         return GetNodeAtCoords(new Vector2(grid.WorldToCell(worldPos).x, grid.WorldToCell(worldPos).y));
     }
 
-    //public GridNode GetNodeInDirection(GridNode startNode, Vector3 direction)
-    //{
-    //    // Convert the direction into a grid offset
-    //    Vector2 offset = Vector2.zero;
+    public GridNode GetNodeInDirection(GridNode startNode, Vector3 direction)
+    {
+        // Convert the direction into a grid offset
+        Vector2 offset = Vector2.zero;
 
-    //    if (direction == Vector3.forward)
-    //        offset = new Vector2(0, 1);  // Up
-    //    else if (direction == Vector3.back)
-    //        offset = new Vector2(0, -1); // Down
-    //    else if (direction == Vector3.left)
-    //        offset = new Vector2(-1, 0); // Left
-    //    else if (direction == Vector3.right)
-    //        offset = new Vector2(1, 0);  // Right
+        if (direction == Vector3.forward)
+            offset = new Vector2(1, 0);  // Up
+        else if (direction == Vector3.back)
+            offset = new Vector2(-1, 0); // Down
+        else if (direction == Vector3.left)
+            offset = new Vector2(0, -1); // Left
+        else if (direction == Vector3.right)
+            offset = new Vector2(0, 1);  // Right
 
-    //    // Calculate the target position by adding the offset to the start node position
-    //    Vector2 targetPosition = startNode.Coords.Pos + offset;
+        // Calculate the target position by adding the offset to the start node position
+        Vector2 targetPosition = startNode.Coords.Pos + offset;
 
-    //    // Retrieve and return the node at the target position
-    //    return GetNodeAtPosition(targetPosition);
-    //}
+        // Retrieve and return the node at the target position
+        return GetNodeAtCoords(targetPosition);
+    }
 }
