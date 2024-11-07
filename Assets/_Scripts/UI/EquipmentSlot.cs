@@ -4,8 +4,6 @@ using UnityEngine;
 public class EquipmentSlot : InventorySlot
 {
     public EquipmentSlotType slotType;
-    [Tooltip("Used when initialising a single handed weapon, only used if slotType = Hands")]
-    [SerializeField] Hands Hand;
 
     public static Action<EquipmentSlotType, EquipmentItemData> onNewEquipmentItem;
     public static Action<EquipmentSlotType> onEquipmentItemRemoved;
@@ -34,23 +32,15 @@ public class EquipmentSlot : InventorySlot
 
     public void InitialiseItem(Item itemToInitialise)
     {
-        if(slotType == EquipmentSlotType.hands)
+        HandItemData handItemData = itemToInitialise.itemData as HandItemData;
+        if(handItemData)
         {
-            HandItemData handItemData = itemToInitialise.itemData as HandItemData;
-            if (handItemData.isTwoHanded)
+            if (slotType == EquipmentSlotType.leftHand)
             {
-                onNewHandItem?.Invoke(Hands.both, handItemData);
+                onNewHandItem?.Invoke(EquipmentSlotType.leftHand, handItemData);
             }
             else
-            {
-                if (Hand == Hands.right)
-                {
-                    onNewHandItem?.Invoke(Hands.right, handItemData);
-                }
-                else
-                    onNewHandItem?.Invoke(Hands.left, handItemData);
-            }
-
+                onNewHandItem?.Invoke(EquipmentSlotType.rightHand, handItemData);
         }
 
         onNewEquipmentItem?.Invoke(slotType, itemToInitialise.itemData as EquipmentItemData);
@@ -58,19 +48,15 @@ public class EquipmentSlot : InventorySlot
 
     public void DeinitialiseItem(Item item)
     {
-        if (slotType == EquipmentSlotType.hands)
+        HandItemData handItemData = item.itemData as HandItemData;
+        if (handItemData)
         {
-            HandItemData handItemData = item.itemData as HandItemData;
-            if(handItemData.isTwoHanded)
+            if (slotType == EquipmentSlotType.leftHand)
             {
-                onHandItemRemoved?.Invoke(Hands.both);
-            }
-            else if (Hand == Hands.right)
-            {
-                onHandItemRemoved?.Invoke(Hands.right);
+                onHandItemRemoved?.Invoke(EquipmentSlotType.leftHand, handItemData);
             }
             else
-                onHandItemRemoved?.Invoke(Hands.left);
+                onHandItemRemoved?.Invoke(EquipmentSlotType.rightHand, handItemData);
         }
 
         onEquipmentItemRemoved?.Invoke(slotType);
@@ -79,7 +65,7 @@ public class EquipmentSlot : InventorySlot
     public void DisableSlot()
     {
         isSlotActive = false;
-        slotImage.color = Color.red;
+        slotImage.color = new Color(255, 255, 255, .12f);
     }
 
     public void EnableSlot()

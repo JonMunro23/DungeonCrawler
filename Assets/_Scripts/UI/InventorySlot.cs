@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
     public Item currentSlotItem = null;
     public TMP_Text SlotAmountText;
@@ -20,8 +20,8 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public bool isSlotOccupied;
     public bool isSlotActive = true;
 
-    public static Action<Hands ,HandItemData> onNewHandItem;
-    public static Action<Hands> onHandItemRemoved;
+    public static Action<EquipmentSlotType ,HandItemData> onNewHandItem;
+    public static Action<EquipmentSlotType, HandItemData> onHandItemRemoved;
     public static Action<InventorySlot> onInventorySlotClicked;
 
     private void Update()
@@ -84,8 +84,8 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         slotImage.sprite = currentSlotItem.itemData.itemSprite;
         slotImage.enabled = true;
-
-        SlotAmountText.text = currentSlotItem.itemAmount.ToString();
+        if(currentSlotItem.itemAmount > 1)
+            SlotAmountText.text = currentSlotItem.itemAmount.ToString();
     }
 
     //public void ShowTooltipDisplay(ItemData itemToDisplay)
@@ -120,17 +120,6 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     //    isTooltipDisplayOpen = false;
     //    Destroy(tooltipDisplayClone);
     //}
-
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        
-    }
 
     public void OnPointerClick(PointerEventData eventData)
     {

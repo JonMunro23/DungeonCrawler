@@ -34,7 +34,8 @@ public class GrabbedItemUI : MonoBehaviour
     {
         grabbedItemImg.enabled = true;
         grabbedItemImg.sprite = grabbedItem.itemData.itemSprite;
-        grabbedItemAmount.text = grabbedItem.itemAmount.ToString();
+        if(grabbedItem.itemAmount > 1)
+            grabbedItemAmount.text = grabbedItem.itemAmount.ToString();
 
         hasGrabbedItem = true;
     }

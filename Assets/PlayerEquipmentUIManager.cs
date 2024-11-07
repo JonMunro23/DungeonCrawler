@@ -22,9 +22,16 @@ public class PlayerEquipmentUIManager : MonoBehaviour
 
     void OnNewItemAttachedToCursor(Item newItem)
     {
-        EquipmentItemData yeet = newItem.itemData as EquipmentItemData;
-        if (yeet != null)
-            DisableSlotNotOfType(yeet.EquipmentSlotType);
+        HandItemData handItemData = newItem.itemData as HandItemData;
+        if(handItemData != null)
+        {
+            DisableEquipmentSlots();
+            return;
+        }
+
+        EquipmentItemData equipItemData = newItem.itemData as EquipmentItemData;
+        if (equipItemData != null)
+            DisableSlotsNotOfType(equipItemData.EquipmentSlotType);
     }
 
     void OnCurrentItemDettachedFromCursor()
@@ -32,36 +39,54 @@ public class PlayerEquipmentUIManager : MonoBehaviour
         RenableSlots();
     }
 
-    void OnNewHandItem(Hands hands, HandItemData itemData)
+    void OnNewHandItem(EquipmentSlotType slotType, HandItemData newItemData)
     {
-        if (hands == Hands.both)
+        if (slotType == EquipmentSlotType.leftHand || slotType == EquipmentSlotType.rightHand)
         {
-            foreach (EquipmentSlot slot in equipmentSlots)
+            if(newItemData.isTwoHanded)
             {
-                if(slot.slotType == EquipmentSlotType.hands)
-                {
-                    slot.slotImage.sprite = itemData.itemSprite;
-                }
+                SetSpriteInSlotOfType(newItemData.itemSprite, EquipmentSlotType.rightHand);
+                SetSpriteInSlotOfType(newItemData.itemSprite, EquipmentSlotType.leftHand);
+            }
+            else
+            {
+                SetSpriteInSlotOfType(newItemData.itemSprite, slotType);
             }
         }
     }
 
-    void OnHandItemRemoved(Hands hands)
+    void OnHandItemRemoved(EquipmentSlotType slotTypeRemovedFrom, HandItemData removedItemData)
     {
-        Debug.Log(hands);
-        if(hands == Hands.both)
+        if(removedItemData.isTwoHanded)
         {
-            foreach (EquipmentSlot slot in equipmentSlots)
+            SetSpriteInSlotOfType(null, EquipmentSlotType.rightHand);
+            SetSpriteInSlotOfType(null, EquipmentSlotType.leftHand);
+        }
+        else
+            SetSpriteInSlotOfType(null, slotTypeRemovedFrom);
+    }
+
+    public void SetSpriteInSlotOfType(Sprite spriteToSet, EquipmentSlotType slotType)
+    {
+        foreach (EquipmentSlot slot in equipmentSlots)
+        {
+            if (slot.slotType == slotType)
             {
-                if (slot.slotType == EquipmentSlotType.hands)
-                {
-                    slot.slotImage.sprite = null;
-                }
+                slot.slotImage.sprite = spriteToSet;
             }
         }
     }
 
-    public void DisableSlotNotOfType(EquipmentSlotType slotTypeNotToDisable)
+    void DisableEquipmentSlots()
+    {
+        foreach(EquipmentSlot slot in equipmentSlots)
+        {
+            if (slot.slotType != EquipmentSlotType.rightHand && slot.slotType != EquipmentSlotType.leftHand)
+                slot.DisableSlot();
+        }
+    }
+
+    public void DisableSlotsNotOfType(EquipmentSlotType slotTypeNotToDisable)
     {
         foreach (EquipmentSlot slot in equipmentSlots)
         {
@@ -73,16 +98,15 @@ public class PlayerEquipmentUIManager : MonoBehaviour
 
     }
 
-    public void DisableSlotOfType(EquipmentSlotType slotTypeNotToDisable)
+    public void DisableSlotOfType(EquipmentSlotType slotTypeToDisable)
     {
         foreach (EquipmentSlot slot in equipmentSlots)
         {
-            if (slot.slotType == slotTypeNotToDisable)
+            if (slot.slotType == slotTypeToDisable)
             {
                 slot.DisableSlot();
             }
         }
-
     }
 
     public void RenableSlots()

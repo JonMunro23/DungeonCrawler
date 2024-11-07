@@ -1,9 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Tarodev_Pathfinding._Scripts;
-using TMPro;
-using Unity.PlasticSCM.Editor.WebApi;
-using UnityEditor;
 using UnityEngine;
 
 public class NPCMovementController : MonoBehaviour
@@ -24,7 +20,7 @@ public class NPCMovementController : MonoBehaviour
     [Header("Turning")]
     public float turnDuration;
     //0 = North, 1 = East, 2 = South, 3 = West
-    [SerializeField] Transform currentOrientation; 
+    public Transform currentOrientation; 
     [SerializeField] bool isTurning;
     [SerializeField] float minDelayBetweenTurning;
 

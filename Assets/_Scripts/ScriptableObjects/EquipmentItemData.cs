@@ -11,7 +11,8 @@ public enum EquipmentSlotType
     neck,
     back,
     ring,
-    hands
+    leftHand,
+    rightHand
 };
 
 public enum ModifiableStats
@@ -45,13 +46,8 @@ public class StatModifier
 public class EquipmentItemData : ItemData
 {
     [Header("Equipment Properties")]
-    public EquipmentSlotType EquipmentSlotType;
     public float itemCooldown;
-    
+    public EquipmentSlotType EquipmentSlotType;    
     public List<StatModifier> statModifiers = new List<StatModifier>();
-    //add equipment stats
-    //evasion + 10,
-    //crit chance + 0.4%,
-    //etc.
 }
 

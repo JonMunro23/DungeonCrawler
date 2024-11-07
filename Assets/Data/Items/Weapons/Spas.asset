@@ -21,8 +21,8 @@ MonoBehaviour:
   itemValue: 922
   isItemStackable: 0
   maxItemStackSize: 1
-  EquipmentSlotType: 8
   itemCooldown: 1.3
+  EquipmentSlotType: 8
   statModifiers: []
   itemPrefab: {fileID: 2087960524477570954, guid: 5cc46e808915b9143ac1ea8e02d0f637,
     type: 3}
@@ -32,6 +32,7 @@ MonoBehaviour:
   itemRange: 3
   critChance: 18
   critDamageMultiplier: 2
+  reloadDuration: 0
   ammoType: 2
   projectileCount: 6
   isProjectile: 0

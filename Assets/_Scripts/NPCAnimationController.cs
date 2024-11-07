@@ -20,8 +20,14 @@ public class NPCAnimationController : MonoBehaviour
         }
     }
 
-    public void PlayAnimation(string animationName, float animationDuration = 0f)
+    public void PlayAnimation(string animationName, float animationDuration = 0f, int npcIndex = -1)
     {
+        if(npcIndex > -1)
+        {
+            animators[npcIndex].Play(animationName);
+            return;
+        }
+
         foreach (Animator animator in animators)
         {
             if (!animator)

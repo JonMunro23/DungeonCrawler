@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class WorldInteraction : MonoBehaviour
@@ -9,6 +10,8 @@ public class WorldInteraction : MonoBehaviour
     public bool isClickable;
 
     [SerializeField] float maxInteractionDistance = 3f;
+
+    public static Action OnWorldInteraction;
 
     private void Awake()
     {
@@ -28,22 +31,13 @@ public class WorldInteraction : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Mouse0))
                 {
                     pickup.GrabPickup();
-
-                    //move this somewhere else
-                    if (useEquipment.currentWeapon != null)
-                        useEquipment.currentWeapon.GetComponent<Animator>().Play("Interact");
+                    OnWorldInteraction?.Invoke();
                 }
             }
             else if(hit.collider.TryGetComponent(out IInteractable interactable))
             {
                 interactable.Interact();
-
-                //move this somewhere else
-                if (useEquipment.currentWeapon != null)
-                    useEquipment.currentWeapon.GetComponent<Animator>().Play("Interact");
             }
-
-
         }
     }
 }

@@ -10,6 +10,7 @@ public class NPCGroupController : MonoBehaviour, IDamageable
 
     [HideInInspector] public NPCAnimationController animController;
     [HideInInspector] public NPCMovementController movementController;
+    [HideInInspector] public NPCAttackController attackController;
 
     [Header("References")]
     [SerializeField] GameObject damageTakenFloatingText;
@@ -24,7 +25,9 @@ public class NPCGroupController : MonoBehaviour, IDamageable
     public NPCData NPCToSpawn;
     public int amountToSpawnInStack;
     public List<GameObject> spawnedNPCs = new List<GameObject>();
+    [SerializeField] int hitReactionChance;
     bool isDead;
+    AnimatorOverrideController[] animOverrideControllers;
 
     [Header("Group Stats")]
     public float currentGroupHealth;
@@ -39,6 +42,7 @@ public class NPCGroupController : MonoBehaviour, IDamageable
     {
         movementController = GetComponent<NPCMovementController>();
         animController = GetComponent<NPCAnimationController>();
+        attackController = GetComponent<NPCAttackController>();
     }
 
     public void InitGroup(GridNode spawnGridNode)
@@ -70,6 +74,7 @@ public class NPCGroupController : MonoBehaviour, IDamageable
     {
         movementController.Init(this);
         animController.Init(this);
+        attackController.Init(this);
     }
 
     public void SpawnEnemies(NPCData enemyTypeToSpawn, Transform spawnLocation)
@@ -83,6 +88,10 @@ public class NPCGroupController : MonoBehaviour, IDamageable
     {
         if(!isDead)
         {
+            int rand = Random.Range(0, 100);
+            if(rand <= hitReactionChance)
+                animController.PlayAnimation("HitReaction", 0, Random.Range(0, spawnedNPCs.Count));
+
             currentGroupHealth -= damage;
             SpawnFloatingText(damage, wasCrit);
             float remainingEnemies = currentGroupHealth / maxGroupHealth * amountToSpawnInStack;
