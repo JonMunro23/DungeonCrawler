@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: 3
-  moveDuration: 3.5
+  moveDuration: 2.5
   isMoving: 0
   minDelayBetweenMovement: 0.2
   currentOccupiedGridNode: {fileID: 0}

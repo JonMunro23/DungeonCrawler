@@ -1,4 +1,3 @@
-using _Scripts.Tiles;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -10,6 +9,12 @@ public enum GridNodeOccupant
     Enemy,
     Obstacle,
     Player
+}
+
+public interface ICoords
+{
+    public float GetDistance(ICoords other);
+    public Vector2 Pos { get; set; }
 }
 
 public class GridNode : MonoBehaviour
