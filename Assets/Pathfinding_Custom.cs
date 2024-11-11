@@ -33,7 +33,7 @@ public static class Pathfinding_Custom
                 return path;
             }
 
-            foreach (GridNode neighbor in current.neighbouringNodes.Where(t => t.nodeData.isWalkable && t.currentOccupant != GridNodeOccupant.Enemy && t.currentOccupant != GridNodeOccupant.Obstacle && !processed.Contains(t))) {
+            foreach (GridNode neighbor in current.neighbouringNodes.Where(t => t.nodeData.isWalkable && t.currentOccupant.occupantType != GridNodeOccupantType.Enemy && t.currentOccupant.occupantType != GridNodeOccupantType.Obstacle && !processed.Contains(t))) {
                 bool inSearch = toSearch.Contains(neighbor);
 
                 float costToNeighbor = current.G + current.GetDistance(neighbor);

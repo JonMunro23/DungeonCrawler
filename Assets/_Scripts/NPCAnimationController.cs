@@ -7,14 +7,12 @@ public class NPCAnimationController : MonoBehaviour
     NPCGroupController groupController;
 
     [SerializeField] List<Animator> animators = new List<Animator>();
-    [SerializeField] GameObject[] spawnedNPCs;
 
     public void Init(NPCGroupController _groupController)
     {
         groupController = _groupController;
-        spawnedNPCs = groupController.spawnedNPCs.ToArray();
 
-        foreach (GameObject NPC in spawnedNPCs)
+        foreach (GameObject NPC in groupController.spawnedNPCs)
         {
             animators.Add(NPC.GetComponent<Animator>());
         }

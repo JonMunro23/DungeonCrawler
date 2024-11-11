@@ -17,6 +17,8 @@ using UnityEngine.Events;
 
 public class AdvancedGridMovement : MonoBehaviour
 {
+    PlayerController controller;
+
     private const float RightHand = 90.0f;
     private const float LeftHand = -RightHand;
     private const float approximationThreshold = 0.025f;
@@ -83,6 +85,11 @@ public class AdvancedGridMovement : MonoBehaviour
         currentHeadBobCurve = walkHeadBobCurve;
         currentSpeed = walkSpeed;
         stepTime = 1.0f / gridSize;
+    }
+
+    public void InitMovement(PlayerController playerController)
+    {
+        controller = playerController;
     }
 
     void Update()
@@ -243,7 +250,7 @@ public class AdvancedGridMovement : MonoBehaviour
 
                 GridController.Instance.GetNodeFromWorldPos(moveFromPosition).ClearOccupant();
                 var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
-                targetNode.SetOccupant(GridNodeOccupant.Player);
+                targetNode.SetOccupant(new GridNodeOccupant(controller.gameObject, GridNodeOccupantType.Player));
                 PlayerController.SetCurrentOccupiedNode(targetNode);
                 onPlayerMoved?.Invoke();
             }
@@ -257,7 +264,7 @@ public class AdvancedGridMovement : MonoBehaviour
     private bool FreeSpace(Vector3 targetPosition)
     {
         var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
-        return (targetNode.nodeData.isWalkable && targetNode.currentOccupant == GridNodeOccupant.None);
+        return (targetNode.nodeData.isWalkable && targetNode.currentOccupant.occupantType == GridNodeOccupantType.None);
     }
 
     public void TurnRight()

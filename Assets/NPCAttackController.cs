@@ -1,26 +1,74 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NPCAttackController : MonoBehaviour
 {
     NPCGroupController groupController;
 
+    [SerializeField] float attackCooldown, delayBetweenAttacks, delayBeforeDamageDealt;
+    [SerializeField] AudioClip[] attackSFx;
+    public bool isAttacking {  get; private set; }
+    bool canAttack;
+
+    GridNode frontNode;
     public void Init(NPCGroupController newGroupController)
     {
         groupController = newGroupController;
+        canAttack = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TryAttack()
     {
-        var yeet = GridController.Instance.GetNodeInDirection(groupController.currentlyOccupiedGridnode, groupController.movementController.currentOrientation.forward);
-        if (!yeet)
+        if (isAttacking || !canAttack)
             return;
 
-        if (yeet.currentOccupant == GridNodeOccupant.Player)
+        StartCoroutine(Attack());
+    }
+
+    IEnumerator Attack()
+    {
+        canAttack = false;
+        isAttacking = true;
+        groupController.animController.PlayAnimation("Attack");
+        groupController.audioSource.PlayOneShot(GetRandomAttackClip());
+        yield return new WaitForSeconds(delayBeforeDamageDealt);
+        var occupyingGameObject = frontNode.GetOccupyingGameobject();
+        if(occupyingGameObject)
         {
-            groupController.animController.PlayAnimation("Attack");
+            if(occupyingGameObject.TryGetComponent(out PlayerController player))
+            {
+                if(player.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.TakeDamage(groupController.NPCData.damage);
+                }
+            }
         }
+        StartCoroutine(AttackCooldown());
+    }
+
+    AudioClip GetRandomAttackClip()
+    {
+        int rand = Random.Range(0, attackSFx.Length);
+        return attackSFx[rand];
+    }
+    public bool CheckForPlayer()
+    {
+        frontNode = GridController.Instance.GetNodeInDirection(groupController.currentlyOccupiedGridnode, groupController.movementController.currentOrientation.forward);
+        if (!frontNode)
+            return false;
+
+        if (frontNode.currentOccupant.occupantType == GridNodeOccupantType.Player)
+            return true;
+
+        return false;
+    }
+    
+    IEnumerator AttackCooldown()
+    {
+        yield return new WaitForSeconds(attackCooldown);
+        isAttacking = false;
+        yield return new WaitForSeconds(delayBetweenAttacks);
+        canAttack = true;
+        groupController.TryAttack();
     }
 }

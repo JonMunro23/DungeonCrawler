@@ -31,14 +31,14 @@ public class UseEquipment : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerInventory.onInventoryOpened += OnInventoryOpened;
-        PlayerInventory.onInventoryClosed += OnInventoryClosed;
+        PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
+        PlayerInventoryManager.onInventoryClosed += OnInventoryClosed;
     }
 
     private void OnDisable()
     {
-        PlayerInventory.onInventoryOpened -= OnInventoryOpened;
-        PlayerInventory.onInventoryClosed -= OnInventoryClosed;
+        PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
+        PlayerInventoryManager.onInventoryClosed -= OnInventoryClosed;
     }
 
     // Update is called once per frame

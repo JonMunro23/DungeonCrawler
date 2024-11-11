@@ -2,14 +2,27 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-
-public enum GridNodeOccupant
+public enum GridNodeOccupantType
 {
     None,
     Enemy,
     Obstacle,
     Player
 }
+
+[System.Serializable]
+public class GridNodeOccupant
+{
+    public GameObject occupyingGameobject;
+    public GridNodeOccupantType occupantType;
+
+    public GridNodeOccupant(GameObject occupyingGameobject, GridNodeOccupantType occupantType)
+    {
+        this.occupyingGameobject = occupyingGameobject;
+        this.occupantType = occupantType;
+    }
+}
+
 
 public interface ICoords
 {
@@ -31,7 +44,7 @@ public class GridNode : MonoBehaviour
     public List<GridNode> neighbouringNodes = new List<GridNode>();
 
     public Transform moveToTransform;
-    public GridNodeOccupant currentOccupant = GridNodeOccupant.None;
+    public GridNodeOccupant currentOccupant;
 
     [Header("Pathfinding")]
     [SerializeField]
@@ -48,7 +61,18 @@ public class GridNode : MonoBehaviour
 
     public void ClearOccupant()
     {
-        currentOccupant = GridNodeOccupant.None;
+        currentOccupant.occupantType = GridNodeOccupantType.None;
+        currentOccupant.occupyingGameobject = null;
+    }
+
+    public GridNodeOccupantType GetOccupantType()
+    {
+        return currentOccupant.occupantType;
+    }
+
+    public GameObject GetOccupyingGameobject()
+    {
+        return currentOccupant.occupyingGameobject;
     }
 
     private void Awake()

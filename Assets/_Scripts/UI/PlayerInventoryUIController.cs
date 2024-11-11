@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,29 +7,38 @@ public class PlayerInventoryUIController : MonoBehaviour
 {
     [SerializeField] GameObject InventoryUIObject;
     [SerializeField] InventorySlot inventorySlot;
-    [SerializeField] GridLayoutGroup inventoryLayoutGroup;
-    [SerializeField] int numInventorySlots;
-    [SerializeField] List<InventorySlot> spawnedInventorySlots = new List<InventorySlot>();
+    [SerializeField] InventorySlot[] spawnedInventorySlots;
+    [SerializeField] GridLayoutGroup invSlotSpawnParent;
+    public static Action<InventorySlot[]> onInventorySlotsSpawned;
 
     private void OnEnable()
     {
-        PlayerInventory.onInventoryOpened += OnInventoryOpened;
-        PlayerInventory.onInventoryClosed += OnInventoryClosed;
+        PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
+        PlayerInventoryManager.onInventoryClosed += OnInventoryClosed;
+        PlayerInventoryManager.onInventorySlotsSpawned += OnInventorySlotsSpawned;
     }
 
     private void OnDisable()
     {
-        PlayerInventory.onInventoryOpened -= OnInventoryOpened;
-        PlayerInventory.onInventoryClosed -= OnInventoryClosed;
+        PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
+        PlayerInventoryManager.onInventoryClosed -= OnInventoryClosed;
+        PlayerInventoryManager.onInventorySlotsSpawned -= OnInventorySlotsSpawned;
+    }
+
+    void OnInventorySlotsSpawned(InventorySlot[] spawnedSlots)
+    {
+        spawnedInventorySlots = spawnedSlots;
+
+        foreach (InventorySlot slot in spawnedInventorySlots)
+        {
+            slot.transform.SetParent(invSlotSpawnParent.transform);
+            slot.transform.localScale = Vector3.one;
+        }
     }
 
     public void InitPlayerInventory()
     {
-        spawnedInventorySlots.Clear();
-        for (int i = 0; i < numInventorySlots; i++)
-        {
-            spawnedInventorySlots.Add(Instantiate(inventorySlot, inventoryLayoutGroup.transform));
-        }
+        
     }
 
     private void Start()

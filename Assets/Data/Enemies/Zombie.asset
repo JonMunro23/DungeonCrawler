@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fd1eab6751c38445a8913e8af2c6c42, type: 3}
   m_Name: Zombie
   m_EditorClassIdentifier: 
-  health: 150
+  health: 100
   damage: 20
   experienceValue: 75
   prefab: {fileID: 4493914613880827488, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}

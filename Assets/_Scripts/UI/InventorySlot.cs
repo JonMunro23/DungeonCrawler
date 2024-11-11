@@ -8,6 +8,8 @@ using System;
 
 public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
+    PlayerInventoryManager playerInventoryManager;
+
     public Item currentSlotItem = null;
     public TMP_Text SlotAmountText;
     public Image slotImage;
@@ -24,19 +26,24 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     public static Action<EquipmentSlotType, HandItemData> onHandItemRemoved;
     public static Action<InventorySlot> onInventorySlotClicked;
 
-    private void Update()
+    public void InitSlot(PlayerInventoryManager newPlayerInventoryManager)
     {
-        //if(isTooltipDisplayOpen == true)
-        //{
-        //    mousePos = Input.mousePosition;
-        //    tooltipDisplayClone.transform.position = mousePos;
-        //}
+        playerInventoryManager = newPlayerInventoryManager;
     }
 
     public virtual void AddItem(Item itemToAdd)
     {
         currentSlotItem = new Item(itemToAdd.itemData, itemToAdd.itemAmount);
         isSlotOccupied = true;
+
+        ConsumableItemData consumableData = GetDataAsConsumable(itemToAdd.itemData);
+        if (consumableData)
+        {
+            if (consumableData.consumableType == ConsumableType.HealSyringe)
+            {
+                playerInventoryManager.AddHealthSyringe(itemToAdd.itemAmount);
+            }
+        }
 
         UpdateSlotUI();
     }
@@ -47,16 +54,25 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         UpdateSlotUI();
     }
 
+    ConsumableItemData GetDataAsConsumable(ItemData data)
+    {
+        return data as ConsumableItemData;
+    }
+
     public virtual Item TakeItem()
     {
         Item itemToTake = new Item(currentSlotItem.itemData, currentSlotItem.itemAmount);
 
-        currentSlotItem.itemData = null;
-        currentSlotItem.itemAmount = 0;
-        isSlotOccupied = false;
+        ConsumableItemData consumableData = GetDataAsConsumable(itemToTake.itemData);
+        if(consumableData)
+        {
+            if (consumableData.consumableType == ConsumableType.HealSyringe)
+            {
+                playerInventoryManager.RemoveHealthSyringe(itemToTake.itemAmount);
+            }
+        }
 
-        UpdateSlotUI();
-
+        RemoveItem();
         return itemToTake;
     }
 
@@ -68,6 +84,25 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         UpdateSlotUI();
 
         return oldItem;
+    }
+
+    public void UseItem()
+    {
+        if (currentSlotItem != null)
+        {
+            currentSlotItem.itemAmount--;
+            UpdateSlotUI();
+            if (currentSlotItem.itemAmount == 0)
+                RemoveItem();
+        }
+    }
+
+    void RemoveItem()
+    {
+        currentSlotItem.itemData = null;
+        currentSlotItem.itemAmount = 0;
+        isSlotOccupied = false;
+        UpdateSlotUI();
     }
 
     void UpdateSlotUI()
@@ -84,8 +119,10 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
         slotImage.sprite = currentSlotItem.itemData.itemSprite;
         slotImage.enabled = true;
-        if(currentSlotItem.itemAmount > 1)
+        if (currentSlotItem.itemAmount > 1)
             SlotAmountText.text = currentSlotItem.itemAmount.ToString();
+        else
+            SlotAmountText.text = "";
     }
 
     //public void ShowTooltipDisplay(ItemData itemToDisplay)

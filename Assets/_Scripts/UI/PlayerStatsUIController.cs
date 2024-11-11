@@ -16,7 +16,7 @@ public class PlayerStatsUIController : MonoBehaviour
     {
         PlayerHealthController.onCurrentHealthUpdated += OnCurrentHealthUpdated;
         PlayerHealthController.onMaxHealthUpdated += OnMaxHealthUpdated;
-        PlayerInventory.onInventoryOpened += OnInventoryOpened;
+        PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
     }
 
     private void OnDisable()

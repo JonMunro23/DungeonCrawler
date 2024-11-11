@@ -11,17 +11,18 @@ public class NPCMovementController : MonoBehaviour
 
     [Header("Movement")]
     public float moveDuration;
-    [SerializeField] bool isMoving;
+    public bool isMoving;
     [SerializeField] float minDelayBetweenMovement;
     [SerializeField] GridNode currentOccupiedGridNode;
     [SerializeField] List<GridNode> path = new List<GridNode>();
+    [SerializeField] AudioClip[] walkSFx;
 
     [Space]
     [Header("Turning")]
     public float turnDuration;
     //0 = North, 1 = East, 2 = South, 3 = West
     public Transform currentOrientation; 
-    [SerializeField] bool isTurning;
+    public bool isTurning;
     [SerializeField] float minDelayBetweenTurning;
 
     [SerializeField] GridNode playerGridNode;
@@ -49,7 +50,7 @@ public class NPCMovementController : MonoBehaviour
         playerGridNode = PlayerController.currentOccupiedNode;
     }
 
-    void FindNewPathToPlayer()
+    public void FindNewPathToPlayer()
     {
         if(path != null)
             foreach (GridNode node in path)
@@ -69,28 +70,28 @@ public class NPCMovementController : MonoBehaviour
             return;
         }
 
-        if (isMoving || isTurning)
+        if (isMoving || isTurning || groupController.attackController.isAttacking)
             return;
 
         GridNode nodeToMoveTo = path[path.Count - 1];
         Vector3 dirToTarget = Vector3.Normalize(currentOrientation.position - nodeToMoveTo.moveToTransform.position);
-        float leftOrRight = Vector3.Dot(currentOrientation.right, dirToTarget);
-        float dot = Vector3.Dot(currentOrientation.forward, dirToTarget);
+        float leftOrRightDot = Vector3.Dot(currentOrientation.right, dirToTarget);
+        float frontOrBackDot = Vector3.Dot(currentOrientation.forward, dirToTarget);
 
         //Debug.Log("Left/Right: " + Mathf.RoundToInt(leftOrRight));
         //Debug.Log("Front/Back: " + Mathf.RoundToInt(dot));
 
-        if (nodeToMoveTo.currentOccupant == GridNodeOccupant.None && Mathf.RoundToInt(dot) == -1)
+        if (nodeToMoveTo.currentOccupant.occupantType == GridNodeOccupantType.None && Mathf.RoundToInt(frontOrBackDot) == -1)
         {
             MoveToGridNode(nodeToMoveTo);
         }
         else
         {
-            if (Mathf.RoundToInt(leftOrRight) == -1 || Mathf.RoundToInt(leftOrRight) == 0 && Mathf.RoundToInt(dot) == 1)
+            if (Mathf.RoundToInt(leftOrRightDot) == -1 || Mathf.RoundToInt(leftOrRightDot) == 0 && Mathf.RoundToInt(frontOrBackDot) == 1)
             {
                 Turn(1);
             }
-            else if(Mathf.RoundToInt(leftOrRight) == 1)
+            else if(Mathf.RoundToInt(leftOrRightDot) == 1)
             {
                 Turn(-1);
             }
@@ -121,19 +122,25 @@ public class NPCMovementController : MonoBehaviour
         //}
     }
 
+    AudioClip GetRandomAudioClip()
+    {
+        int rand = Random.Range(0, walkSFx.Length);
+        return walkSFx[rand];
+    }
+
     void MoveToGridNode(GridNode targetNode)
     {
         if (isMoving)
             return;
 
         groupController.currentlyOccupiedGridnode.ClearOccupant();
-
-        isMoving = true;
+        AnimateMovement();
+        groupController.audioSource.PlayOneShot(GetRandomAudioClip());
         StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, moveDuration));
         StartCoroutine(DelayBetweenMovement());
+
         groupController.currentlyOccupiedGridnode = targetNode;
-        groupController.currentlyOccupiedGridnode.SetOccupant(GridNodeOccupant.Enemy);
-        AnimateMovement();
+        groupController.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(groupController.gameObject, GridNodeOccupantType.Enemy));
     }
 
     /// <summary>
@@ -144,8 +151,6 @@ public class NPCMovementController : MonoBehaviour
     {
         if (isTurning)
             return;
-
-        isTurning = true;
 
         AnimateTurning(turnDir);
         StartCoroutine(DelayBetweenTurning());
@@ -158,6 +163,7 @@ public class NPCMovementController : MonoBehaviour
 
     void AnimateTurning(int turnDir)
     {
+        isTurning = true;
         if(turnDir  == -1)
         {
             groupController.animController.PlayAnimation("TurnLeft", turnDuration);
@@ -171,19 +177,12 @@ public class NPCMovementController : MonoBehaviour
 
     void UpdateLookDir(int turnDir)
     {
-        //Debug.Log("Turning orientation");
         currentOrientation.Rotate(new Vector3(0, turnDir * 90, 0));
-        //if(currentLookDir > 3)
-        //{
-        //    currentLookDir = 0;
-        //}else if(currentLookDir < 0)
-        //{
-        //    currentLookDir = 3;
-        //}
     }
 
     IEnumerator LerpPos(Vector3 startPos, Vector3 endPos, float lerpDuration)
     {
+        isMoving = true;
         float timeElapsed = 0;
 
         while (timeElapsed < lerpDuration)
@@ -195,6 +194,7 @@ public class NPCMovementController : MonoBehaviour
         }
 
         transform.position = endPos;
+        isMoving = false;
     }
 
     IEnumerator LerpRot(Quaternion startRot, Quaternion endRot, float lerpDuration)
@@ -214,15 +214,29 @@ public class NPCMovementController : MonoBehaviour
 
     IEnumerator DelayBetweenMovement()
     {
-        yield return new WaitForSeconds(moveDuration + minDelayBetweenMovement);
-        isMoving = false;
+        yield return new WaitForSeconds(moveDuration);
+        groupController.animController.PlayAnimation("Idle");
+        yield return new WaitForSeconds(minDelayBetweenMovement);
+        MovementEnded();
+    }
+
+    void MovementEnded()
+    {
+        groupController.TryAttack();
         FindNewPathToPlayer();
     }
+
 
     IEnumerator DelayBetweenTurning()
     {
         yield return new WaitForSeconds(turnDuration + minDelayBetweenTurning);
         isTurning = false;
+        TurningEnded();
+    }
+
+    void TurningEnded()
+    {
+        groupController.TryAttack();
         NavigateToPlayer();
     }
 }

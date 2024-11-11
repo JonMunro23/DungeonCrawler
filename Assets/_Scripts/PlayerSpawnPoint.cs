@@ -13,7 +13,7 @@ public class PlayerSpawnPoint : MonoBehaviour
         spawnedPlayer = Instantiate(playerPrefab, transform.position, transform.rotation);
         spawnedPlayer.InitPlayer(playerCharData, spawnGridNode);
 
-        spawnGridNode.SetOccupant(GridNodeOccupant.Player);
+        spawnGridNode.SetOccupant(new GridNodeOccupant(spawnedPlayer.gameObject, GridNodeOccupantType.Player));
         //onPlayerSpawned?.Invoke(spawnedPlayer);
     }
 }

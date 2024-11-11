@@ -7,7 +7,6 @@ using Random = UnityEngine.Random;
 
 public class NPCGroupController : MonoBehaviour, IDamageable
 {
-
     [HideInInspector] public NPCAnimationController animController;
     [HideInInspector] public NPCMovementController movementController;
     [HideInInspector] public NPCAttackController attackController;
@@ -17,21 +16,21 @@ public class NPCGroupController : MonoBehaviour, IDamageable
     [SerializeField] Transform floatingTextSpawnLocation;
     [SerializeField] Transform centerSpawnPoint;
     [SerializeField] Transform[] spawnPoints;
+    public AudioSource audioSource;
 
     [Header("Grid Data")]
     public GridNode currentlyOccupiedGridnode;
 
     [Header("Group Data")]
-    public NPCData NPCToSpawn;
+    public NPCData NPCData;
     public int amountToSpawnInStack;
-    public List<GameObject> spawnedNPCs = new List<GameObject>();
     [SerializeField] int hitReactionChance;
-    bool isDead;
-    AnimatorOverrideController[] animOverrideControllers;
+    [HideInInspector] public List<GameObject> spawnedNPCs = new List<GameObject>();
 
     [Header("Group Stats")]
     public float currentGroupHealth;
     public float maxGroupHealth;
+    bool isDead => currentGroupHealth <= 0;
 
     [Header("Item Dropping")]
     public List<ItemData> guaranteedDrops = new List<ItemData>();
@@ -43,6 +42,7 @@ public class NPCGroupController : MonoBehaviour, IDamageable
         movementController = GetComponent<NPCMovementController>();
         animController = GetComponent<NPCAnimationController>();
         attackController = GetComponent<NPCAttackController>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void InitGroup(GridNode spawnGridNode)
@@ -60,21 +60,26 @@ public class NPCGroupController : MonoBehaviour, IDamageable
         {
             for (int i = 0; i < amountToSpawnInStack; i++)
             {
-                SpawnEnemies(NPCToSpawn, spawnPoints[i]);
+                SpawnEnemies(NPCData, spawnPoints[i]);
             }
         }
         else
         {
-            SpawnEnemies(NPCToSpawn, centerSpawnPoint);
+            SpawnEnemies(NPCData, centerSpawnPoint);
         }
         currentGroupHealth = maxGroupHealth;
     }
 
     void InitControllers()
     {
-        movementController.Init(this);
-        animController.Init(this);
-        attackController.Init(this);
+        if(movementController)
+            movementController.Init(this);
+
+        if(animController)
+            animController.Init(this);
+
+        if(attackController)
+            attackController.Init(this);
     }
 
     public void SpawnEnemies(NPCData enemyTypeToSpawn, Transform spawnLocation)
@@ -88,9 +93,12 @@ public class NPCGroupController : MonoBehaviour, IDamageable
     {
         if(!isDead)
         {
-            int rand = Random.Range(0, 100);
-            if(rand <= hitReactionChance)
-                animController.PlayAnimation("HitReaction", 0, Random.Range(0, spawnedNPCs.Count));
+            if(!movementController.isTurning && !movementController.isMoving)
+            {
+                int rand = Random.Range(0, 100);
+                if(rand <= hitReactionChance)
+                    animController.PlayAnimation("HitReaction", 0, Random.Range(0, spawnedNPCs.Count));
+            }
 
             currentGroupHealth -= damage;
             SpawnFloatingText(damage, wasCrit);
@@ -108,7 +116,6 @@ public class NPCGroupController : MonoBehaviour, IDamageable
 
             if (currentGroupHealth <= 0)
             {
-                isDead = true;
                 if(guaranteedDrops.Count > 0) 
                 {
                     foreach (ItemData drop in guaranteedDrops)
@@ -122,6 +129,16 @@ public class NPCGroupController : MonoBehaviour, IDamageable
                 Destroy(gameObject);
             }
         }
+    }
+
+    public void TryAttack()
+    {
+        if (attackController.CheckForPlayer())
+        {
+            attackController.TryAttack();
+        }
+        else
+            movementController.FindNewPathToPlayer();
     }
 
     void SpawnFloatingText(int damage, bool wasCrit = false)

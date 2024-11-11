@@ -22,9 +22,11 @@ public class PlayerEquipmentManager : MonoBehaviour
     public EquippedItem leftHandEquippedItem, rightHandEquippedItem;
     [SerializeField] Transform weaponSpawnParent;
     public IWeapon currentLeftHandWeapon, currentRightHandWeapon;
-
     public static Action<EquippedItem> onEquippedItemAdded;
     public static Action<EquippedItem> onEquippedItemRemoved;
+
+    [SerializeField] InventorySlot[] inventorySlots;
+
     private void OnEnable()
     {
         EquipmentSlot.onNewEquipmentItem += OnNewEquipmentItem;
@@ -230,5 +232,21 @@ public class PlayerEquipmentManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool HasHealthSyringe()
+    {
+        foreach (InventorySlot slot in inventorySlots)
+        {
+            ConsumableItemData consumableData = slot.currentSlotItem.itemData as ConsumableItemData;
+            if(consumableData)
+            {
+                if(consumableData.consumableType == ConsumableType.HealSyringe)
+                    return true;
+            }
+
+        }
+
+        return false;
     }
 }
