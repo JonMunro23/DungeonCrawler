@@ -2,34 +2,27 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class ItemPickupManager : MonoBehaviour
 {
-    UseEquipment useEquipment;
-    public GameObject mouseItem;
-    public Transform canvasTransform;
-    [SerializeField]
-    Transform thrownItemSpawnLocation;
-    [SerializeField]
-    float throwVeloctiy;
+    PlayerInventoryManager inventoryManager;
+    PlayerEquipmentManager playerEquipmentManager;
 
+    [SerializeField] Transform thrownItemSpawnLocation;
+    [SerializeField] float throwVeloctiy;
     public Vector3 mousePos = Vector3.zero;
-    public Item currentGrabbedItem = null;
-
-    //GrabbedItemUI grabbedItemUI;
-
+    public ItemStack currentGrabbedItem = null;
     public bool hasGrabbedItem, canPickUpItem = true;
-
-    public ItemData objectOnMouse;
-    public int itemAmount;
-
-    public InventorySlot inventorySlot;
-
-    public GameObject mouseItemClone;
     float maxGrabDistance = 3;
 
-    public static Action<Item> onNewItemAttachedToCursor;
+    [SerializeField] List<WorldItem> groundItems = new List<WorldItem>();
+
+    public static Action<ItemStack> onNewItemAttachedToCursor;
     public static Action onCurrentItemDettachedFromCursor;
+    public static Action<ItemStack> onGroundItemsUpdated;
+    public static Action onLastGroundItemRemoved;
 
     private void OnEnable()
     {
@@ -42,10 +35,20 @@ public class ItemPickupManager : MonoBehaviour
         WorldItem.onWorldItemGrabbed -= OnWorldItemGrabbed;
         InventorySlot.onInventorySlotClicked -= OnInventorySlotClicked;
     }
+
+    private void Awake()
+    {
+        inventoryManager = GetComponent<PlayerInventoryManager>();
+        playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
+    }
+
     void OnWorldItemGrabbed(WorldItem worldItemGrabbed)
     {
         if (hasGrabbedItem)
             return;
+
+        groundItems.Remove(worldItemGrabbed);
+        UpdatePickupItemUI();
 
         AttachItemToMouseCursor(worldItemGrabbed.item, worldItemGrabbed);
     }
@@ -87,9 +90,9 @@ public class ItemPickupManager : MonoBehaviour
 
     }
 
-    void AttachItemToMouseCursor(Item itemToAttach, WorldItem worldItem = null)
+    void AttachItemToMouseCursor(ItemStack itemToAttach, WorldItem worldItem = null)
     {
-        currentGrabbedItem = new Item(itemToAttach.itemData, itemToAttach.itemAmount);
+        currentGrabbedItem = new ItemStack(itemToAttach.itemData, itemToAttach.itemAmount);
 
         onNewItemAttachedToCursor?.Invoke(currentGrabbedItem);
         
@@ -131,9 +134,17 @@ public class ItemPickupManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(groundItems.Count > 0)
+        {
+            if(Input.GetKeyDown(KeyCode.F))
+            {
+                PickupItem(groundItems[0]);
+            }
+        }
+
         if (hasGrabbedItem == true)
         {
-            if(Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 RaycastHit hit;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -151,252 +162,68 @@ public class ItemPickupManager : MonoBehaviour
                 }
             }
         }
-
-
-        //    if (Input.GetKeyDown(KeyCode.Mouse0))
-        //    {
-        //        RaycastHit hit;
-        //        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //        if (Physics.Raycast(ray, out hit))
-        //        {
-        //            if(hit.transform.CompareTag("Ground") && hit.distance < 10)
-        //            {
-        //                MouseItemToWorldItem(hit.point);
-        //                canPickUpItem = false;
-        //                Invoke("CanPickUpItem", .1f);
-        //            }else if(hit.distance > 10 && inventorySlot == null)
-        //            {
-        //                MouseItemToThrownWorldItem();
-        //                canPickUpItem = false;
-        //                Invoke("CanPickUpItem", .1f);
-        //            }
-        //        }
-
-        //        if (inventorySlot != null)
-        //        {
-        //            if (inventorySlot.isSlotOccupied == false)
-        //            {
-        //                if (inventorySlot.isCharEquipSlot == false)
-        //                {
-        //                    MouseItemToInventorySlot();
-        //                }
-        //                else if (inventorySlot.isCharEquipSlot == true)
-        //                {
-        //                    MouseItemToCharacter();
-        //                }
-        //            }
-        //            else if(inventorySlot.isSlotOccupied == true)
-        //            {
-        //                if (inventorySlot.isCharEquipSlot == false)
-        //                {
-        //                    SwapMouseItemWithInventoryItem();
-        //                }
-        //                //else if (inventorySlot.isCharEquipSlot == true)
-        //                //{
-        //                //    MouseItemToCharacter();
-        //                //}
-        //            }
-        //        }
-        //    }
-        //}else if(hasMouseItem == false)
-        //{
-        //    if (Input.GetKeyDown(KeyCode.Mouse0))
-        //    {
-        //        if (inventorySlot != null)
-        //        {
-        //            if (inventorySlot.isSlotOccupied == true)
-        //            {
-        //                if(inventorySlot.isCharEquipSlot == true)
-        //                {
-        //                    CharacterSlotToMouseitem();
-        //                }
-        //                else if (inventorySlot.isCharEquipSlot == false)
-        //                {
-        //                    InventorySlotToMouseItem();
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
     }
 
-    public void WorldItemToMouse(GameObject itemToPickup)
+    void PickupItem(WorldItem itemToPickup)
     {
-        //objectOnMouse = itemToPickup.GetComponent<WorldItem>().itemData;
-        //hasGrabbedItem = true;
-        //mouseItemClone = Instantiate(mouseItem, mousePos, Quaternion.identity, canvasTransform);
-        //mouseItemClone.GetComponent<Image>().sprite = objectOnMouse.itemSprite;
-        //itemAmount = itemToPickup.GetComponent<WorldItem>().amount;
+        int remainingItems = inventoryManager.TryAddItemToInventory(itemToPickup.item);
+        if(remainingItems != itemToPickup.item.itemAmount)
+        {
+            //play grab animation
+            if(playerEquipmentManager.currentLeftHandWeapon != null)
+            {
+                playerEquipmentManager.currentLeftHandWeapon.Grab();
+            }
+            else if(playerEquipmentManager.currentRightHandWeapon != null)
+            {
+                playerEquipmentManager.currentRightHandWeapon.Grab();
+            }
 
-        //if(useEquipment.currentWeapon != null)
-        //    useEquipment.currentWeapon.GetComponent<Animator>().Play("Interact");
+            if (remainingItems == 0)
+            {
+                Destroy(itemToPickup.gameObject);
+                groundItems.Remove(itemToPickup);
+                UpdatePickupItemUI();
+            }
+            else
+            {
+                itemToPickup.item.itemAmount = remainingItems;
+            
+            }
+        }
 
-        //if(itemToPickup.GetComponent<WorldItem>().itemData.isItemStackable == true)
-        //{
-        //    mouseItemClone.GetComponentInChildren<TMP_Text>().text = itemToPickup.GetComponent<WorldItem>().amount.ToString();
-        //}
-        //if(itemToPickup.GetComponent<WorldItem>().isOnPressurePlate == true)
-        //{
-        //    itemToPickup.transform.position = new Vector3(0,0,0);
-        //    Destroy(itemToPickup, 0.1f);
-        //}else
-        //{
-        //    Destroy(itemToPickup, 0.1f);
-        //}
     }
 
-    public void TorchSconceToMouse(ItemData itemToPickup)
+    private void UpdatePickupItemUI()
     {
-        //objectOnMouse = itemToPickup;
-        //hasGrabbedItem = true;
-        //mouseItemClone = Instantiate(mouseItem, mousePos, Quaternion.identity, canvasTransform);
-        //mouseItemClone.GetComponent<Image>().sprite = objectOnMouse.itemSprite;
+        if (groundItems.Count > 0)
+            onGroundItemsUpdated?.Invoke(groundItems[0].item);
+        else
+            onLastGroundItemRemoved?.Invoke();
     }
 
-    public void MouseItemToInventorySlot()
+    private void OnTriggerEnter(Collider other)
     {
-        //if (inventorySlot != null)
-        //{
-        //    //Debug.Log(inventorySlot.name);
-        //    if (inventorySlot.isSlotOccupied == false)
-        //    {
-        //        inventorySlot.currentSlotItem = currentGrabbedItem;
-        //        if (itemAmount > 1)
-        //        {
-        //            inventorySlot.currentSlotItem.itemAmount = itemAmount;
-        //        }
-        //        inventorySlot.InitialiseItem();
-        //        inventorySlot.isSlotOccupied = true;
-        //        itemAmount = 0;
-        //        objectOnMouse = null;
-        //        hasGrabbedItem = false;
-        //        Destroy(mouseItemClone);
-        //    }
-        //}
+        if(other.TryGetComponent(out WorldItem worldItem))
+        {
+            groundItems.Add(worldItem);
+            onGroundItemsUpdated?.Invoke(groundItems[0].item);
+        }
     }
 
-    public void InventorySlotToMouseItem()
+    private void OnTriggerExit(Collider other)
     {
-        //objectOnMouse = inventorySlot.currentSlotItem.itemData;
-        //hasGrabbedItem = true;
-        //itemAmount = inventorySlot.currentSlotItem.itemAmount;
-        //mouseItemClone = Instantiate(mouseItem, mousePos, Quaternion.identity, canvasTransform);
-        //mouseItemClone.GetComponent<Image>().sprite = objectOnMouse.itemSprite;
-        //if(objectOnMouse.isItemStackable == true)
-        //{
-        //    mouseItemClone.GetComponentInChildren<TMP_Text>().text = inventorySlot.currentSlotItem.itemAmount.ToString();
-        //}
-        //inventorySlot.MoveItem();
+        if (groundItems.Count > 0)
+        {
+            if (other.TryGetComponent(out WorldItem worldItem))
+            {
+                if(groundItems.Contains(worldItem))
+                    groundItems.Remove(worldItem);
+
+            }
+
+            if (groundItems.Count == 0)
+                onLastGroundItemRemoved?.Invoke();
+        }
     }
-
-    public void SwapMouseItemWithInventoryItem()
-    {
-        //ItemData inventoryItemToSwapWith = inventorySlot.currentSlotItem;
-        //int inventoryItemToSwapWithAmount = inventorySlot.currentSlotAmount;
-        //inventorySlot.currentSlotItem = objectOnMouse;
-        //inventorySlot.currentSlotAmount = itemAmount;
-        //inventorySlot.InitialiseItem();
-        //itemAmount = inventoryItemToSwapWithAmount;
-        //objectOnMouse = inventoryItemToSwapWith;
-        //mouseItemClone.GetComponent<Image>().sprite = objectOnMouse.itemSprite;
-        //mouseItemClone.GetComponentInChildren<TMP_Text>().text = "";
-        //if (objectOnMouse.isItemStackable == true)
-        //{
-        //    mouseItemClone.GetComponentInChildren<TMP_Text>().text = itemAmount.ToString();
-        //}
-    }
-
-    public void SwapMouseItemWithCharacterItem()
-    {
-        //ItemData characterItemToSwapWith = inventorySlot.currentSlotItem;
-        //int inventoryItemToSwapWithAmount = inventorySlot.currentSlotAmount;
-        //inventorySlot.currentSlotItem = objectOnMouse;
-        //inventorySlot.currentSlotAmount = itemAmount;
-        //inventorySlot.InitialiseItem();
-        //itemAmount = inventoryItemToSwapWithAmount;
-        //objectOnMouse = characterItemToSwapWith;
-        //mouseItemClone.GetComponent<Image>().sprite = objectOnMouse.itemSprite;
-        //mouseItemClone.GetComponentInChildren<TMP_Text>().text = "";
-        //if (objectOnMouse.isItemStackable == true)
-        //{
-        //    mouseItemClone.GetComponentInChildren<TMP_Text>().text = itemAmount.ToString();
-        //}
-    }
-
-    public void MouseItemToWorldItem(Vector3 spawnLocation)
-    {
-        //WorldItem spawnedWorldItem = Instantiate(objectOnMouse.itemWorldModel, spawnLocation, Quaternion.identity);
-        //spawnedWorldItem.itemData = objectOnMouse;
-        //spawnedWorldItem.amount = itemAmount;
-        //hasGrabbedItem = false;
-        //objectOnMouse = null;
-        //Destroy(mouseItemClone);
-
-    }
-
-    public void MouseItemToThrownWorldItem()
-    {
-        //WorldItem spawnedWorldItem = Instantiate(objectOnMouse.itemWorldModel, thrownItemSpawnLocation.position, Quaternion.identity);
-        //spawnedWorldItem.GetComponent<Rigidbody>().AddForce(thrownItemSpawnLocation.up * throwVeloctiy*Time.deltaTime, ForceMode.Impulse);
-        //spawnedWorldItem.itemData = objectOnMouse;
-        //spawnedWorldItem.amount = itemAmount;
-        //hasGrabbedItem = false;
-        //objectOnMouse = null;
-        //Destroy(mouseItemClone);
-
-    }
-
-    public void CharacterSlotToMouseitem()
-    {
-        //objectOnMouse = inventorySlot.currentSlotItem;
-        //hasGrabbedItem = true;
-        //inventorySlot.MoveItem();
-        //mouseItemClone = Instantiate(mouseItem, mousePos, Quaternion.identity, canvasTransform);
-        //mouseItemClone.GetComponent<Image>().sprite = objectOnMouse.itemSprite;
-    }
-
-    public void MouseItemToCharacter()
-    {
-        //if (inventorySlot != null)
-        //{
-        //    if (objectOnMouse.slotType == ItemData.SlotType.hands)
-        //    {
-        //        if(inventorySlot.charEquipSlotName == "main hand" || inventorySlot.charEquipSlotName == "off hand")
-        //        {
-        //            if (inventorySlot.isSlotOccupied == false)
-        //            {
-        //                inventorySlot.currentSlotItem = objectOnMouse;
-        //                inventorySlot.InitialiseItem();
-        //                inventorySlot.isSlotOccupied = true;
-        //                objectOnMouse = null;
-        //                hasGrabbedItem = false;
-        //                Destroy(mouseItemClone);
-
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (inventorySlot.charEquipSlotName == objectOnMouse.slotType.ToString())
-        //        {
-        //            if (inventorySlot.isSlotOccupied == false)
-        //            {
-        //                inventorySlot.currentSlotItem = objectOnMouse;
-        //                inventorySlot.InitialiseItem();
-        //                inventorySlot.isSlotOccupied = true;
-        //                objectOnMouse = null;
-        //                hasGrabbedItem = false;
-        //                Destroy(mouseItemClone);
-
-        //            }
-        //        }
-        //    }
-        //}
-    }
-
-    void CanPickUpItem()
-    {
-        canPickUpItem = true;
-    }
-
 }

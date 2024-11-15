@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,15 @@ public class PlayerInventoryUIController : MonoBehaviour
     [SerializeField] GridLayoutGroup invSlotSpawnParent;
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
 
+    [SerializeField] TMP_Text pickupItemText;
+
     private void OnEnable()
     {
         PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
         PlayerInventoryManager.onInventoryClosed += OnInventoryClosed;
         PlayerInventoryManager.onInventorySlotsSpawned += OnInventorySlotsSpawned;
+        ItemPickupManager.onGroundItemsUpdated += OnNewGroundItemDetected;
+        ItemPickupManager.onLastGroundItemRemoved += OnLastGroundItemRemoved;
     }
 
     private void OnDisable()
@@ -23,6 +28,16 @@ public class PlayerInventoryUIController : MonoBehaviour
         PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
         PlayerInventoryManager.onInventoryClosed -= OnInventoryClosed;
         PlayerInventoryManager.onInventorySlotsSpawned -= OnInventorySlotsSpawned;
+    }
+
+    void OnNewGroundItemDetected(ItemStack detectedItem)
+    {
+        pickupItemText.text = $"Press F to pickup {(detectedItem.itemAmount > 0 ? detectedItem.itemAmount : "")} {detectedItem.itemData.itemName}.";
+    }
+
+    void OnLastGroundItemRemoved()
+    {
+        pickupItemText.text = "";
     }
 
     void OnInventorySlotsSpawned(InventorySlot[] spawnedSlots)

@@ -10,7 +10,6 @@ public enum Hands
 
 public class UseEquipment : MonoBehaviour
 {
-    WorldInteraction worldInteraction;
     ItemPickupManager itemPickup;
     PlayerEquipmentManager playerEquipmentManager;
 
@@ -25,7 +24,6 @@ public class UseEquipment : MonoBehaviour
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
 
 
-        worldInteraction = GetComponent<WorldInteraction>();
         itemPickup = GetComponent<ItemPickupManager>();
     }
 
@@ -47,13 +45,15 @@ public class UseEquipment : MonoBehaviour
         if(Input.GetMouseButton(0))
         {
 
-            if(!isInventoryOpen && worldInteraction.isClickable == false && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
+            if(!isInventoryOpen && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
                 UseHand(Hands.left);
         }
         if (Input.GetMouseButton(1))
         {
-            if(!isInventoryOpen && worldInteraction.isClickable == false && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
+            if(!isInventoryOpen && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
+            {
                 UseHand(Hands.right);
+            }
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -108,31 +108,5 @@ public class UseEquipment : MonoBehaviour
             return;
 
         onHandUsed?.Invoke(handToUse, handItemData);
-    }
-
-    public void UseRightHand(HandItemData handItemData)
-    {
-        if (!handItemData || !canUseRightHand)
-            return;
-
-        if (handItemData.isMeleeWeapon)
-        {
-            if (canUseRightHand == true)
-            {
-                //UseMeleeWeapon(handItemData, Hands.right);
-                onHandUsed?.Invoke(Hands.right, handItemData);
-            }
-        }
-        else
-        {
-            if (handItemData.isTwoHanded)
-            {
-                onHandUsed?.Invoke(Hands.both, handItemData);
-            }
-            else
-            {
-                onHandUsed?.Invoke(Hands.right, handItemData);
-            }
-        }
     }
 }

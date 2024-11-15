@@ -34,5 +34,18 @@ public class HandItemData : EquipmentItemData
     public AudioClip drawSFX;
     public AudioClip hideSFX;
     public AudioClip reloadSFX;
+    public AudioClip reloadStartSFX;
+    public AudioClip reloadInsertSFX;
+    public AudioClip reloadEndSFX;
+
+    [Header("Animation Lengths")]
+    public float drawAnimDuration;
+    public float hideAnimDuration;
+    public float reloadAnimDuration;
+
+    public bool bulletByBulletReload;
+    public float reloadStartAnimDuration;
+    public float reloadInsertAnimDuration;
+    public float reloadEndAnimDuration;
 }
 

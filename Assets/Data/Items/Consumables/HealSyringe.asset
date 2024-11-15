@@ -20,8 +20,9 @@ MonoBehaviour:
   itemWeight: 0.25
   itemValue: 25
   isItemStackable: 1
-  maxItemStackSize: 25
+  maxItemStackSize: 5
   consumableType: 0
   cooldownBetweenUses: 8
   healthRegenAmount: 0.5
   healthRegenDuration: 3
+  useAnimationLength: 2.533

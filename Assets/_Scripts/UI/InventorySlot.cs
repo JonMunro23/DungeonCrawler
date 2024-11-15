@@ -10,7 +10,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
     PlayerInventoryManager playerInventoryManager;
 
-    public Item currentSlotItem = null;
+    public ItemStack currentSlotItem = null;
     public TMP_Text SlotAmountText;
     public Image slotImage;
 
@@ -31,9 +31,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         playerInventoryManager = newPlayerInventoryManager;
     }
 
-    public virtual void AddItem(Item itemToAdd)
+    public virtual void AddItem(ItemStack itemToAdd)
     {
-        currentSlotItem = new Item(itemToAdd.itemData, itemToAdd.itemAmount);
+        currentSlotItem = new ItemStack(itemToAdd.itemData, itemToAdd.itemAmount);
         isSlotOccupied = true;
 
         ConsumableItemData consumableData = GetDataAsConsumable(itemToAdd.itemData);
@@ -51,6 +51,16 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
     public void AddToCurrentItemStack(int amountToAdd)
     {
         currentSlotItem.itemAmount += amountToAdd;
+
+        ConsumableItemData consumableData = GetDataAsConsumable(currentSlotItem.itemData);
+        if (consumableData)
+        {
+            if (consumableData.consumableType == ConsumableType.HealSyringe)
+            {
+                playerInventoryManager.AddHealthSyringe(amountToAdd);
+            }
+        }
+
         UpdateSlotUI();
     }
 
@@ -59,9 +69,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         return data as ConsumableItemData;
     }
 
-    public virtual Item TakeItem()
+    public virtual ItemStack TakeItem()
     {
-        Item itemToTake = new Item(currentSlotItem.itemData, currentSlotItem.itemAmount);
+        ItemStack itemToTake = new ItemStack(currentSlotItem.itemData, currentSlotItem.itemAmount);
 
         ConsumableItemData consumableData = GetDataAsConsumable(itemToTake.itemData);
         if(consumableData)
@@ -76,9 +86,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         return itemToTake;
     }
 
-    public virtual Item SwapItem(Item itemToSwap)
+    public virtual ItemStack SwapItem(ItemStack itemToSwap)
     {
-        Item oldItem = new Item(currentSlotItem.itemData, currentSlotItem.itemAmount);
+        ItemStack oldItem = new ItemStack(currentSlotItem.itemData, currentSlotItem.itemAmount);
 
         currentSlotItem = itemToSwap;
         UpdateSlotUI();

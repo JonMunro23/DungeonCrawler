@@ -8,29 +8,29 @@ public class EquipmentSlot : InventorySlot
     public static Action<EquipmentSlotType, EquipmentItemData> onNewEquipmentItem;
     public static Action<EquipmentSlotType> onEquipmentItemRemoved;
 
-    public override void AddItem(Item itemToAdd)
+    public override void AddItem(ItemStack itemToAdd)
     {
         base.AddItem(itemToAdd);
         InitialiseItem(currentSlotItem);
     }
 
-    public override Item SwapItem(Item itemToSwap)
+    public override ItemStack SwapItem(ItemStack itemToSwap)
     {
-        Item itemToReturn = base.SwapItem(itemToSwap);
+        ItemStack itemToReturn = base.SwapItem(itemToSwap);
         DeinitialiseItem(itemToReturn);
         InitialiseItem(itemToSwap);
         return itemToReturn;
     }
 
-    public override Item TakeItem()
+    public override ItemStack TakeItem()
     {
-        Item itemToTake = base.TakeItem();
+        ItemStack itemToTake = base.TakeItem();
         DeinitialiseItem(itemToTake);
         return itemToTake;
 
     }
 
-    public void InitialiseItem(Item itemToInitialise)
+    public void InitialiseItem(ItemStack itemToInitialise)
     {
         HandItemData handItemData = itemToInitialise.itemData as HandItemData;
         if(handItemData)
@@ -46,7 +46,7 @@ public class EquipmentSlot : InventorySlot
         onNewEquipmentItem?.Invoke(slotType, itemToInitialise.itemData as EquipmentItemData);
     }
 
-    public void DeinitialiseItem(Item item)
+    public void DeinitialiseItem(ItemStack item)
     {
         HandItemData handItemData = item.itemData as HandItemData;
         if (handItemData)

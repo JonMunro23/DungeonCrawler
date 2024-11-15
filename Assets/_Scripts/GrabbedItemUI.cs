@@ -30,7 +30,7 @@ public class GrabbedItemUI : MonoBehaviour
             transform.position = Input.mousePosition;
     }
 
-    public void InitGrabbedItem(Item grabbedItem)
+    public void InitGrabbedItem(ItemStack grabbedItem)
     {
         grabbedItemImg.enabled = true;
         grabbedItemImg.sprite = grabbedItem.itemData.itemSprite;

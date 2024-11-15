@@ -20,7 +20,7 @@ public class PlayerEquipmentUIManager : MonoBehaviour
         InventorySlot.onHandItemRemoved -= OnHandItemRemoved;
     }
 
-    void OnNewItemAttachedToCursor(Item newItem)
+    void OnNewItemAttachedToCursor(ItemStack newItem)
     {
         HandItemData handItemData = newItem.itemData as HandItemData;
         if(handItemData != null)

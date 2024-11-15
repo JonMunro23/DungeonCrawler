@@ -1,144 +1,416 @@
 fileFormatVersion: 2
 guid: ffe35f9ad3041194fb147ba52ddc48a4
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: Bone_Left_Finger_Index_0
-    100002: Bone_Left_Finger_Index_1
-    100004: Bone_Left_Finger_Index_2
-    100006: Bone_Left_Finger_Index_3
-    100008: Bone_Left_Finger_Middle_0
-    100010: Bone_Left_Finger_Middle_1
-    100012: Bone_Left_Finger_Middle_2
-    100014: Bone_Left_Finger_Middle_3
-    100016: Bone_Left_Finger_Pinky_0
-    100018: Bone_Left_Finger_Pinky_1
-    100020: Bone_Left_Finger_Pinky_2
-    100022: Bone_Left_Finger_Pinky_3
-    100024: Bone_Left_Finger_Ring_0
-    100026: Bone_Left_Finger_Ring_1
-    100028: Bone_Left_Finger_Ring_2
-    100030: Bone_Left_Finger_Ring_3
-    100032: Bone_Left_Finger_Thumb_0
-    100034: Bone_Left_Finger_Thumb_1
-    100036: Bone_Left_Finger_Thumb_2
-    100038: Bone_Left_Finger_Thumb_3
-    100040: Bone_Left_Forearm
-    100042: Bone_Left_Hand
-    100044: Bone_Left_UpperArm
-    100046: Bone_Right_Finger_Index_0
-    100048: Bone_Right_Finger_Index_1
-    100050: Bone_Right_Finger_Index_2
-    100052: Bone_Right_Finger_Index_3
-    100054: Bone_Right_Finger_Middle_0
-    100056: Bone_Right_Finger_Middle_1
-    100058: Bone_Right_Finger_Middle_2
-    100060: Bone_Right_Finger_Middle_3
-    100062: Bone_Right_Finger_Pinky_0
-    100064: Bone_Right_Finger_Pinky_1
-    100066: Bone_Right_Finger_Pinky_2
-    100068: Bone_Right_Finger_Pinky_3
-    100070: Bone_Right_Finger_Ring_0
-    100072: Bone_Right_Finger_Ring_1
-    100074: Bone_Right_Finger_Ring_2
-    100076: Bone_Right_Finger_Ring_3
-    100078: Bone_Right_Finger_Thumb_0
-    100080: Bone_Right_Finger_Thumb_1
-    100082: Bone_Right_Finger_Thumb_2
-    100084: Bone_Right_Finger_Thumb_3
-    100086: Bone_Right_Forearm
-    100088: Bone_Right_Hand
-    100090: Bone_Right_UpperArm
-    100092: Camera
-    100094: Camera.Target
-    100096: Controller_Left_Forearm
-    100098: Controller_Left_Hand
-    100100: Controller_Left_Shoulder
-    100102: Controller_Right_Forearm
-    100104: Controller_Right_Hand
-    100106: Controller_Right_Shoulder
-    100108: IK_Left
-    100110: IK_Right
-    100112: Mesh_Arm
-    100114: Object001
-    100116: //RootNode
-    100118: Syringe
-    100120: syringe_main
-    100122: syringe_push
-    400000: Bone_Left_Finger_Index_0
-    400002: Bone_Left_Finger_Index_1
-    400004: Bone_Left_Finger_Index_2
-    400006: Bone_Left_Finger_Index_3
-    400008: Bone_Left_Finger_Middle_0
-    400010: Bone_Left_Finger_Middle_1
-    400012: Bone_Left_Finger_Middle_2
-    400014: Bone_Left_Finger_Middle_3
-    400016: Bone_Left_Finger_Pinky_0
-    400018: Bone_Left_Finger_Pinky_1
-    400020: Bone_Left_Finger_Pinky_2
-    400022: Bone_Left_Finger_Pinky_3
-    400024: Bone_Left_Finger_Ring_0
-    400026: Bone_Left_Finger_Ring_1
-    400028: Bone_Left_Finger_Ring_2
-    400030: Bone_Left_Finger_Ring_3
-    400032: Bone_Left_Finger_Thumb_0
-    400034: Bone_Left_Finger_Thumb_1
-    400036: Bone_Left_Finger_Thumb_2
-    400038: Bone_Left_Finger_Thumb_3
-    400040: Bone_Left_Forearm
-    400042: Bone_Left_Hand
-    400044: Bone_Left_UpperArm
-    400046: Bone_Right_Finger_Index_0
-    400048: Bone_Right_Finger_Index_1
-    400050: Bone_Right_Finger_Index_2
-    400052: Bone_Right_Finger_Index_3
-    400054: Bone_Right_Finger_Middle_0
-    400056: Bone_Right_Finger_Middle_1
-    400058: Bone_Right_Finger_Middle_2
-    400060: Bone_Right_Finger_Middle_3
-    400062: Bone_Right_Finger_Pinky_0
-    400064: Bone_Right_Finger_Pinky_1
-    400066: Bone_Right_Finger_Pinky_2
-    400068: Bone_Right_Finger_Pinky_3
-    400070: Bone_Right_Finger_Ring_0
-    400072: Bone_Right_Finger_Ring_1
-    400074: Bone_Right_Finger_Ring_2
-    400076: Bone_Right_Finger_Ring_3
-    400078: Bone_Right_Finger_Thumb_0
-    400080: Bone_Right_Finger_Thumb_1
-    400082: Bone_Right_Finger_Thumb_2
-    400084: Bone_Right_Finger_Thumb_3
-    400086: Bone_Right_Forearm
-    400088: Bone_Right_Hand
-    400090: Bone_Right_UpperArm
-    400092: Camera
-    400094: Camera.Target
-    400096: Controller_Left_Forearm
-    400098: Controller_Left_Hand
-    400100: Controller_Left_Shoulder
-    400102: Controller_Right_Forearm
-    400104: Controller_Right_Hand
-    400106: Controller_Right_Shoulder
-    400108: IK_Left
-    400110: IK_Right
-    400112: Mesh_Arm
-    400114: Object001
-    400116: //RootNode
-    400118: Syringe
-    400120: syringe_main
-    400122: syringe_push
-    2000000: Camera
-    2100000: No Name
-    2100002: Kits
-    4300000: Mesh_Arm
-    4300002: Syringe
-    4300004: Object001
-    7400000: Inject
-    9500000: //RootNode
-    13700000: Mesh_Arm
-    13700002: Object001
-    13700004: Syringe
-    6000828045688606266: Camera
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Bone_Left_Finger_Index_0
+  - first:
+      1: 100002
+    second: Bone_Left_Finger_Index_1
+  - first:
+      1: 100004
+    second: Bone_Left_Finger_Index_2
+  - first:
+      1: 100006
+    second: Bone_Left_Finger_Index_3
+  - first:
+      1: 100008
+    second: Bone_Left_Finger_Middle_0
+  - first:
+      1: 100010
+    second: Bone_Left_Finger_Middle_1
+  - first:
+      1: 100012
+    second: Bone_Left_Finger_Middle_2
+  - first:
+      1: 100014
+    second: Bone_Left_Finger_Middle_3
+  - first:
+      1: 100016
+    second: Bone_Left_Finger_Pinky_0
+  - first:
+      1: 100018
+    second: Bone_Left_Finger_Pinky_1
+  - first:
+      1: 100020
+    second: Bone_Left_Finger_Pinky_2
+  - first:
+      1: 100022
+    second: Bone_Left_Finger_Pinky_3
+  - first:
+      1: 100024
+    second: Bone_Left_Finger_Ring_0
+  - first:
+      1: 100026
+    second: Bone_Left_Finger_Ring_1
+  - first:
+      1: 100028
+    second: Bone_Left_Finger_Ring_2
+  - first:
+      1: 100030
+    second: Bone_Left_Finger_Ring_3
+  - first:
+      1: 100032
+    second: Bone_Left_Finger_Thumb_0
+  - first:
+      1: 100034
+    second: Bone_Left_Finger_Thumb_1
+  - first:
+      1: 100036
+    second: Bone_Left_Finger_Thumb_2
+  - first:
+      1: 100038
+    second: Bone_Left_Finger_Thumb_3
+  - first:
+      1: 100040
+    second: Bone_Left_Forearm
+  - first:
+      1: 100042
+    second: Bone_Left_Hand
+  - first:
+      1: 100044
+    second: Bone_Left_UpperArm
+  - first:
+      1: 100046
+    second: Bone_Right_Finger_Index_0
+  - first:
+      1: 100048
+    second: Bone_Right_Finger_Index_1
+  - first:
+      1: 100050
+    second: Bone_Right_Finger_Index_2
+  - first:
+      1: 100052
+    second: Bone_Right_Finger_Index_3
+  - first:
+      1: 100054
+    second: Bone_Right_Finger_Middle_0
+  - first:
+      1: 100056
+    second: Bone_Right_Finger_Middle_1
+  - first:
+      1: 100058
+    second: Bone_Right_Finger_Middle_2
+  - first:
+      1: 100060
+    second: Bone_Right_Finger_Middle_3
+  - first:
+      1: 100062
+    second: Bone_Right_Finger_Pinky_0
+  - first:
+      1: 100064
+    second: Bone_Right_Finger_Pinky_1
+  - first:
+      1: 100066
+    second: Bone_Right_Finger_Pinky_2
+  - first:
+      1: 100068
+    second: Bone_Right_Finger_Pinky_3
+  - first:
+      1: 100070
+    second: Bone_Right_Finger_Ring_0
+  - first:
+      1: 100072
+    second: Bone_Right_Finger_Ring_1
+  - first:
+      1: 100074
+    second: Bone_Right_Finger_Ring_2
+  - first:
+      1: 100076
+    second: Bone_Right_Finger_Ring_3
+  - first:
+      1: 100078
+    second: Bone_Right_Finger_Thumb_0
+  - first:
+      1: 100080
+    second: Bone_Right_Finger_Thumb_1
+  - first:
+      1: 100082
+    second: Bone_Right_Finger_Thumb_2
+  - first:
+      1: 100084
+    second: Bone_Right_Finger_Thumb_3
+  - first:
+      1: 100086
+    second: Bone_Right_Forearm
+  - first:
+      1: 100088
+    second: Bone_Right_Hand
+  - first:
+      1: 100090
+    second: Bone_Right_UpperArm
+  - first:
+      1: 100092
+    second: Camera
+  - first:
+      1: 100094
+    second: Camera.Target
+  - first:
+      1: 100096
+    second: Controller_Left_Forearm
+  - first:
+      1: 100098
+    second: Controller_Left_Hand
+  - first:
+      1: 100100
+    second: Controller_Left_Shoulder
+  - first:
+      1: 100102
+    second: Controller_Right_Forearm
+  - first:
+      1: 100104
+    second: Controller_Right_Hand
+  - first:
+      1: 100106
+    second: Controller_Right_Shoulder
+  - first:
+      1: 100108
+    second: IK_Left
+  - first:
+      1: 100110
+    second: IK_Right
+  - first:
+      1: 100112
+    second: Mesh_Arm
+  - first:
+      1: 100114
+    second: Object001
+  - first:
+      1: 100116
+    second: //RootNode
+  - first:
+      1: 100118
+    second: Syringe
+  - first:
+      1: 100120
+    second: syringe_main
+  - first:
+      1: 100122
+    second: syringe_push
+  - first:
+      4: 400000
+    second: Bone_Left_Finger_Index_0
+  - first:
+      4: 400002
+    second: Bone_Left_Finger_Index_1
+  - first:
+      4: 400004
+    second: Bone_Left_Finger_Index_2
+  - first:
+      4: 400006
+    second: Bone_Left_Finger_Index_3
+  - first:
+      4: 400008
+    second: Bone_Left_Finger_Middle_0
+  - first:
+      4: 400010
+    second: Bone_Left_Finger_Middle_1
+  - first:
+      4: 400012
+    second: Bone_Left_Finger_Middle_2
+  - first:
+      4: 400014
+    second: Bone_Left_Finger_Middle_3
+  - first:
+      4: 400016
+    second: Bone_Left_Finger_Pinky_0
+  - first:
+      4: 400018
+    second: Bone_Left_Finger_Pinky_1
+  - first:
+      4: 400020
+    second: Bone_Left_Finger_Pinky_2
+  - first:
+      4: 400022
+    second: Bone_Left_Finger_Pinky_3
+  - first:
+      4: 400024
+    second: Bone_Left_Finger_Ring_0
+  - first:
+      4: 400026
+    second: Bone_Left_Finger_Ring_1
+  - first:
+      4: 400028
+    second: Bone_Left_Finger_Ring_2
+  - first:
+      4: 400030
+    second: Bone_Left_Finger_Ring_3
+  - first:
+      4: 400032
+    second: Bone_Left_Finger_Thumb_0
+  - first:
+      4: 400034
+    second: Bone_Left_Finger_Thumb_1
+  - first:
+      4: 400036
+    second: Bone_Left_Finger_Thumb_2
+  - first:
+      4: 400038
+    second: Bone_Left_Finger_Thumb_3
+  - first:
+      4: 400040
+    second: Bone_Left_Forearm
+  - first:
+      4: 400042
+    second: Bone_Left_Hand
+  - first:
+      4: 400044
+    second: Bone_Left_UpperArm
+  - first:
+      4: 400046
+    second: Bone_Right_Finger_Index_0
+  - first:
+      4: 400048
+    second: Bone_Right_Finger_Index_1
+  - first:
+      4: 400050
+    second: Bone_Right_Finger_Index_2
+  - first:
+      4: 400052
+    second: Bone_Right_Finger_Index_3
+  - first:
+      4: 400054
+    second: Bone_Right_Finger_Middle_0
+  - first:
+      4: 400056
+    second: Bone_Right_Finger_Middle_1
+  - first:
+      4: 400058
+    second: Bone_Right_Finger_Middle_2
+  - first:
+      4: 400060
+    second: Bone_Right_Finger_Middle_3
+  - first:
+      4: 400062
+    second: Bone_Right_Finger_Pinky_0
+  - first:
+      4: 400064
+    second: Bone_Right_Finger_Pinky_1
+  - first:
+      4: 400066
+    second: Bone_Right_Finger_Pinky_2
+  - first:
+      4: 400068
+    second: Bone_Right_Finger_Pinky_3
+  - first:
+      4: 400070
+    second: Bone_Right_Finger_Ring_0
+  - first:
+      4: 400072
+    second: Bone_Right_Finger_Ring_1
+  - first:
+      4: 400074
+    second: Bone_Right_Finger_Ring_2
+  - first:
+      4: 400076
+    second: Bone_Right_Finger_Ring_3
+  - first:
+      4: 400078
+    second: Bone_Right_Finger_Thumb_0
+  - first:
+      4: 400080
+    second: Bone_Right_Finger_Thumb_1
+  - first:
+      4: 400082
+    second: Bone_Right_Finger_Thumb_2
+  - first:
+      4: 400084
+    second: Bone_Right_Finger_Thumb_3
+  - first:
+      4: 400086
+    second: Bone_Right_Forearm
+  - first:
+      4: 400088
+    second: Bone_Right_Hand
+  - first:
+      4: 400090
+    second: Bone_Right_UpperArm
+  - first:
+      4: 400092
+    second: Camera
+  - first:
+      4: 400094
+    second: Camera.Target
+  - first:
+      4: 400096
+    second: Controller_Left_Forearm
+  - first:
+      4: 400098
+    second: Controller_Left_Hand
+  - first:
+      4: 400100
+    second: Controller_Left_Shoulder
+  - first:
+      4: 400102
+    second: Controller_Right_Forearm
+  - first:
+      4: 400104
+    second: Controller_Right_Hand
+  - first:
+      4: 400106
+    second: Controller_Right_Shoulder
+  - first:
+      4: 400108
+    second: IK_Left
+  - first:
+      4: 400110
+    second: IK_Right
+  - first:
+      4: 400112
+    second: Mesh_Arm
+  - first:
+      4: 400114
+    second: Object001
+  - first:
+      4: 400116
+    second: //RootNode
+  - first:
+      4: 400118
+    second: Syringe
+  - first:
+      4: 400120
+    second: syringe_main
+  - first:
+      4: 400122
+    second: syringe_push
+  - first:
+      20: 2000000
+    second: Camera
+  - first:
+      21: 2100000
+    second: No Name
+  - first:
+      21: 2100002
+    second: Kits
+  - first:
+      43: 4300000
+    second: Mesh_Arm
+  - first:
+      43: 4300002
+    second: Syringe
+  - first:
+      43: 4300004
+    second: Object001
+  - first:
+      74: 7400000
+    second: Inject
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Mesh_Arm
+  - first:
+      137: 13700002
+    second: Object001
+  - first:
+      137: 13700004
+    second: Syringe
+  - first:
+      1183024399: 6000828045688606266
+    second: Camera
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -151,7 +423,7 @@ ModelImporter:
       name: No Name
     second: {fileID: 2100000, guid: c9ed28fa5d7bd854197bf5006be664c8, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -160,6 +432,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -180,6 +453,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Inject
       takeName: Take 001
+      internalID: 0
       firstFrame: 0
       lastFrame: 76
       wrapMode: 0
@@ -212,25 +486,36 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
-    importCameras: 1
+    importCameras: 0
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.005
-    hasPreviousCalculatedGlobalScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -239,10 +524,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -252,13 +537,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.5
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

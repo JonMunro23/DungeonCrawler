@@ -16,5 +16,8 @@ public class ConsumableItemData : ItemData
     
     public float healthRegenAmount = .5f;
     public float healthRegenDuration = 3f;
+
+    [Header("Animation Lengths")]
+    public float useAnimationLength;
 }
 

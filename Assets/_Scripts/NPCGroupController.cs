@@ -99,7 +99,6 @@ public class NPCGroupController : MonoBehaviour, IDamageable
                 if(rand <= hitReactionChance)
                     animController.PlayAnimation("HitReaction", 0, Random.Range(0, spawnedNPCs.Count));
             }
-
             currentGroupHealth -= damage;
             SpawnFloatingText(damage, wasCrit);
             float remainingEnemies = currentGroupHealth / maxGroupHealth * amountToSpawnInStack;

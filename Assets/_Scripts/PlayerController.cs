@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -8,6 +6,7 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     public AdvancedGridMovement advGridMovement;
     public PlayerHealthController playerHealthController;
+    public PlayerEquipmentManager playerEquipmentManager;
     public PlayerInventoryManager playerInventoryManager;
     public PlayerStatsManager playerStatsManager;
 
@@ -23,7 +22,8 @@ public class PlayerController : MonoBehaviour
         {
             if(playerHealthController.CanHeal() && playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
             {
-                playerInventoryManager.UseHealthSyringe();
+                //Change this to be centralised in this class
+                playerInventoryManager.TryUseHealthSyringe();
             }
         }
     }

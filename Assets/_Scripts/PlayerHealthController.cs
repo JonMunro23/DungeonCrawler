@@ -8,7 +8,7 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 {
     PlayerController playerController;
     CharacterData characterData;
-
+    [SerializeField] GameObject syringeArms;
     [SerializeField] int currentHealth;
     bool canUseSyringe;
     int maxHealth;
@@ -101,8 +101,19 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
             return;
 
         canUseSyringe = false;
+        StartCoroutine(PerformSyringeAnim(syringeData));
         StartCoroutine(HealthRegen(syringeData.healthRegenDuration));
         StartCoroutine(SyringeUseCooldown(syringeData.cooldownBetweenUses));
+    }
+
+    void EnableSyringeArms()
+    {
+        syringeArms.SetActive(true);
+    }
+
+    void DisableSyringeArms()
+    {
+        syringeArms.SetActive(false);
     }
 
     /// <summary>
@@ -125,8 +136,6 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
     IEnumerator HealthRegen(float regenLength)
     {
-
-
         Debug.Log("Regen started");
         yield return new WaitForSeconds(regenLength);
         Debug.Log("Regen Ended");
@@ -138,5 +147,14 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(cooldownLength);
         Debug.Log("Cooldown ended");
         canUseSyringe = true;
+    }
+
+    IEnumerator PerformSyringeAnim(ConsumableItemData syringeData)
+    {
+        EnableSyringeArms();
+        yield return new WaitForSeconds(syringeData.useAnimationLength);
+        DisableSyringeArms();
+
+        playerController.playerEquipmentManager.DrawWeapons();
     }
 }

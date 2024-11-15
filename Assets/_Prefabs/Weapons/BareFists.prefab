@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7193318769054629014}
   - component: {fileID: 4799419027042985440}
+  - component: {fileID: 8604196229382799587}
   m_Layer: 0
   m_Name: BareFists
   m_TagString: Untagged
@@ -54,6 +55,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8604196229382799587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1613121034941279707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f41cbf576a78524f97b491d01066dbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &687923506675088210
 PrefabInstance:
   m_ObjectHideFlags: 0

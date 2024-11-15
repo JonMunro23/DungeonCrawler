@@ -49,3 +49,13 @@ MonoBehaviour:
   drawSFX: {fileID: 8300000, guid: 3ae9f4e1105518d49885a89387f87197, type: 3}
   hideSFX: {fileID: 8300000, guid: c7112d16f68f0df44b469600d0c4e516, type: 3}
   reloadSFX: {fileID: 8300000, guid: 1dbf55a176cda0846ae096aa344efb3b, type: 3}
+  reloadStartSFX: {fileID: 0}
+  reloadInsertSFX: {fileID: 0}
+  reloadEndSFX: {fileID: 0}
+  drawAnimDuration: 1.017
+  hideAnimDuration: 0.9
+  reloadAnimDuration: 0
+  bulletByBulletReload: 0
+  reloadStartAnimDuration: 0
+  reloadInsertAnimDuration: 0
+  reloadEndAnimDuration: 0

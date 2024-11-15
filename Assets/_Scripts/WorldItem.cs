@@ -2,26 +2,31 @@ using System;
 using UnityEngine;
 
 [System.Serializable]
-public class Item
+public class ItemStack
 {
     public ItemData itemData;
     public int itemAmount = 1;  
 
-    public Item(ItemData itemData, int itemAmount)
+    public ItemStack(ItemData itemData, int itemAmount)
     {
         this.itemData = itemData;
         this.itemAmount = itemAmount;
+    }
+
+    public int GetRemainingSpaceInStack()
+    {
+        return itemData.maxItemStackSize - itemAmount;
     }
 }
 
 public class WorldItem : MonoBehaviour, IPickup
 {
-    public Item item;
+    public ItemStack item;
     public bool isOnPressurePlate;
 
     public static Action<WorldItem> onWorldItemGrabbed;
 
-    public void InitWorldItem(Item itemToInitialise)
+    public void InitWorldItem(ItemStack itemToInitialise)
     {
         item.itemData = itemToInitialise.itemData;
         item.itemAmount = itemToInitialise.itemAmount;

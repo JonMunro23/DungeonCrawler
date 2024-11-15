@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,15 +18,22 @@ public class EquippedItem
 
 public class PlayerEquipmentManager : MonoBehaviour
 {
-    [SerializeField] float currentCarryWeight, maxCarryWeight;
+    [Header("References")]
+    [SerializeField] Transform weaponSpawnParent;
+    [SerializeField] HandItemData startingHandItem;
+
+    [Header("Equipped Items")]
     [SerializeField] List<EquippedItem> allCurrentlyEquippedItems = new List<EquippedItem>();
     public EquippedItem leftHandEquippedItem, rightHandEquippedItem;
-    [SerializeField] Transform weaponSpawnParent;
+    [SerializeField] bool isLeftHandHolstered, isRightHandHolstered;
+
+    [Header("Carry Weight")]
+    [SerializeField] float currentCarryWeight, maxCarryWeight;
+
     public IWeapon currentLeftHandWeapon, currentRightHandWeapon;
+
     public static Action<EquippedItem> onEquippedItemAdded;
     public static Action<EquippedItem> onEquippedItemRemoved;
-
-    [SerializeField] InventorySlot[] inventorySlots;
 
     private void OnEnable()
     {
@@ -55,6 +63,11 @@ public class PlayerEquipmentManager : MonoBehaviour
         WorldInteraction.OnWorldInteraction -= OnWorldInteraction;
     }
 
+    private void Start()
+    {
+        OnNewHandItem(EquipmentSlotType.rightHand, startingHandItem);
+    }
+
     void OnWorldInteraction()
     {
         if(currentRightHandWeapon != null)
@@ -71,12 +84,12 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         if(currentRightHandWeapon != null)
         {
-            if(!currentRightHandWeapon.CheckIsReloading())
+            if(!currentRightHandWeapon.IsReloading())
                 currentRightHandWeapon.TryReloadWeapon();
         }
         else if (currentLeftHandWeapon != null)
         {
-            if (!currentLeftHandWeapon.CheckIsReloading())
+            if (!currentLeftHandWeapon.IsReloading())
                 currentLeftHandWeapon.TryReloadWeapon();
         }
     }
@@ -90,7 +103,7 @@ public class PlayerEquipmentManager : MonoBehaviour
         }
         else
         {
-            if(currentRightHandWeapon != null)
+            if (currentRightHandWeapon != null)
                 currentRightHandWeapon.Use();
         }
     }
@@ -99,26 +112,49 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         if(newItemData.isTwoHanded)
         {
-            if(handSlot == EquipmentSlotType.leftHand)
+            if (currentLeftHandWeapon != null)
+            {
+                currentLeftHandWeapon.RemoveWeapon();
+                currentLeftHandWeapon = null;
+            }
+            else if (currentRightHandWeapon != null)
+            {
+                currentRightHandWeapon.RemoveWeapon();
+                currentRightHandWeapon = null;
+            }
+
+            if (handSlot == EquipmentSlotType.leftHand)
             {
                 leftHandEquippedItem = new EquippedItem(handSlot, newItemData);
-                rightHandEquippedItem = new EquippedItem(EquipmentSlotType.rightHand, newItemData);
+                //rightHandEquippedItem = new EquippedItem(EquipmentSlotType.rightHand, newItemData);
                 InitialiseHandItem(handSlot, newItemData);
             }
             else if(handSlot == EquipmentSlotType.rightHand)
             {
                 rightHandEquippedItem = new EquippedItem(handSlot, newItemData);
-                leftHandEquippedItem = new EquippedItem(EquipmentSlotType.leftHand, newItemData);
+                //leftHandEquippedItem = new EquippedItem(EquipmentSlotType.leftHand, newItemData);
                 InitialiseHandItem(handSlot, newItemData);
             }
         }
         else if (handSlot == EquipmentSlotType.leftHand)
         {
+            if (currentLeftHandWeapon != null)
+            {
+                currentLeftHandWeapon.RemoveWeapon();
+                currentLeftHandWeapon = null;
+            }
+
             leftHandEquippedItem = new EquippedItem(handSlot, newItemData);
             InitialiseHandItem(handSlot, newItemData);
         }
         else
         {
+            if (currentRightHandWeapon != null)
+            {
+                currentRightHandWeapon.RemoveWeapon();
+                currentRightHandWeapon = null;
+            }
+
             rightHandEquippedItem = new EquippedItem(handSlot, newItemData);
             InitialiseHandItem(handSlot, newItemData);
         }
@@ -133,24 +169,30 @@ public class PlayerEquipmentManager : MonoBehaviour
                 leftHandEquippedItem = null;
                 rightHandEquippedItem = null;
                 currentLeftHandWeapon.RemoveWeapon();
+                currentLeftHandWeapon = null;
             }
-            else if (handSlot == EquipmentSlotType.rightHand)
-            {
-                rightHandEquippedItem = null;
-                leftHandEquippedItem = null;
-                currentRightHandWeapon.RemoveWeapon();
-            }
+            //else if (handSlot == EquipmentSlotType.rightHand)
+            //{
+            //    rightHandEquippedItem = null;
+            //    leftHandEquippedItem = null;
+            //    currentRightHandWeapon.RemoveWeapon();
+            //    currentRightHandWeapon = null;
+            //}
         }
         else if (handSlot == EquipmentSlotType.leftHand)
         {
             leftHandEquippedItem = null;
             currentLeftHandWeapon.RemoveWeapon();
+            currentLeftHandWeapon = null;
         }
         else
         {
             rightHandEquippedItem = null;
             currentRightHandWeapon.RemoveWeapon();
+            currentRightHandWeapon = null;
         }
+
+        OnNewHandItem(handSlot, startingHandItem);
     }
 
     void OnNewEquipmentItem(EquipmentSlotType slotType, EquipmentItemData newEquipmentItemData)
@@ -203,8 +245,8 @@ public class PlayerEquipmentManager : MonoBehaviour
                 {
                     currentLeftHandWeapon = weapon;
                     currentLeftHandWeapon.InitWeapon(handItemData, Hands.both);
-                    currentRightHandWeapon = weapon;
-                    currentRightHandWeapon.InitWeapon(handItemData, Hands.both);
+                    //currentRightHandWeapon = weapon;
+                    //currentRightHandWeapon.InitWeapon(handItemData, Hands.both);
                 }
             }
         }
@@ -234,19 +276,91 @@ public class PlayerEquipmentManager : MonoBehaviour
         }
     }
 
-    public bool HasHealthSyringe()
+    public void HolsterWeapons(Action onHolsteredCallback)
     {
-        foreach (InventorySlot slot in inventorySlots)
-        {
-            ConsumableItemData consumableData = slot.currentSlotItem.itemData as ConsumableItemData;
-            if(consumableData)
-            {
-                if(consumableData.consumableType == ConsumableType.HealSyringe)
-                    return true;
-            }
+        Action leftHandHolstered = null;
+        Action rightHandHolstered = null;
 
+        leftHandHolstered += OnLeftHandHolstered;
+        rightHandHolstered += OnRightHandHolstered;
+
+        if(currentLeftHandWeapon != null)
+        {
+            StartCoroutine(currentLeftHandWeapon.HolsterWeapon(leftHandHolstered));
+            if (currentLeftHandWeapon.IsTwoHanded())
+                return;
         }
 
-        return false;
+        if(currentRightHandWeapon != null)
+        {
+            StartCoroutine(currentRightHandWeapon.HolsterWeapon(rightHandHolstered));
+        }
+
+        isLeftHandHolstered = false;
+        isRightHandHolstered = false;
+
+        void OnLeftHandHolstered()
+        {
+            isLeftHandHolstered = true;
+            CheckIsHolstered();
+        }
+
+        void OnRightHandHolstered()
+        {
+            isRightHandHolstered = true;
+            CheckIsHolstered();
+        }
+
+        void CheckIsHolstered()
+        {
+
+            bool leftHolstered = false;
+            bool rightHolstered = false;
+            if (currentLeftHandWeapon != null)
+            {
+                if (isLeftHandHolstered)
+                {
+                    leftHolstered = true;
+                    if (currentLeftHandWeapon.IsTwoHanded())
+                    {
+                        onHolsteredCallback?.Invoke();
+                        return;
+                    }
+                }
+            }
+            else
+                leftHolstered = true;
+
+            if(currentRightHandWeapon != null)
+            {
+                if(isRightHandHolstered)
+                {
+                    rightHolstered = true;
+                }
+            }
+            else
+                rightHolstered = true;
+
+            if (rightHolstered && leftHolstered)
+                onHolsteredCallback?.Invoke();
+        }
+
+    }
+
+    public void DrawWeapons()
+    {
+        if (currentLeftHandWeapon != null)
+        {
+            isLeftHandHolstered = false;
+            StartCoroutine(currentLeftHandWeapon.DrawWeapon());
+            if (currentLeftHandWeapon.IsTwoHanded())
+                return;
+        }
+        
+        if (currentRightHandWeapon != null)
+        {
+            isRightHandHolstered = false;
+            StartCoroutine(currentRightHandWeapon.DrawWeapon());
+        }
     }
 }
