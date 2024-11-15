@@ -1,13 +1,9 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class WorldInteraction : MonoBehaviour
 {
-    UseEquipment useEquipment;
-    Camera cam;
-
-    public bool isClickable;
+    Camera playerCam;
 
     [SerializeField] float maxInteractionDistance = 3f;
 
@@ -15,15 +11,14 @@ public class WorldInteraction : MonoBehaviour
 
     private void Awake()
     {
-        useEquipment = GetComponent<UseEquipment>();
-        cam = transform.GetChild(0).GetComponent<Camera>();
+        playerCam = GetComponentInChildren<Camera>();
     }
 
     // Update is called once per frame
     void Update()
     {
         RaycastHit hit;
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, maxInteractionDistance))
         {
             if (hit.collider.TryGetComponent(out IPickup pickup))

@@ -134,14 +134,6 @@ public class ItemPickupManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(groundItems.Count > 0)
-        {
-            if(Input.GetKeyDown(KeyCode.F))
-            {
-                PickupItem(groundItems[0]);
-            }
-        }
-
         if (hasGrabbedItem == true)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -164,12 +156,20 @@ public class ItemPickupManager : MonoBehaviour
         }
     }
 
+    public void TryPickupGroundItem()
+    {
+        if (groundItems.Count > 0)
+        {
+            PickupItem(groundItems[0]);
+        }
+    }
+
     void PickupItem(WorldItem itemToPickup)
     {
         int remainingItems = inventoryManager.TryAddItemToInventory(itemToPickup.item);
         if(remainingItems != itemToPickup.item.itemAmount)
         {
-            //play grab animation
+            //this will need changed
             if(playerEquipmentManager.currentLeftHandWeapon != null)
             {
                 playerEquipmentManager.currentLeftHandWeapon.Grab();

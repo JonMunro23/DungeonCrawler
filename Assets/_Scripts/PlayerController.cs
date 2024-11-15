@@ -16,18 +16,6 @@ public class PlayerController : MonoBehaviour
     [Header("Grid Data")]
     public static GridNode currentOccupiedNode;
 
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-            if(playerHealthController.CanHeal() && playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
-            {
-                //Change this to be centralised in this class
-                playerInventoryManager.TryUseHealthSyringe();
-            }
-        }
-    }
-
     public void InitPlayer(CharacterData playerCharData, GridNode spawnGridNode)
     {
         playerCharacterData = playerCharData;
@@ -41,8 +29,19 @@ public class PlayerController : MonoBehaviour
         onPlayerInitialised?.Invoke(this);
     }
 
-    public static void SetCurrentOccupiedNode(GridNode newGridNode)
+
+    public void TryUseHealthSyringe()
+    {
+        if (playerHealthController.CanHeal() && playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
+        {
+            playerInventoryManager.TryUseHealthSyringe();
+        }
+    }
+
+    public void SetCurrentOccupiedNode(GridNode newGridNode)
     {
         currentOccupiedNode = newGridNode;
     }
+
+
 }

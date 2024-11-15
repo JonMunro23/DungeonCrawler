@@ -39,33 +39,6 @@ public class UseEquipment : MonoBehaviour
         PlayerInventoryManager.onInventoryClosed -= OnInventoryClosed;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetMouseButton(0))
-        {
-
-            if(!isInventoryOpen && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
-                UseHand(Hands.left);
-        }
-        if (Input.GetMouseButton(1))
-        {
-            if(!isInventoryOpen && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
-            {
-                UseHand(Hands.right);
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            TryReloadWeapon();
-        }
-    }
-
-    private void TryReloadWeapon()
-    {
-        onReloadKeyPressed?.Invoke();
-    }
-
     void OnInventoryOpened()
     {
         isInventoryOpen = true;

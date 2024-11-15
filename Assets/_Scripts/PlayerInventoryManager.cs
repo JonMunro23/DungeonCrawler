@@ -55,19 +55,6 @@ public class PlayerInventoryManager : MonoBehaviour
         onInventorySlotsSpawned?.Invoke(spawnedInventorySlots);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Tab))
-        {
-            ToggleInventory();
-        }
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            CloseInventory();
-        }
-    }
-
     public void ToggleInventory()
     {
         if (isOpen == true)

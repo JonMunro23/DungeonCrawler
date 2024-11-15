@@ -276,6 +276,23 @@ public class PlayerEquipmentManager : MonoBehaviour
         }
     }
 
+    public void TryUseCurrentWeapon()
+    {
+        //    if(!isInventoryOpen && itemPickup.hasGrabbedItem == false && DialogueManager.isInDialogue == false)
+
+        Debug.Log("Using Current Weapon");
+    }
+
+    public void TryUseCurrentWeaponSpecial()
+    {
+        Debug.Log("Using Current Weapon's Special");
+    }
+
+    public void TryReloadCurrentWeapon()
+    {
+        Debug.Log("Reloading current weapon");
+    }
+
     public void HolsterWeapons(Action onHolsteredCallback)
     {
         Action leftHandHolstered = null;

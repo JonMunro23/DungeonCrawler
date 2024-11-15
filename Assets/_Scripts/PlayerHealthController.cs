@@ -62,6 +62,11 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
         canUseSyringe = true;
     }
 
+    public void TakeDamageCheat(int damageToTake)
+    {
+        TakeDamage(damageToTake, false);
+    }
+
     public void TakeDamage(int damageTaken, bool wasCrit = false)
     {
         int damageToTake = wasCrit ? damageTaken * 2 : damageTaken;
@@ -136,14 +141,12 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
     IEnumerator HealthRegen(float regenLength)
     {
-        Debug.Log("Regen started");
         yield return new WaitForSeconds(regenLength);
         Debug.Log("Regen Ended");
     }
 
     IEnumerator SyringeUseCooldown(float cooldownLength)
     {
-        Debug.Log("Cooldown started");
         yield return new WaitForSeconds(cooldownLength);
         Debug.Log("Cooldown ended");
         canUseSyringe = true;

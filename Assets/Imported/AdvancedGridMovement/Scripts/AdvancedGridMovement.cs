@@ -251,7 +251,7 @@ public class AdvancedGridMovement : MonoBehaviour
                 GridController.Instance.GetNodeFromWorldPos(moveFromPosition).ClearOccupant();
                 var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
                 targetNode.SetOccupant(new GridNodeOccupant(controller.gameObject, GridNodeOccupantType.Player));
-                PlayerController.SetCurrentOccupiedNode(targetNode);
+                controller.SetCurrentOccupiedNode(targetNode);
                 onPlayerMoved?.Invoke();
             }
             else
