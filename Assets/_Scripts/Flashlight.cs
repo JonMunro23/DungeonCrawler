@@ -13,17 +13,7 @@ public class Flashlight : MonoBehaviour
     {
         flashlight = GetComponent<Light>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetKeyDown(flashlightActivationKey))
-        {
-            ToggleFlashlight();
-        }
-    }
-
-    void ToggleFlashlight()
+    public void ToggleFlashlight()
     {
         if(isLightOn)
             TurnLightOff();

@@ -13,7 +13,7 @@ using UnityEngine.Events;
  * This script adds a simple input handler for the old input system, that allows you to map key presses to events.
  */
 
-public class InputHandler : MonoBehaviour
+public class PlayerInputHandler : MonoBehaviour
 {
     [System.Serializable]
     public class EventMapping

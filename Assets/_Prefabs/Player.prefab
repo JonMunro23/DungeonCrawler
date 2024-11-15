@@ -684,8 +684,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3180298802843086112}
   - component: {fileID: 4750780804372824305}
-  - component: {fileID: 162635141120244599}
   - component: {fileID: 3417093745071717000}
+  - component: {fileID: 162635141120244599}
   - component: {fileID: 1956475427981713433}
   - component: {fileID: 4620442606277676960}
   - component: {fileID: 5977534421063011795}
@@ -739,6 +739,245 @@ MonoBehaviour:
   playerEquipmentManager: {fileID: 6917960533262647579}
   playerInventoryManager: {fileID: 5977534421063011795}
   playerStatsManager: {fileID: 5301202906750780191}
+--- !u!114 &3417093745071717000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6206634459118426657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3783f92fc170b304388670df3032e52b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventMappings:
+  - key: 323
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6917960533262647579}
+          m_TargetAssemblyTypeName: PlayerEquipmentManager, Assembly-CSharp
+          m_MethodName: TryUseCurrentWeapon
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 324
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 6917960533262647579}
+          m_TargetAssemblyTypeName: PlayerEquipmentManager, Assembly-CSharp
+          m_MethodName: TryUseCurrentWeaponSpecial
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  eventMappingsKeyDown:
+  - key: 119
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1956475427981713433}
+          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
+          m_MethodName: Forward
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 115
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1956475427981713433}
+          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
+          m_MethodName: Backward
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 97
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1956475427981713433}
+          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
+          m_MethodName: StrafeLeft
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 100
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1956475427981713433}
+          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
+          m_MethodName: StrafeRight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 113
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1956475427981713433}
+          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
+          m_MethodName: TurnLeft
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 101
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1956475427981713433}
+          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
+          m_MethodName: TurnRight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 116
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2763730868098078949}
+          m_TargetAssemblyTypeName: Flashlight, Assembly-CSharp
+          m_MethodName: ToggleFlashlight
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 9
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 5977534421063011795}
+          m_TargetAssemblyTypeName: PlayerInventoryManager, Assembly-CSharp
+          m_MethodName: ToggleInventory
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 27
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 5977534421063011795}
+          m_TargetAssemblyTypeName: PlayerInventoryManager, Assembly-CSharp
+          m_MethodName: CloseInventory
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 102
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 8472107880212972518}
+          m_TargetAssemblyTypeName: ItemPickupManager, Assembly-CSharp
+          m_MethodName: TryPickupGroundItem
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 118
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4750780804372824305}
+          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+          m_MethodName: TryUseHealthSyringe
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 283
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: -2222088351250389698}
+          m_TargetAssemblyTypeName: PlayerHealthController, Assembly-CSharp
+          m_MethodName: TakeDamageCheat
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 50
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  eventMappingsKeyUp: []
 --- !u!114 &162635141120244599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -913,117 +1152,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3417093745071717000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6206634459118426657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3783f92fc170b304388670df3032e52b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventMappings: []
-  eventMappingsKeyDown:
-  - key: 119
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1956475427981713433}
-          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
-          m_MethodName: Forward
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 115
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1956475427981713433}
-          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
-          m_MethodName: Backward
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 97
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1956475427981713433}
-          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
-          m_MethodName: StrafeLeft
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 100
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1956475427981713433}
-          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
-          m_MethodName: StrafeRight
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 113
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1956475427981713433}
-          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
-          m_MethodName: TurnLeft
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 101
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1956475427981713433}
-          m_TargetAssemblyTypeName: MovementQueue, Assembly-CSharp
-          m_MethodName: TurnRight
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  eventMappingsKeyUp: []
 --- !u!114 &1956475427981713433
 MonoBehaviour:
   m_ObjectHideFlags: 0
