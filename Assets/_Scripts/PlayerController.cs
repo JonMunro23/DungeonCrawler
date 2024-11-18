@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using UnityEngine;
 
@@ -5,16 +6,33 @@ public class PlayerController : MonoBehaviour
 {
     [Header("References")]
     public AdvancedGridMovement advGridMovement;
+    public ItemPickupManager itemPickupManager;
     public PlayerHealthController playerHealthController;
-    public PlayerEquipmentManager playerEquipmentManager;
     public PlayerInventoryManager playerInventoryManager;
+    public PlayerEquipmentManager playerEquipmentManager;
+    public PlayerWeaponManager playerWeaponManager;
     public PlayerStatsManager playerStatsManager;
+    [HideInInspector] public Camera playerCamera;
 
-    [HideInInspector] public CharacterData playerCharacterData { get; private set; }
+    [Header("Player Data")]
+    public CharacterData playerCharacterData;
+    public static GridNode currentOccupiedNode;
+
+    
     public static Action<PlayerController> onPlayerInitialised;
 
-    [Header("Grid Data")]
-    public static GridNode currentOccupiedNode;
+
+    private void Awake()
+    {
+        advGridMovement = GetComponent<AdvancedGridMovement>();
+        playerHealthController = GetComponent<PlayerHealthController>();
+        playerInventoryManager = GetComponent<PlayerInventoryManager>();
+        playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
+        playerWeaponManager = GetComponent<PlayerWeaponManager>();
+        itemPickupManager = GetComponent<ItemPickupManager>();
+        playerStatsManager = GetComponent<PlayerStatsManager>();
+        playerCamera = GetComponentInChildren<Camera>();
+    }
 
     public void InitPlayer(CharacterData playerCharData, GridNode spawnGridNode)
     {
@@ -22,13 +40,13 @@ public class PlayerController : MonoBehaviour
         currentOccupiedNode = spawnGridNode;
 
         playerInventoryManager.InitInventory(this);
+        playerWeaponManager.Init(this);
         playerStatsManager.InitPlayerStats(playerCharacterData);
         playerHealthController.InitHealthController(this);
         advGridMovement.InitMovement(this);
 
         onPlayerInitialised?.Invoke(this);
     }
-
 
     public void TryUseHealthSyringe()
     {
@@ -38,10 +56,35 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TryUseCurrentWeapon()
+    {
+        if(!playerInventoryManager.isOpen && !itemPickupManager.hasGrabbedItem && !DialogueManager.isInDialogue)
+        {
+            playerWeaponManager.UseCurrentWeapon();
+        }
+    }
+
+    public void TryUseCurrentWeaponSpecial()
+    {
+        if (!playerInventoryManager.isOpen && !itemPickupManager.hasGrabbedItem && !DialogueManager.isInDialogue)
+        {
+            playerWeaponManager.UseCurrentWeaponSpecial();
+        }
+    }
+
+    public void TryReloadCurrentWeapon()
+    {
+        playerWeaponManager.ReloadCurrentWeapon();
+    }
+
+
     public void SetCurrentOccupiedNode(GridNode newGridNode)
     {
         currentOccupiedNode = newGridNode;
     }
 
-
+    public void ShakeScreen()
+    {
+        playerCamera.DOShakePosition(.35f, .5f);
+    }
 }

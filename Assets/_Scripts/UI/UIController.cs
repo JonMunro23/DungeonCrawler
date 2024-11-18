@@ -29,4 +29,19 @@ public class UIController : MonoBehaviour
         playerStatsUIController.InitStatsUI(initialisedPlayer.playerCharacterData);
         playerInventoryUIController.InitPlayerInventory();
     }
+
+    void UpdateWeaponSlotUI(EquipmentSlotType slotToUpdate, WeaponItemData newSlotData)
+    {
+        handUIController.UpdateWeaponSlot(slotToUpdate, newSlotData);
+    }
+
+    void OnWeaponCooldownBegins()
+    {
+
+    }
+
+    void OnWeaponCooldownEnds()
+    {
+
+    }
 }

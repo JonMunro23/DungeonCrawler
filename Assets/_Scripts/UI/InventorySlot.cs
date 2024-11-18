@@ -6,25 +6,25 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class InventorySlot : MonoBehaviour, IPointerClickHandler
+public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
 {
     PlayerInventoryManager playerInventoryManager;
 
-    public ItemStack currentSlotItem = null;
+    public bool isInteractable;
+
+    public ItemStack currentSlotItemStack = null;
     public TMP_Text SlotAmountText;
     public Image slotImage;
-
-    //[SerializeField]
-    //GameObject tooltipDisplay;
-    //GameObject tooltipDisplayClone;
-    //bool isTooltipDisplayOpen;
 
     public bool isSlotOccupied;
     public bool isSlotActive = true;
 
-    public static Action<EquipmentSlotType ,HandItemData> onNewHandItem;
-    public static Action<EquipmentSlotType, HandItemData> onHandItemRemoved;
-    public static Action<InventorySlot> onInventorySlotClicked;
+    public static Action<ISlot> onInventorySlotClicked;
+
+    private void Start()
+    {
+        SetInteractable(true);
+    }
 
     public void InitSlot(PlayerInventoryManager newPlayerInventoryManager)
     {
@@ -33,7 +33,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     public virtual void AddItem(ItemStack itemToAdd)
     {
-        currentSlotItem = new ItemStack(itemToAdd.itemData, itemToAdd.itemAmount);
+        currentSlotItemStack = new ItemStack(itemToAdd.itemData, itemToAdd.itemAmount);
         isSlotOccupied = true;
 
         ConsumableItemData consumableData = GetDataAsConsumable(itemToAdd.itemData);
@@ -50,9 +50,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     public void AddToCurrentItemStack(int amountToAdd)
     {
-        currentSlotItem.itemAmount += amountToAdd;
+        currentSlotItemStack.itemAmount += amountToAdd;
 
-        ConsumableItemData consumableData = GetDataAsConsumable(currentSlotItem.itemData);
+        ConsumableItemData consumableData = GetDataAsConsumable(currentSlotItemStack.itemData);
         if (consumableData)
         {
             if (consumableData.consumableType == ConsumableType.HealSyringe)
@@ -71,7 +71,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     public virtual ItemStack TakeItem()
     {
-        ItemStack itemToTake = new ItemStack(currentSlotItem.itemData, currentSlotItem.itemAmount);
+        ItemStack itemToTake = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount);
 
         ConsumableItemData consumableData = GetDataAsConsumable(itemToTake.itemData);
         if(consumableData)
@@ -88,9 +88,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     public virtual ItemStack SwapItem(ItemStack itemToSwap)
     {
-        ItemStack oldItem = new ItemStack(currentSlotItem.itemData, currentSlotItem.itemAmount);
+        ItemStack oldItem = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount);
 
-        currentSlotItem = itemToSwap;
+        currentSlotItemStack = itemToSwap;
         UpdateSlotUI();
 
         return oldItem;
@@ -98,26 +98,18 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     public void UseItem()
     {
-        if (currentSlotItem != null)
+        if (currentSlotItemStack != null)
         {
-            currentSlotItem.itemAmount--;
+            currentSlotItemStack.itemAmount--;
             UpdateSlotUI();
-            if (currentSlotItem.itemAmount == 0)
+            if (currentSlotItemStack.itemAmount == 0)
                 RemoveItem();
         }
     }
 
-    void RemoveItem()
-    {
-        currentSlotItem.itemData = null;
-        currentSlotItem.itemAmount = 0;
-        isSlotOccupied = false;
-        UpdateSlotUI();
-    }
-
     void UpdateSlotUI()
     {
-        if (currentSlotItem.itemData == null)
+        if (currentSlotItemStack.itemData == null)
         {
             slotImage.sprite = null;
             slotImage.enabled = false;
@@ -127,49 +119,57 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
         }
             
 
-        slotImage.sprite = currentSlotItem.itemData.itemSprite;
+        slotImage.sprite = currentSlotItemStack.itemData.itemSprite;
         slotImage.enabled = true;
-        if (currentSlotItem.itemAmount > 1)
-            SlotAmountText.text = currentSlotItem.itemAmount.ToString();
+        if (currentSlotItemStack.itemAmount > 1)
+            SlotAmountText.text = currentSlotItemStack.itemAmount.ToString();
         else
             SlotAmountText.text = "";
     }
 
-    //public void ShowTooltipDisplay(ItemData itemToDisplay)
-    //{
-
-    //        //tooltipDisplayClone = Instantiate(tooltipDisplay, mousePos, Quaternion.identity, itemPickup.canvasTransform);
-    //        tooltipDisplayClone.transform.localScale = new Vector3(2, 2, 2);
-    //        isTooltipDisplayOpen = true;
-    //        TooltipDisplay display = tooltipDisplayClone.GetComponent<TooltipDisplay>();
-    //        display.itemNameText.text = itemToDisplay.itemName;
-    //        display.itemTypeText.text = itemToDisplay.itemType.ToString();
-    //        display.itemWeightText.text = itemToDisplay.itemWeight.ToString() + "kg";
-    //        display.itemValueText.text = itemToDisplay.itemValue.ToString() + "g";
-    //        display.itemDescriptionText.text = itemToDisplay.itemDescription;
-
-    //        display.itemPortrait.sprite = itemToDisplay.itemSprite;
-
-    //    if (itemToDisplay.itemType == ItemData.ItemType.meleeWeapon || itemToDisplay.itemType == ItemData.ItemType.rangedWeapon)
-    //    {
-    //        display.itemDamageText.text = itemToDisplay.itemDamageMin + " - " + itemToDisplay.itemDamageMax + " " + itemToDisplay.itemDamageType;
-    //        display.itemCooldownText.text = itemToDisplay.itemCooldown.ToString() + " seconds";
-
-    //    }
-    //    else if (itemToDisplay.itemType == ItemData.ItemType.consumable)
-    //    {
-    //        //display consumable information on tooltipDisplay
-    //    }
-    //}
-
-    //public void HideTooltipDisplay()
-    //{
-    //    isTooltipDisplayOpen = false;
-    //    Destroy(tooltipDisplayClone);
-    //}
-
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!IsInteractable())
+            return;
+
         onInventorySlotClicked?.Invoke(this);
+    }
+
+    public void RemoveItem()
+    {
+        currentSlotItemStack.itemData = null;
+        currentSlotItemStack.itemAmount = 0;
+        isSlotOccupied = false;
+        UpdateSlotUI();
+    }
+
+    public void AddToExistingStack(int amountToAdd)
+    {
+        currentSlotItemStack.itemAmount += amountToAdd;
+        UpdateSlotUI();
+    }
+
+    public ItemStack GetItemStack()
+    {
+        return currentSlotItemStack;
+    }
+
+    public void SetInteractable(bool _isInteractable)
+    {
+        isInteractable = _isInteractable;
+        if (isInteractable == false)
+            slotImage.color = new Color(255, 255, 255, .12f);
+        else
+            slotImage.color = Color.white;
+    }
+
+    public bool IsInteractable()
+    {
+        return isInteractable;
+    }
+
+    public bool IsSlotEmpty()
+    {
+        return currentSlotItemStack.itemData ? false : true;
     }
 }

@@ -3,22 +3,22 @@ using UnityEngine;
 
 public class WorldInteraction : MonoBehaviour
 {
-    Camera playerCam;
-
+    PlayerController playerController;
     [SerializeField] float maxInteractionDistance = 3f;
 
     public static Action OnWorldInteraction;
 
+
     private void Awake()
     {
-        playerCam = GetComponentInChildren<Camera>();
+        playerController = GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
         RaycastHit hit;
-        Ray ray = playerCam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, maxInteractionDistance))
         {
             if (hit.collider.TryGetComponent(out IPickup pickup))

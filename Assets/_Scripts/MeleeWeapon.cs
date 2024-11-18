@@ -4,6 +4,7 @@ public class MeleeWeapon : Weapon
     public override void UseWeapon()
     {
         base.UseWeapon();
+         
         int rand = Random.Range(0, 2);
         if (rand == 0)
             weaponAnimator.Play("Swing Right 1");
@@ -22,7 +23,7 @@ public class MeleeWeapon : Weapon
             int damage = CalculateDamage();
             bool isCrit = RollForCrit();
             if (isCrit)
-                damage *= Mathf.CeilToInt(handItemData.critDamageMultiplier);
+                damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
 
             damageable.TakeDamage(damage, isCrit);
         }

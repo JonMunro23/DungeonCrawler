@@ -271,10 +271,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550fb40a75d38664eb9a42481eec0672, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponData: {fileID: 0}
-  currentOccuipedHand: 0
-  projectileSpawnLocation: {fileID: 2690174596056474962}
+  weaponItemData: {fileID: 0}
+  weaponAnimator: {fileID: 0}
   canUse: 0
+  canShootBurst: 1
+  isWeaponDrawn: 0
+  isReloading: 0
+  projectileSpawnLocation: {fileID: 2690174596056474962}
 --- !u!95 &5015189803529875003
 Animator:
   serializedVersion: 5
@@ -283,7 +286,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5015189803522481237}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 9000000, guid: 673376756edff81469dbeeb43f3d0da9, type: 3}
   m_Controller: {fileID: 9100000, guid: 17fc99dcd5dac444dbeb47151b59800a, type: 2}
   m_CullingMode: 1

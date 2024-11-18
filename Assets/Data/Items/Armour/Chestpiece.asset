@@ -20,11 +20,11 @@ MonoBehaviour:
   itemValue: 300
   isItemStackable: 0
   maxItemStackSize: 1
-  EquipmentSlotType: 1
   itemCooldown: 0
+  EquipmentSlotType: 2
   statModifiers:
   - statToModify: 0
-    modifyOperation: 0
+    modifyOperation: 2
     modifyAmount: 20
   - statToModify: 1
     modifyOperation: 0

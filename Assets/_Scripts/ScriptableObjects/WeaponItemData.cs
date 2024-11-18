@@ -8,7 +8,7 @@ public enum AmmoType
 };
 
 [CreateAssetMenu(fileName = "WeaponItemData", menuName = "Items/New Weapon Item")]
-public class HandItemData : EquipmentItemData
+public class WeaponItemData : EquipmentItemData
 {
     [Header("Weapon Properties")]
     public GameObject itemPrefab;

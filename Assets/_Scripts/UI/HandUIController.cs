@@ -4,103 +4,99 @@ using UnityEngine.UI;
 
 public class HandUIController : MonoBehaviour
 {
-    [SerializeField] Image leftHandHeldItemImage;
-    [SerializeField] Image rightHandHeldItemImage;
+    [SerializeField] Image weaponSlot0Image;
+    [SerializeField] Image weaponSlot1Image;
     [SerializeField] Image leftHandItemCooldownImage;
     [SerializeField] Image rightHandItemCooldownImage;
 
-    [SerializeField] HandItemData defaultHandItem;
+    [SerializeField] WeaponItemData defaultHandItem;
 
-    private void OnEnable()
-    {
-        InventorySlot.onNewHandItem += OnNewHandItem;
-        InventorySlot.onHandItemRemoved += OnHandItemRemoved;
+    //private void OnEnable()
+    //{
+    //    InventorySlot.onNewWeapon += OnNewWeaponItem;
+    //    InventorySlot.onWeaponRemoved += OnHandItemRemoved;
 
-        RangedWeapon.OnHandCooldownBegins += OnHandCooldownBegins;
-        RangedWeapon.OnHandCooldownEnds += OnHandCooldownEnds;
-    }
+    //    Weapon.OnWeaponCooldownBegins += OnWeaponCooldownBegins;
+    //    Weapon.OnWeaponCooldownEnds += OnWeaponCooldownEnds;
+    //}
 
-    private void OnDisable()
-    {
-        InventorySlot.onNewHandItem -= OnNewHandItem;
-        InventorySlot.onHandItemRemoved -= OnHandItemRemoved;
+    //private void OnDisable()
+    //{
+    //    InventorySlot.onNewWeapon -= OnNewWeaponItem;
+    //    InventorySlot.onWeaponRemoved -= OnHandItemRemoved;
 
-        RangedWeapon.OnHandCooldownBegins -= OnHandCooldownBegins;
-        RangedWeapon.OnHandCooldownEnds -= OnHandCooldownEnds;
-    }
+    //    Weapon.OnWeaponCooldownBegins -= OnWeaponCooldownBegins;
+    //    Weapon.OnWeaponCooldownEnds -= OnWeaponCooldownEnds;
+    //}
 
     public void InitHands()
     {
-        OnNewHandItem(EquipmentSlotType.leftHand, defaultHandItem);
-        OnNewHandItem(EquipmentSlotType.rightHand, defaultHandItem);
+        //UpdateHands(EquipmentSlotType.leftHand, defaultHandItem);
+        //UpdateHands(EquipmentSlotType.rightHand, defaultHandItem);
     }
 
-    public void OnHandItemRemoved(EquipmentSlotType slotType, HandItemData removedItemData)
+    public void OnHandItemRemoved(EquipmentSlotType slotType, WeaponItemData removedItemData)
     {
-        if (removedItemData.isTwoHanded)
-        {
-            leftHandHeldItemImage.sprite = defaultHandItem.itemSprite;
-            rightHandHeldItemImage.sprite = defaultHandItem.itemSprite;
+        Debug.Log("OnHandItemRemoved");
 
-        }
-        else if (slotType == EquipmentSlotType.leftHand)
-        {
-            leftHandHeldItemImage.sprite = defaultHandItem.itemSprite;
-            OnHandCooldownEnds(Hands.left);
-        }
-        else
-        {
-            rightHandHeldItemImage.sprite = defaultHandItem.itemSprite;
-            OnHandCooldownEnds(Hands.right);
-        }
+        //if (removedItemData.isTwoHanded)
+        //{
+        //    weaponSlot0Image.sprite = defaultHandItem.itemSprite;
+        //    weaponSlot1Image.sprite = defaultHandItem.itemSprite;
+
+        //}
+        //else if (slotType == EquipmentSlotType.leftHand)
+        //{
+        //    weaponSlot0Image.sprite = defaultHandItem.itemSprite;
+        //    OnWeaponCooldownEnds();
+        //}
+        //else
+        //{
+        //    weaponSlot1Image.sprite = defaultHandItem.itemSprite;
+        //    OnWeaponCooldownEnds();
+        //}
 
     }
 
-    public void OnNewHandItem(EquipmentSlotType slotType, HandItemData newItem)
+    public void UpdateWeaponSlot(EquipmentSlotType slotToUpdate, WeaponItemData newSlotData)
     {
-        if(newItem.isTwoHanded)
-        {
-            leftHandHeldItemImage.sprite = newItem.itemSprite;
-            rightHandHeldItemImage.sprite = newItem.itemSprite;
-
-        }
-        else if (slotType == EquipmentSlotType.leftHand)
-            leftHandHeldItemImage.sprite = newItem.itemSprite;
-        else
-            rightHandHeldItemImage.sprite = newItem.itemSprite;
+        if(slotToUpdate == EquipmentSlotType.weaponSlot0)
+            weaponSlot0Image.sprite = newSlotData.itemSprite;
+        else if (slotToUpdate == EquipmentSlotType.weaponSlot0)
+            weaponSlot1Image.sprite = newSlotData.itemSprite;
     }
 
-    void OnHandCooldownBegins(Hands hand)
+    void OnWeaponCooldownBegins()
     {
-        if(hand == Hands.both)
-        {
-            leftHandItemCooldownImage.enabled = true;
-            rightHandItemCooldownImage.enabled = true;
-        }
-        else if (hand == Hands.left)
-        {
-            leftHandItemCooldownImage.enabled = true;
-        }
-        else
-        {
-            rightHandItemCooldownImage.enabled = true;
-        }
+        //if(hand == Hands.both)
+        //{
+        //    leftHandItemCooldownImage.enabled = true;
+        //    rightHandItemCooldownImage.enabled = true;
+        //}
+        //else if (hand == Hands.left)
+        //{
+        //    leftHandItemCooldownImage.enabled = true;
+        //}
+        //else
+        //{
+        //    rightHandItemCooldownImage.enabled = true;
+        //}
     }
 
-    void OnHandCooldownEnds(Hands hand)
+    void OnWeaponCooldownEnds()
     {
-        if(hand == Hands.both)
-        {
-            leftHandItemCooldownImage.enabled = false;
-            rightHandItemCooldownImage.enabled = false;
-        }
-        else if (hand == Hands.left)
-        {
-            leftHandItemCooldownImage.enabled = false;
-        }
-        else
-        {
-            rightHandItemCooldownImage.enabled = false;
-        }
+        //if(hand == Hands.both)
+        //{
+        //    leftHandItemCooldownImage.enabled = false;
+        //    rightHandItemCooldownImage.enabled = false;
+        //}
+        //else if (hand == Hands.left)
+        //{
+        //    leftHandItemCooldownImage.enabled = false;
+        //}
+        //else
+        //{
+        //    rightHandItemCooldownImage.enabled = false;
+        //}
     }
 }

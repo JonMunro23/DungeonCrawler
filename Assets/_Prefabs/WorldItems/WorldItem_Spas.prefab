@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7246817369897715905}
   - component: {fileID: 3358120519230435700}
   m_Layer: 0
-  m_Name: Mesh_Vector
+  m_Name: Mesh_SPAS-12
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,9 +27,9 @@ Transform:
   m_GameObject: {fileID: 1370442431005241714}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0.562, y: 0, z: 0}
+  m_LocalScale: {x: 5.5, y: 5.5, z: 5.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4364375945309282651}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -40,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1370442431005241714}
-  m_Mesh: {fileID: 4300000, guid: c573a18c6721ca9499f68dfde34884f8, type: 3}
+  m_Mesh: {fileID: 4300002, guid: c7b47fedc687b5c42a8d293bc0b43c2e, type: 3}
 --- !u!23 &3358120519230435700
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 20072a15fe68a604a8c58d7c9335385c, type: 2}
+  - {fileID: 2100000, guid: d9f61228b6360ec4f8c874f881636b68, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 7185448901924819744}
   - component: {fileID: 2377320367368945192}
   m_Layer: 0
-  m_Name: WorldItem_Vector
+  m_Name: WorldItem_Spas
   m_TagString: WorldItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item:
-    itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
+    itemData: {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
     itemAmount: 1
   isOnPressurePlate: 0
 --- !u!65 &7185448901924819744

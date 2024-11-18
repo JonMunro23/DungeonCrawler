@@ -1,9 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class ItemPickupManager : MonoBehaviour
 {
@@ -53,14 +50,14 @@ public class ItemPickupManager : MonoBehaviour
         AttachItemToMouseCursor(worldItemGrabbed.item, worldItemGrabbed);
     }
 
-    void OnInventorySlotClicked(InventorySlot slotClicked)
+    void OnInventorySlotClicked(ISlot slotClicked)
     {
-        if (!slotClicked.isSlotActive)
+        if (!slotClicked.IsInteractable())
             return;
 
         if (!hasGrabbedItem)
         {
-            if (slotClicked.isSlotOccupied)
+            if (!slotClicked.IsSlotEmpty())
             {
                 AttachItemToMouseCursor(slotClicked.TakeItem());
                 return;
@@ -68,7 +65,7 @@ public class ItemPickupManager : MonoBehaviour
         }
         else
         {
-            if (!slotClicked.isSlotOccupied)
+            if (slotClicked.IsSlotEmpty())
             {
                 slotClicked.AddItem(currentGrabbedItem);
                 DetachItemFromMouseCursor();
@@ -76,14 +73,16 @@ public class ItemPickupManager : MonoBehaviour
             }
             else
             {
-                if(slotClicked.currentSlotItem.itemData == currentGrabbedItem.itemData)
+                if(slotClicked.GetItemStack().itemData == currentGrabbedItem.itemData)
                 {
-                    slotClicked.AddToCurrentItemStack(currentGrabbedItem.itemAmount);
+                    slotClicked.AddToExistingStack(currentGrabbedItem.itemAmount);
                     DetachItemFromMouseCursor();
                     return;
                 }
                 else
+                {
                     AttachItemToMouseCursor(slotClicked.SwapItem(currentGrabbedItem));
+                }
 
             }
         }
@@ -156,6 +155,9 @@ public class ItemPickupManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called from InputHandler on key press
+    /// </summary>
     public void TryPickupGroundItem()
     {
         if (groundItems.Count > 0)
@@ -170,14 +172,14 @@ public class ItemPickupManager : MonoBehaviour
         if(remainingItems != itemToPickup.item.itemAmount)
         {
             //this will need changed
-            if(playerEquipmentManager.currentLeftHandWeapon != null)
-            {
-                playerEquipmentManager.currentLeftHandWeapon.Grab();
-            }
-            else if(playerEquipmentManager.currentRightHandWeapon != null)
-            {
-                playerEquipmentManager.currentRightHandWeapon.Grab();
-            }
+            //if(playerEquipmentManager.currentLeftHandWeapon != null)
+            //{
+            //    playerEquipmentManager.currentLeftHandWeapon.Grab();
+            //}
+            //else if(playerEquipmentManager.currentRightHandWeapon != null)
+            //{
+            //    playerEquipmentManager.currentRightHandWeapon.Grab();
+            //}
 
             if (remainingItems == 0)
             {

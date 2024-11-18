@@ -11,25 +11,13 @@ public class PlayerInventoryManager : MonoBehaviour
     InventorySlot syringeSlot;
     public InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
-    [SerializeField] bool isOpen;
+    public bool isOpen { get; private set; }
 
     [SerializeField] int heldHealthSyringes;
 
     public static Action onInventoryOpened;
     public static Action onInventoryClosed;
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
-
-    Action onWeaponsHolsteredCallback;
-
-    private void OnEnable()
-    {
-        onWeaponsHolsteredCallback += OnWeaponsHolstered;
-    }
-
-    private void OnDisable()
-    {
-        onWeaponsHolsteredCallback -= OnWeaponsHolstered;
-    }
 
     public void InitInventory(PlayerController newPlayerController)
     {
@@ -95,17 +83,18 @@ public class PlayerInventoryManager : MonoBehaviour
 
     public void RemoveHealthSyringe(int amountToRemove) => heldHealthSyringes -= amountToRemove;
 
-    public void TryUseHealthSyringe()
+    async public void TryUseHealthSyringe()
     {
         syringeSlot = FindConsumableOfType(ConsumableType.HealSyringe);
         if(syringeSlot)
         {
-            ConsumableItemData consumableData = syringeSlot.currentSlotItem.itemData as ConsumableItemData;
+            ConsumableItemData consumableData = syringeSlot.currentSlotItemStack.itemData as ConsumableItemData;
             if (!consumableData)
                 return;
 
-            
-            playerController.playerEquipmentManager.HolsterWeapons(onWeaponsHolsteredCallback);
+            IWeapon currentWeapon = playerController.playerWeaponManager.currentWeapon;
+            if (currentWeapon != null)
+                await playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
         }
     }
 
@@ -113,10 +102,10 @@ public class PlayerInventoryManager : MonoBehaviour
     {
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
-            if (!slot.currentSlotItem.itemData)
+            if (!slot.currentSlotItemStack.itemData)
                 continue;
 
-            ConsumableItemData consumableData = slot.currentSlotItem.itemData as ConsumableItemData;
+            ConsumableItemData consumableData = slot.currentSlotItemStack.itemData as ConsumableItemData;
             if (!consumableData)
                 continue;
 
@@ -129,16 +118,16 @@ public class PlayerInventoryManager : MonoBehaviour
         return null;
     }
 
-    void OnWeaponsHolstered()
-    {
-        ConsumableItemData consumableData = syringeSlot.currentSlotItem.itemData as ConsumableItemData;
-        if (!consumableData)
-            return;
+    //void OnWeaponsHolstered()
+    //{
+    //    ConsumableItemData consumableData = syringeSlot.currentSlotItemStack.itemData as ConsumableItemData;
+    //    if (!consumableData)
+    //        return;
 
-        playerController.playerHealthController.UseHealthSyringe(consumableData);
-        syringeSlot.UseItem();
-        heldHealthSyringes--;
-    }
+    //    playerController.playerHealthController.UseHealthSyringe(consumableData);
+    //    syringeSlot.UseItem();
+    //    heldHealthSyringes--;
+    //}
 
     public InventorySlot GetNextFreeSlot()
     {
@@ -156,10 +145,10 @@ public class PlayerInventoryManager : MonoBehaviour
         List<InventorySlot> slotsWithItem = new List<InventorySlot>();
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
-            if (!slot.currentSlotItem.itemData)
+            if (!slot.currentSlotItemStack.itemData)
                 continue;
 
-            if (slot.currentSlotItem.itemData == itemToCheck.itemData)
+            if (slot.currentSlotItemStack.itemData == itemToCheck.itemData)
                 slotsWithItem.Add(slot);
         }
 
@@ -174,9 +163,9 @@ public class PlayerInventoryManager : MonoBehaviour
             if (!slot.isSlotOccupied)
                 continue;
 
-            if(slot.currentSlotItem.itemData == itemData)
+            if(slot.currentSlotItemStack.itemData == itemData)
             {
-                if(slot.currentSlotItem.GetRemainingSpaceInStack() > 0)
+                if(slot.currentSlotItemStack.GetRemainingSpaceInStack() > 0)
                 {
                     slotsWithItemAndSpace.Add(slot);
                 }
@@ -197,7 +186,7 @@ public class PlayerInventoryManager : MonoBehaviour
             int remainingAmountToAdd = itemToAdd.itemAmount;
             foreach (InventorySlot slot in slotsWithSpace)
             {
-                int spaceInSlot = slot.currentSlotItem.GetRemainingSpaceInStack();
+                int spaceInSlot = slot.currentSlotItemStack.GetRemainingSpaceInStack();
                 if (spaceInSlot > remainingAmountToAdd)
                 {
                     slot.AddToCurrentItemStack(remainingAmountToAdd);

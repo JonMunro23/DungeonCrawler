@@ -3,6 +3,7 @@ using System;
 using Random = UnityEngine.Random;
 using DG.Tweening;
 using System.Collections;
+using System.Threading.Tasks;
 
 public class PlayerHealthController : MonoBehaviour, IDamageable
 {
@@ -18,9 +19,6 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
     [SerializeField] AudioClip[] damageTakenSFx;
     AudioSource audioSource;
-
-    [SerializeField]
-    Camera playerCam;
     private void OnEnable()
     {
         Stat.onStatUpdated += OnStatUpdated;
@@ -71,14 +69,9 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
     {
         int damageToTake = wasCrit ? damageTaken * 2 : damageTaken;
         audioSource.PlayOneShot(GetRandomAudioClip());
-        ScreenShake();
+        playerController.ShakeScreen();
         currentHealth -= damageToTake;
         onCurrentHealthUpdated?.Invoke(characterData, currentHealth);
-    }
-
-    void ScreenShake()
-    {
-        playerCam.DOShakePosition(.35f, .5f);
     }
 
     AudioClip GetRandomAudioClip()
@@ -100,13 +93,13 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
     public bool CanHeal() => currentHealth != maxHealth;
     public bool CanUseSyringe() => canUseSyringe;
 
-    public void UseHealthSyringe(ConsumableItemData syringeData)
+    public async void UseHealthSyringe(ConsumableItemData syringeData)
     {
         if (!canUseSyringe)
             return;
 
         canUseSyringe = false;
-        StartCoroutine(PerformSyringeAnim(syringeData));
+        await PerformSyringeAnim(syringeData);
         StartCoroutine(HealthRegen(syringeData.healthRegenDuration));
         StartCoroutine(SyringeUseCooldown(syringeData.cooldownBetweenUses));
     }
@@ -152,12 +145,11 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
         canUseSyringe = true;
     }
 
-    IEnumerator PerformSyringeAnim(ConsumableItemData syringeData)
+    async Task PerformSyringeAnim(ConsumableItemData syringeData)
     {
         EnableSyringeArms();
-        yield return new WaitForSeconds(syringeData.useAnimationLength);
+        await Task.Delay((int)(syringeData.useAnimationLength * 1000));
         DisableSyringeArms();
-
-        playerController.playerEquipmentManager.DrawWeapons();
+        await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
     }
 }

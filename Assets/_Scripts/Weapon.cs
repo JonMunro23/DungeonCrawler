@@ -1,29 +1,39 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Weapon : MonoBehaviour, IWeapon
 {
-    public HandItemData handItemData;
-    public Hands currentOccuipedHand;
-    
+    public WeaponItemData weaponItemData;
     public Animator weaponAnimator;
+
+    public EquipmentSlotType currentOccupuiedSlot = EquipmentSlotType.None;
 
     public bool canUse;
     public bool canShootBurst = true;
     public bool isWeaponDrawn;
     public bool isReloading;
 
-    public static Action<Hands> OnHandCooldownBegins;
-    public static Action<Hands> OnHandCooldownEnds;
-
-
-    public IEnumerator DrawWeapon()
+    public async Task DrawWeapon()
     {
+        weaponAnimator.enabled = true;
         weaponAnimator.Play("Draw");
-        yield return new WaitForSeconds(handItemData.drawAnimDuration);
+        await Task.Delay((int)(weaponItemData.drawAnimDuration * 1000));
         isWeaponDrawn = true;
+        canUse = true;
+        canShootBurst = true;
+    }
+
+    public async Task HolsterWeapon()
+    {
+        isWeaponDrawn = false;
+        weaponAnimator.Play("Hide");
+        await Task.Delay((int)(weaponItemData.hideAnimDuration * 1000));
+        isWeaponDrawn = false;
+        if(weaponAnimator)
+            weaponAnimator.enabled = false;
     }
 
     public int GetLoadedAmmo()
@@ -33,42 +43,31 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public void Grab()
     {
-        if (!isReloading && canUse)
+        if (!IsInUse())
             weaponAnimator.Play("Interact");
     }
 
-    public IEnumerator HolsterWeapon(Action onHolsteredCallback)
-    {
-        weaponAnimator.Play("Hide");
-        yield return new WaitForSeconds(handItemData.drawAnimDuration);
-        isWeaponDrawn = false;
 
-        onHolsteredCallback?.Invoke();
-    }
 
-    public void InitWeapon(HandItemData dataToInit, Hands inHand)
+    public void InitWeapon(WeaponItemData dataToInit)
     {
-        handItemData = dataToInit;
-        currentOccuipedHand = inHand;
+        weaponItemData = dataToInit;
         canUse = true;
-
         weaponAnimator = GetComponent<Animator>();
-
-        StartCoroutine(DrawWeapon());
     }
 
     public bool IsReloading() => isReloading;
 
-    public bool IsTwoHanded() => handItemData.isTwoHanded;
+    public bool IsTwoHanded() => weaponItemData.isTwoHanded;
 
     public void RemoveWeapon()
     {
         Destroy(gameObject);
     }
 
-    public void TryReloadWeapon()
+    public void Reload()
     {
-        if (isReloading)
+        if (isReloading || !isWeaponDrawn)
             return;
 
         isReloading = true;
@@ -78,7 +77,7 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public void Use()
     {
-        if (!canUse)
+        if (!canUse || !isWeaponDrawn)
             return;
 
         UseWeapon();
@@ -100,32 +99,30 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public IEnumerator UseCooldown()
     {
-        OnHandCooldownBegins?.Invoke(currentOccuipedHand);
-        yield return new WaitForSeconds(handItemData.itemCooldown);
-        OnHandCooldownEnds?.Invoke(currentOccuipedHand);
+        yield return new WaitForSeconds(weaponItemData.itemCooldown);
         canUse = true;
         canShootBurst = true;
     }
 
     IEnumerator ReloadTimer()
     {
-        yield return new WaitForSeconds(handItemData.reloadDuration);
+        yield return new WaitForSeconds(weaponItemData.reloadDuration);
         isReloading = false;
     }
 
     public int CalculateDamage()
     {
-        float damage = Random.Range(handItemData.itemDamageMinMax.x, handItemData.itemDamageMinMax.y);
+        float damage = Random.Range(weaponItemData.itemDamageMinMax.x, weaponItemData.itemDamageMinMax.y);
         return Mathf.CeilToInt(damage);
     }
 
     public bool RollForCrit()
     {
         bool wasCrit = false;
-        if (handItemData.critChance > 0)
+        if (weaponItemData.critChance > 0)
         {
             float rand = Random.Range(0, 101);
-            if (rand <= handItemData.critChance)
+            if (rand <= weaponItemData.critChance)
             {
                 wasCrit = true;
             }
@@ -133,5 +130,19 @@ public class Weapon : MonoBehaviour, IWeapon
         return wasCrit;
     }
 
+    public void SetWeaponActive(bool isActive)
+    {
+        gameObject.SetActive(isActive);
+    }
 
+    public bool IsInUse()
+    {
+        bool isInUse = !canUse || !canShootBurst || !isWeaponDrawn || isReloading;
+        return isInUse;
+    }
+
+    public WeaponItemData GetWeaponData()
+    {
+        return weaponItemData;
+    }
 }

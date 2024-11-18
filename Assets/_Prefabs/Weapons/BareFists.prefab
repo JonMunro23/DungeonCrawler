@@ -42,7 +42,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1613121034941279707}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 9000000, guid: cb6885c079cdcfe44bbf3431409bdd74, type: 3}
   m_Controller: {fileID: 9100000, guid: d6c1ad012d315af4aaf1fa54bac45333, type: 2}
   m_CullingMode: 1
@@ -67,6 +67,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f41cbf576a78524f97b491d01066dbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponItemData: {fileID: 0}
+  weaponAnimator: {fileID: 0}
+  canUse: 0
+  canShootBurst: 1
+  isWeaponDrawn: 0
+  isReloading: 0
 --- !u!1001 &687923506675088210
 PrefabInstance:
   m_ObjectHideFlags: 0

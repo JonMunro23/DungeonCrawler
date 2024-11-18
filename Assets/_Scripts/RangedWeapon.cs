@@ -10,7 +10,7 @@ public class RangedWeapon : Weapon
     AudioSource weaponAudioSource;
     ParticleSystem muzzleFX;
 
-    bool IsShootingBurst;
+    //bool IsShootingBurst;
     Coroutine burstCoroutine;
     bool canShootBurstShot = true;
 
@@ -33,15 +33,15 @@ public class RangedWeapon : Weapon
         //if (CheckAmmo(weaponData.ammoType) != 0)
         //{
 
-        if (handItemData.isProjectile)
+        if (weaponItemData.isProjectile)
         {
-            GameObject projectile = Instantiate(handItemData.projectileData.projModel, projectileSpawnLocation.position, projectileSpawnLocation.rotation);
+            GameObject projectile = Instantiate(weaponItemData.projectileData.projModel, projectileSpawnLocation.position, projectileSpawnLocation.rotation);
             //projectile.GetComponentInChildren<Projectile>().projectile = handItemData.itemProjectile;
             projectile.GetComponentInChildren<Projectile>().damage = CalculateDamage();
         }
         else
         {
-            if (handItemData.isBurst)
+            if (weaponItemData.isBurst)
             {
                 TryShootBurst();
             }
@@ -51,8 +51,6 @@ public class RangedWeapon : Weapon
             }
 
         }
-
-        Debug.Log("Using ranged weapon");
     }
 
     int CheckAmmo(AmmoType ammoType)
@@ -91,12 +89,12 @@ public class RangedWeapon : Weapon
     {
         weaponAnimator.Play("Fire");
         muzzleFX.Play();
-        weaponAudioSource.PlayOneShot(handItemData.attackSFX[Random.Range(0, handItemData.attackSFX.Length)]);
+        weaponAudioSource.PlayOneShot(weaponItemData.attackSFX[Random.Range(0, weaponItemData.attackSFX.Length)]);
 
         RaycastHit hit;
-        for (int i = 0; i < handItemData.projectileCount; i++)
+        for (int i = 0; i < weaponItemData.projectileCount; i++)
         {
-            if (Physics.Raycast(projectileSpawnLocation.position, projectileSpawnLocation.forward, out hit, handItemData.itemRange * 3))
+            if (Physics.Raycast(projectileSpawnLocation.position, projectileSpawnLocation.forward, out hit, weaponItemData.itemRange * 3))
             {
 
                 IDamageable damageable = hit.transform.GetComponent<IDamageable>();
@@ -105,7 +103,7 @@ public class RangedWeapon : Weapon
                     int damage = CalculateDamage();
                     bool isCrit = RollForCrit();
                     if (isCrit)
-                        damage *= Mathf.CeilToInt(handItemData.critDamageMultiplier);
+                        damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
 
                     damageable.TakeDamage(damage, isCrit);
                 }
@@ -128,25 +126,20 @@ public class RangedWeapon : Weapon
         {
             StopCoroutine(burstCoroutine);
             canShootBurst = true;
-            IsShootingBurst = false;
         }
     }
 
     IEnumerator ShootBurst()
     {
-        IsShootingBurst = true;
-
-        for (int i = 0; i < handItemData.burstLength; i++)
+        for (int i = 0; i < weaponItemData.burstLength; i++)
         {
             if (canShootBurstShot)
             {
                 canShootBurstShot = false;
                 Shoot();
-                yield return new WaitForSeconds(handItemData.perShotInBurstDelay);
+                yield return new WaitForSeconds(weaponItemData.perShotInBurstDelay);
                 canShootBurstShot = true;
             }
         }
-
-        IsShootingBurst = false;
     }
 }
