@@ -52,4 +52,20 @@ public class PlayerWeaponUIManager : MonoBehaviour
             }
         }
     }
+
+    public void DisableSlots()
+    {
+        foreach(WeaponSlot slot in weaponSlots)
+        {
+            slot.SetInteractable(false);
+        }
+    }
+
+    public void RenableSlots()
+    {
+        foreach (WeaponSlot slot in weaponSlots)
+        {
+            slot.SetInteractable(true);
+        }
+    }
 }

@@ -4,38 +4,7 @@ public class PlayerEquipmentUIManager : MonoBehaviour
 {
     [SerializeField] EquipmentSlot[] equipmentSlots;
 
-    private void OnEnable()
-    {
-        ItemPickupManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
-        ItemPickupManager.onCurrentItemDettachedFromCursor += OnCurrentItemDettachedFromCursor;
-    }
-
-    private void OnDisable()
-    {
-        ItemPickupManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
-        ItemPickupManager.onCurrentItemDettachedFromCursor -= OnCurrentItemDettachedFromCursor;
-    }
-
-    void OnNewItemAttachedToCursor(ItemStack newItem)
-    {
-        WeaponItemData handItemData = newItem.itemData as WeaponItemData;
-        if(handItemData != null)
-        {
-            DisableEquipmentSlots();
-            return;
-        }
-
-        EquipmentItemData equipItemData = newItem.itemData as EquipmentItemData;
-        if (equipItemData != null)
-            DisableSlotsNotOfType(equipItemData.EquipmentSlotType);
-    }
-
-    void OnCurrentItemDettachedFromCursor()
-    {
-        RenableSlots();
-    }
-
-    void DisableEquipmentSlots()
+    public void DisableEquipmentSlots()
     {
         foreach(EquipmentSlot slot in equipmentSlots)
         {

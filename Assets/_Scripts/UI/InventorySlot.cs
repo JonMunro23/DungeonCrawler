@@ -10,6 +10,8 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
 {
     PlayerInventoryManager playerInventoryManager;
 
+    int slotIndex;
+
     public bool isInteractable;
 
     public ItemStack currentSlotItemStack = null;
@@ -26,9 +28,10 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
         SetInteractable(true);
     }
 
-    public void InitSlot(PlayerInventoryManager newPlayerInventoryManager)
+    public void InitSlot(PlayerInventoryManager newPlayerInventoryManager, int _slotIndex)
     {
         playerInventoryManager = newPlayerInventoryManager;
+        slotIndex = _slotIndex;
     }
 
     public virtual void AddItem(ItemStack itemToAdd)

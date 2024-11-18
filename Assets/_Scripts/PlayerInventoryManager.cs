@@ -37,7 +37,7 @@ public class PlayerInventoryManager : MonoBehaviour
         {
             InventorySlot spawnedSlot = Instantiate(slotToSpawn);
             spawnedInventorySlots[i] = spawnedSlot;
-            spawnedSlot.InitSlot(this);
+            spawnedSlot.InitSlot(this, i);
         }
 
         onInventorySlotsSpawned?.Invoke(spawnedInventorySlots);

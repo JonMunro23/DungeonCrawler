@@ -25000,6 +25000,7 @@ MonoBehaviour:
   playerStatsUIController: {fileID: 735236778}
   playerInventoryUIController: {fileID: 325219159}
   PlayerEquipmentUIManager: {fileID: 325219160}
+  playerWeaponUIManager: {fileID: 325219161}
 --- !u!1 &1893688728
 GameObject:
   m_ObjectHideFlags: 0
