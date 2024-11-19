@@ -12767,6 +12767,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3941900998106124574, guid: c08563fac9fd2754a8439172cc81c556,
+        type: 3}
+      propertyPath: isPrimaryDisplay
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5821686894713431069, guid: c08563fac9fd2754a8439172cc81c556,
         type: 3}
       propertyPath: m_Pivot.x

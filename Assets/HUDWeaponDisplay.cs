@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
@@ -9,7 +8,7 @@ public class HUDWeaponDisplay : MonoBehaviour
 {
     [SerializeField] Sprite pistolAmmoSprite, shellsAmmoSprite, rifleAmmoSprite;
     [SerializeField] Image weaponImage, ammoTypeImage;
-    [SerializeField] Image mainBackground, weaponImageBackground, ammoTypeImageBackground, ammoCounterBackground;
+    [SerializeField] Image mainBackground, weaponImageBackground, weaponCooldownImage, ammoTypeImageBackground, ammoCounterBackground;
     [SerializeField] TMP_Text ammoText;
 
     WeaponItemData displayedData;
@@ -25,6 +24,16 @@ public class HUDWeaponDisplay : MonoBehaviour
 
     [SerializeField] Vector2 primaryPos, secondaryPos;
     [SerializeField] Color primaryColour, primaryMainBackgroundColour, secondaryColour, secondaryMainBackgroundColour;
+
+    private void OnEnable()
+    {
+        Weapon.onWeaponCooldownActive += SetDisplayOnCooldown;
+    }
+
+    private void OnDisable()
+    {
+        Weapon.onWeaponCooldownActive -= SetDisplayOnCooldown;
+    }
 
     private void Awake()
     {
@@ -123,4 +132,30 @@ public class HUDWeaponDisplay : MonoBehaviour
                 break;
         }
     }
+
+    void SetDisplayOnCooldown(float cooldownLength)
+    {
+        if (!isPrimaryDisplay)
+            return;
+
+        StartCoroutine(Cooldown(cooldownLength));
+    }
+
+    IEnumerator Cooldown(float cooldownLength)
+    {
+        float elapsed = cooldownLength;
+        weaponCooldownImage.fillAmount = 1;
+
+        while (elapsed > 0)
+        {
+            elapsed -= Time.deltaTime;
+            float fillAmount = Mathf.Clamp01(elapsed / cooldownLength);
+            weaponCooldownImage.fillAmount = fillAmount;
+            yield return null;
+        }
+
+        weaponCooldownImage.fillAmount = 0;
+    }
+
+    
 }

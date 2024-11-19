@@ -18,7 +18,17 @@ public class Weapon : MonoBehaviour, IWeapon
     public bool isWeaponDrawn;
     public bool isReloading;
 
+    /// <summary>
+    /// In order:
+    /// int = occupiedSlotIndex
+    /// int = loadedAmmo
+    /// int = reserveAmmo
+    /// </summary>
     public static Action<int, int, int> onAmmoUpdated;
+    /// <summary>
+    /// float = cooldownLength
+    /// </summary>
+    public static Action<float> onWeaponCooldownActive;
 
     public virtual async Task DrawWeapon()
     {
@@ -125,6 +135,7 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public IEnumerator UseCooldown()
     {
+        onWeaponCooldownActive?.Invoke(weaponItemData.itemCooldown);
         yield return new WaitForSeconds(weaponItemData.itemCooldown);
         canUse = true;
         canShootBurst = true;
