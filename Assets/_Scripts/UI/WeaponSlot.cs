@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class WeaponSlot : EquipmentSlot
 {
-    public int slotIndex;
     IWeapon weapon;
 
-    public static Action<int, WeaponItemData> onWeaponAddedToSlot;
+    public static Action<int, WeaponItemData, int> onWeaponAddedToSlot;
     public static Action<int> onWeaponRemovedFromSlot;
-    public static Action<int, WeaponItemData> onWeaponSwappedInSlot;
+    public static Action<int, WeaponItemData, int> onWeaponSwappedInSlot;
+
+    public static Action<int, WeaponItemData> onWeaponSetToDefault;
 
     public void InitWeaponSlot(int newSlotIndex)
     {
@@ -20,24 +21,26 @@ public class WeaponSlot : EquipmentSlot
     public override void AddItem(ItemStack itemToAdd)
     {
         base.AddItem(itemToAdd);
-        InitialiseWeaponItem(itemToAdd.itemData as WeaponItemData);
+        InitialiseWeaponItem(itemToAdd.itemData as WeaponItemData, itemToAdd.loadedAmmo);
     }
 
-    void InitialiseWeaponItem(WeaponItemData itemDataToInitialise)
+    void InitialiseWeaponItem(WeaponItemData itemDataToInitialise, int loadedAmmo)
     {
-        onWeaponAddedToSlot?.Invoke(slotIndex, itemDataToInitialise);
+        onWeaponAddedToSlot?.Invoke(slotIndex, itemDataToInitialise, loadedAmmo);
     }
 
     public override ItemStack SwapItem(ItemStack itemToSwap)
     {
         ItemStack itemToReturn = base.SwapItem(itemToSwap);
-        onWeaponSwappedInSlot?.Invoke(slotIndex, itemToSwap.itemData as WeaponItemData);
+        onWeaponSwappedInSlot?.Invoke(slotIndex, itemToSwap.itemData as WeaponItemData, itemToSwap.loadedAmmo);
         return itemToReturn;
     }
 
     public override ItemStack TakeItem()
     {
         ItemStack itemToTake = base.TakeItem();
+        itemToTake.loadedAmmo = weapon.GetLoadedAmmo();
+        Debug.Log(itemToTake.loadedAmmo);
         DeinitialiseWeaponItem();
         return itemToTake;
 
@@ -48,12 +51,6 @@ public class WeaponSlot : EquipmentSlot
         onWeaponRemovedFromSlot?.Invoke(slotIndex);
     }
 
-    public WeaponSlot(int slotIndex, IWeapon weapon)
-    {
-        this.slotIndex = slotIndex;
-        this.weapon = weapon;
-    }
-
     public void SetSlotWeaponActive(bool isActive)
     {
         if(weapon != null)
@@ -62,18 +59,27 @@ public class WeaponSlot : EquipmentSlot
 
     public async Task HolsterWeapon()
     {
-        await weapon.HolsterWeapon();
+        if(weapon != null)
+            await weapon.HolsterWeapon();
     }
 
     public async Task DrawWeapon()
     {
-        await weapon.DrawWeapon();
+        if (weapon != null)
+            await weapon.DrawWeapon();
     }
 
     public void SetWeapon(IWeapon newWeapon, WeaponItemData newWeaponData)
     {
         weapon = newWeapon;
-        weapon.InitWeapon(newWeaponData);
+        weapon.InitWeapon(slotIndex, newWeaponData);
+    }
+
+    public void SetWeaponToDefault(IWeapon defaultWeapon, WeaponItemData defaultWeaponData)
+    {
+        weapon = defaultWeapon;
+        weapon.InitWeapon(slotIndex, defaultWeaponData);
+        onWeaponSetToDefault?.Invoke(slotIndex, defaultWeaponData);
     }
 
     public IWeapon GetWeapon()

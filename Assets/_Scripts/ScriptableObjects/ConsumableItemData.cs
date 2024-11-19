@@ -12,6 +12,7 @@ public class ConsumableItemData : ItemData
 {
     [Header("Consumable Item Properties")]
     public ConsumableType consumableType;
+    public AmmoType ammoType;
     public float cooldownBetweenUses;
     
     public float healthRegenAmount = .5f;

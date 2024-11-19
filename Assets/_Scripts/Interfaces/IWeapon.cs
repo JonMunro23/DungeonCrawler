@@ -4,18 +4,19 @@ using System.Threading.Tasks;
 
 public interface IWeapon : IUseable
 {
-    public void InitWeapon(WeaponItemData dataToInit);
+    public void InitWeapon(int slotIndex, WeaponItemData dataToInit);
+    public void SetInventoryManager(IInventory playerInventory);
     public void SetWeaponActive(bool isActive);
     public Task HolsterWeapon();
     public Task DrawWeapon();
     public void RemoveWeapon();
+    public void UpdateReserveAmmo();
     public int GetLoadedAmmo();
+    public void SetLoadedAmmo(int loadedAmmo);
     public WeaponItemData GetWeaponData();
-    public void Reload();
+    public Task TryReload();
     public void Grab();
     public bool IsReloading();
     public bool IsTwoHanded();
     public bool IsInUse();
-
-
 }

@@ -226,16 +226,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f65c4c236f7e3694a8d305d8b8b2dae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSlotItem:
+  slotIndex: 0
+  currentSlotItemStack:
     itemData: {fileID: 0}
     itemAmount: 0
+    loadedAmmo: 0
   SlotAmountText: {fileID: 1068636960011996862}
   slotImage: {fileID: 6340030818456689085}
-  tooltipDisplay: {fileID: 279342448753314685, guid: a1547a2b072335348bbf0f3e18c5ef67,
-    type: 3}
-  isSlotOccupied: 0
-  isCharEquipSlot: 0
-  charEquipSlotName: 
+  isSlotActive: 1
 --- !u!1 &5024203138339671105
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,7 +301,7 @@ MonoBehaviour:
       m_Calls: []
   m_Sprite: {fileID: 0}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

@@ -1,24 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using System;
 
-public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
+public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 {
     PlayerInventoryManager playerInventoryManager;
 
-    int slotIndex;
+    public int slotIndex;
 
-    public bool isInteractable;
+    public bool isInteractable { get; private set; }
 
     public ItemStack currentSlotItemStack = null;
     public TMP_Text SlotAmountText;
     public Image slotImage;
 
-    public bool isSlotOccupied;
+    public bool isSlotOccupied { get; private set; }
     public bool isSlotActive = true;
 
     public static Action<ISlot> onInventorySlotClicked;
@@ -36,7 +34,7 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
 
     public virtual void AddItem(ItemStack itemToAdd)
     {
-        currentSlotItemStack = new ItemStack(itemToAdd.itemData, itemToAdd.itemAmount);
+        currentSlotItemStack = new ItemStack(itemToAdd.itemData, itemToAdd.itemAmount, itemToAdd.loadedAmmo);
         isSlotOccupied = true;
 
         ConsumableItemData consumableData = GetDataAsConsumable(itemToAdd.itemData);
@@ -46,14 +44,28 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
             {
                 playerInventoryManager.AddHealthSyringe(itemToAdd.itemAmount);
             }
+            else if (consumableData.consumableType == ConsumableType.Ammo)
+            {
+                playerInventoryManager.AddAmmo(consumableData.ammoType, itemToAdd.itemAmount);
+            }
         }
 
         UpdateSlotUI();
     }
 
-    public void AddToCurrentItemStack(int amountToAdd)
+    public int AddToCurrentItemStack(int amountToAdd)
     {
-        currentSlotItemStack.itemAmount += amountToAdd;
+        int remainder = 0;
+        int availableSpace = currentSlotItemStack.itemData.maxItemStackSize - currentSlotItemStack.itemAmount;
+        if (availableSpace < amountToAdd)
+        {
+            currentSlotItemStack.itemAmount += availableSpace;
+            remainder = amountToAdd - availableSpace;
+        }
+        else if(availableSpace >= amountToAdd)
+        {
+            currentSlotItemStack.itemAmount += amountToAdd;
+        }
 
         ConsumableItemData consumableData = GetDataAsConsumable(currentSlotItemStack.itemData);
         if (consumableData)
@@ -62,9 +74,40 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
             {
                 playerInventoryManager.AddHealthSyringe(amountToAdd);
             }
+            else if (consumableData.consumableType == ConsumableType.Ammo)
+            {
+                playerInventoryManager.AddAmmo(consumableData.ammoType, amountToAdd);
+            }
         }
 
         UpdateSlotUI();
+
+        return remainder;
+    }
+
+    public int RemoveFromExistingStack(int amountToRemove)
+    {
+        int remainder = 0;
+        if (currentSlotItemStack.itemAmount < amountToRemove)
+        {
+            amountToRemove -= currentSlotItemStack.itemAmount;
+            currentSlotItemStack.itemAmount -= amountToRemove;
+            remainder = amountToRemove;
+        }
+        else if (currentSlotItemStack.itemAmount >= amountToRemove)
+        {
+            currentSlotItemStack.itemAmount -= amountToRemove;
+        }
+
+
+        if (currentSlotItemStack.itemAmount <= 0)
+        {
+            RemoveItem();
+        }
+
+        UpdateSlotUI();
+
+        return remainder;
     }
 
     ConsumableItemData GetDataAsConsumable(ItemData data)
@@ -74,7 +117,7 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
 
     public virtual ItemStack TakeItem()
     {
-        ItemStack itemToTake = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount);
+        ItemStack itemToTake = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount, currentSlotItemStack.loadedAmmo);
 
         ConsumableItemData consumableData = GetDataAsConsumable(itemToTake.itemData);
         if(consumableData)
@@ -82,6 +125,10 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
             if (consumableData.consumableType == ConsumableType.HealSyringe)
             {
                 playerInventoryManager.RemoveHealthSyringe(itemToTake.itemAmount);
+            }
+            else if (consumableData.consumableType == ConsumableType.Ammo)
+            {
+                playerInventoryManager.RemoveAmmo(consumableData.ammoType ,itemToTake.itemAmount);
             }
         }
 
@@ -91,7 +138,7 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
 
     public virtual ItemStack SwapItem(ItemStack itemToSwap)
     {
-        ItemStack oldItem = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount);
+        ItemStack oldItem = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount, currentSlotItemStack.loadedAmmo);
 
         currentSlotItemStack = itemToSwap;
         UpdateSlotUI();
@@ -146,11 +193,7 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
         UpdateSlotUI();
     }
 
-    public void AddToExistingStack(int amountToAdd)
-    {
-        currentSlotItemStack.itemAmount += amountToAdd;
-        UpdateSlotUI();
-    }
+    
 
     public ItemStack GetItemStack()
     {
@@ -174,5 +217,10 @@ public class InventorySlot : MonoBehaviour, ISlot ,IPointerClickHandler
     public bool IsSlotEmpty()
     {
         return currentSlotItemStack.itemData ? false : true;
+    }
+
+    public int GetSlotIndex()
+    {
+        return slotIndex;
     }
 }

@@ -2,9 +2,9 @@ using UnityEngine;
 
 public enum AmmoType
 {
-    bullets,
-    rockets,
-    shells
+    Pistol,
+    Rifle,
+    Shells
 };
 
 [CreateAssetMenu(fileName = "WeaponItemData", menuName = "Items/New Weapon Item")]
@@ -21,6 +21,7 @@ public class WeaponItemData : EquipmentItemData
     public float critDamageMultiplier;
     public float reloadDuration = 2;
     public AmmoType ammoType;
+    public int magSize;
     public int projectileCount;
     public bool isProjectile;
     public ProjectileData projectileData;

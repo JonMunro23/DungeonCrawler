@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Fists
   itemDescription: 
-  itemSprite: {fileID: 21300000, guid: 52d09fb1884048447aa1239b4fe3d260, type: 3}
+  itemSprite: {fileID: 21300000, guid: 70ce70fdb64483146b4b94db2c23512b, type: 3}
   itemWorldModel: {fileID: 0}
   itemWeight: 0
   itemValue: 0
@@ -33,6 +33,7 @@ MonoBehaviour:
   critDamageMultiplier: 2
   reloadDuration: 0
   ammoType: 0
+  magSize: 0
   projectileCount: 0
   isProjectile: 0
   projectileData: {fileID: 0}

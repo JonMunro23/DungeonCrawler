@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2212457037591207785}
   - component: {fileID: 5795832395930478358}
-  - component: {fileID: 2212457037591207786}
+  - component: {fileID: 3120243568235660886}
   - component: {fileID: 4154462116286843067}
   - component: {fileID: 1006225082393101937}
   - component: {fileID: 8890813968818976078}
@@ -91,7 +91,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 3, z: 3}
   m_Center: {x: 0, y: 1.5, z: 0}
---- !u!114 &2212457037591207786
+--- !u!114 &3120243568235660886
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2212457037591207784}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed303ecf4e6c5d94f86a41ca33a6e692, type: 3}
+  m_Script: {fileID: 11500000, guid: d66d06f8f8b45ca4b8e13ab9f91a4924, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animController: {fileID: 0}
@@ -115,16 +115,16 @@ MonoBehaviour:
   - {fileID: 2027287605060939514}
   - {fileID: 1326705935467603812}
   - {fileID: 5766181276845116464}
+  audioSource: {fileID: 6380403475553436966}
   currentlyOccupiedGridnode: {fileID: 0}
   NPCData: {fileID: 11400000, guid: 9f5083d7a604a2941b7c7031480ce668, type: 2}
   amountToSpawnInStack: 1
-  spawnedNPCs: []
   hitReactionChance: 5
+  spawnedNPCs: []
   currentGroupHealth: 0
   maxGroupHealth: 0
   guaranteedDrops: []
   randomDrops: []
-  audioSource: {fileID: 0}
 --- !u!114 &4154462116286843067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ MonoBehaviour:
   gridSize: 3
   moveDuration: 3.3
   isMoving: 0
-  minDelayBetweenMovement: 0
+  minDelayBetweenMovement: 10
   currentOccupiedGridNode: {fileID: 0}
   path: []
   walkSFx:
@@ -165,7 +165,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animators: []
-  spawnedNPCs: []
 --- !u!114 &8890813968818976078
 MonoBehaviour:
   m_ObjectHideFlags: 0

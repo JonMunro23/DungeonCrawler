@@ -34,6 +34,7 @@ MonoBehaviour:
   critDamageMultiplier: 2
   reloadDuration: 3
   ammoType: 2
+  magSize: 8
   projectileCount: 7
   isProjectile: 0
   projectileData: {fileID: 0}

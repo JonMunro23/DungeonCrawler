@@ -133,6 +133,7 @@ MonoBehaviour:
   item:
     itemData: {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
     itemAmount: 1
+    loadedAmmo: 0
   isOnPressurePlate: 0
 --- !u!65 &7185448901924819744
 BoxCollider:
@@ -149,7 +150,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -178,7 +179,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
