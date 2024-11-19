@@ -480,7 +480,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9b2ca48370bcf744abc767f5c305ab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashlightActivationKey: 116
 --- !u!1 &4820759779018056699
 GameObject:
   m_ObjectHideFlags: 0
@@ -1275,7 +1274,7 @@ MonoBehaviour:
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
-  totalNumInventorySlots: 25
+  totalNumInventorySlots: 30
   heldHealthSyringes: 0
   heldPistolAmmo: 0
   heldRifleAmmo: 0
