@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerInventoryManager : MonoBehaviour
+public class PlayerInventoryManager : MonoBehaviour, IInventory
 {
     PlayerController playerController;
 
@@ -13,11 +14,13 @@ public class PlayerInventoryManager : MonoBehaviour
     [SerializeField] int totalNumInventorySlots;
     public bool isOpen { get; private set; }
 
-    [SerializeField] int heldHealthSyringes;
+    [SerializeField] int heldHealthSyringes, heldPistolAmmo, heldRifleAmmo, heldShells;
 
     public static Action onInventoryOpened;
     public static Action onInventoryClosed;
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
+
+    public static Action<AmmoType> onAmmoAddedToInventory;
 
     public void InitInventory(PlayerController newPlayerController)
     {
@@ -80,6 +83,41 @@ public class PlayerInventoryManager : MonoBehaviour
     }
 
     public void AddHealthSyringe(int amountToAdd) => heldHealthSyringes += amountToAdd;
+    public void AddAmmo(AmmoType typeToAdd, int amountToAdd)
+    {
+        switch (typeToAdd)
+        {
+            case AmmoType.Pistol:
+                heldPistolAmmo += amountToAdd;
+                break;
+            case AmmoType.Rifle:
+                heldRifleAmmo += amountToAdd;
+                break;
+            case AmmoType.Shells:
+                heldShells += amountToAdd;
+                break;
+        }
+
+        onAmmoAddedToInventory?.Invoke(typeToAdd);
+    }
+
+    public void RemoveAmmo(AmmoType typeToAdd, int amountToRemove)
+    {
+        switch (typeToAdd)
+        {
+            case AmmoType.Pistol:
+                heldPistolAmmo -= amountToRemove;
+                break;
+            case AmmoType.Rifle:
+                heldRifleAmmo -= amountToRemove;
+                break;
+            case AmmoType.Shells:
+                heldShells -= amountToRemove;
+                break;
+        }
+
+        onAmmoAddedToInventory?.Invoke(typeToAdd);
+    }
 
     public void RemoveHealthSyringe(int amountToRemove) => heldHealthSyringes -= amountToRemove;
 
@@ -118,17 +156,6 @@ public class PlayerInventoryManager : MonoBehaviour
         return null;
     }
 
-    //void OnWeaponsHolstered()
-    //{
-    //    ConsumableItemData consumableData = syringeSlot.currentSlotItemStack.itemData as ConsumableItemData;
-    //    if (!consumableData)
-    //        return;
-
-    //    playerController.playerHealthController.UseHealthSyringe(consumableData);
-    //    syringeSlot.UseItem();
-    //    heldHealthSyringes--;
-    //}
-
     public InventorySlot GetNextFreeSlot()
     {
         foreach(InventorySlot slot in spawnedInventorySlots)
@@ -138,21 +165,6 @@ public class PlayerInventoryManager : MonoBehaviour
         }
 
         return null;
-    }
-
-    public List<InventorySlot> GetSlotsWithItem(ItemStack itemToCheck)
-    {
-        List<InventorySlot> slotsWithItem = new List<InventorySlot>();
-        foreach (InventorySlot slot in spawnedInventorySlots)
-        {
-            if (!slot.currentSlotItemStack.itemData)
-                continue;
-
-            if (slot.currentSlotItemStack.itemData == itemToCheck.itemData)
-                slotsWithItem.Add(slot);
-        }
-
-        return slotsWithItem;
     }
 
     InventorySlot[] GetSlotOfTypeWithSpace(ItemData itemData)
@@ -204,7 +216,7 @@ public class PlayerInventoryManager : MonoBehaviour
                 InventorySlot freeSlot = GetNextFreeSlot();
                 if (freeSlot)
                 {
-                    freeSlot.AddItem(new ItemStack(itemToAdd.itemData, remainingAmountToAdd));
+                    freeSlot.AddItem(new ItemStack(itemToAdd.itemData, remainingAmountToAdd, itemToAdd.loadedAmmo));
                     return 0;
                 }
 
@@ -226,4 +238,113 @@ public class PlayerInventoryManager : MonoBehaviour
         }
     }
 
+    public int GetRemainingAmmoOfType(AmmoType ammoTypeToGet)
+    {
+        int ammoToReturn = 0;
+        switch (ammoTypeToGet)
+        {
+            case AmmoType.Pistol:
+                ammoToReturn += heldPistolAmmo;
+                break;
+            case AmmoType.Rifle:
+                ammoToReturn += heldRifleAmmo;
+                break;
+            case AmmoType.Shells:
+                ammoToReturn += heldShells;
+                break;
+        }
+        return ammoToReturn;
+    }
+
+    public int GetRemainingHealthSyringes()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DecreaseAmmoOfType(AmmoType ammoTypeToRemove, int amountToRemove)
+    {
+        //reverse list so it takes from the last slot first 
+        List<InventorySlot> slotsReversed = new List<InventorySlot>(spawnedInventorySlots.Reverse());
+
+        foreach (ISlot slot in slotsReversed)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            ItemStack slotItemStack = slot.GetItemStack();
+
+            ConsumableItemData consumableItemData = slotItemStack.itemData as ConsumableItemData;
+            if (!consumableItemData)
+                continue;
+
+            if (consumableItemData.ammoType != ammoTypeToRemove)
+                continue;
+
+            int remainingAmountToRemove = slot.RemoveFromExistingStack(amountToRemove);
+            RemoveAmmo(ammoTypeToRemove, amountToRemove);
+            if (remainingAmountToRemove == 0)
+                return;
+
+            amountToRemove = remainingAmountToRemove;
+
+        }
+    }
+
+    public void IncreaseAmmoOfType(AmmoType ammoTypeToAdd, int amountToAdd)
+    {
+        foreach (ISlot slot in spawnedInventorySlots)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            ItemStack slotItemStack = slot.GetItemStack();
+
+            if (slotItemStack.GetRemainingSpaceInStack() == 0)
+                continue;
+
+            ConsumableItemData consumableItemData = slotItemStack.itemData as ConsumableItemData;
+            if (!consumableItemData)
+                continue;
+
+            if (consumableItemData.ammoType != ammoTypeToAdd)
+                continue;
+
+
+            int remainingAmountToAdd = slot.AddToCurrentItemStack(amountToAdd);
+            if (remainingAmountToAdd > 0)
+            {
+                Debug.Log(remainingAmountToAdd);
+                InventorySlot freeSlot = GetNextFreeSlot();
+                if (freeSlot)
+                {
+                    freeSlot.AddItem(new ItemStack(consumableItemData, remainingAmountToAdd, 0));
+                }
+            }
+        }
+    }
+
+    public void LockSlotsWithAmmoOfType(AmmoType ammoTypeToLock)
+    {
+        foreach(ISlot slot in spawnedInventorySlots)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            ConsumableItemData consumableItemData = slot.GetItemStack().itemData as ConsumableItemData;
+            if (!consumableItemData)
+                continue;
+
+            if(consumableItemData.ammoType == ammoTypeToLock)
+                slot.SetInteractable(false);
+        }
+    }
+
+    public void UnlockSlots()
+    {
+        foreach (ISlot slot in spawnedInventorySlots)
+        {
+            if (!slot.IsInteractable())
+                slot.SetInteractable(true);
+        }
+    }
 }

@@ -4,7 +4,7 @@ public class PlayerEquipmentUIManager : MonoBehaviour
 {
     [SerializeField] EquipmentSlot[] equipmentSlots;
 
-    public void DisableEquipmentSlots()
+    public void DisableAllSlots()
     {
         foreach(EquipmentSlot slot in equipmentSlots)
         {

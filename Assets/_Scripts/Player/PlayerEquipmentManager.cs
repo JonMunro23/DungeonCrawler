@@ -71,12 +71,15 @@ public class PlayerEquipmentManager : MonoBehaviour
     void OnEquipmentItemRemoved(EquipmentSlotType slotType)
     {
         EquippedItem itemInSlot = GetEquippedItemInSlot(slotType);
-        CalculateNewCurrentWeight(-itemInSlot.equipmentItemData.itemWeight);
+        if(itemInSlot != null)
+        {
+            CalculateNewCurrentWeight(-itemInSlot.equipmentItemData.itemWeight);
 
-        if (allCurrentlyEquippedItems.Contains(itemInSlot))
-            allCurrentlyEquippedItems.Remove(itemInSlot);
+            if (allCurrentlyEquippedItems.Contains(itemInSlot))
+                allCurrentlyEquippedItems.Remove(itemInSlot);
 
-        onEquippedItemRemoved?.Invoke(itemInSlot);
+            onEquippedItemRemoved?.Invoke(itemInSlot);
+        }
     }
 
     EquippedItem GetEquippedItemInSlot(EquipmentSlotType slot)
