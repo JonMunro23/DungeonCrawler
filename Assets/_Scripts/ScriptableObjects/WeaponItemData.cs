@@ -1,0 +1,52 @@
+using UnityEngine;
+
+public enum AmmoType
+{
+    Pistol,
+    Rifle,
+    Shells
+};
+
+[CreateAssetMenu(fileName = "WeaponItemData", menuName = "Items/New Weapon Item")]
+public class WeaponItemData : EquipmentItemData
+{
+    [Header("Weapon Properties")]
+    public GameObject itemPrefab;
+    public bool isTwoHanded;
+    public bool isMeleeWeapon;
+    //public string itemDamageType;
+    public Vector2 itemDamageMinMax;
+    public int itemRange;
+    public float critChance;
+    public float critDamageMultiplier;
+    public float reloadDuration = 2;
+    public AmmoType ammoType;
+    public int magSize;
+    public int projectileCount;
+    public bool isProjectile;
+    public ProjectileData projectileData;
+    public bool isBurst;
+    public float perShotInBurstDelay;
+    public int burstLength;
+
+    [Header("Weapon SFX")]
+    public AudioClip[] attackSFX;
+    public AudioClip specialSFX;
+    public AudioClip drawSFX;
+    public AudioClip hideSFX;
+    public AudioClip reloadSFX;
+    public AudioClip reloadStartSFX;
+    public AudioClip reloadInsertSFX;
+    public AudioClip reloadEndSFX;
+
+    [Header("Animation Lengths")]
+    public float drawAnimDuration;
+    public float hideAnimDuration;
+    public float reloadAnimDuration;
+
+    public bool bulletByBulletReload;
+    public float reloadStartAnimDuration;
+    public float reloadInsertAnimDuration;
+    public float reloadEndAnimDuration;
+}
+

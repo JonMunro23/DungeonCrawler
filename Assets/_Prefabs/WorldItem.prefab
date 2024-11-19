@@ -131,8 +131,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item:
-    itemData: {fileID: 11400000, guid: 1a1461375eb4be84b8d0c540f7637dee, type: 2}
-    itemAmount: 1
+    itemData: {fileID: 0}
+    itemAmount: 0
+    loadedAmmo: 0
   isOnPressurePlate: 0
 --- !u!65 &6061383485287129422
 BoxCollider:
@@ -149,7 +150,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

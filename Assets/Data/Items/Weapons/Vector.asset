@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 612737782d799c04d8ff76690bb51987, type: 3}
+  m_Script: {fileID: 11500000, guid: aeb7a71bee8a1924db3f815c07380154, type: 3}
   m_Name: Vector
   m_EditorClassIdentifier: 
   itemName: Vector
@@ -17,23 +17,24 @@ MonoBehaviour:
   itemSprite: {fileID: 21300000, guid: e786c534ea99d8444ae9494e498b50b6, type: 3}
   itemWorldModel: {fileID: 5545412917158435578, guid: 0a1182d2cc54f854cab135724542b458,
     type: 3}
-  itemWeight: 7
-  itemValue: 824
+  itemWeight: 4
+  itemValue: 620
   isItemStackable: 0
   maxItemStackSize: 1
-  itemCooldown: 2.3
-  EquipmentSlotType: 9
+  itemCooldown: 2
+  EquipmentSlotType: 10
   statModifiers: []
   itemPrefab: {fileID: 5015189803522481237, guid: 99acbf84f17962845a02eb098b57f53b,
     type: 3}
   isTwoHanded: 1
   isMeleeWeapon: 0
-  itemDamageMinMax: {x: 15, y: 30}
-  itemRange: 5
-  critChance: 18
+  itemDamageMinMax: {x: 12, y: 25}
+  itemRange: 4
+  critChance: 7.5
   critDamageMultiplier: 2
   reloadDuration: 2.6
   ammoType: 0
+  magSize: 30
   projectileCount: 1
   isProjectile: 0
   projectileData: {fileID: 0}
@@ -54,7 +55,7 @@ MonoBehaviour:
   reloadEndSFX: {fileID: 0}
   drawAnimDuration: 1.017
   hideAnimDuration: 0.9
-  reloadAnimDuration: 0
+  reloadAnimDuration: 2.6
   bulletByBulletReload: 0
   reloadStartAnimDuration: 0
   reloadInsertAnimDuration: 0

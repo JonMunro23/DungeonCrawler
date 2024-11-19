@@ -46,8 +46,7 @@ public class PlayerInventoryUIController : MonoBehaviour
 
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
-            slot.transform.SetParent(invSlotSpawnParent.transform);
-            slot.transform.localScale = Vector3.one;
+            slot.transform.SetParent(invSlotSpawnParent.transform, false);
         }
     }
 
