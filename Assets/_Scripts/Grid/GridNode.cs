@@ -34,7 +34,6 @@ public class GridNode : MonoBehaviour
 {
     [SerializeField] bool showDebugInfo;
 
-    [HideInInspector]
     public GridNodeData nodeData;
     public ICoords Coords;
     PlayerSpawnPoint playerSpawnPoint;
@@ -152,10 +151,10 @@ public class GridNode : MonoBehaviour
         new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(1, 0),
     };
 
-    public void InitNode(GridNodeData newNodeData, ICoords _coords)
+    public void InitNode(GridNodeData _nodeData, ICoords _coords)
     {
         Coords = _coords;
-        nodeData = newNodeData;
+        nodeData = _nodeData;
 
         coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
     }

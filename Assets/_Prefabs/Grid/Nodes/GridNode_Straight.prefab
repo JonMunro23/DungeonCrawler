@@ -225,7 +225,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9072053631173733686
 Transform:
   m_ObjectHideFlags: 0
@@ -289,7 +289,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bf2d3a4bfa532a4a923eba3b4e86162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showDebugInfo: 1
   nodeData: {fileID: 11400000, guid: ba49ae637fd0b65479631e3f655c4466, type: 2}
+  highlightPathMat: {fileID: 0}
+  highlightOpenMat: {fileID: 0}
+  highlightClosedMat: {fileID: 0}
+  defaultMat: {fileID: 0}
+  coordText: {fileID: 0}
+  neighbouringNodes: []
+  moveToTransform: {fileID: 0}
+  currentOccupant:
+    occupyingGameobject: {fileID: 0}
+    occupantType: 0
+  _fCostText: {fileID: 0}
+  _gCostText: {fileID: 0}
+  _hCostText: {fileID: 0}
 --- !u!1 &8664623447761527249
 GameObject:
   m_ObjectHideFlags: 0

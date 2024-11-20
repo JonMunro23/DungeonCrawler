@@ -32,14 +32,14 @@ public class GridController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InitGrid();
+        InitGridController();
 
         GenerateGrid();
+        //ActivateSpawnPoints();
 
-        ActivateSpawnPoints();
     }
 
-    private void InitGrid()
+    private void InitGridController()
     {
         //Vector3 newGridSize = new Vector3(gridSize, gridSize, gridSize);
         Vector3 newCellGap = new Vector3(gridCellGap, gridCellGap, gridCellGap);
