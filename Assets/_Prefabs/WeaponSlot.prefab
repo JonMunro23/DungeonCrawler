@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 713118737781485470}
   - component: {fileID: 3074735977345957417}
   - component: {fileID: 658346518994569055}
+  - component: {fileID: 1664369281859686640}
   m_Layer: 0
   m_Name: WeaponSlot
   m_TagString: Untagged
@@ -173,7 +174,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &713118737781485470
@@ -196,16 +197,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64b5685a8f7c1c3468f184b3e185157f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInteractable: 0
+  slotIndex: 0
   currentSlotItemStack:
     itemData: {fileID: 0}
     itemAmount: 0
+    loadedAmmo: 0
   SlotAmountText: {fileID: 2548437760404429411}
   slotImage: {fileID: 2291172033034763595}
-  isSlotOccupied: 0
+  tooltipTrigger: {fileID: 0}
   isSlotActive: 0
   slotType: 0
-  slotIndex: 0
 --- !u!114 &658346518994569055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,15 +220,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.26415092, g: 0.26415092, b: 0.26415092, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 5b64d97f08bfdc34993fbfcd0d2e569a, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -235,7 +236,51 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
+--- !u!114 &1664369281859686640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905111473755220124}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f99a9e0f405bff84884c4884261df263, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tooltipStyle: {fileID: 5683288911030975439, guid: 3adb1585572acb1419bc1a3ae570c977,
+    type: 3}
+  parameterizedTextFields:
+  - name: TitleText
+    placeholder: '%TitleText%'
+    value: 
+  - name: Stats
+    placeholder: '%Stats%'
+    value: 
+  - name: Description
+    placeholder: '%Description%'
+    value: 
+  dynamicImageFields:
+  - name: ItemImage
+    placeholderSprite: {fileID: 21300000, guid: 03ad0bb72d927ea4b8f6a587255869d8,
+      type: 3}
+    replacementSprite: {fileID: 0}
+  dynamicSectionFields:
+  - name: Stats
+    isOn: 1
+  isRemotelyActivated: 0
+  backgroundTint: {r: 1, g: 1, b: 1, a: 1}
+  shouldOverridePosition: 0
+  overridePositionType: 0
+  overridePositionVector: {x: 0, y: 0, z: 0}
+  overridePositionTransform: {fileID: 0}
+  tipPosition: 0
+  minTextWidth: 100
+  maxTextWidth: 200
+  staysOpen: 0
+  neverRotate: 0
+  isBlocking: 0
 --- !u!1 &6851408548735172804
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +316,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -10, y: -10}
+  m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4921480688383401393
 CanvasRenderer:
@@ -301,7 +346,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 70ce70fdb64483146b4b94db2c23512b, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

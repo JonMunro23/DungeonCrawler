@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Vector
   m_EditorClassIdentifier: 
   itemName: Vector
-  itemDescription: 
+  itemDescription: A small caliber, rapid fire submachine gun with excellent recoil
+    control, allowing for longer, sustained bursts.
   itemSprite: {fileID: 21300000, guid: e786c534ea99d8444ae9494e498b50b6, type: 3}
   itemWorldModel: {fileID: 5545412917158435578, guid: 0a1182d2cc54f854cab135724542b458,
     type: 3}
@@ -23,7 +24,10 @@ MonoBehaviour:
   maxItemStackSize: 1
   itemCooldown: 2
   EquipmentSlotType: 10
-  statModifiers: []
+  statModifiers:
+  - statToModify: 2
+    modifyOperation: 0
+    modifyAmount: 15
   itemPrefab: {fileID: 5015189803522481237, guid: 99acbf84f17962845a02eb098b57f53b,
     type: 3}
   isTwoHanded: 1

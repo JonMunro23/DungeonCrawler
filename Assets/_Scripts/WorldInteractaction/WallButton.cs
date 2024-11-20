@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Button : MonoBehaviour, IInteractable
+public class WallButton : MonoBehaviour, IInteractable
 {
 
     [SerializeField]

@@ -7,6 +7,7 @@ https://opensource.org/licenses/MIT.
 
 
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -76,6 +77,9 @@ public class AdvancedGridMovement : MonoBehaviour
     private AnimationCurve currentAnimationCurve;
     private AnimationCurve currentHeadBobCurve;
     private float currentSpeed;
+
+    [SerializeField] bool canRotate = true;
+    [SerializeField] float rotationDelay = .5f;
 
     void Start()
     {
@@ -269,24 +273,36 @@ public class AdvancedGridMovement : MonoBehaviour
 
     public void TurnRight()
     {
-        turnEvent?.Invoke(0);
         TurnEulerDegrees(RightHand);
     }
 
     public void TurnLeft()
     {
-        turnEvent?.Invoke(1);
         TurnEulerDegrees(LeftHand);
     }
 
     private void TurnEulerDegrees(in float eulerDirectionDelta)
     {
-        if (!IsRotating())
+        if (!IsRotating() && canRotate)
         {
+            canRotate = false;
+            if (eulerDirectionDelta > 0)
+                turnEvent?.Invoke(0);
+            else
+                turnEvent?.Invoke(1);
+
             rotateFromDirection = transform.rotation;
             rotateTowardsDirection *= Quaternion.Euler(0.0f, eulerDirectionDelta, 0.0f);
             rotationTime = 0.0f;
+
+            StartCoroutine(RotationDelay());
         }
+    }
+
+    IEnumerator RotationDelay()
+    {
+        yield return new WaitForSeconds(rotationDelay);
+        canRotate = true;
     }
 
     public bool IsStationary()

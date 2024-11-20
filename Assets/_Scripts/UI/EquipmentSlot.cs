@@ -8,6 +8,17 @@ public class EquipmentSlot : InventorySlot
     public static Action<EquipmentSlotType, EquipmentItemData> onNewEquipmentItem;
     public static Action<EquipmentSlotType> onEquipmentItemRemoved;
 
+    [SerializeField] Sprite placeholderIcon;
+    [SerializeField] float placeholderIconAlpha;
+
+    private void Start()
+    {
+        slotImage.sprite = placeholderIcon;
+        slotImage.color = slotImage.color = new Color(255, 255, 255, placeholderIconAlpha);
+
+        SetInteractable(true);
+    }
+
     public override void AddItem(ItemStack itemToAdd)
     {
         base.AddItem(itemToAdd);

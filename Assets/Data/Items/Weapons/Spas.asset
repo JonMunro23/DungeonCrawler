@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Spas
   m_EditorClassIdentifier: 
   itemName: ' Spas 12'
-  itemDescription: 
+  itemDescription: Powerful pump action/semi automatic shotgun capable of taking
+    down targets at close to medium range.
   itemSprite: {fileID: 21300000, guid: d96970face96cf8449ea7733dc0c3638, type: 3}
   itemWorldModel: {fileID: 5545412917158435578, guid: b8589f7c793b7cb4b98caf2ba72948cd,
     type: 3}

@@ -11,6 +11,9 @@ public class PressurePlate : MonoBehaviour
 
     public void ToggleLinked()
     {
+        if (!linkedObject)
+            return;
+
         if(isPlatePressed == true)
         {
             linkedObject.GetComponent<Door>().ToggleDoor();
@@ -24,7 +27,7 @@ public class PressurePlate : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         presentObjects.Add(other.gameObject);
-        if(other.CompareTag("WorldItem"))
+        if (other.CompareTag("WorldItem"))
         {
             other.GetComponent<WorldItem>().isOnPressurePlate = true;
         }

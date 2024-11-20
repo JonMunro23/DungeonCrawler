@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Chestpiece
   m_EditorClassIdentifier: 
   itemName: Chestpiece
-  itemDescription: 
+  itemDescription: A heavy duty armoured chest plate.
   itemSprite: {fileID: 21300000, guid: 776dabe2efd4f3640befc07fcff68250, type: 3}
   itemWorldModel: {fileID: 0}
   itemWeight: 12

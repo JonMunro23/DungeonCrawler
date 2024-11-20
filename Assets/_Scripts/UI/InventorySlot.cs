@@ -3,6 +3,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using ModelShark;
+using System.Text;
 
 public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 {
@@ -16,10 +18,17 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public TMP_Text SlotAmountText;
     public Image slotImage;
 
+    public TooltipTrigger tooltipTrigger;
+
     public bool isSlotOccupied { get; private set; }
     public bool isSlotActive = true;
 
     public static Action<ISlot> onInventorySlotClicked;
+
+    private void Awake()
+    {
+        tooltipTrigger = GetComponent<TooltipTrigger>();
+    }
 
     private void Start()
     {
@@ -49,7 +58,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
                 playerInventoryManager.AddAmmo(consumableData.ammoType, itemToAdd.itemAmount);
             }
         }
-
+        SetTooltipTriggerActive(true);
         UpdateSlotUI();
     }
 
@@ -120,7 +129,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         ItemStack itemToTake = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount, currentSlotItemStack.loadedAmmo);
 
         ConsumableItemData consumableData = GetDataAsConsumable(itemToTake.itemData);
-        if(consumableData)
+        if (consumableData)
         {
             if (consumableData.consumableType == ConsumableType.HealSyringe)
             {
@@ -128,12 +137,17 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             }
             else if (consumableData.consumableType == ConsumableType.Ammo)
             {
-                playerInventoryManager.RemoveAmmo(consumableData.ammoType ,itemToTake.itemAmount);
+                playerInventoryManager.RemoveAmmo(consumableData.ammoType, itemToTake.itemAmount);
             }
         }
-
         RemoveItem();
+        SetTooltipTriggerActive(false);
         return itemToTake;
+    }
+
+    private void SetTooltipTriggerActive(bool isActive)
+    {
+        tooltipTrigger.enabled = isActive;
     }
 
     public virtual ItemStack SwapItem(ItemStack itemToSwap)
@@ -157,8 +171,10 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         }
     }
 
-    void UpdateSlotUI()
+     void UpdateSlotUI()
     {
+        UpdateTooltipData();
+
         if (currentSlotItemStack.itemData == null)
         {
             slotImage.sprite = null;
@@ -167,14 +183,65 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             SlotAmountText.text = "";
             return;
         }
-            
-
+        slotImage.color = Color.white;
         slotImage.sprite = currentSlotItemStack.itemData.itemSprite;
         slotImage.enabled = true;
         if (currentSlotItemStack.itemAmount > 1)
             SlotAmountText.text = currentSlotItemStack.itemAmount.ToString();
         else
             SlotAmountText.text = "";
+    }
+
+    void UpdateTooltipData()
+    {
+        if (!tooltipTrigger)
+            return;
+
+        if (currentSlotItemStack.itemData == null)
+            return;
+
+        tooltipTrigger.SetImage("ItemImage", currentSlotItemStack.itemData.itemSprite);
+        tooltipTrigger.SetText("TitleText", currentSlotItemStack.itemData.itemName);
+        tooltipTrigger.SetText("Description", currentSlotItemStack.itemData.itemDescription);
+        tooltipTrigger.SetText("Stats", string.Empty);
+
+        EquipmentItemData equipmentItem = currentSlotItemStack.itemData as EquipmentItemData;
+        if(equipmentItem)
+        {
+            StringBuilder statsText = new StringBuilder();
+            if(equipmentItem.statModifiers.Count > 0)
+            {
+                tooltipTrigger.TurnSectionOn("Stats");
+                foreach (var item in equipmentItem.statModifiers)
+                {
+                    string modifyOperator = string.Empty;
+                    bool isPercentage = false;
+                    switch (item.modifyOperation)
+                    {
+                        case ModifyOperation.Increase:
+                            modifyOperator = "+";
+                            break;
+                        case ModifyOperation.IncreaseByPercentage:
+                            modifyOperator = "+";
+                            isPercentage = true;
+                            break;
+                        case ModifyOperation.Decrease:
+                            modifyOperator = "-";
+                            break;
+                        case ModifyOperation.DecreaseByPercentage:
+                            modifyOperator = "-";
+                            isPercentage = true;
+                            break;
+                    }
+
+                    statsText.AppendLine($"{modifyOperator}{item.modifyAmount}{(isPercentage ? "%" : string.Empty)} {item.statToModify}");
+                }
+
+                tooltipTrigger.SetText("Stats", statsText.ToString());
+            }
+
+        }
+
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -203,10 +270,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public void SetInteractable(bool _isInteractable)
     {
         isInteractable = _isInteractable;
-        if (isInteractable == false)
-            slotImage.color = new Color(255, 255, 255, .12f);
-        else
-            slotImage.color = Color.white;
+        
     }
 
     public bool IsInteractable()
