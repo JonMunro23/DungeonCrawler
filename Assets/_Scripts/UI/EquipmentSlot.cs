@@ -15,6 +15,8 @@ public class EquipmentSlot : InventorySlot
     {
         slotImage.sprite = placeholderIcon;
         slotImage.color = slotImage.color = new Color(255, 255, 255, placeholderIconAlpha);
+
+        SetInteractable(true);
     }
 
     public override void AddItem(ItemStack itemToAdd)

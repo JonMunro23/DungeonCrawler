@@ -10,7 +10,6 @@ public class ItemData : ScriptableObject
     public Sprite itemSprite;
     public WorldItem itemWorldModel;
     public float itemWeight;
-    public float itemValue;
     public bool isItemStackable;
     public int maxItemStackSize = 1;
 }

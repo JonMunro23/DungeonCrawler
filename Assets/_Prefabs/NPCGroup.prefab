@@ -140,7 +140,7 @@ MonoBehaviour:
   gridSize: 3
   moveDuration: 3.3
   isMoving: 0
-  minDelayBetweenMovement: 10
+  minDelayBetweenMovement: 0
   currentOccupiedGridNode: {fileID: 0}
   path: []
   walkSFx:

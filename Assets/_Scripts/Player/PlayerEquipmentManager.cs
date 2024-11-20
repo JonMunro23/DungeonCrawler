@@ -101,7 +101,4 @@ public class PlayerEquipmentManager : MonoBehaviour
         currentCarryWeight += newAddedWeight;
         //check if overencucumbered
     }
-
-
-
 }
