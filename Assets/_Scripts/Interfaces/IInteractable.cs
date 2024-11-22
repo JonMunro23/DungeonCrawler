@@ -1,4 +1,5 @@
 public interface IInteractable
 {
-    public void Interact();  
+    public abstract void Interact();  
+    public abstract void InteractWithItem(ItemData item);  
 }
