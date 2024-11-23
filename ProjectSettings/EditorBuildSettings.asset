@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/PublisherTools/LoadingScreen/LoadingScreen.unity
     guid: 852815e4a99635242b5bd8a34a601d4e
-  - enabled: 1
+  - enabled: 0
     path: Assets/GameBuilders/Environment Pack/Scenes/Pine.unity
     guid: 4188f576ed0a42541965108b9659a080
   m_configObjects: {}

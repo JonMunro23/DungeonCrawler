@@ -1,99 +1,122 @@
+using LDtkUnity;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
     public static GridController Instance;
 
-    [Header("Player Spawning")]
-    [SerializeField] PlayerSpawnPoint playerSpawnPointPrefab;
-    [SerializeField] NPCSpawnPoint NPCSpawnPointPrefab;
-    [SerializeField] int playerSpawnPointIndex;
-    [SerializeField] int[] NPCSpawnPointIndices;
-    [SerializeField] GridNode spawnPointNode;
-    [SerializeField] List<GridNode> NPCSpawnPointNodes = new List<GridNode>();
-    [SerializeField] CharacterData playerCharData;
-
-    [Header("Grid Data")]
-    [SerializeField] Grid grid;
-    [SerializeField] float gridSize;
-    [SerializeField] float gridCellGap;
-    [SerializeField] int xLength, yLength;
+    [SerializeField] LDtkComponentProject project;
+    [Header("Grid")]
+    [SerializeField] GridNode wallPrefab;
+    [SerializeField] GridNode walkablePrefab;
     [SerializeField] Dictionary<Vector2, GridNode> spawnedNodes = new Dictionary<Vector2, GridNode>();
+    Grid grid;
 
-    [Header("NodeData")]
-    [SerializeField] GridNodeData[] defaultGridNodeLayout;
+    [Header("Player")]
+    [SerializeField] CharacterData playerCharData;
+    [SerializeField] PlayerSpawnPoint playerSpawnPointPrefab, spawnedPlayerSpawnPoint;
+    Vector2 playerSpawnCoords = Vector2.zero;
+
+    [Header("NPCs")]
+    [SerializeField] NPCSpawnPoint NPCSpawnPointPrefab;
+    [SerializeField] List<NPCSpawnPoint> spawnedNPCSpawnPoints = new List<NPCSpawnPoint>();
+    List<Vector2> NPCSpawnCoords = new List<Vector2>();
+
+    [Header("World Items")]
+    [SerializeField] ItemDataContainer itemDataContainer;
+    [SerializeField] WorldItem worldItemPrefab;
+    [SerializeField] Transform worldItemsParent;
+
+    [Header("Spawn Offsets")]
+    [SerializeField] Vector3 canteredEntitySpawnOffset;
+    [SerializeField] Vector3 worldItemSpawnOffset;
+
+    [SerializeField] int currentLevelIndex;
+
     private void Awake()
     {
         Instance = this;
+        grid = GetComponent<Grid>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        InitGridController();
+        Level currentLevel = project.Json.FromJson.Levels[currentLevelIndex];
+        int index = 0;
+        GridNode clone = null;
+        Vector2 spawnCoords = Vector2.zero;
 
-        GenerateGrid();
-        //ActivateSpawnPoints();
 
-    }
-
-    private void InitGridController()
-    {
-        //Vector3 newGridSize = new Vector3(gridSize, gridSize, gridSize);
-        Vector3 newCellGap = new Vector3(gridCellGap, gridCellGap, gridCellGap);
-
-        //grid.cellSize = newGridSize;
-        grid.cellGap = newCellGap;
-    }
-
-    void GenerateGrid()
-    {
-        int nodeIndex = 0;
-        for (int i = 0; i < xLength; i++)
+        for (int i = 0; i < currentLevel.LayerInstances[0].CWid; i++)
         {
-            for(int j = 0; j < yLength; j++)
+            for (int j = 0; j < currentLevel.LayerInstances[0].CHei; j++)
             {
-                GridNode clone = Instantiate(defaultGridNodeLayout[nodeIndex].gridNodePrefab, grid.GetCellCenterLocal(new Vector3Int(i, j)), Quaternion.identity, transform);
-                Vector2 spawnCoords = new Vector2(i, j);
-                clone.InitNode(defaultGridNodeLayout[nodeIndex], new SquareCoords { Pos = new Vector2(i, j) });
-                spawnedNodes.Add(spawnCoords, clone);
 
-                if (nodeIndex == playerSpawnPointIndex)
+                //Spawn tiles
+                switch (currentLevel.LayerInstances[1].IntGridCsv[index])
                 {
-                    clone.CreatePlayerSpawnPoint(playerSpawnPointPrefab);
-                    spawnPointNode = clone;
+                    case 1:
+                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(i, j)), Quaternion.identity, transform);
+                        spawnCoords = new Vector2(i, j);
+                        clone.InitNode(new SquareCoords { Pos = new Vector2(i, j) });
+                        spawnedNodes.Add(spawnCoords, clone);
+
+                        break;
+                    case 2:
+                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(i, j)), Quaternion.identity, transform);
+                        spawnCoords = new Vector2(i, j);
+                        clone.InitNode(new SquareCoords { Pos = new Vector2(i, j) });
+                        spawnedNodes.Add(spawnCoords, clone);
+                        break;
                 }
-                else
+
+                //Spawn Entities
+                for (int k = 0; k < currentLevel.LayerInstances[0].EntityInstances.Length; k++)
                 {
-                    if(NPCSpawnPointIndices.Contains(nodeIndex))
+                    if (currentLevel.LayerInstances[0].EntityInstances[k].Grid[1] == i && project.Json.FromJson.Levels[0].LayerInstances[0].EntityInstances[k].Grid[0] == j)
                     {
-                        clone.CreateEnemySpawnPoint(NPCSpawnPointPrefab);
-                        NPCSpawnPointNodes.Add(clone);
+                        GridNode spawnNode = GetNodeAtCoords(spawnCoords);
+                        switch (currentLevel.LayerInstances[0].EntityInstances[k].Identifier)
+                        {
+                            case "Player_Start":
+                                PlayerSpawnPoint playerSpawnPointClone = Instantiate(playerSpawnPointPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                spawnedPlayerSpawnPoint = playerSpawnPointClone;
+                                playerSpawnCoords = spawnCoords;
+                                break;
+                            case "NPC_Spawn":
+                                NPCSpawnPoint NPCSpawnPonintClone = Instantiate(NPCSpawnPointPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                spawnedNPCSpawnPoints.Add(NPCSpawnPonintClone);
+                                NPCSpawnCoords.Add(spawnCoords);
+                                break;
+                            case "WorldItem":
+                                WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                ItemData worldItemData = itemDataContainer.GetDataWithIdentifier(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[1].Value.ToString());
+                                spawnedWorldItem.InitWorldItem(new ItemStack(worldItemData, Convert.ToInt32(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[3].Value)));
+                                break;
+                        }
+
                     }
                 }
-
-                nodeIndex++;
+                index++;
             }
         }
 
-        foreach (GridNode node in spawnedNodes.Values)
+        foreach (var node in spawnedNodes.Values)
         {
             node.CacheNeighbours();
         }
-    }
 
-    void ActivateSpawnPoints()
-    {
-        if (spawnPointNode != null)
-            spawnPointNode.SpawnPlayer(playerCharData);
 
-        if(NPCSpawnPointNodes.Count > 0)
-            foreach (GridNode spawnPointNode in NPCSpawnPointNodes)
-            {
-                spawnPointNode.SpawnEnemy();
-            }
+        //Spawn player and entities
+        spawnedPlayerSpawnPoint.SpawnPlayer(playerCharData, GetNodeAtCoords(playerSpawnCoords));
+
+        for (int i = 0; i < spawnedNPCSpawnPoints.Count; i++)
+        {
+            spawnedNPCSpawnPoints[i].SpawnEnemy(GetNodeAtCoords(NPCSpawnCoords[i]));
+        }
     }
 
     public GridNode GetNodeAtCoords(Vector2 coords) => spawnedNodes.TryGetValue(coords, out var node) ? node : null;
@@ -101,27 +124,6 @@ public class GridController : MonoBehaviour
     public GridNode GetNodeFromWorldPos(Vector3 worldPos)
     {
         return GetNodeAtCoords(new Vector2(grid.WorldToCell(worldPos).x, grid.WorldToCell(worldPos).y));
-    }
-
-    public GridNode GetNodeInDirection(GridNode startNode, Vector3 direction)
-    {
-        // Convert the direction into a grid offset
-        Vector2 offset = Vector2.zero;
-
-        if (direction == Vector3.forward)
-            offset = new Vector2(1, 0);  // Up
-        else if (direction == Vector3.back)
-            offset = new Vector2(-1, 0); // Down
-        else if (direction == Vector3.left)
-            offset = new Vector2(0, -1); // Left
-        else if (direction == Vector3.right)
-            offset = new Vector2(0, 1);  // Right
-
-        // Calculate the target position by adding the offset to the start node position
-        Vector2 targetPosition = startNode.Coords.Pos + offset;
-
-        // Retrieve and return the node at the target position
-        return GetNodeAtCoords(targetPosition);
     }
 
     public struct SquareCoords : ICoords
@@ -139,5 +141,26 @@ public class GridController : MonoBehaviour
         }
 
         public Vector2 Pos { get; set; }
+    }
+
+    public float DecideSpawnDir(string dir)
+    {
+        float returnDir = 0;
+        switch (dir)
+        {
+            case "North":
+                returnDir = 0;
+                break;
+            case "East":
+                returnDir = 90;
+                break;
+            case "South":
+                returnDir = 180;
+                break;
+            case "West":
+                returnDir = 270;
+                break;
+        }
+        return returnDir;
     }
 }

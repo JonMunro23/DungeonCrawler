@@ -53,7 +53,7 @@ public class NPCAttackController : MonoBehaviour
     }
     public bool CheckForPlayer()
     {
-        frontNode = GridController.Instance.GetNodeInDirection(groupController.currentlyOccupiedGridnode, groupController.movementController.currentOrientation.forward);
+        frontNode = groupController.currentlyOccupiedGridnode.GetNodeInDirection(groupController.movementController.currentOrientation.forward);
         if (!frontNode)
             return false;
 

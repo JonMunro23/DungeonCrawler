@@ -11,7 +11,7 @@ public class MeleeWeapon : Weapon
         else
             weaponAnimator.Play("Swing Left 1");
 
-        GridNode forwardNode = GridController.Instance.GetNodeInDirection(PlayerController.currentOccupiedNode, transform.root.forward);
+        GridNode forwardNode = PlayerController.currentOccupiedNode.GetNodeInDirection(transform.root.forward);
         if (!forwardNode)
             return;
 

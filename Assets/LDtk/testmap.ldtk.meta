@@ -1,0 +1,42 @@
+fileFormatVersion: 2
+guid: 336dff78202e9974ca89938e58e74f9c
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: aaa16bfc62c086f4fb45da87b6acf9b1, type: 3}
+  _reimportOnDependencyChange: 1
+  _jsonFile: {fileID: -164016180542632921, guid: 336dff78202e9974ca89938e58e74f9c,
+    type: 3}
+  _pixelsPerUnit: 16
+  _customLevelPrefab: {instanceID: 0}
+  _intGridValueColorsVisible: 0
+  _useCompositeCollider: 1
+  _geometryType: 0
+  _createBackgroundColor: 1
+  _createLevelBoundsTrigger: 0
+  _useParallax: 1
+  _intGridValues:
+  - _key: Tiles_1
+    _asset: {fileID: 11400000, guid: b1a2f4b6424e87e4da00350445f75014, type: 2}
+  - _key: Tiles_2
+    _asset: {fileID: 11400000, guid: 00c48bcdc29be38439f34d32c61070b9, type: 2}
+  _entities:
+  - _key: Player_Start
+    _asset: {instanceID: 0}
+  - _key: NPC_Spawn
+    _asset: {instanceID: 0}
+  - _key: WorldItem
+    _asset: {instanceID: 0}
+  - _key: Interactable
+    _asset: {instanceID: 0}
+  - _key: Triggerable
+    _asset: {instanceID: 0}
+  - _key: Level_Transition
+    _asset: {instanceID: 0}
+  _enumGenerate: 0
+  _enumPath: 
+  _enumNamespace: 
