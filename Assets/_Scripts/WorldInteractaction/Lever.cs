@@ -1,15 +1,56 @@
-using System.Collections;
-using System.Collections.Generic;
+using DG.Tweening;
+using System;
 using UnityEngine;
 
-public class Lever : MonoBehaviour
+public class Lever : MonoBehaviour, IInteractable
 {
-    public GameObject doorObject;
+    [SerializeField] bool isSingleUse;
+    bool canUse = true;
+    bool isFlipped = false;
 
-    public void Pulled()
+    public GameObject[] objectsToTrigger;
+    [Space]
+    [Header("Animation")]
+    [SerializeField] Transform leverPivotPoint;
+    [SerializeField] Vector3 flippedRotation, unflippedRotation;
+    [SerializeField] float flipDuration;
+    public void Interact()
     {
-        Door door = doorObject.GetComponent<Door>();
-        door.ToggleDoor();
-        Debug.Log("Pulled the lever");
+        TryFlipLever();
     }
+    public void InteractWithItem(ItemData item)
+    {
+        TryFlipLever();
+    }
+
+    private void TryFlipLever()
+    {
+        if (!canUse)
+            return;
+
+        FlipLever();
+
+        foreach (GameObject item in objectsToTrigger)
+        {
+            if (!item.TryGetComponent(out ITriggerable triggerable))
+                return;
+
+            if (!triggerable.IsTriggerable())
+                return;
+
+            triggerable.Trigger();
+        }
+
+        if (isSingleUse)
+            canUse = false;
+    }
+
+    private void FlipLever()
+    {
+        if(isFlipped)
+            leverPivotPoint.DOLocalRotate(unflippedRotation, flipDuration);
+        else
+            leverPivotPoint.DOLocalRotate(flippedRotation, flipDuration);
+    }
+
 }

@@ -31,7 +31,18 @@ public class WorldInteraction : MonoBehaviour
             }
             else if(hit.collider.TryGetComponent(out IInteractable interactable))
             {
-                interactable.Interact();
+                if (Input.GetKeyDown(KeyCode.Mouse0))
+                {
+                    ItemData currentGrabbedItemData = playerController.itemPickupManager.currentGrabbedItem.itemData;
+                    if (currentGrabbedItemData != null)
+                    {
+                        interactable.InteractWithItem(currentGrabbedItemData);
+                    }
+                    else
+                        interactable.Interact();
+
+                    OnWorldInteraction?.Invoke();
+                }
             }
         }
     }

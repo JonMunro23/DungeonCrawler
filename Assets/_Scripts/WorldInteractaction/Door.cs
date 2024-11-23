@@ -1,62 +1,79 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using DG.Tweening;
 
-public class Door : MonoBehaviour, IInteractable
+public class Door : MonoBehaviour, ITriggerable
 {
-    public bool requiresKey;
-    //public ItemData.KeyType keyType;
-    [SerializeField]
-    bool isOpen;
-
-    [SerializeField]
-    Vector3 openedPos, closedPos;
-    [SerializeField]
-    float openingDuration;
-    float timeElapsed;
-
-    bool isInMotion;
+    [SerializeField] GridNode occupyingGridNode;
+    [SerializeField] bool isTriggerable, isOpen;
+    [SerializeField] int requiredNumOfTriggers = 1;
+    int currentNumOfTriggers = 0;
+    [Space]
+    [Header("Animation")]
+    [SerializeField] Transform transformToMove;
+    [SerializeField] Vector3 openedPos, closedPos;
+    [SerializeField] float openDuration, closeDuration;
 
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = isOpen ? openedPos : closedPos;
-    }
-
-    void Update()
-    {
-        if (isInMotion)
-        {
-            if (timeElapsed < openingDuration)
-            {
-                float t = timeElapsed / openingDuration;
-                if (isOpen)
-                    transform.position = Vector3.Lerp(closedPos, openedPos, t);
-                else
-                    transform.position = Vector3.Lerp(openedPos, closedPos, t);
-                timeElapsed += Time.deltaTime;
-            }
-            else
-            {
-                transform.position = isOpen ? openedPos : closedPos;
-                isInMotion = false;
-                timeElapsed = 0;
-            }
-
-        }
+        transformToMove.localPosition = isOpen ? openedPos : closedPos;
+        if(!isOpen)
+            if (occupyingGridNode)
+                occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle));
     }
 
     public void ToggleDoor()
     {
-        if (!isInMotion)
+        Debug.Log("Toggling" + isOpen);
+
+        if(requiredNumOfTriggers > 1)
         {
-            isOpen = !isOpen;
-            isInMotion = true;
+            currentNumOfTriggers++;
+            if(currentNumOfTriggers == requiredNumOfTriggers)
+            {
+                if (isOpen)
+                    CloseDoor();
+                else
+                    OpenDoor();
+
+                currentNumOfTriggers = 0;
+            }
         }
+        else
+        {
+            if (isOpen)
+                CloseDoor();
+            else
+                OpenDoor();
+        }
+
+        
     }
 
-    public void Interact()
+    private void OpenDoor()
+    {
+        isOpen = true;
+        if(occupyingGridNode)
+            occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.None));
+        transformToMove.DOLocalMove(openedPos, openDuration);
+    }
+
+    private void CloseDoor()
+    {
+        isOpen = false;
+        if (occupyingGridNode)
+            occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle));
+        transformToMove.DOLocalMove(closedPos, closeDuration);
+    }
+
+
+    public void Trigger()
     {
         ToggleDoor();
+    }
+
+    public bool IsTriggerable()
+    {
+        return isTriggerable;
     }
 }
