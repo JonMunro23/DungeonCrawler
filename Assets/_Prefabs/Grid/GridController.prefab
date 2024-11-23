@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &725639925866467231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7918361601237953702}
+  - component: {fileID: 1564344409349390903}
+  - component: {fileID: 6724015443341050875}
+  m_Layer: 0
+  m_Name: GridController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7918361601237953702
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725639925866467231}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1564344409349390903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725639925866467231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59d4fd5866e4eac47b556f20202c37b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  project: {fileID: 7379775869353494814, guid: 336dff78202e9974ca89938e58e74f9c, type: 3}
+  wallPrefab: {fileID: 5669135901956335995, guid: cdd9a67269e3c764da5a38604871d0f6,
+    type: 3}
+  walkablePrefab: {fileID: 6649768854037950483, guid: e50f98c0cd5b1cb4c95f1398a78990d0,
+    type: 3}
+  playerCharData: {fileID: 11400000, guid: 5450bfd8a18de3148852eb684df0f839, type: 2}
+  playerSpawnPointPrefab: {fileID: 937040148265218411, guid: 42dd19d08eeba4747bfc66184a395fac,
+    type: 3}
+  spawnedPlayerSpawnPoint: {fileID: 0}
+  NPCSpawnPointPrefab: {fileID: 7420140500364602755, guid: 7d0c852250a8d5b4fa64f720b9ef6bbe,
+    type: 3}
+  spawnedNPCSpawnPoints: []
+  itemDataContainer: {fileID: 11400000, guid: bbf786f9fec6a344abaa6097c2f9d10c, type: 2}
+  worldItemPrefab: {fileID: 5545412917158435578, guid: 945df0abf5cc1e64c8ba274c480e94fa,
+    type: 3}
+  worldItemsParent: {fileID: 0}
+  canteredEntitySpawnOffset: {x: -1.5, y: 0, z: -1.5}
+  worldItemSpawnOffset: {x: -0.25, y: 0.03, z: -1.5}
+  currentLevelIndex: 0
+--- !u!156049354 &6724015443341050875
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725639925866467231}
+  m_Enabled: 1
+  m_CellSize: {x: 3, y: 3, z: 0}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 0
+  m_CellSwizzle: 3

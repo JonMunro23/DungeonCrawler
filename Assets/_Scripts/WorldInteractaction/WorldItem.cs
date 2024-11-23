@@ -32,6 +32,14 @@ public class WorldItem : MonoBehaviour, IPickup
     {
         item.itemData = itemToInitialise.itemData;
         item.itemAmount = itemToInitialise.itemAmount;
+        item.loadedAmmo = itemToInitialise.loadedAmmo;
+
+        SpawnMesh();
+    }
+
+    void SpawnMesh()
+    {
+        Instantiate(item.itemData.itemWorldModel, transform);
     }
 
     public void GrabPickup()

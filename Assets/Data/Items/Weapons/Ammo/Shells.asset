@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Shells
   m_EditorClassIdentifier: 
   itemName: Shells
+  itemIdentifier: shells
   itemDescription: A box of shotgun shells.
   itemSprite: {fileID: 21300000, guid: 98eb5a80971617946bd4e111a3d80b38, type: 3}
   itemWorldModel: {fileID: 0}
   itemWeight: 0.012
-  itemValue: 3
   isItemStackable: 1
   maxItemStackSize: 60
   consumableType: 2

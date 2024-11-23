@@ -34,7 +34,6 @@ public class GridNode : MonoBehaviour
 {
     [SerializeField] bool showDebugInfo;
 
-    [HideInInspector]
     public GridNodeData nodeData;
     public ICoords Coords;
     PlayerSpawnPoint playerSpawnPoint;
@@ -152,10 +151,9 @@ public class GridNode : MonoBehaviour
         new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(1, 0),
     };
 
-    public void InitNode(GridNodeData newNodeData, ICoords _coords)
+    public void InitNode(ICoords _coords)
     {
         Coords = _coords;
-        nodeData = newNodeData;
 
         coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
     }
@@ -191,4 +189,25 @@ public class GridNode : MonoBehaviour
         enemySpawnPoint.SpawnEnemy(this);
     }
 
+
+    public GridNode GetNodeInDirection(Vector3 direction)
+    {
+        // Convert the direction into a grid offset
+        Vector2 offset = Vector2.zero;
+
+        if (direction == Vector3.forward)
+            offset = new Vector2(1, 0);  // Up
+        else if (direction == Vector3.back)
+            offset = new Vector2(-1, 0); // Down
+        else if (direction == Vector3.left)
+            offset = new Vector2(0, -1); // Left
+        else if (direction == Vector3.right)
+            offset = new Vector2(0, 1);  // Right
+
+        // Calculate the target position by adding the offset to the start node position
+        Vector2 targetPosition = Coords.Pos + offset;
+
+        // Retrieve and return the node at the target position
+        return GridController.Instance.GetNodeAtCoords(targetPosition);
+    }
 }

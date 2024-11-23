@@ -122,17 +122,17 @@ public class ItemPickupManager : MonoBehaviour
         if (!hasGrabbedItem)
             return;
 
-        WorldItem spawnedWorldItem = Instantiate(currentGrabbedItem.itemData.itemWorldModel, placementLocation, Quaternion.identity);
-        spawnedWorldItem.InitWorldItem(currentGrabbedItem);
+        //WorldItem spawnedWorldItem = Instantiate(currentGrabbedItem.itemData.itemWorldModel, placementLocation, Quaternion.identity);
+        //spawnedWorldItem.InitWorldItem(currentGrabbedItem);
         DetachItemFromMouseCursor();
     }
 
     void ThrowGrabbedItemIntoWorld()
     {
-        WorldItem spawnedWorldItem = Instantiate(currentGrabbedItem.itemData.itemWorldModel, thrownItemSpawnLocation.position, Quaternion.identity);
-        spawnedWorldItem.GetComponent<Rigidbody>().AddForce(thrownItemSpawnLocation.forward * throwVeloctiy * Time.deltaTime, ForceMode.Impulse);
-        spawnedWorldItem.item.itemData = currentGrabbedItem.itemData;
-        spawnedWorldItem.item.itemAmount = currentGrabbedItem.itemAmount;
+        //WorldItem spawnedWorldItem = Instantiate(currentGrabbedItem.itemData.itemWorldModel, thrownItemSpawnLocation.position, Quaternion.identity);
+        //spawnedWorldItem.GetComponent<Rigidbody>().AddForce(thrownItemSpawnLocation.forward * throwVeloctiy * Time.deltaTime, ForceMode.Impulse);
+        //spawnedWorldItem.item.itemData = currentGrabbedItem.itemData;
+        //spawnedWorldItem.item.itemAmount = currentGrabbedItem.itemAmount;
 
         DetachItemFromMouseCursor();
     }

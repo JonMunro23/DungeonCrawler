@@ -204,11 +204,8 @@ GameObject:
   - component: {fileID: 4004264903300576752}
   - component: {fileID: 2706231632786440600}
   - component: {fileID: 6273920665496447613}
-  - component: {fileID: 1490467263664622772}
   - component: {fileID: 7175082179472245424}
   - component: {fileID: 8677680136182380259}
-  - component: {fileID: 9001710462884612758}
-  - component: {fileID: 4387006183842733530}
   m_Layer: 0
   m_Name: AdvancedGridMovement_Player
   m_TagString: Player
@@ -408,6 +405,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  canRotate: 1
+  rotationDelay: 0.5
 --- !u!114 &4004264903300576752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -556,31 +555,6 @@ MonoBehaviour:
   rightMinimumPitch: 1
   turnClip: {fileID: 8300000, guid: 8544ef406feee6c45b8838e817e19246, type: 3}
   turnMinimumPitch: 1
---- !u!114 &1490467263664622772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1713261593746196099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77566f3140c1019499a7354e2189869a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponSpawnParent: {fileID: 0}
-  fists: {fileID: 11400000, guid: 75b694dc102404a48b09940ea4ec47b1, type: 2}
-  leftHandItem: {fileID: 0}
-  rightHandItem: {fileID: 0}
-  leftHandCooldownImage: {fileID: 0}
-  rightHandCooldownImage: {fileID: 0}
-  playerTorchLight: {fileID: 0}
-  leftHandItemImage: {fileID: 0}
-  rightHandItemImage: {fileID: 0}
-  bullets: 30
-  rockets: 4
-  shells: 12
-  currentWeapon: {fileID: 0}
 --- !u!114 &7175082179472245424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -593,7 +567,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b540e6fc33d904b41aba33e18efb0788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 0}
+  slotToSpawn: {fileID: 0}
+  spawnedInventorySlots: []
+  totalNumInventorySlots: 0
+  heldHealthSyringes: 0
+  heldPistolAmmo: 0
+  heldRifleAmmo: 0
+  heldShells: 0
 --- !u!114 &8677680136182380259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -606,51 +586,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f69b6c7ecd29ac14490c2fb5a03e009e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isClickable: 0
---- !u!114 &9001710462884612758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1713261593746196099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b9988361fcada14bb6c287b7c048005, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mouseItem: {fileID: 8484349928456570493, guid: 3bb512a54a495e649b9c6eb5656d833b,
-    type: 3}
-  canvasTransform: {fileID: 0}
-  thrownItemSpawnLocation: {fileID: 8140574072555632837}
-  throwVeloctiy: 5000
-  mousePos: {x: 0, y: 0, z: 0}
-  hasMouseItem: 0
-  canPickUpItem: 1
-  objectOnMouse: {fileID: 0}
-  itemAmount: 0
-  inventorySlot: {fileID: 0}
-  mouseItemClone: {fileID: 0}
---- !u!114 &4387006183842733530
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1713261593746196099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5236bd942c8167844a63d80f5742f1d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerHealthSlider: {fileID: 0}
-  playerHealhText: {fileID: 0}
-  playerArmourText: {fileID: 0}
-  playerEvasionText: {fileID: 0}
-  currentPlayerHealth: 0
-  maxPlayerHealth: 0
-  currentArmourRating: 0
-  currentEvasionRating: 0
+  maxInteractionDistance: 3
 --- !u!1 &2719222642533084682
 GameObject:
   m_ObjectHideFlags: 0
