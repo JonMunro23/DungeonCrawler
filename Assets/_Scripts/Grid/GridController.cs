@@ -1,11 +1,15 @@
 using LDtkUnity;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
     public static GridController Instance;
+
+    const int ENTITY_LAYER_INDEX = 0;
+    const int INTGRID_LAYER_INDEX = 1;
 
     [SerializeField] LDtkComponentProject project;
     [Header("Grid")]
@@ -29,6 +33,17 @@ public class GridController : MonoBehaviour
     [SerializeField] WorldItem worldItemPrefab;
     [SerializeField] Transform worldItemsParent;
 
+    [Header("Interactables")]
+    [SerializeField] Lever leverPrefab;
+    [SerializeField] KeycardReader keycardReaderPrefab;
+    [SerializeField] PressurePlate pressurePlatePrefab;
+    List<GameObject> spawnedInteractables;
+
+    [Header("Triggerables")]
+    [SerializeField] Door doorPrefab;
+    List<GameObject> spawnedTriggerables;
+
+
     [Header("Spawn Offsets")]
     [SerializeField] Vector3 canteredEntitySpawnOffset;
     [SerializeField] Vector3 worldItemSpawnOffset;
@@ -44,63 +59,80 @@ public class GridController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SpawnGridNodes();
+    }
+
+    private async void SpawnGridNodes()
+    {
         Level currentLevel = project.Json.FromJson.Levels[currentLevelIndex];
         int index = 0;
         GridNode clone = null;
         Vector2 spawnCoords = Vector2.zero;
 
-
-        for (int i = 0; i < currentLevel.LayerInstances[0].CWid; i++)
+        for (int i = 0; i < currentLevel.LayerInstances[INTGRID_LAYER_INDEX].CWid; i++)
         {
-            for (int j = 0; j < currentLevel.LayerInstances[0].CHei; j++)
+            for (int j = 0; j < currentLevel.LayerInstances[INTGRID_LAYER_INDEX].CHei; j++)
             {
 
                 //Spawn tiles
-                switch (currentLevel.LayerInstances[1].IntGridCsv[index])
+                //i index is reversed to match orientation in LDtk
+                switch (currentLevel.LayerInstances[INTGRID_LAYER_INDEX].IntGridCsv[index])
                 {
                     case 1:
-                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(i, j)), Quaternion.identity, transform);
-                        spawnCoords = new Vector2(i, j);
-                        clone.InitNode(new SquareCoords { Pos = new Vector2(i, j) });
+                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, transform);
+                        spawnCoords = new Vector2(-i, j);
+                        clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
                         spawnedNodes.Add(spawnCoords, clone);
 
                         break;
                     case 2:
-                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(i, j)), Quaternion.identity, transform);
-                        spawnCoords = new Vector2(i, j);
-                        clone.InitNode(new SquareCoords { Pos = new Vector2(i, j) });
+                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, transform);
+                        spawnCoords = new Vector2(-i, j);
+                        clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
                         spawnedNodes.Add(spawnCoords, clone);
                         break;
                 }
 
                 //Spawn Entities
-                for (int k = 0; k < currentLevel.LayerInstances[0].EntityInstances.Length; k++)
+                for (int k = 0; k < currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances.Length; k++)
                 {
-                    if (currentLevel.LayerInstances[0].EntityInstances[k].Grid[1] == i && project.Json.FromJson.Levels[0].LayerInstances[0].EntityInstances[k].Grid[0] == j)
+                    if (currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].Grid[1] == i && project.Json.FromJson.Levels[0].LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].Grid[0] == j)
                     {
                         GridNode spawnNode = GetNodeAtCoords(spawnCoords);
-                        switch (currentLevel.LayerInstances[0].EntityInstances[k].Identifier)
+                        switch (currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].Identifier)
                         {
                             case "Player_Start":
-                                PlayerSpawnPoint playerSpawnPointClone = Instantiate(playerSpawnPointPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                PlayerSpawnPoint playerSpawnPointClone = Instantiate(playerSpawnPointPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                 spawnedPlayerSpawnPoint = playerSpawnPointClone;
                                 playerSpawnCoords = spawnCoords;
                                 break;
                             case "NPC_Spawn":
-                                NPCSpawnPoint NPCSpawnPonintClone = Instantiate(NPCSpawnPointPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                NPCSpawnPoint NPCSpawnPonintClone = Instantiate(NPCSpawnPointPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                 spawnedNPCSpawnPoints.Add(NPCSpawnPonintClone);
                                 NPCSpawnCoords.Add(spawnCoords);
                                 break;
                             case "WorldItem":
-                                WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + canteredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                 ItemData worldItemData = itemDataContainer.GetDataWithIdentifier(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[1].Value.ToString());
-                                spawnedWorldItem.InitWorldItem(new ItemStack(worldItemData, Convert.ToInt32(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(currentLevel.LayerInstances[0].EntityInstances[k].FieldInstances[3].Value)));
+                                spawnedWorldItem.InitWorldItem(new ItemStack(worldItemData, Convert.ToInt32(currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].FieldInstances[3].Value)));
+                                break;
+                            case "Interactable":
+                                switch (currentLevel.LayerInstances[ENTITY_LAYER_INDEX].EntityInstances[k].FieldInstances[1].Value)
+                                {
+                                    case "Lever":
+                                        //spawn lever
+                                        break;
+                                    case "Keycard_Reader":
+                                        //spawn keycard reader     
+                                        break;
+                                }
                                 break;
                         }
 
                     }
                 }
                 index++;
+                await Task.Delay(1);
             }
         }
 
@@ -117,6 +149,8 @@ public class GridController : MonoBehaviour
         {
             spawnedNPCSpawnPoints[i].SpawnEnemy(GetNodeAtCoords(NPCSpawnCoords[i]));
         }
+
+        //link interactables to triggerables
     }
 
     public GridNode GetNodeAtCoords(Vector2 coords) => spawnedNodes.TryGetValue(coords, out var node) ? node : null;
@@ -163,4 +197,6 @@ public class GridController : MonoBehaviour
         }
         return returnDir;
     }
+
+
 }

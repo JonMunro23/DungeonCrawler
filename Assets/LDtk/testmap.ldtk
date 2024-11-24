@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 30,
+	"nextUid": 32,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -598,6 +598,43 @@
 					"allowedRefsEntityUid": null,
 					"allowedRefTags": [],
 					"tilesetUid": null
+				},
+				{
+					"identifier": "Linked_Triggerables",
+					"doc": null,
+					"__type": "Array<EntityRef>",
+					"uid": 31,
+					"type": "F_EntityRef",
+					"isArray": true,
+					"canBeNull": false,
+					"arrayMinLength": 1,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "RefLinkBetweenCenters",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "CurvedArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySpecificEntity",
+					"allowedRefsEntityUid": 12,
+					"allowedRefTags": [],
+					"tilesetUid": null
 				}
 			]
 		},
@@ -955,9 +992,9 @@
 							"height": 16,
 							"defUid": 2,
 							"px": [216,120],
-							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 5, "realEditorValues": [{
+							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 5, "realEditorValues": [{
 								"id": "V_String",
-								"params": ["South"]
+								"params": ["North"]
 							}] }],
 							"__worldX": 216,
 							"__worldY": 120
@@ -975,9 +1012,9 @@
 							"defUid": 7,
 							"px": [40,120],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["North"]
+									"params": ["West"]
 								}] },
 								{ "__identifier": "EnemyName", "__type": "String", "__value": null, "__tile": null, "defUid": 8, "realEditorValues": [] }
 							],
@@ -997,9 +1034,9 @@
 							"defUid": 10,
 							"px": [184,40],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["North"]
+									"params": ["East"]
 								}] },
 								{ "__identifier": "Item_Name", "__type": "String", "__value": "spas_12", "__tile": null, "defUid": 14, "realEditorValues": [{
 									"id": "V_String",
@@ -1028,7 +1065,27 @@
 									"id": "V_String",
 									"params": ["West"]
 								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [] }
+								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Keycard_Reader", "__tile": null, "defUid": 20, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Keycard_Reader"]
+								}] },
+								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [ {
+									"entityIid": "f53519f0-9b00-11ef-b25f-4bad2c91391a",
+									"layerIid": "0e984f60-9b00-11ef-b45e-c9d63f8c41ef",
+									"levelIid": "011d9a80-9b00-11ef-9670-d7c5423fe3e9",
+									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
+								}, {
+									"entityIid": "aba47c20-9b00-11ef-a969-ff7f43d2f105",
+									"layerIid": "0e984f60-9b00-11ef-b45e-c9d63f8c41ef",
+									"levelIid": "011d9a80-9b00-11ef-9670-d7c5423fe3e9",
+									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
+								} ], "__tile": null, "defUid": 31, "realEditorValues": [ {
+									"id": "V_String",
+									"params": ["f53519f0-9b00-11ef-b25f-4bad2c91391a"]
+								}, {
+									"id": "V_String",
+									"params": ["aba47c20-9b00-11ef-a969-ff7f43d2f105"]
+								} ] }
 							],
 							"__worldX": 152,
 							"__worldY": 40
@@ -1091,9 +1148,9 @@
 							"defUid": 10,
 							"px": [184,72],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["North"]
+									"params": ["East"]
 								}] },
 								{ "__identifier": "Item_Name", "__type": "String", "__value": "vector", "__tile": null, "defUid": 14, "realEditorValues": [{
 									"id": "V_String",
@@ -1104,6 +1161,28 @@
 							],
 							"__worldX": 184,
 							"__worldY": 72
+						},
+						{
+							"__identifier": "Triggerable",
+							"__grid": [10,5],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 432, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#733E39",
+							"iid": "aba47c20-9b00-11ef-a969-ff7f43d2f105",
+							"width": 16,
+							"height": 16,
+							"defUid": 12,
+							"px": [168,88],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 17, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["West"]
+								}] },
+								{ "__identifier": "Triggerable_Type", "__type": "LocalEnum.Triggerable_Type", "__value": "Door", "__tile": null, "defUid": 21, "realEditorValues": [] }
+							],
+							"__worldX": 168,
+							"__worldY": 88
 						}
 					]
 				},
