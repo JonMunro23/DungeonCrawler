@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using DG.Tweening;
 
-public class Door : MonoBehaviour, ITriggerable
+public class Door : TriggerableBase
 {
-    [SerializeField] GridNode occupyingGridNode;
-    [SerializeField] bool isTriggerable, isOpen;
-    [SerializeField] int requiredNumOfTriggers = 1;
-    int currentNumOfTriggers = 0;
+    bool isOpen;
+    
     [Space]
     [Header("Animation")]
     [SerializeField] Transform transformToMove;
@@ -22,10 +20,14 @@ public class Door : MonoBehaviour, ITriggerable
                 occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle));
     }
 
+    public override void Trigger()
+    {
+        base.Trigger();
+        ToggleDoor();
+    }
+
     public void ToggleDoor()
     {
-        Debug.Log("Toggling" + isOpen);
-
         if(requiredNumOfTriggers > 1)
         {
             currentNumOfTriggers++;
@@ -46,8 +48,6 @@ public class Door : MonoBehaviour, ITriggerable
             else
                 OpenDoor();
         }
-
-        
     }
 
     private void OpenDoor()
@@ -67,13 +67,4 @@ public class Door : MonoBehaviour, ITriggerable
     }
 
 
-    public void Trigger()
-    {
-        ToggleDoor();
-    }
-
-    public bool IsTriggerable()
-    {
-        return isTriggerable;
-    }
 }

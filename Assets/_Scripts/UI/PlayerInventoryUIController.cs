@@ -28,6 +28,8 @@ public class PlayerInventoryUIController : MonoBehaviour
         PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
         PlayerInventoryManager.onInventoryClosed -= OnInventoryClosed;
         PlayerInventoryManager.onInventorySlotsSpawned -= OnInventorySlotsSpawned;
+        ItemPickupManager.onGroundItemsUpdated -= OnNewGroundItemDetected;
+        ItemPickupManager.onLastGroundItemRemoved -= OnLastGroundItemRemoved;
     }
 
     void OnNewGroundItemDetected(ItemStack detectedItem)

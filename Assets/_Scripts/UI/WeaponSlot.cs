@@ -40,7 +40,6 @@ public class WeaponSlot : EquipmentSlot
     {
         ItemStack itemToTake = base.TakeItem();
         itemToTake.loadedAmmo = weapon.GetLoadedAmmo();
-        Debug.Log(itemToTake.loadedAmmo);
         DeinitialiseWeaponItem();
         return itemToTake;
 

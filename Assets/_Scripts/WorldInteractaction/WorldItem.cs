@@ -8,7 +8,7 @@ public class ItemStack
     public int itemAmount = 1;
     public int loadedAmmo = 0;
 
-    public ItemStack(ItemData itemData, int itemAmount, int loadedAmmo)
+    public ItemStack(ItemData itemData, int itemAmount, int loadedAmmo = 0)
     {
         this.itemData = itemData;
         this.itemAmount = itemAmount;

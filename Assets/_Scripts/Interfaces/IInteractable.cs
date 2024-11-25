@@ -1,5 +1,10 @@
+using System.Collections.Generic;
+
 public interface IInteractable
 {
-    public abstract void Interact();  
-    public abstract void InteractWithItem(ItemData item);  
+    public void Interact();  
+    public void InteractWithItem(ItemData item);
+    public void AddObjectToTrigger(ITriggerable objectToTrigger);
+    public void AddEntityRefToTrigger(Dictionary<string, object> entityRefToTrigger);
+    public List<string> GetEntityRefsToTrigger();
 }

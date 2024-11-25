@@ -6,7 +6,7 @@ public class ItemDataContainer : ScriptableObject
 {
     public List<ItemData> itemData = new List<ItemData>();
 
-    public ItemData GetDataWithIdentifier(string identifier)
+    public ItemData GetDataFromIdentifier(string identifier)
     {
         foreach (ItemData item in itemData)
         {

@@ -31,12 +31,14 @@ public class NPCMovementController : MonoBehaviour
     {
         AdvancedGridMovement.onPlayerMoved += OnPlayerMoved;
         NPCController.onNPCDeath += OnNPCDeath;
+        GridNode.onNodeOccupancyUpdated += OnNodeOccupancyUpdated;
     }
 
     private void OnDisable()
     {
         AdvancedGridMovement.onPlayerMoved -= OnPlayerMoved;
         NPCController.onNPCDeath -= OnNPCDeath;
+        GridNode.onNodeOccupancyUpdated -= OnNodeOccupancyUpdated;
     }
 
     void OnNPCDeath()
@@ -48,6 +50,11 @@ public class NPCMovementController : MonoBehaviour
     {
         FindNewPathToPlayer();
         playerGridNode = PlayerController.currentOccupiedNode;
+    }
+
+    void OnNodeOccupancyUpdated()
+    {
+        FindNewPathToPlayer();
     }
 
     public void FindNewPathToPlayer()
@@ -66,6 +73,7 @@ public class NPCMovementController : MonoBehaviour
     {
         if(path == null)
         {
+            //Roam?
             Debug.Log("NAE PATH");
             return;
         }

@@ -61,6 +61,8 @@ MonoBehaviour:
   worldItemPrefab: {fileID: 5545412917158435578, guid: 945df0abf5cc1e64c8ba274c480e94fa,
     type: 3}
   worldItemsParent: {fileID: 0}
+  largeContainerPrefab: {fileID: 3550158488799289131, guid: 0aceb50fab28f27468fe2487a72fbdd1,
+    type: 3}
   leverPrefab: {fileID: 1492938548008945344, guid: 16761ec7673e36441b6676673f785e42,
     type: 3}
   keycardReaderPrefab: {fileID: 6781374973030842455, guid: 70127edbe93986a46bd226d4802bbd26,
@@ -68,7 +70,7 @@ MonoBehaviour:
   pressurePlatePrefab: {fileID: 0}
   doorPrefab: {fileID: 2992099999898577703, guid: f7a6d8d37daf52d40ae50816b3fc5883,
     type: 3}
-  canteredEntitySpawnOffset: {x: -1.5, y: 0, z: -1.5}
+  centeredEntitySpawnOffset: {x: -1.5, y: 0, z: -1.5}
   worldItemSpawnOffset: {x: -0.25, y: 0.03, z: -1.5}
   currentLevelIndex: 0
 --- !u!156049354 &6724015443341050875

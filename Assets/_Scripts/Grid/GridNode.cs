@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -47,6 +48,8 @@ public class GridNode : MonoBehaviour
     public Transform moveToTransform;
     public GridNodeOccupant currentOccupant;
 
+    public static Action onNodeOccupancyUpdated;
+
     [Header("Pathfinding")]
     [SerializeField]
     private TMP_Text _fCostText, _gCostText, _hCostText;
@@ -54,6 +57,10 @@ public class GridNode : MonoBehaviour
     public float G { get; private set; }
     public float H { get; private set; }
     public float F => G + H;
+
+    private static readonly List<Vector2> Dirs = new List<Vector2>() {
+        new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(1, 0),
+    };
 
     private void Start()
     {
@@ -69,6 +76,7 @@ public class GridNode : MonoBehaviour
     public void SetOccupant(GridNodeOccupant newOccupant)
     {
         currentOccupant = newOccupant;
+        onNodeOccupancyUpdated?.Invoke();
     }
 
     public void ClearOccupant()
@@ -147,9 +155,6 @@ public class GridNode : MonoBehaviour
         _fCostText.text = "";
     }
 
-    private static readonly List<Vector2> Dirs = new List<Vector2>() {
-        new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(1, 0),
-    };
 
     public void InitNode(ICoords _coords)
     {
@@ -167,28 +172,6 @@ public class GridNode : MonoBehaviour
             neighbouringNodes.Add(neighbouringNode);
         }
     }
-
-    public void CreatePlayerSpawnPoint(PlayerSpawnPoint spawnPointToCreate)
-    {
-        playerSpawnPoint = Instantiate(spawnPointToCreate, transform);
-    }
-
-    public void CreateEnemySpawnPoint(NPCSpawnPoint spawnPointToCreate)
-    {
-        enemySpawnPoint = Instantiate(spawnPointToCreate, transform);
-    }
-
-
-    public void SpawnPlayer(CharacterData playerCharData)
-    {
-        playerSpawnPoint.SpawnPlayer(playerCharData, this);
-    }
-
-    public void SpawnEnemy()
-    {
-        enemySpawnPoint.SpawnEnemy(this);
-    }
-
 
     public GridNode GetNodeInDirection(Vector3 direction)
     {

@@ -217,6 +217,12 @@ public class ItemPickupManager : MonoBehaviour
         {
             groundItems.Add(worldItem);
             onGroundItemsUpdated?.Invoke(groundItems[0].item);
+            return;
+        }
+
+        if(other.TryGetComponent(out IContainer container))
+        {
+            Debug.Log("Next to container");
         }
     }
 

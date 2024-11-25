@@ -1,8 +1,7 @@
 using DG.Tweening;
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public enum KeycardType
 {
@@ -12,12 +11,10 @@ public enum KeycardType
     Yellow
 }
 
-public class KeycardReader : MonoBehaviour, IInteractable
+public class KeycardReader : InteractableBase
 {
-    [SerializeField] GameObject[] objectsToTrigger;
     [SerializeField] KeycardType requiredKeycard;
-    [SerializeField] bool isSingleUse;
-    bool isReadingCard, canUse = true;
+    bool isReadingCard;
     [SerializeField] float cardReadingDuration, errorIndicatorDuration;
     [SerializeField] MeshRenderer indicatorMesh;
     [SerializeField] Material successMat, errorMat, inProgressMat, defaultMat;
@@ -29,12 +26,8 @@ public class KeycardReader : MonoBehaviour, IInteractable
     {
         defaultMat = indicatorMesh.material;
     }
-    public void Interact()
-    {
-        //tell player key required or play error beep or do nothing        
-    }
 
-    public void InteractWithItem(ItemData item)
+    public override void InteractWithItem(ItemData item)
     {
         if (!canUse)
             return;
@@ -47,6 +40,14 @@ public class KeycardReader : MonoBehaviour, IInteractable
             return;
 
         TryUseKeycard(keyData);
+    }
+
+    public void SetRequiredKeycardType(string requiredType)
+    {
+        if(Enum.TryParse(requiredType, out KeycardType type))
+        {
+            requiredKeycard = type;
+        }
     }
 
     void TryUseKeycard(KeyItemData keyData)
@@ -63,12 +64,9 @@ public class KeycardReader : MonoBehaviour, IInteractable
 
     void TriggerObjects()
     {
-        foreach (GameObject obj in objectsToTrigger)
+        foreach (ITriggerable obj in objectsToTrigger)
         {
-            if (!obj.TryGetComponent(out ITriggerable triggerable))
-                return;
-
-            triggerable.Trigger();
+            obj.Trigger();
         }
 
         if (isSingleUse)

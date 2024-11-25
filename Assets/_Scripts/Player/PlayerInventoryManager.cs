@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class PlayerInventoryManager : MonoBehaviour, IInventory
 {
     PlayerController playerController;
+    [SerializeField]
+    List<ItemStack> startingItemStacks = new List<ItemStack>(); 
 
     [SerializeField] InventorySlot slotToSpawn;
     InventorySlot syringeSlot;
@@ -41,6 +43,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             InventorySlot spawnedSlot = Instantiate(slotToSpawn);
             spawnedInventorySlots[i] = spawnedSlot;
             spawnedSlot.InitSlot(this, i);
+        }
+
+        for (int i = 0;i < startingItemStacks.Count;i++)
+        {
+            spawnedInventorySlots[i].AddItem(startingItemStacks[i]);
         }
 
         onInventorySlotsSpawned?.Invoke(spawnedInventorySlots);

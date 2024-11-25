@@ -1,24 +1,19 @@
 using DG.Tweening;
-using System;
 using UnityEngine;
 
-public class Lever : MonoBehaviour, IInteractable
+public class Lever : InteractableBase
 {
-    [SerializeField] bool isSingleUse;
-    bool canUse = true;
-    bool isFlipped = false;
-
-    public GameObject[] objectsToTrigger;
     [Space]
     [Header("Animation")]
     [SerializeField] Transform leverPivotPoint;
     [SerializeField] Vector3 flippedRotation, unflippedRotation;
     [SerializeField] float flipDuration;
-    public void Interact()
+
+    public override void Interact()
     {
         TryFlipLever();
     }
-    public void InteractWithItem(ItemData item)
+    public override void InteractWithItem(ItemData item)
     {
         TryFlipLever();
     }
@@ -30,16 +25,17 @@ public class Lever : MonoBehaviour, IInteractable
 
         FlipLever();
 
-        foreach (GameObject item in objectsToTrigger)
+        if(objectsToTrigger.Count > 0 )
         {
-            if (!item.TryGetComponent(out ITriggerable triggerable))
-                return;
+            foreach (ITriggerable item in objectsToTrigger)
+            {
+                if (!item.IsTriggerable())
+                    return;
 
-            if (!triggerable.IsTriggerable())
-                return;
-
-            triggerable.Trigger();
+                item.Trigger();
+            }
         }
+
 
         if (isSingleUse)
             canUse = false;
@@ -47,10 +43,9 @@ public class Lever : MonoBehaviour, IInteractable
 
     private void FlipLever()
     {
-        if(isFlipped)
+        if(isActivated)
             leverPivotPoint.DOLocalRotate(unflippedRotation, flipDuration);
         else
             leverPivotPoint.DOLocalRotate(flippedRotation, flipDuration);
     }
-
 }
