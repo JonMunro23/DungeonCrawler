@@ -47,7 +47,7 @@ public class PlayerInventoryUIController : MonoBehaviour
             return;
         }
 
-        pickupItemText.text = $"Press F to open container.";
+        pickupItemText.text = $"Press F to {(container.IsOpen() ? "close" : "open")} container.";
     }
 
     void OnLastGroundItemRemoved()
@@ -63,11 +63,6 @@ public class PlayerInventoryUIController : MonoBehaviour
         {
             slot.transform.SetParent(invSlotSpawnParent.transform, false);
         }
-    }
-
-    public void InitPlayerInventory()
-    {
-        
     }
 
     private void Start()

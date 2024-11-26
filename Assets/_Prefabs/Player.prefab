@@ -1251,6 +1251,7 @@ MonoBehaviour:
   openContainerCamRot: {x: 45, y: 0, z: 0}
   defaultCamRot: {x: 7.5, y: 0, z: 0}
   openContainerCamMovementDuration: 0.5
+  closeContainerCamMovementDuration: 0.2
 --- !u!114 &6917960533262647579
 MonoBehaviour:
   m_ObjectHideFlags: 0

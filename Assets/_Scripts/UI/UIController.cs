@@ -49,9 +49,7 @@ public class UIController : MonoBehaviour
     {
         initialisedPlayer = playerInitialised;
 
-        //weaponUIController.InitHands();
         playerStatsUIController.InitStatsUI(initialisedPlayer.playerCharacterData);
-        playerInventoryUIController.InitPlayerInventory();
     }
 
     void OnNewItemAttachedToCursor(ItemStack item)

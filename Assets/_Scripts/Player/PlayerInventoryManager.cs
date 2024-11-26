@@ -18,10 +18,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public bool isInContainer { get; private set; }
 
     [SerializeField] int heldHealthSyringes, heldPistolAmmo, heldRifleAmmo, heldShells;
-
+    [Space]
+    [Header("Camera Anim On Container Interaction")]
     [SerializeField] Vector3 openContainerCamPos, defaultCamPos;
     [SerializeField] Vector3 openContainerCamRot, defaultCamRot;
-    [SerializeField] float openContainerCamMovementDuration;
+    [SerializeField] float openContainerCamMovementDuration, closeContainerCamMovementDuration;
 
     public static Action onInventoryOpened;
     public static Action onInventoryClosed;
@@ -51,8 +52,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     void OnContainerClosed()
     {
-        playerController.MoveCameraPos(defaultCamPos, openContainerCamMovementDuration);
-        playerController.RotCamera(defaultCamRot, openContainerCamMovementDuration);
+        playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
+        playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
 
         isInContainer = false;
         SetCursorActive(false);

@@ -16,7 +16,7 @@ MonoBehaviour:
   itemIdentifier: shells
   itemDescription: A box of shotgun shells.
   itemSprite: {fileID: 21300000, guid: 98eb5a80971617946bd4e111a3d80b38, type: 3}
-  itemWorldModel: {fileID: 5030101105682670932, guid: 4dd7ed3ab9601384baadf3f5e86bbda2,
+  itemWorldModel: {fileID: 919132149155446097, guid: 75e0433bbc634744392d80da64eb11ac,
     type: 3}
   itemWeight: 0.012
   isItemStackable: 1

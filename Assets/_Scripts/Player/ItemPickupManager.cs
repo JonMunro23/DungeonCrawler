@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 public class ItemPickupManager : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class ItemPickupManager : MonoBehaviour
         WorldItem.onWorldItemGrabbed += OnWorldItemGrabbed;
         InventorySlot.onInventorySlotClicked += OnInventorySlotClicked;
         ContainerSlot.onContainerItemGrabbed += OnContainerItemGrabbed;
+
+        AdvancedGridMovement.turnEvent += OnPlayerTurn;
     }
 
     private void OnDisable()
@@ -37,12 +40,22 @@ public class ItemPickupManager : MonoBehaviour
         WorldItem.onWorldItemGrabbed -= OnWorldItemGrabbed;
         InventorySlot.onInventorySlotClicked -= OnInventorySlotClicked;
         ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
+
+        AdvancedGridMovement.turnEvent -= OnPlayerTurn;
     }
 
     private void Awake()
     {
         inventoryManager = GetComponent<PlayerInventoryManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
+    }
+
+    void OnPlayerTurn(int turnDir)
+    {
+        if (nearbyContainer == null)
+            return;
+
+        nearbyContainer.CloseContainer();
     }
 
     void OnWorldItemGrabbed(WorldItem worldItemGrabbed)
@@ -248,7 +261,25 @@ public class ItemPickupManager : MonoBehaviour
 
         if(other.TryGetComponent(out IContainer container))
         {
-            nearbyContainer = container;
+            if(transform.root.rotation.y == other.transform.rotation.y)
+            {
+                nearbyContainer = container;
+                onNearbyContainerUpdated?.Invoke(nearbyContainer);
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.TryGetComponent(out IContainer container))
+        {
+            if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
+            {
+                nearbyContainer = container;
+            }
+            else
+                nearbyContainer = null;
+
             onNearbyContainerUpdated?.Invoke(nearbyContainer);
         }
     }
@@ -273,7 +304,6 @@ public class ItemPickupManager : MonoBehaviour
                 if (container == nearbyContainer)
                 {
                     nearbyContainer.CloseContainer();
-                    playerWeaponManager.currentWeapon.DrawWeapon();
                     nearbyContainer = null;
                     onNearbyContainerUpdated?.Invoke(nearbyContainer);
                 }

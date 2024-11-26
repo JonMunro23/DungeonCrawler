@@ -33,7 +33,7 @@ public class Container : MonoBehaviour, IContainer
         {
             for (int j = 0; j < Y_NUMSLOTS; j++)
             {
-                ContainerSlot clone = Instantiate(containerSlotPrefab, grid.GetCellCenterWorld(new Vector3Int(i, j)), Quaternion.identity, grid.transform);
+                ContainerSlot clone = Instantiate(containerSlotPrefab, grid.GetCellCenterWorld(new Vector3Int(-i, j)), Quaternion.identity, grid.transform);
                 if (storedItems.Count - 1 >= index)
                     if (storedItems[index] != null)
                         clone.InitSlot(storedItems[index], this, index);
@@ -81,5 +81,10 @@ public class Container : MonoBehaviour, IContainer
             OpenContainer();
         }
 
+    }
+
+    public bool IsOpen()
+    {
+        return isOpen;
     }
 }

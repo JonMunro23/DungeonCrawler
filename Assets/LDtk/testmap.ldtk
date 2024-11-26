@@ -1611,19 +1611,64 @@
 							"defUid": 35,
 							"px": [216,88],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 39, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 39, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["North"]
+									"params": ["East"]
 								}] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
-								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "shells", "blue_keycard" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
-									"id": "V_String",
-									"params": ["shells"]
-								}, {
-									"id": "V_String",
-									"params": ["blue_keycard"]
-								} ] },
-								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [12,1], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [12] }, { "id": "V_Int", "params": [1] } ] }
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [
+									"pistol_bullets",
+									"shells",
+									"pistol_bullets",
+									"shells",
+									"pistol_bullets",
+									"shells",
+									"blue_keycard",
+									"shells"
+								], "__tile": null, "defUid": 37, "realEditorValues": [
+									{
+										"id": "V_String",
+										"params": ["pistol_bullets"]
+									},
+									{
+										"id": "V_String",
+										"params": ["shells"]
+									},
+									{
+										"id": "V_String",
+										"params": ["pistol_bullets"]
+									},
+									{
+										"id": "V_String",
+										"params": ["shells"]
+									},
+									{
+										"id": "V_String",
+										"params": ["pistol_bullets"]
+									},
+									{
+										"id": "V_String",
+										"params": ["shells"]
+									},
+									{
+										"id": "V_String",
+										"params": ["blue_keycard"]
+									},
+									{
+										"id": "V_String",
+										"params": ["shells"]
+									}
+								] },
+								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [1,2,1,3,1,4,1,5], "__tile": null, "defUid": 38, "realEditorValues": [
+									{ "id": "V_Int", "params": [1] },
+									{ "id": "V_Int", "params": [2] },
+									{ "id": "V_Int", "params": [1] },
+									{ "id": "V_Int", "params": [3] },
+									{ "id": "V_Int", "params": [1] },
+									{ "id": "V_Int", "params": [4] },
+									{ "id": "V_Int", "params": [1] },
+									{ "id": "V_Int", "params": [5] }
+								] }
 							],
 							"__worldX": 216,
 							"__worldY": 88

@@ -16,7 +16,8 @@ MonoBehaviour:
   itemIdentifier: pistol_bullets
   itemDescription: A box of pistol ammo.
   itemSprite: {fileID: 21300000, guid: 5e74746f5f7e53f4cb1a2188da3f4a56, type: 3}
-  itemWorldModel: {fileID: 0}
+  itemWorldModel: {fileID: 919132149155446097, guid: f2d4cffc2d19ffc4bb93604af0ad695a,
+    type: 3}
   itemWeight: 0.012
   isItemStackable: 1
   maxItemStackSize: 120
