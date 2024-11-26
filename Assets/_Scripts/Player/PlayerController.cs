@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeapon()
     {
-        if(!playerInventoryManager.isOpen && !itemPickupManager.hasGrabbedItem)
+        if(!playerInventoryManager.isOpen && !playerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeapon();
         }
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeaponSpecial()
     {
-        if (!playerInventoryManager.isOpen && !itemPickupManager.hasGrabbedItem)
+        if (!playerInventoryManager.isOpen && !playerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeaponSpecial();
         }
@@ -86,5 +86,15 @@ public class PlayerController : MonoBehaviour
     public void ShakeScreen()
     {
         playerCamera.DOShakePosition(.35f, .5f);
+    }
+
+    public void MoveCameraPos(Vector3 newPos, float overDuration)
+    {
+        playerCamera.transform.DOLocalMove(newPos, overDuration);
+    }
+
+    public void RotCamera(Vector3 newRot, float overDuration)
+    {
+        playerCamera.transform.DOLocalRotate(newRot, overDuration);
     }
 }

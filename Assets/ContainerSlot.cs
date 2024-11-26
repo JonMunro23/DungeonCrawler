@@ -1,15 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class ContainerSlot : MonoBehaviour
+public class ContainerSlot : MonoBehaviour, IPickup
 {
-    [SerializeField] ItemStack storedStack;
+    Container parentContainer;
+    int slotIndex;
+
+    public ItemStack storedStack;
 
     [SerializeField] GameObject spawnedWorldItem;
 
-    public void InitSlot(ItemStack stackToInit)
+    public static Action<ContainerSlot> onContainerItemGrabbed;
+
+    public void InitSlot(ItemStack stackToInit, Container _parentContainer, int slotIndex)
     {
+        parentContainer = _parentContainer;
         storedStack = stackToInit;
 
         SpawnWorldItem();
@@ -28,5 +33,15 @@ public class ContainerSlot : MonoBehaviour
         storedStack.itemData = null;
         storedStack.itemAmount = 0;
         storedStack.loadedAmmo = 0;
+
+        parentContainer.RemoveStoredItemFromSlot(slotIndex);
+    }
+
+    public void GrabPickup()
+    {
+        if (storedStack.itemData == null)
+            return;
+
+        onContainerItemGrabbed?.Invoke(this);
     }
 }

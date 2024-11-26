@@ -135,6 +135,7 @@ public class GridController : MonoBehaviour
                                         for (int l = 0; l < itemNames.Count; l++)
                                         {
                                             ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
+                                            Debug.Log(itemData.itemName);
                                             List<object> itemAmounts = (List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value;
                                             int itemAmount = Convert.ToInt32(itemAmounts[l]);
                                             spawnedContainer.AddNewStoredItem(new ItemStack(itemData, itemAmount));

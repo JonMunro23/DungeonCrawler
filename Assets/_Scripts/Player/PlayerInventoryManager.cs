@@ -15,8 +15,13 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
     public bool isOpen { get; private set; }
+    public bool isInContainer { get; private set; }
 
     [SerializeField] int heldHealthSyringes, heldPistolAmmo, heldRifleAmmo, heldShells;
+
+    [SerializeField] Vector3 openContainerCamPos, defaultCamPos;
+    [SerializeField] Vector3 openContainerCamRot, defaultCamRot;
+    [SerializeField] float openContainerCamMovementDuration;
 
     public static Action onInventoryOpened;
     public static Action onInventoryClosed;
@@ -24,14 +29,55 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public static Action<AmmoType> onAmmoAddedToInventory;
 
+    void OnEnable()
+    {
+        Container.onContainerOpened += OnContainerOpened;
+        Container.onContainerClosed += OnContainerClosed;
+    }
+
+    void OnDisable()
+    {
+        Container.onContainerOpened -= OnContainerOpened;
+        Container.onContainerClosed -= OnContainerClosed;
+    }
+
+    void OnContainerOpened()
+    {
+        playerController.MoveCameraPos(openContainerCamPos, openContainerCamMovementDuration);
+        playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
+        isInContainer = true;
+        SetCursorActive(true);
+    }
+
+    void OnContainerClosed()
+    {
+        playerController.MoveCameraPos(defaultCamPos, openContainerCamMovementDuration);
+        playerController.RotCamera(defaultCamRot, openContainerCamMovementDuration);
+
+        isInContainer = false;
+        SetCursorActive(false);
+    }
+
     public void InitInventory(PlayerController newPlayerController)
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         playerController = newPlayerController;
 
+        SetCursorActive(false);
         SpawnInventorySlots();
+    }
+
+    public void SetCursorActive(bool isActive)
+    {
+        if (isActive)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     void SpawnInventorySlots()
@@ -68,16 +114,16 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     private void OpenInventory()
     {
         isOpen = true;
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
+        SetCursorActive(true);
         onInventoryOpened?.Invoke();
     }
 
     public void CloseInventory()
     {
         isOpen = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if(!isInContainer)
+            SetCursorActive(false);
+
         onInventoryClosed?.Invoke();
     }
 

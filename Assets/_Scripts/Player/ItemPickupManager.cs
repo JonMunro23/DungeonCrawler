@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class ItemPickupManager : MonoBehaviour
 {
     PlayerInventoryManager inventoryManager;
-    PlayerEquipmentManager playerEquipmentManager;
+    PlayerWeaponManager playerWeaponManager;
 
     [SerializeField] Transform thrownItemSpawnLocation;
     [SerializeField] float throwVeloctiy;
@@ -15,28 +15,34 @@ public class ItemPickupManager : MonoBehaviour
     float maxGrabDistance = 3;
 
     [SerializeField] List<WorldItem> groundItems = new List<WorldItem>();
+    IContainer nearbyContainer;
 
     public static Action<ItemStack> onNewItemAttachedToCursor;
     public static Action onCurrentItemDettachedFromCursor;
+
     public static Action<ItemStack> onGroundItemsUpdated;
     public static Action onLastGroundItemRemoved;
+
+    public static Action<IContainer> onNearbyContainerUpdated;
 
     private void OnEnable()
     {
         WorldItem.onWorldItemGrabbed += OnWorldItemGrabbed;
         InventorySlot.onInventorySlotClicked += OnInventorySlotClicked;
+        ContainerSlot.onContainerItemGrabbed += OnContainerItemGrabbed;
     }
 
     private void OnDisable()
     {
         WorldItem.onWorldItemGrabbed -= OnWorldItemGrabbed;
         InventorySlot.onInventorySlotClicked -= OnInventorySlotClicked;
+        ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
     }
 
     private void Awake()
     {
         inventoryManager = GetComponent<PlayerInventoryManager>();
-        playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
+        playerWeaponManager = GetComponent<PlayerWeaponManager>();
     }
 
     void OnWorldItemGrabbed(WorldItem worldItemGrabbed)
@@ -44,10 +50,24 @@ public class ItemPickupManager : MonoBehaviour
         if (hasGrabbedItem)
             return;
 
+        PlayGrabAnim();
+
         groundItems.Remove(worldItemGrabbed);
         UpdatePickupItemUI();
 
         AttachItemToMouseCursor(worldItemGrabbed.item, worldItemGrabbed);
+    }
+
+    void OnContainerItemGrabbed(ContainerSlot slotGrabbedFrom)
+    {
+        if (hasGrabbedItem)
+            return;
+
+        PlayGrabAnim();
+        ItemStack slotItem = slotGrabbedFrom.storedStack;
+        AttachItemToMouseCursor(slotItem);
+        slotGrabbedFrom.RemoveItemStack();
+
     }
 
     void OnInventorySlotClicked(ISlot slotClicked)
@@ -124,7 +144,7 @@ public class ItemPickupManager : MonoBehaviour
 
         //WorldItem spawnedWorldItem = Instantiate(currentGrabbedItem.itemData.itemWorldModel, placementLocation, Quaternion.identity);
         //spawnedWorldItem.InitWorldItem(currentGrabbedItem);
-        DetachItemFromMouseCursor();
+        //DetachItemFromMouseCursor();
     }
 
     void ThrowGrabbedItemIntoWorld()
@@ -134,7 +154,7 @@ public class ItemPickupManager : MonoBehaviour
         //spawnedWorldItem.item.itemData = currentGrabbedItem.itemData;
         //spawnedWorldItem.item.itemAmount = currentGrabbedItem.itemAmount;
 
-        DetachItemFromMouseCursor();
+        //DetachItemFromMouseCursor();
     }
 
     // Update is called once per frame
@@ -170,6 +190,14 @@ public class ItemPickupManager : MonoBehaviour
         if (groundItems.Count > 0)
         {
             PickupItem(groundItems[0]);
+            return;
+        }
+
+        if(nearbyContainer != null)
+        {
+            //playerWeaponManager.currentWeapon.HolsterWeapon();
+            PlayGrabAnim();
+            nearbyContainer.ToggleContainer();
         }
     }
 
@@ -178,15 +206,7 @@ public class ItemPickupManager : MonoBehaviour
         int remainingItems = inventoryManager.TryAddItemToInventory(itemToPickup.item);
         if(remainingItems != itemToPickup.item.itemAmount)
         {
-            //this will need changed
-            //if(playerEquipmentManager.currentLeftHandWeapon != null)
-            //{
-            //    playerEquipmentManager.currentLeftHandWeapon.Grab();
-            //}
-            //else if(playerEquipmentManager.currentRightHandWeapon != null)
-            //{
-            //    playerEquipmentManager.currentRightHandWeapon.Grab();
-            //}
+            PlayGrabAnim();
 
             if (remainingItems == 0)
             {
@@ -197,10 +217,16 @@ public class ItemPickupManager : MonoBehaviour
             else
             {
                 itemToPickup.item.itemAmount = remainingItems;
-            
+
             }
         }
 
+    }
+
+    private void PlayGrabAnim()
+    {
+        if (playerWeaponManager.currentWeapon != null)
+            playerWeaponManager.currentWeapon.Grab();
     }
 
     private void UpdatePickupItemUI()
@@ -222,7 +248,8 @@ public class ItemPickupManager : MonoBehaviour
 
         if(other.TryGetComponent(out IContainer container))
         {
-            Debug.Log("Next to container");
+            nearbyContainer = container;
+            onNearbyContainerUpdated?.Invoke(nearbyContainer);
         }
     }
 
@@ -234,11 +261,22 @@ public class ItemPickupManager : MonoBehaviour
             {
                 if(groundItems.Contains(worldItem))
                     groundItems.Remove(worldItem);
-
             }
 
             if (groundItems.Count == 0)
                 onLastGroundItemRemoved?.Invoke();
+        }
+
+        if(nearbyContainer != null)
+        {
+            if (other.TryGetComponent(out IContainer container))
+                if (container == nearbyContainer)
+                {
+                    nearbyContainer.CloseContainer();
+                    playerWeaponManager.currentWeapon.DrawWeapon();
+                    nearbyContainer = null;
+                    onNearbyContainerUpdated?.Invoke(nearbyContainer);
+                }
         }
     }
 }

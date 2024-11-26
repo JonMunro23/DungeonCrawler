@@ -1155,11 +1155,11 @@
 					"useForSmartColor": false,
 					"exportToToc": false,
 					"searchable": false,
-					"min": null,
+					"min": 1,
 					"max": null,
 					"regex": null,
 					"acceptFileTypes": null,
-					"defaultOverride": null,
+					"defaultOverride": { "id": "V_Int", "params": [1] },
 					"textLanguageMode": null,
 					"symmetricalRef": false,
 					"autoChainRef": true,
@@ -1616,11 +1616,14 @@
 									"params": ["North"]
 								}] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
-								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": ["shells"], "__tile": null, "defUid": 37, "realEditorValues": [{
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "shells", "blue_keycard" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["shells"]
-								}] },
-								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [12], "__tile": null, "defUid": 38, "realEditorValues": [{ "id": "V_Int", "params": [12] }] }
+								}, {
+									"id": "V_String",
+									"params": ["blue_keycard"]
+								} ] },
+								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [12,1], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [12] }, { "id": "V_Int", "params": [1] } ] }
 							],
 							"__worldX": 216,
 							"__worldY": 88

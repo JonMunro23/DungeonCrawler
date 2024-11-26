@@ -74,7 +74,7 @@ public class NPCMovementController : MonoBehaviour
         if(path == null)
         {
             //Roam?
-            Debug.Log("NAE PATH");
+            //Debug.Log("NAE PATH");
             return;
         }
 

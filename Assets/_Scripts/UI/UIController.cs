@@ -110,14 +110,4 @@ public class UIController : MonoBehaviour
     {
         playerWeaponUIManager.SetSlotActive(slotIndex);
     }
-
-    void OnWeaponCooldownBegins()
-    {
-
-    }
-
-    void OnWeaponCooldownEnds()
-    {
-
-    }
 }

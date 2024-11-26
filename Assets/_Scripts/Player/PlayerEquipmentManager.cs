@@ -49,14 +49,6 @@ public class PlayerEquipmentManager : MonoBehaviour
     void OnWorldInteraction()
     {
 
-        //if(currentRightHandWeapon != null)
-        //{
-        //    currentRightHandWeapon.Grab();
-        //}
-        //else if(currentLeftHandWeapon != null)
-        //{
-        //    currentLeftHandWeapon.Grab();
-        //}
     }
 
 

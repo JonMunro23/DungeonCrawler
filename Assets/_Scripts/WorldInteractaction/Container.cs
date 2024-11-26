@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class Container : MonoBehaviour, IContainer
     [SerializeField] Grid grid;
     [SerializeField] ContainerSlot containerSlotPrefab;
     const int X_NUMSLOTS = 4, Y_NUMSLOTS = 2;
+    bool isOpen;
 
     [SerializeField] List<ItemStack> storedItems = new List<ItemStack>();
 
@@ -14,6 +16,9 @@ public class Container : MonoBehaviour, IContainer
     [SerializeField] Transform lidTransform;
     [SerializeField] Vector3 openRot, closedRot;
     [SerializeField] float openDuration;
+
+    public static Action onContainerOpened;
+    public static Action onContainerClosed;
 
     // Start is called before the first frame update
     public void InitContainer()
@@ -31,7 +36,7 @@ public class Container : MonoBehaviour, IContainer
                 ContainerSlot clone = Instantiate(containerSlotPrefab, grid.GetCellCenterWorld(new Vector3Int(i, j)), Quaternion.identity, grid.transform);
                 if (storedItems.Count - 1 >= index)
                     if (storedItems[index] != null)
-                        clone.InitSlot(storedItems[index]);
+                        clone.InitSlot(storedItems[index], this, index);
 
                 index++;
             }
@@ -43,13 +48,38 @@ public class Container : MonoBehaviour, IContainer
         storedItems.Add(itemStackToAdd);
     }
 
-    public void OpenContainer()
+    public void RemoveStoredItemFromSlot(int slotIndex)
     {
-        lidTransform.DORotate(openRot, openDuration);
+        storedItems.RemoveAt(slotIndex);
+    }
+
+    void OpenContainer()
+    {
+        lidTransform.DOLocalRotate(openRot, openDuration);
+        onContainerOpened?.Invoke();
     }
 
     public void CloseContainer()
     {
-        lidTransform.DORotate(closedRot, openDuration);
+        if (!isOpen)
+            return;
+
+        isOpen = false;
+        lidTransform.DOLocalRotate(closedRot, openDuration);
+        onContainerClosed?.Invoke();
+    }
+
+    public void ToggleContainer()
+    {
+        if (isOpen)
+        {
+            CloseContainer();
+        }
+        else
+        {
+            isOpen = true;
+            OpenContainer();
+        }
+
     }
 }

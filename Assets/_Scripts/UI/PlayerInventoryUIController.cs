@@ -21,6 +21,7 @@ public class PlayerInventoryUIController : MonoBehaviour
         PlayerInventoryManager.onInventorySlotsSpawned += OnInventorySlotsSpawned;
         ItemPickupManager.onGroundItemsUpdated += OnNewGroundItemDetected;
         ItemPickupManager.onLastGroundItemRemoved += OnLastGroundItemRemoved;
+        ItemPickupManager.onNearbyContainerUpdated += OnContainerDetected;
     }
 
     private void OnDisable()
@@ -30,11 +31,23 @@ public class PlayerInventoryUIController : MonoBehaviour
         PlayerInventoryManager.onInventorySlotsSpawned -= OnInventorySlotsSpawned;
         ItemPickupManager.onGroundItemsUpdated -= OnNewGroundItemDetected;
         ItemPickupManager.onLastGroundItemRemoved -= OnLastGroundItemRemoved;
+        ItemPickupManager.onNearbyContainerUpdated -= OnContainerDetected;
     }
 
     void OnNewGroundItemDetected(ItemStack detectedItem)
     {
         pickupItemText.text = $"Press F to pickup {(detectedItem.itemAmount > 0 ? detectedItem.itemAmount : "")} {detectedItem.itemData.itemName}.";
+    }
+
+    void OnContainerDetected(IContainer container)
+    {
+        if(container == null)
+        {
+            pickupItemText.text = "";
+            return;
+        }
+
+        pickupItemText.text = $"Press F to open container.";
     }
 
     void OnLastGroundItemRemoved()
