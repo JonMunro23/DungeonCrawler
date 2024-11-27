@@ -50,13 +50,21 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 03cb07fd4c96c764d87c7dcf9f6f2e9b, type: 3}
   - {fileID: 8300000, guid: 032fc9b06d7ff5846af96dffbca5befe, type: 3}
   - {fileID: 8300000, guid: 48bcf432f4181f742a345a42897712f0, type: 3}
+  attackSFXVolume: 0.3
   specialSFX: {fileID: 0}
+  specialSFXVolume: 0.3
   drawSFX: {fileID: 8300000, guid: 3ae9f4e1105518d49885a89387f87197, type: 3}
+  drawVolume: 0.3
   hideSFX: {fileID: 8300000, guid: c7112d16f68f0df44b469600d0c4e516, type: 3}
+  hideVolume: 0.3
   reloadSFX: {fileID: 8300000, guid: 1dbf55a176cda0846ae096aa344efb3b, type: 3}
+  reloadVolume: 0.3
   reloadStartSFX: {fileID: 0}
+  reloadStartVolume: 0.3
   reloadInsertSFX: {fileID: 0}
+  reloadInsertVolume: 0.3
   reloadEndSFX: {fileID: 0}
+  reloadEndVolume: 0.3
   drawAnimDuration: 1.017
   hideAnimDuration: 0.9
   reloadAnimDuration: 2.6

@@ -5,26 +5,20 @@ using Random = UnityEngine.Random;
 public class RangedWeapon : Weapon
 {
     [SerializeField] Transform projectileSpawnLocation;
-    AudioSource weaponAudioSource;
     ParticleSystem muzzleFX;
     Coroutine burstCoroutine;
     bool canShootBurstShot = true;
 
     public bool infinteAmmo = false;
 
-    private void Awake()
-    {
-        weaponAudioSource = GetComponent<AudioSource>();
-    }
-
     private void Start()
     {
         muzzleFX = projectileSpawnLocation.GetComponent<ParticleSystem>();
     }
 
-    public override void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit)
+    public override void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter weaponAudioEmitter)
     {
-        base.InitWeapon(occupyingSlotIndex, dataToInit);
+        base.InitWeapon(occupyingSlotIndex, dataToInit, weaponAudioEmitter);
 
         reserveAmmo = GetReserveAmmo();
 
@@ -66,11 +60,21 @@ public class RangedWeapon : Weapon
         return new Vector3(randomPoint.x, randomPoint.y, 1);
     }
 
+    AudioClip GetRandomClip()
+    {
+        AudioClip randClip = null;
+
+        int rand = Random.Range(0, weaponItemData.attackSFX.Length);
+        randClip = weaponItemData.attackSFX[rand];
+        return randClip;
+    }
+
     private void Shoot()
     {
         weaponAnimator.Play("Fire");
         muzzleFX.Play();
-        weaponAudioSource.PlayOneShot(weaponItemData.attackSFX[Random.Range(0, weaponItemData.attackSFX.Length)]);
+
+        weaponAudioEmitter.ForcePlay(GetRandomClip(), weaponItemData.attackSFXVolume);
         
         if(!infinteAmmo)
             loadedAmmo--;
