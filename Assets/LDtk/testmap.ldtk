@@ -1416,7 +1416,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [13,6],
+							"__grid": [13,7],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -1425,7 +1425,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [216,104],
+							"px": [216,120],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
@@ -1439,7 +1439,7 @@
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 5, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
 							"__worldX": 216,
-							"__worldY": 104
+							"__worldY": 120
 						},
 						{
 							"__identifier": "Triggerable",

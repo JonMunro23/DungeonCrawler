@@ -281,7 +281,7 @@ MonoBehaviour:
   isWeaponDrawn: 0
   isReloading: 0
   projectileSpawnLocation: {fileID: 2690174596056474962}
-  infinteAmmo: 0
+  infinteAmmo: 1
 --- !u!95 &5015189803529875003
 Animator:
   serializedVersion: 5
@@ -312,10 +312,11 @@ AudioSource:
   m_GameObject: {fileID: 5015189803522481237}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243335366053303442, guid: d135499562cd4c240802ac0cd358b6b4,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.4
+  m_Volume: 0.25
   m_Pitch: 1
   Loop: 0
   Mute: 0

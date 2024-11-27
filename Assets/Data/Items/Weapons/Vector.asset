@@ -43,7 +43,7 @@ MonoBehaviour:
   isProjectile: 0
   projectileData: {fileID: 0}
   isBurst: 1
-  perShotInBurstDelay: 0.1
+  perShotInBurstDelay: 0.08
   burstLength: 7
   attackSFX:
   - {fileID: 8300000, guid: 406e8486c88ba1941aaf35f44f86e570, type: 3}

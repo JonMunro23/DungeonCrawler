@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7918361601237953702}
   - component: {fileID: 1564344409349390903}
   - component: {fileID: 9211208551948188983}
+  - component: {fileID: 7540325747436523883}
   - component: {fileID: 6724015443341050875}
   m_Layer: 0
   m_Name: GridController
@@ -86,8 +87,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f37ce851aa2a16e48924647616ed93fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MaxDecals: 250
+  m_MaxDecals: 100
   m_DecalSeparator: 0.166
+--- !u!114 &7540325747436523883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725639925866467231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68da4a7e3da8e724a899cf04ca581dc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SfxVolume: 1
+  m_VoiceVolume: 1
+  m_MusicVolume: 1
+  m_SfxMixer: {fileID: 243335366053303442, guid: d135499562cd4c240802ac0cd358b6b4,
+    type: 2}
+  m_MusicMixer: {fileID: 243730406919017618, guid: d135499562cd4c240802ac0cd358b6b4,
+    type: 2}
 --- !u!156049354 &6724015443341050875
 Grid:
   m_ObjectHideFlags: 0

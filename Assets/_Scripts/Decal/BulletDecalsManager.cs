@@ -94,7 +94,7 @@ public class BulletDecalsManager : MonoBehaviour
         AudioClip clip = surfaceType.GetRandomImpactSound();
         if (clip)
         {
-            //AudioManager.Instance.PlayClipAtPoint(clip, hitInfo.point, 2.5f, 25, surfaceType.BulletImpactVolume);
+            AudioManager.Instance.PlayClipAtPoint(clip, hitInfo.point, 2.5f, 25, surfaceType.BulletImpactVolume);
         }
     }
 
