@@ -11,6 +11,11 @@ public class RangedWeapon : Weapon
 
     public bool infinteAmmo = false;
 
+    [SerializeField] ParticleSystem shellEjectionParticleEffect;
+    [SerializeField] Vector2 ejectionSpeed = new Vector2(1, 3);
+    [SerializeField] float ejectionStartDelay;
+    ParticleSystem[] cachedParticleEffect;
+
     private void Start()
     {
         muzzleFX = projectileSpawnLocation.GetComponent<ParticleSystem>();
@@ -20,9 +25,15 @@ public class RangedWeapon : Weapon
     {
         base.InitWeapon(occupyingSlotIndex, dataToInit, weaponAudioEmitter);
 
-        reserveAmmo = GetReserveAmmo();
+        if (!shellEjectionParticleEffect)
+            return;
 
+        if (cachedParticleEffect == null || cachedParticleEffect.Length == 0)
+            cachedParticleEffect = shellEjectionParticleEffect.GetComponentsInChildren<ParticleSystem>();
+
+        reserveAmmo = GetReserveAmmo();
         onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
+
     }
 
     public override void UseWeapon()
@@ -73,6 +84,7 @@ public class RangedWeapon : Weapon
     {
         weaponAnimator.Play("Fire");
         muzzleFX.Play();
+        EjectCartridge();
 
         weaponAudioEmitter.ForcePlay(GetRandomClip(), weaponItemData.attackSFXVolume);
         
@@ -137,5 +149,26 @@ public class RangedWeapon : Weapon
                 canShootBurstShot = true;
             }
         }
+    }
+
+    public void EjectCartridge()
+    {
+        if (!shellEjectionParticleEffect)
+            return;
+
+        ParticleSystem.MainModule mainModule = shellEjectionParticleEffect.main;
+        mainModule.startSpeed = Random.Range(ejectionSpeed.x, ejectionSpeed.y);
+        mainModule.startDelay = ejectionStartDelay;
+
+        if (cachedParticleEffect.Length > 0)
+        {
+            for (int i = 0, l = cachedParticleEffect.Length; i < l; i++)
+            {
+                ParticleSystem.MainModule childrenModule = cachedParticleEffect[i].main;
+                childrenModule.startDelay = ejectionStartDelay;
+            }
+        }
+
+        shellEjectionParticleEffect.Play();
     }
 }

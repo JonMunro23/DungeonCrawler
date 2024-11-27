@@ -12,6 +12,7 @@ public class WeaponItemData : EquipmentItemData
 {
     [Header("Weapon Properties")]
     public GameObject itemPrefab;
+    public Rigidbody magDropPrefab;
     public bool isTwoHanded;
     public bool isMeleeWeapon;
     //public string itemDamageType;

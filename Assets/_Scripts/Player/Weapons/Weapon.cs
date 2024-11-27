@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,7 +11,6 @@ public class Weapon : MonoBehaviour, IWeapon
     public WeaponItemData weaponItemData;
     public Animator weaponAnimator;
     public AudioEmitter weaponAudioEmitter;
-
 
     public int occupiedSlotIndex;
     public IInventory playerInventoryManager;
@@ -32,6 +32,11 @@ public class Weapon : MonoBehaviour, IWeapon
     /// float = cooldownLength
     /// </summary>
     public static Action<float> onWeaponCooldownActive;
+
+    [SerializeField] Transform magDropTransform;
+    [SerializeField] int maxDroppedMags = 5;
+    [SerializeField] int lastDroppedMag;
+    List<GameObject> droppedMagList = new List<GameObject>();
 
     public virtual async Task DrawWeapon()
     {
@@ -71,7 +76,6 @@ public class Weapon : MonoBehaviour, IWeapon
         weaponAnimator = GetComponent<Animator>();
 
         weaponAudioEmitter = _weaponAudioEmitter;
-
     }
 
     public bool IsReloading() => isReloading;
@@ -82,6 +86,32 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         Destroy(gameObject);
     }
+
+    public void DropMagazine(Collider character)
+    {
+
+        if (!weaponItemData.magDropPrefab || !magDropTransform)
+            return;
+
+        // Object pooling
+        if (droppedMagList.Count == maxDroppedMags)
+        {
+            int mag = lastDroppedMag++ % maxDroppedMags;
+            droppedMagList[mag].transform.position = magDropTransform.position;
+            droppedMagList[mag].transform.rotation = magDropTransform.rotation;
+            droppedMagList[mag].GetComponent<Rigidbody>().velocity = Physics.gravity;
+        }
+        else
+        {
+            Rigidbody magazine = Instantiate(weaponItemData.magDropPrefab, magDropTransform.position, magDropTransform.rotation);
+            magazine.velocity = Physics.gravity;
+
+            Physics.IgnoreCollision(magazine.GetComponent<Collider>(), character, true);
+            droppedMagList.Add(magazine.gameObject);
+        }
+    }
+
+    
 
     public async Task TryReload()
     {
@@ -101,6 +131,8 @@ public class Weapon : MonoBehaviour, IWeapon
             playerInventoryManager.IncreaseAmmoOfType(weaponItemData.ammoType, loadedAmmo);
             loadedAmmo = 0;
             onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+
+            DropMagazine(transform.root.GetComponent<Collider>());
         }
         remainingAmmo = playerInventoryManager.GetRemainingAmmoOfType(weaponItemData.ammoType);
 

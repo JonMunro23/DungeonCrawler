@@ -1659,9 +1659,9 @@
 									"id": "V_String",
 									"params": ["West"]
 								}] },
-								{ "__identifier": "Item_Name", "__type": "String", "__value": "shells", "__tile": null, "defUid": 14, "realEditorValues": [{
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "pistol_bullets", "__tile": null, "defUid": 14, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["shells"]
+									"params": ["pistol_bullets"]
 								}] },
 								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 3, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }

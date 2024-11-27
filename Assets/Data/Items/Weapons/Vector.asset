@@ -30,6 +30,8 @@ MonoBehaviour:
     modifyAmount: 15
   itemPrefab: {fileID: 5015189803522481237, guid: 99acbf84f17962845a02eb098b57f53b,
     type: 3}
+  magDropPrefab: {fileID: 54144127183699200, guid: eb0d0272b48705a46a29a19b0a7aec1f,
+    type: 3}
   isTwoHanded: 1
   isMeleeWeapon: 0
   itemDamageMinMax: {x: 12, y: 25}
@@ -53,22 +55,25 @@ MonoBehaviour:
   attackSFXVolume: 0.3
   specialSFX: {fileID: 0}
   specialSFXVolume: 0.3
+  drawAnimDuration: 1.017
   drawSFX: {fileID: 8300000, guid: 3ae9f4e1105518d49885a89387f87197, type: 3}
   drawVolume: 0.3
+  hideAnimDuration: 0.9
   hideSFX: {fileID: 8300000, guid: c7112d16f68f0df44b469600d0c4e516, type: 3}
   hideVolume: 0.3
+  reloadAnimDuration: 2.6
   reloadSFX: {fileID: 8300000, guid: 1dbf55a176cda0846ae096aa344efb3b, type: 3}
   reloadVolume: 0.3
+  bulletByBulletReload: 0
+  reloadInsertInChamberAnimDuration: 0
+  reloadInsertInChamberSFX: {fileID: 0}
+  reloadInsertInChamberVolume: 0.3
+  reloadStartAnimDuration: 0
   reloadStartSFX: {fileID: 0}
   reloadStartVolume: 0.3
+  reloadInsertAnimDuration: 0
   reloadInsertSFX: {fileID: 0}
   reloadInsertVolume: 0.3
-  reloadEndSFX: {fileID: 0}
-  reloadEndVolume: 0.3
-  drawAnimDuration: 1.017
-  hideAnimDuration: 0.9
-  reloadAnimDuration: 2.6
-  bulletByBulletReload: 0
-  reloadStartAnimDuration: 0
-  reloadInsertAnimDuration: 0
   reloadEndAnimDuration: 0
+  reloadStopSFX: {fileID: 0}
+  reloadStopVolume: 0.3

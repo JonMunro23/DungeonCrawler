@@ -27,6 +27,7 @@ MonoBehaviour:
   statModifiers: []
   itemPrefab: {fileID: 2087960524477570954, guid: 5cc46e808915b9143ac1ea8e02d0f637,
     type: 3}
+  magDropPrefab: {fileID: 0}
   isTwoHanded: 1
   isMeleeWeapon: 0
   itemDamageMinMax: {x: 20, y: 35}
@@ -68,5 +69,5 @@ MonoBehaviour:
   reloadInsertSFX: {fileID: 8300000, guid: 27ad9cbb54b02994b943f190790917b6, type: 3}
   reloadInsertVolume: 0.3
   reloadEndAnimDuration: 1.45
-  reloadStopSFX: {fileID: 0}
+  reloadStopSFX: {fileID: 8300000, guid: ff4ea9956d3d5fb4a87312266b33f7c3, type: 3}
   reloadStopVolume: 0.3
