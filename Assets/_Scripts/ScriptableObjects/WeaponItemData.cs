@@ -31,22 +31,35 @@ public class WeaponItemData : EquipmentItemData
 
     [Header("Weapon SFX")]
     public AudioClip[] attackSFX;
+    public float attackSFXVolume = .3f;
     public AudioClip specialSFX;
-    public AudioClip drawSFX;
-    public AudioClip hideSFX;
-    public AudioClip reloadSFX;
-    public AudioClip reloadStartSFX;
-    public AudioClip reloadInsertSFX;
-    public AudioClip reloadEndSFX;
+    public float specialSFXVolume = .3f;
 
-    [Header("Animation Lengths")]
+    [Header("Animations")]
     public float drawAnimDuration;
+    public AudioClip drawSFX;
+    public float drawVolume = .3f;
+    [Space]
     public float hideAnimDuration;
+    public AudioClip hideSFX;
+    public float hideVolume = .3f;
+    [Space]
     public float reloadAnimDuration;
-
+    public AudioClip reloadSFX;
+    public float reloadVolume = .3f;
+    [Space]
     public bool bulletByBulletReload;
+    [Space]
     public float reloadStartAnimDuration;
+    public AudioClip reloadStartSFX;
+    public float reloadStartVolume = .3f;
+    [Space]
     public float reloadInsertAnimDuration;
+    public AudioClip reloadInsertSFX;
+    public float reloadInsertVolume = .3f;
+    [Space]
     public float reloadEndAnimDuration;
+    public AudioClip reloadEndSFX;
+    public float reloadEndVolume = .3f;
 }
 

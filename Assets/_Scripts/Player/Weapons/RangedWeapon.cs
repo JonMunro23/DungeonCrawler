@@ -1,45 +1,26 @@
-using System;
 using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class RangedWeapon : Weapon
 {
     [SerializeField] Transform projectileSpawnLocation;
-    AudioSource weaponAudioSource;
     ParticleSystem muzzleFX;
-    //bool IsShootingBurst;
     Coroutine burstCoroutine;
     bool canShootBurstShot = true;
 
-    private void Awake()
-    {
-        weaponAudioSource = GetComponent<AudioSource>();
-    }
+    public bool infinteAmmo = false;
 
     private void Start()
     {
         muzzleFX = projectileSpawnLocation.GetComponent<ParticleSystem>();
     }
 
-    public override void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit)
+    public override void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter weaponAudioEmitter)
     {
-        base.InitWeapon(occupyingSlotIndex, dataToInit);
+        base.InitWeapon(occupyingSlotIndex, dataToInit, weaponAudioEmitter);
 
         reserveAmmo = GetReserveAmmo();
-        //if (reserveAmmo < dataToInit.magSize)
-        //{
-        //    loadedAmmo = reserveAmmo;
-        //    playerInventoryManager.DecreaseAmmoOfType(dataToInit.ammoType, reserveAmmo);
-        //    reserveAmmo = 0;
-        //}
-        //else
-        //{
-        //    loadedAmmo = dataToInit.magSize;
-        //    playerInventoryManager.DecreaseAmmoOfType(dataToInit.ammoType, loadedAmmo);
-        //    reserveAmmo -= loadedAmmo;
-        //}
 
         onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
     }
@@ -50,7 +31,7 @@ public class RangedWeapon : Weapon
             return;
 
         base.UseWeapon();
-        if(loadedAmmo > 0)
+        if(loadedAmmo > 0 || infinteAmmo)
         {
             if (weaponItemData.isProjectile)
             {
@@ -73,23 +54,42 @@ public class RangedWeapon : Weapon
         }
     }
 
+    private Vector3 GetBulletSpread()
+    {
+        Vector2 randomPoint = new Vector2(Random.Range(-.05f, .05f), Random.Range(-.05f, .05f));
+        return new Vector3(randomPoint.x, randomPoint.y, 1);
+    }
+
+    AudioClip GetRandomClip()
+    {
+        AudioClip randClip = null;
+
+        int rand = Random.Range(0, weaponItemData.attackSFX.Length);
+        randClip = weaponItemData.attackSFX[rand];
+        return randClip;
+    }
+
     private void Shoot()
     {
         weaponAnimator.Play("Fire");
         muzzleFX.Play();
-        weaponAudioSource.PlayOneShot(weaponItemData.attackSFX[Random.Range(0, weaponItemData.attackSFX.Length)]);
-        
-        loadedAmmo--;
 
+        weaponAudioEmitter.ForcePlay(GetRandomClip(), weaponItemData.attackSFXVolume);
+        
+        if(!infinteAmmo)
+            loadedAmmo--;
 
         onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
 
         RaycastHit hit;
         for (int i = 0; i < weaponItemData.projectileCount; i++)
         {
-            if (Physics.Raycast(projectileSpawnLocation.position, projectileSpawnLocation.forward, out hit, weaponItemData.itemRange * 3))
-            {
+            Vector3 origin = projectileSpawnLocation.position;
+            Vector3 direction = projectileSpawnLocation.TransformDirection(GetBulletSpread());
 
+            Ray ray = new Ray(origin, direction);
+            if (Physics.Raycast(ray, out hit, weaponItemData.itemRange * 3))
+            {
                 IDamageable damageable = hit.transform.GetComponent<IDamageable>();
                 if (damageable != null)
                 {
@@ -100,13 +100,11 @@ public class RangedWeapon : Weapon
 
                     damageable.TakeDamage(damage, isCrit);
                 }
+
+                SurfaceIdentifier surf = hit.collider.GetSurface();
+                BulletDecalsManager.Instance.CreateBulletDecal(surf, hit);
             }
         }
-    }
-
-    public override void RemoveWeapon()
-    {
-        base.RemoveWeapon();
     }
 
     void TryShootBurst()
@@ -131,7 +129,7 @@ public class RangedWeapon : Weapon
     {
         for (int i = 0; i < weaponItemData.burstLength; i++)
         {
-            if (canShootBurstShot)
+            if (canShootBurstShot && loadedAmmo > 0)
             {
                 canShootBurstShot = false;
                 Shoot();

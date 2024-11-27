@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 public interface IWeapon : IUseable
 {
-    public void InitWeapon(int slotIndex, WeaponItemData dataToInit);
+    public void InitWeapon(int slotIndex, WeaponItemData dataToInit, AudioEmitter weaponAudioEmitter);
     public void SetInventoryManager(IInventory playerInventory);
     public void SetWeaponActive(bool isActive);
     public Task HolsterWeapon();

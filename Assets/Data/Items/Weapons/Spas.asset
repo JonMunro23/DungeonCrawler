@@ -30,7 +30,7 @@ MonoBehaviour:
   isTwoHanded: 1
   isMeleeWeapon: 0
   itemDamageMinMax: {x: 20, y: 35}
-  itemRange: 2
+  itemRange: 3
   critChance: 4
   critDamageMultiplier: 2
   reloadDuration: 3
@@ -44,17 +44,25 @@ MonoBehaviour:
   burstLength: 0
   attackSFX:
   - {fileID: 8300000, guid: 75969f62278ac744d875f460ba9e1bde, type: 3}
+  attackSFXVolume: 0.3
   specialSFX: {fileID: 0}
-  drawSFX: {fileID: 8300000, guid: 56fa2ac4774f57b42bd934e5568eedcf, type: 3}
-  hideSFX: {fileID: 8300000, guid: c71487212091ea34db8387c3d85bf164, type: 3}
-  reloadSFX: {fileID: 0}
-  reloadStartSFX: {fileID: 8300000, guid: d53356c6d893c9a4b937707bfb2c62d7, type: 3}
-  reloadInsertSFX: {fileID: 8300000, guid: 27ad9cbb54b02994b943f190790917b6, type: 3}
-  reloadEndSFX: {fileID: 8300000, guid: ff4ea9956d3d5fb4a87312266b33f7c3, type: 3}
+  specialSFXVolume: 0.3
   drawAnimDuration: 1
+  drawSFX: {fileID: 8300000, guid: 56fa2ac4774f57b42bd934e5568eedcf, type: 3}
+  drawVolume: 0.3
   hideAnimDuration: 0.75
+  hideSFX: {fileID: 8300000, guid: c71487212091ea34db8387c3d85bf164, type: 3}
+  hideVolume: 0.3
   reloadAnimDuration: 0
+  reloadSFX: {fileID: 0}
+  reloadVolume: 0.3
   bulletByBulletReload: 1
   reloadStartAnimDuration: 0
+  reloadStartSFX: {fileID: 8300000, guid: d53356c6d893c9a4b937707bfb2c62d7, type: 3}
+  reloadStartVolume: 0.3
   reloadInsertAnimDuration: 0
+  reloadInsertSFX: {fileID: 8300000, guid: 27ad9cbb54b02994b943f190790917b6, type: 3}
+  reloadInsertVolume: 0.3
   reloadEndAnimDuration: 0
+  reloadEndSFX: {fileID: 8300000, guid: ff4ea9956d3d5fb4a87312266b33f7c3, type: 3}
+  reloadEndVolume: 0.3

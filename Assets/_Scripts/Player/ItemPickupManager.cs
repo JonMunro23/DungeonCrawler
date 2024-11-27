@@ -15,6 +15,10 @@ public class ItemPickupManager : MonoBehaviour
     public bool hasGrabbedItem, canPickUpItem = true;
     float maxGrabDistance = 3;
 
+    public AudioEmitter itemPickupAudioEmitter;
+    public AudioClip grabSFX;
+    public float grabSFXVolume;
+
     [SerializeField] List<WorldItem> groundItems = new List<WorldItem>();
     IContainer nearbyContainer;
 
@@ -48,6 +52,11 @@ public class ItemPickupManager : MonoBehaviour
     {
         inventoryManager = GetComponent<PlayerInventoryManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
+    }
+
+    private void Start()
+    {
+        itemPickupAudioEmitter = AudioManager.Instance.RegisterSource("[AudioEmitter] CharacterBody", transform.root, spatialBlend: 0);
     }
 
     void OnPlayerTurn(int turnDir)
@@ -219,7 +228,7 @@ public class ItemPickupManager : MonoBehaviour
         int remainingItems = inventoryManager.TryAddItemToInventory(itemToPickup.item);
         if(remainingItems != itemToPickup.item.itemAmount)
         {
-            PlayGrabAnim();
+            PlayGrabAnim(grabSFX);
 
             if (remainingItems == 0)
             {
@@ -236,10 +245,14 @@ public class ItemPickupManager : MonoBehaviour
 
     }
 
-    private void PlayGrabAnim()
+    private void PlayGrabAnim(AudioClip grabSFX = null)
     {
-        if (playerWeaponManager.currentWeapon != null)
+        if (playerWeaponManager.currentWeapon != null && !playerWeaponManager.currentWeapon.IsInUse())
+        {
             playerWeaponManager.currentWeapon.Grab();
+            if(grabSFX != null)
+                itemPickupAudioEmitter.ForcePlay(grabSFX, grabSFXVolume);
+        }
     }
 
     private void UpdatePickupItemUI()

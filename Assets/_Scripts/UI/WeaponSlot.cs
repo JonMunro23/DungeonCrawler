@@ -68,16 +68,16 @@ public class WeaponSlot : EquipmentSlot
             await weapon.DrawWeapon();
     }
 
-    public void SetWeapon(IWeapon newWeapon, WeaponItemData newWeaponData)
+    public void SetWeapon(IWeapon newWeapon, WeaponItemData newWeaponData, AudioEmitter weaponAudioEmitter)
     {
         weapon = newWeapon;
-        weapon.InitWeapon(slotIndex, newWeaponData);
+        weapon.InitWeapon(slotIndex, newWeaponData, weaponAudioEmitter);
     }
 
-    public void SetWeaponToDefault(IWeapon defaultWeapon, WeaponItemData defaultWeaponData)
+    public void SetWeaponToDefault(IWeapon defaultWeapon, WeaponItemData defaultWeaponData, AudioEmitter weaponAudioEmitter)
     {
         weapon = defaultWeapon;
-        weapon.InitWeapon(slotIndex, defaultWeaponData);
+        weapon.InitWeapon(slotIndex, defaultWeaponData, weaponAudioEmitter);
         onWeaponSetToDefault?.Invoke(slotIndex, defaultWeaponData);
     }
 

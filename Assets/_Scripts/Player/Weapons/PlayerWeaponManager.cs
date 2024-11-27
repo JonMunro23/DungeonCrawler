@@ -11,6 +11,7 @@ public class PlayerWeaponManager : MonoBehaviour
     [SerializeField] int numWeaponSlots;
     [SerializeField] WeaponItemData defaultWeaponData;
     [SerializeField] Transform weaponSpawnParent;
+    AudioEmitter weaponAudioEmitter;
 
     [SerializeField] WeaponSlot[] spawnedWeaponSlots;
     [SerializeField] int activeSlotIndex;
@@ -55,6 +56,8 @@ public class PlayerWeaponManager : MonoBehaviour
     {
         playerController = controller;
 
+        weaponAudioEmitter = AudioManager.Instance.RegisterSource("[AudioEmitter] Weapon", transform, AudioCategory.SFx, 10, 25, 0);
+
         SpawnWeaponSlots();
         //SetWeaponSlotActive(0);
     }
@@ -82,8 +85,8 @@ public class PlayerWeaponManager : MonoBehaviour
             {
                 defaultWeapon = weapon;
                 weapon.SetInventoryManager(playerController.playerInventoryManager);
-                spawnedWeaponSlots[0].SetWeaponToDefault(weapon, weaponItemData);
-                spawnedWeaponSlots[1].SetWeaponToDefault(weapon, weaponItemData);
+                spawnedWeaponSlots[0].SetWeaponToDefault(weapon, weaponItemData, weaponAudioEmitter);
+                spawnedWeaponSlots[1].SetWeaponToDefault(weapon, weaponItemData, weaponAudioEmitter);
 
                 spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(true);
                 await spawnedWeaponSlots[slotIndex].DrawWeapon();
@@ -144,7 +147,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     async void SetSlotToDefault(int slotIndex)
     {
-        spawnedWeaponSlots[slotIndex].SetWeaponToDefault(defaultWeapon, defaultWeaponData);
+        spawnedWeaponSlots[slotIndex].SetWeaponToDefault(defaultWeapon, defaultWeaponData, weaponAudioEmitter);
         if (activeSlotIndex == slotIndex)
         {
             spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(true);
@@ -169,7 +172,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
                 weapon.SetInventoryManager(playerController.playerInventoryManager);
                 weapon.SetLoadedAmmo(startingAmmo);
-                spawnedWeaponSlots[slotIndex].SetWeapon(weapon, weaponItemData);
+                spawnedWeaponSlots[slotIndex].SetWeapon(weapon, weaponItemData, weaponAudioEmitter);
 
                 if (activeSlotIndex == slotIndex)
                 {

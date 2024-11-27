@@ -9,6 +9,9 @@ public class Weapon : MonoBehaviour, IWeapon
     [Header("References")]
     public WeaponItemData weaponItemData;
     public Animator weaponAnimator;
+    public AudioEmitter weaponAudioEmitter;
+
+
     public int occupiedSlotIndex;
     public IInventory playerInventoryManager;
     public int loadedAmmo, reserveAmmo;
@@ -35,6 +38,7 @@ public class Weapon : MonoBehaviour, IWeapon
         onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
         weaponAnimator.enabled = true;
         weaponAnimator.Play("Draw");
+        weaponAudioEmitter.ForcePlay(weaponItemData.drawSFX, weaponItemData.drawVolume);
         await Task.Delay((int)(weaponItemData.drawAnimDuration * 1000));
         isWeaponDrawn = true;
         canUse = true;
@@ -45,6 +49,7 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         isWeaponDrawn = false;
         weaponAnimator.Play("Hide");
+        weaponAudioEmitter.ForcePlay(weaponItemData.hideSFX, weaponItemData.hideVolume);
         await Task.Delay((int)(weaponItemData.hideAnimDuration * 1000));
         isWeaponDrawn = false;
         if(weaponAnimator)
@@ -53,18 +58,19 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public void Grab()
     {
-        if (!IsInUse())
-            weaponAnimator.Play("Interact");
+        weaponAnimator.Play("Interact");
     }
 
 
 
-    public virtual void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit)
+    public virtual void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter)
     {
         occupiedSlotIndex = occupyingSlotIndex;
         weaponItemData = dataToInit;
         canUse = true;
         weaponAnimator = GetComponent<Animator>();
+
+        weaponAudioEmitter = _weaponAudioEmitter;
 
     }
 
@@ -113,7 +119,7 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public void Use()
     {
-        if (!canUse || !isWeaponDrawn || isReloading)
+        if (!canUse || !isWeaponDrawn || isReloading || loadedAmmo == 0)
             return;
 
         UseWeapon();
@@ -145,6 +151,7 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         isReloading = true;
         weaponAnimator.Play("Reload");
+        weaponAudioEmitter.ForcePlay(weaponItemData.reloadSFX, weaponItemData.reloadVolume);
         await Task.Delay((int)(weaponItemData.reloadDuration * 1000));
         isReloading = false;
         loadedAmmo = reloadAmount;
