@@ -57,12 +57,16 @@ MonoBehaviour:
   reloadSFX: {fileID: 0}
   reloadVolume: 0.3
   bulletByBulletReload: 1
-  reloadStartAnimDuration: 0
+  reloadInsertInChamberAnimDuration: 2.167
+  reloadInsertInChamberSFX: {fileID: 8300000, guid: 1bba203c651314442946da3b97faf1a8,
+    type: 3}
+  reloadInsertInChamberVolume: 0.3
+  reloadStartAnimDuration: 0.433
   reloadStartSFX: {fileID: 8300000, guid: d53356c6d893c9a4b937707bfb2c62d7, type: 3}
   reloadStartVolume: 0.3
-  reloadInsertAnimDuration: 0
+  reloadInsertAnimDuration: 0.767
   reloadInsertSFX: {fileID: 8300000, guid: 27ad9cbb54b02994b943f190790917b6, type: 3}
   reloadInsertVolume: 0.3
-  reloadEndAnimDuration: 0
-  reloadEndSFX: {fileID: 8300000, guid: ff4ea9956d3d5fb4a87312266b33f7c3, type: 3}
-  reloadEndVolume: 0.3
+  reloadEndAnimDuration: 1.45
+  reloadStopSFX: {fileID: 0}
+  reloadStopVolume: 0.3
