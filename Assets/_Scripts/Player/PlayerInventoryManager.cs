@@ -14,7 +14,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     InventorySlot syringeSlot;
     public InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
-    public bool isOpen { get; private set; }
+    public bool isInventoryOpen { get; private set; }
     public bool isInContainer { get; private set; }
 
     [SerializeField] int heldHealthSyringes, heldPistolAmmo, heldRifleAmmo, heldShells;
@@ -47,7 +47,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         playerController.MoveCameraPos(openContainerCamPos, openContainerCamMovementDuration);
         playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
         isInContainer = true;
-        SetCursorActive(true);
+
+        if (!isInventoryOpen)
+            SetCursorActive(true);
     }
 
     void OnContainerClosed()
@@ -56,7 +58,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
 
         isInContainer = false;
-        SetCursorActive(false);
+
+        if(!isInventoryOpen)
+            SetCursorActive(false);
     }
 
     public void InitInventory(PlayerController newPlayerController)
@@ -102,11 +106,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void ToggleInventory()
     {
-        if (isOpen == true)
+        if (isInventoryOpen == true)
         {
             CloseInventory();
         }
-        else if (isOpen == false)
+        else if (isInventoryOpen == false)
         {
             OpenInventory();
         }
@@ -114,14 +118,14 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     private void OpenInventory()
     {
-        isOpen = true;
+        isInventoryOpen = true;
         SetCursorActive(true);
         onInventoryOpened?.Invoke();
     }
 
     public void CloseInventory()
     {
-        isOpen = false;
+        isInventoryOpen = false;
         if(!isInContainer)
             SetCursorActive(false);
 

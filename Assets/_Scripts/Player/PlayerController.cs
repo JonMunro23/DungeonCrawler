@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeapon()
     {
-        if(!playerInventoryManager.isOpen && !playerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
+        if(!playerInventoryManager.isInventoryOpen && !playerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeapon();
         }
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeaponSpecial()
     {
-        if (!playerInventoryManager.isOpen && !playerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
+        if (!playerInventoryManager.isInventoryOpen && !playerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeaponSpecial();
         }
