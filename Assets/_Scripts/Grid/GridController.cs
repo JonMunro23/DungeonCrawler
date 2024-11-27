@@ -89,6 +89,7 @@ public class GridController : MonoBehaviour
                 {
                     case 1:
                         clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, transform);
+                        clone.transform.localPosition += new Vector3(-1.5f, 1.5f, -1.5f);
                         spawnCoords = new Vector2(-i, j);
                         clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
                         spawnedNodes.Add(spawnCoords, clone);

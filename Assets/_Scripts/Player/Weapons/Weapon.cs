@@ -113,7 +113,7 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public void Use()
     {
-        if (!canUse || !isWeaponDrawn || isReloading)
+        if (!canUse || !isWeaponDrawn || isReloading || loadedAmmo == 0)
             return;
 
         UseWeapon();

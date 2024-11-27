@@ -30,7 +30,7 @@ MonoBehaviour:
   isTwoHanded: 1
   isMeleeWeapon: 0
   itemDamageMinMax: {x: 20, y: 35}
-  itemRange: 2
+  itemRange: 3
   critChance: 4
   critDamageMultiplier: 2
   reloadDuration: 3
