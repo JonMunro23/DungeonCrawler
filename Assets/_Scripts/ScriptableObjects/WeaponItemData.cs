@@ -50,6 +50,10 @@ public class WeaponItemData : EquipmentItemData
     [Space]
     public bool bulletByBulletReload;
     [Space]
+    public float reloadInsertInChamberAnimDuration;
+    public AudioClip reloadInsertInChamberSFX;
+    public float reloadInsertInChamberVolume = .3f;
+    [Space]
     public float reloadStartAnimDuration;
     public AudioClip reloadStartSFX;
     public float reloadStartVolume = .3f;
@@ -59,7 +63,7 @@ public class WeaponItemData : EquipmentItemData
     public float reloadInsertVolume = .3f;
     [Space]
     public float reloadEndAnimDuration;
-    public AudioClip reloadEndSFX;
-    public float reloadEndVolume = .3f;
+    public AudioClip reloadStopSFX;
+    public float reloadStopVolume = .3f;
 }
 

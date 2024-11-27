@@ -96,10 +96,13 @@ public class Weapon : MonoBehaviour, IWeapon
             return;
 
         playerInventoryManager.LockSlotsWithAmmoOfType(weaponItemData.ammoType);
-        playerInventoryManager.IncreaseAmmoOfType(weaponItemData.ammoType, loadedAmmo);
+        if(!weaponItemData.bulletByBulletReload)
+        {
+            playerInventoryManager.IncreaseAmmoOfType(weaponItemData.ammoType, loadedAmmo);
+            loadedAmmo = 0;
+            onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+        }
         remainingAmmo = playerInventoryManager.GetRemainingAmmoOfType(weaponItemData.ammoType);
-        loadedAmmo = 0;
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
 
         int amountToReload = 0;
         if (remainingAmmo >= weaponItemData.magSize)
@@ -149,6 +152,43 @@ public class Weapon : MonoBehaviour, IWeapon
 
     async Task PerformReload(int reloadAmount)
     {
+        if(weaponItemData.bulletByBulletReload)
+        {
+            isReloading = true;
+            if (loadedAmmo == 0)
+            {
+                weaponAnimator.Play("InsertInChamber");
+                weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertInChamberSFX, weaponItemData.reloadInsertInChamberVolume);
+                await Task.Delay((int)(weaponItemData.reloadInsertInChamberAnimDuration * 1000));
+                loadedAmmo++;
+                playerInventoryManager.DecreaseAmmoOfType(weaponItemData.ammoType, 1);
+                onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+            }
+            else
+            {
+                weaponAnimator.Play("StartReload");
+                weaponAudioEmitter.ForcePlay(weaponItemData.reloadStartSFX, weaponItemData.reloadStartVolume);
+                await Task.Delay((int)(weaponItemData.reloadStartAnimDuration * 1000));
+            }
+
+            while(loadedAmmo < weaponItemData.magSize && reserveAmmo > 0)
+            {
+                //weaponAnimator.Play("Insert");
+                weaponAnimator.CrossFadeInFixedTime("Insert", .1f);
+                weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertSFX, weaponItemData.reloadInsertVolume);
+                await Task.Delay((int)(weaponItemData.reloadInsertAnimDuration * 1000));
+                loadedAmmo++;
+                playerInventoryManager.DecreaseAmmoOfType(weaponItemData.ammoType, 1);
+                onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+            }
+
+            weaponAnimator.Play("StopReload");
+            weaponAudioEmitter.ForcePlay(weaponItemData.reloadStopSFX, weaponItemData.reloadStopVolume);
+            await Task.Delay((int)(weaponItemData.reloadEndAnimDuration * 1000));
+            isReloading = false;
+            return;
+        }
+
         isReloading = true;
         weaponAnimator.Play("Reload");
         weaponAudioEmitter.ForcePlay(weaponItemData.reloadSFX, weaponItemData.reloadVolume);
