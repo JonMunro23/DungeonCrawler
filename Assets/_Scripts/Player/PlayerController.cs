@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour
     public CharacterData playerCharacterData;
     public static GridNode currentOccupiedNode;
 
-    
+    Vector3 defaultCamPos;
+
     public static Action<PlayerController> onPlayerInitialised;
 
 
@@ -32,6 +33,11 @@ public class PlayerController : MonoBehaviour
         itemPickupManager = GetComponent<ItemPickupManager>();
         playerStatsManager = GetComponent<PlayerStatsManager>();
         playerCamera = GetComponentInChildren<Camera>();
+    }
+
+    private void Start()
+    {
+        defaultCamPos = playerCamera.transform.localPosition;
     }
 
     public void InitPlayer(CharacterData playerCharData, GridNode spawnGridNode)
@@ -48,11 +54,20 @@ public class PlayerController : MonoBehaviour
         onPlayerInitialised?.Invoke(this);
     }
 
-    public void TryUseHealthSyringe()
+    public async void TryUseHealthSyringe()
     {
-        if (playerHealthController.CanHeal() && playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
+        if (playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
-            playerInventoryManager.TryUseHealthSyringe();
+            InventorySlot slotWithSyringe = playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe);
+            if (!slotWithSyringe)
+                return;
+
+            if(playerWeaponManager.currentWeapon == null)
+                return;
+
+            await playerWeaponManager.currentWeapon.HolsterWeapon();
+
+            playerHealthController.UseSyringeInSlot(slotWithSyringe);
         }
     }
 
@@ -85,7 +100,10 @@ public class PlayerController : MonoBehaviour
 
     public void ShakeScreen()
     {
-        playerCamera.DOShakePosition(.35f, .5f);
+        playerCamera.DOShakePosition(.35f, .5f).OnComplete(() =>
+        {
+            playerCamera.transform.DOLocalMove(defaultCamPos, .1f);
+        });
     }
 
     public void MoveCameraPos(Vector3 newPos, float overDuration)

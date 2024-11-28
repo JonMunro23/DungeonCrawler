@@ -15,8 +15,8 @@ public class ConsumableItemData : ItemData
     public AmmoType ammoType;
     public float cooldownBetweenUses;
     
-    public float healthRegenAmount = .5f;
-    public float healthRegenDuration = 3f;
+    public int totalRegenAmount = 75;
+    public float regenDuration = 3f;
 
     [Header("Animation Lengths")]
     public float useAnimationLength;
