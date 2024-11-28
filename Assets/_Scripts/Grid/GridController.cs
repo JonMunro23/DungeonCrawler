@@ -1,8 +1,64 @@
 using LDtkUnity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+
+public class LevelData
+{
+    public int levelIndex;
+    Dictionary<Vector2, GridNode> levelNodes = new Dictionary<Vector2, GridNode>();
+    List<ITriggerable> spawnedTriggerables = new List<ITriggerable>();
+    List<IInteractable> spawnedInteractables = new List<IInteractable>();
+    List<NPCController> spawnedNPCs = new List<NPCController>();
+
+
+    public LevelData(Dictionary<Vector2, GridNode> levelNodes, List<ITriggerable> spawnedTriggerables, List<IInteractable> spawnedInteractables, List<NPCController> spawnedNPCs)
+    {
+        this.levelNodes = new Dictionary<Vector2, GridNode>(levelNodes);
+        this.spawnedNPCs = new List<NPCController>(spawnedNPCs);
+        //this.spawnedTriggerables = spawnedTriggerables;
+        //this.spawnedInteractables = spawnedInteractables;
+    }
+
+    public void UpdateLevelData(Dictionary<Vector2, GridNode> updatedNodes,List<ITriggerable> updatedTriggerables, List<IInteractable> updatedInteractables, List<NPCController> updatedNPCs)
+    {
+        levelNodes.Clear();
+        levelNodes = new Dictionary<Vector2, GridNode>(updatedNodes);
+
+        spawnedNPCs.Clear();
+        spawnedNPCs = new List<NPCController>(updatedNPCs);
+
+
+        //spawnedTriggerables.Clear();
+        //spawnedTriggerables = updatedTriggerables;
+
+        //spawnedInteractables.Clear();
+        //spawnedInteractables = updatedInteractables;
+
+    }
+
+    public Dictionary<Vector2, GridNode> GetNodes()
+    {
+        return levelNodes;
+    }
+
+    //public List<ITriggerable> GetTriggerables()
+    //{
+    //    return spawnedTriggerables;
+    //}
+
+    //public List<IInteractable> GetInteractables()
+    //{
+    //    return spawnedInteractables;
+    //}
+
+    public List<NPCController> GetNPCs()
+    {
+        return spawnedNPCs;
+    }
+}
 
 public class GridController : MonoBehaviour
 {
@@ -19,24 +75,33 @@ public class GridController : MonoBehaviour
     [Header("Grid")]
     [SerializeField] GridNode wallPrefab;
     [SerializeField] GridNode walkablePrefab;
-    [SerializeField] Dictionary<Vector2, GridNode> spawnedNodes = new Dictionary<Vector2, GridNode>();
+    [SerializeField] Dictionary<Vector2, GridNode> activeNodes = new Dictionary<Vector2, GridNode>();
     Grid grid;
 
+    [Header("Levels")]
+    [SerializeField] int startingLevelIndex;
+    [SerializeField] int currentLevelIndex;
+    Dictionary<int, LevelData> levels = new Dictionary<int, LevelData>();
 
     [Header("Player")]
     [SerializeField] CharacterData playerCharData;
     [SerializeField] PlayerSpawnPoint playerSpawnPointPrefab, spawnedPlayerSpawnPoint;
+    [SerializeField] PlayerController playerController;
     Vector2 playerSpawnCoords = Vector2.zero;
 
     [Header("NPCs")]
     [SerializeField] NPCSpawnPoint NPCSpawnPointPrefab;
     [SerializeField] List<NPCSpawnPoint> spawnedNPCSpawnPoints = new List<NPCSpawnPoint>();
+    [SerializeField] List<NPCController> activeNPCs = new List<NPCController>();
     List<Vector2> NPCSpawnCoords = new List<Vector2>();
 
     [Header("World Items")]
-    [SerializeField] ItemDataContainer itemDataContainer;
     [SerializeField] WorldItem worldItemPrefab;
-    [SerializeField] Transform worldItemsParent;
+    [SerializeField] ItemDataContainer itemDataContainer;
+    //[SerializeField] Transform worldItemsParent;
+
+    [Header("Level Transitions")]
+    [SerializeField] LevelTransition levelTransitionPrefab;
 
     [Header("Containers")]
     [SerializeField] Container largeContainerPrefab;
@@ -56,7 +121,15 @@ public class GridController : MonoBehaviour
     [SerializeField] Vector3 centeredEntitySpawnOffset;
     [SerializeField] Vector3 worldItemSpawnOffset;
 
-    [SerializeField] int currentLevelIndex;
+    private void OnEnable()
+    {
+        LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
+    }
+
+    private void OnDisable()
+    {
+        LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
+    }
 
     private void Awake()
     {
@@ -67,10 +140,109 @@ public class GridController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentLevel = project.Json.FromJson.Levels[currentLevelIndex];
+        currentLevelIndex = startingLevelIndex;
+        InstantiateLevel(currentLevelIndex);
+    }
+
+    void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)
+    {
+        SaveCurrentLevel();
+        UnloadCurrentLevel();
+
+        currentLevelIndex = levelIndex;
+
+        if (levels.TryGetValue(levelIndex, out LevelData level))
+        {
+            LoadLevel(level);
+        }
+        else
+            InstantiateLevel(levelIndex);
+
+
+        MovePlayer(playerMoveToCoords);
+    }
+
+    private void MovePlayer(Vector2 coordsToMoveTo)
+    {
+        playerController.MoveToCoords(coordsToMoveTo);
+    }
+
+    void SaveCurrentLevel()
+    {
+        Debug.Log("Saving level " + currentLevelIndex + " ...");
+
+        if (levels.TryGetValue(currentLevelIndex, out LevelData level))
+        {
+            level.UpdateLevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs);
+            Debug.Log("Updated level " + level.levelIndex + " data ...");
+            return;
+        }
+
+        levels.Add(currentLevelIndex, new LevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs));
+        Debug.Log("Added level "+ currentLevelIndex +" to levels list");
+    }
+
+    void LoadLevel(LevelData levelData)
+    {
+        Debug.Log("Loading level: " +  levelData.levelIndex);
+        foreach(GridNode node in levelData.GetNodes().Values)
+        {
+            //Instantiate(node, grid.GetCellCenterLocal(new Vector3Int((int)node.Coords.Pos.x, (int)node.Coords.Pos.y)), Quaternion.identity, transform);
+            node.SetActive(true);
+            activeNodes.Add(node.Coords.Pos, node);
+        }
+
+        foreach(NPCController NPC in levelData.GetNPCs())
+        {
+            NPC.SetActive(true);
+            activeNPCs.Add(NPC);
+        }
+
+        //spawn saved nodes
+        //spawn saved npcs
+        //link triggerables to interactables
+    }
+
+    void InstantiateLevel(int levelIndex)
+    {
+
+        currentLevel = project.Json.FromJson.Levels[levelIndex];
+
         entityLayer = currentLevel.LayerInstances[ENTITY_LAYER_INDEX];
         intGridLayer = currentLevel.LayerInstances[INTGRID_LAYER_INDEX];
+
         SpawnGridNodes();
+
+        LinkInteractablesToTriggerables();
+
+        SpawnNPCs();
+
+        SpawnPlayer();
+
+        CacheGridNodeNeighbours();
+    }
+
+    void UnloadCurrentLevel()
+    {
+        foreach (NPCController NPC in activeNPCs)
+        {
+            NPC.SnapToNode();
+            NPC.SetActive(false);
+        }
+        activeNPCs.Clear();
+
+        spawnedNPCSpawnPoints.Clear();
+        NPCSpawnCoords.Clear();
+
+        if (spawnedPlayerSpawnPoint)
+            Destroy(spawnedPlayerSpawnPoint);
+
+        foreach (GridNode node in activeNodes.Values)
+        {
+            node.SetActive(false);
+            //Destroy(node.gameObject);
+        }
+        activeNodes.Clear();
     }
 
     private async void SpawnGridNodes()
@@ -78,6 +250,10 @@ public class GridController : MonoBehaviour
         int index = 0;
         GridNode clone = null;
         Vector2 spawnCoords = Vector2.zero;
+
+        GameObject levelParent = new GameObject($"Level {currentLevelIndex}");
+        Transform levelParentTransform = levelParent.transform;
+        levelParentTransform.SetParent(transform);
 
         for (int i = 0; i < intGridLayer.CWid; i++)
         {
@@ -88,18 +264,18 @@ public class GridController : MonoBehaviour
                 switch (intGridLayer.IntGridCsv[index])
                 {
                     case 1:
-                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, transform);
+                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, levelParentTransform);
                         clone.transform.localPosition += new Vector3(-1.5f, 1.5f, -1.5f);
                         spawnCoords = new Vector2(-i, j);
                         clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
-                        spawnedNodes.Add(spawnCoords, clone);
+                        activeNodes.Add(spawnCoords, clone);
 
                         break;
                     case 2:
-                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, transform);
+                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, levelParentTransform);
                         spawnCoords = new Vector2(-i, j);
                         clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
-                        spawnedNodes.Add(spawnCoords, clone);
+                        activeNodes.Add(spawnCoords, clone);
                         break;
                 }
 
@@ -125,6 +301,12 @@ public class GridController : MonoBehaviour
                                 WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                 ItemData worldItemData = itemDataContainer.GetDataFromIdentifier(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString());
                                 spawnedWorldItem.InitWorldItem(new ItemStack(worldItemData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value)));
+                                break;
+                            case "Level_Transition":
+                                LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0,1.5f,0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                int levelIndex = Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[1].Value);
+                                List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
+                                spawnedLevelTransition.InitLevelTransition(levelIndex, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
                                 break;
                             case "Container":
 
@@ -184,6 +366,7 @@ public class GridController : MonoBehaviour
                                         spawnedDoor.SetOccupyingNode(spawnNode);
                                         spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
                                         spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                                        spawnNode.SetOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle));
                                         spawnedTriggerables.Add(spawnedDoor);
                                         break;
                                 }
@@ -197,16 +380,12 @@ public class GridController : MonoBehaviour
             }
         }
 
-        CacheGridNodeNeighbours();
-
-        SpawnPlayer();
-        SpawnNPCs();
-        LinkInteractablesToTriggerables();
+        
     }
 
     private void CacheGridNodeNeighbours()
     {
-        foreach (var node in spawnedNodes.Values)
+        foreach (var node in activeNodes.Values)
         {
             node.CacheNeighbours();
         }
@@ -216,13 +395,19 @@ public class GridController : MonoBehaviour
     {
         for (int i = 0; i < spawnedNPCSpawnPoints.Count; i++)
         {
-            spawnedNPCSpawnPoints[i].SpawnEnemy(GetNodeAtCoords(NPCSpawnCoords[i]));
+            activeNPCs.Add(spawnedNPCSpawnPoints[i].SpawnNPC(GetNodeAtCoords(NPCSpawnCoords[i])));
         }
     }
 
     private void SpawnPlayer()
     {
-        spawnedPlayerSpawnPoint.SpawnPlayer(playerCharData, GetNodeAtCoords(playerSpawnCoords));
+        if (playerController)
+            return;
+
+        if(spawnedPlayerSpawnPoint)
+        {
+            playerController = spawnedPlayerSpawnPoint.SpawnPlayer(playerCharData, GetNodeAtCoords(playerSpawnCoords));
+        }
     }
 
     void LinkInteractablesToTriggerables()
@@ -242,7 +427,7 @@ public class GridController : MonoBehaviour
         }
     }
 
-    public GridNode GetNodeAtCoords(Vector2 coords) => spawnedNodes.TryGetValue(coords, out var node) ? node : null;
+    public GridNode GetNodeAtCoords(Vector2 coords) => activeNodes.TryGetValue(coords, out var node) ? node : null;
 
     public GridNode GetNodeFromWorldPos(Vector3 worldPos)
     {

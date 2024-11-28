@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
     
     public static Action<PlayerController> onPlayerInitialised;
 
-
     private void Awake()
     {
         advGridMovement = GetComponent<AdvancedGridMovement>();
@@ -46,6 +45,20 @@ public class PlayerController : MonoBehaviour
         advGridMovement.InitMovement(this);
 
         onPlayerInitialised?.Invoke(this);
+    }
+
+    public void MoveToCoords(Vector2 newCoords)
+    {
+        Debug.Log("Moving player to " + newCoords);
+
+        GridNode nodeToMoveTo = GridController.Instance.GetNodeAtCoords(newCoords);
+        if (!nodeToMoveTo)
+            return;
+
+        currentOccupiedNode.ClearOccupant();
+        advGridMovement.Teleport(nodeToMoveTo.moveToTransform.position);
+        nodeToMoveTo.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
+        SetCurrentOccupiedNode(nodeToMoveTo);
     }
 
     public void TryUseHealthSyringe()

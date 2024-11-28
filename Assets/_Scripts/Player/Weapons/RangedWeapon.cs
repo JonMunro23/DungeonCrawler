@@ -71,22 +71,13 @@ public class RangedWeapon : Weapon
         return new Vector3(randomPoint.x, randomPoint.y, 1);
     }
 
-    AudioClip GetRandomClip()
-    {
-        AudioClip randClip = null;
-
-        int rand = Random.Range(0, weaponItemData.attackSFX.Length);
-        randClip = weaponItemData.attackSFX[rand];
-        return randClip;
-    }
-
     private void Shoot()
     {
         weaponAnimator.Play("Fire");
         muzzleFX.Play();
         EjectCartridge();
 
-        weaponAudioEmitter.ForcePlay(GetRandomClip(), weaponItemData.attackSFXVolume);
+        weaponAudioEmitter.ForcePlay(GetRandomClipFromArray(weaponItemData.attackSFX), weaponItemData.attackSFXVolume);
         
         if(!infinteAmmo)
             loadedAmmo--;

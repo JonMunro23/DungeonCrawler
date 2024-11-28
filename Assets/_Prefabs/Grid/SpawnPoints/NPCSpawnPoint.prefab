@@ -44,6 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05317a3df0005504d99865d40e75e82b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyToSpawn: {fileID: 3120243568235660886, guid: 89ade3ceb54b48e4dade0019bad8a785,
+  NPCToSpawn: {fileID: 3120243568235660886, guid: 89ade3ceb54b48e4dade0019bad8a785,
     type: 3}
-  spawnedEnemies: {fileID: 0}
+  spawnedNPC: {fileID: 0}

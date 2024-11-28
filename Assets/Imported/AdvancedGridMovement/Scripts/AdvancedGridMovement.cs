@@ -109,6 +109,12 @@ public class AdvancedGridMovement : MonoBehaviour
         }
     }
 
+    public void Teleport(Vector3 destination)
+    {
+        transform.position = destination;
+        moveTowardsPosition = transform.position;
+    }
+
     public void SwitchToWalking()
     {
         var currentPosition = currentAnimationCurve.Evaluate(curveTime);

@@ -154,7 +154,7 @@ public class Weapon : MonoBehaviour, IWeapon
 
     public void Use()
     {
-        if (!canUse || !isWeaponDrawn || isReloading || loadedAmmo == 0)
+        if (!canUse || !isWeaponDrawn || isReloading || (!weaponItemData.isMeleeWeapon && loadedAmmo == 0))
             return;
 
         UseWeapon();
@@ -291,5 +291,14 @@ public class Weapon : MonoBehaviour, IWeapon
     {
         reserveAmmo = GetReserveAmmo();
         onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
+    }
+
+    public AudioClip GetRandomClipFromArray(AudioClip[] arrayToPullFrom)
+    {
+        AudioClip randClip = null;
+
+        int rand = Random.Range(0, arrayToPullFrom.Length);
+        randClip = arrayToPullFrom[rand];
+        return randClip;
     }
 }

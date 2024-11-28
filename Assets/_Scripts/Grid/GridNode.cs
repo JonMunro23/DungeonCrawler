@@ -6,7 +6,7 @@ using UnityEngine;
 public enum GridNodeOccupantType
 {
     None,
-    Enemy,
+    NPC,
     Obstacle,
     Player
 }
@@ -72,6 +72,11 @@ public class GridNode : MonoBehaviour
             coordText.enabled = false;
         }
 
+    }
+
+    public void SetActive(bool isActive)
+    {
+        gameObject.SetActive(isActive);
     }
     public void SetOccupant(GridNodeOccupant newOccupant)
     {

@@ -13,8 +13,9 @@ public class NPCMovementController : MonoBehaviour
     public float moveDuration;
     public bool isMoving;
     [SerializeField] float minDelayBetweenMovement;
-    [SerializeField] GridNode currentOccupiedGridNode;
+    //[SerializeField] GridNode currentOccupiedGridNode = null;
     [SerializeField] List<GridNode> path = new List<GridNode>();
+    [SerializeField] GridNode targetNode;
     [SerializeField] AudioClip[] walkSFx;
 
     [Space]
@@ -54,6 +55,7 @@ public class NPCMovementController : MonoBehaviour
 
     void OnNodeOccupancyUpdated()
     {
+        //Debug.Log("Node Occupancy Updated");
         FindNewPathToPlayer();
     }
 
@@ -65,6 +67,8 @@ public class NPCMovementController : MonoBehaviour
                 node.RevertTile();
             }
 
+        //Debug.Log("NPC coords: " + groupController.currentlyOccupiedGridnode.Coords.Pos);
+        //Debug.Log("Player coords: " + (PlayerController.currentOccupiedNode ? PlayerController.currentOccupiedNode.Coords.Pos : "No Player Exists"));
         path = Pathfinding_Custom.FindPath(groupController.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
         NavigateToPlayer();
     }
@@ -81,17 +85,17 @@ public class NPCMovementController : MonoBehaviour
         if (isMoving || isTurning || groupController.attackController.isAttacking)
             return;
 
-        GridNode nodeToMoveTo = path[path.Count - 1];
-        Vector3 dirToTarget = Vector3.Normalize(currentOrientation.position - nodeToMoveTo.moveToTransform.position);
+        targetNode = path[path.Count - 1];
+        Vector3 dirToTarget = Vector3.Normalize(currentOrientation.position - targetNode.moveToTransform.position);
         float leftOrRightDot = Vector3.Dot(currentOrientation.right, dirToTarget);
         float frontOrBackDot = Vector3.Dot(currentOrientation.forward, dirToTarget);
 
         //Debug.Log("Left/Right: " + Mathf.RoundToInt(leftOrRight));
         //Debug.Log("Front/Back: " + Mathf.RoundToInt(dot));
 
-        if (nodeToMoveTo.currentOccupant.occupantType == GridNodeOccupantType.None && Mathf.RoundToInt(frontOrBackDot) == -1)
+        if (targetNode.currentOccupant.occupantType == GridNodeOccupantType.None && Mathf.RoundToInt(frontOrBackDot) == -1)
         {
-            MoveToGridNode(nodeToMoveTo);
+            MoveToTargetNode();
         }
         else
         {
@@ -112,31 +116,42 @@ public class NPCMovementController : MonoBehaviour
         groupController = _groupController;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            FindNewPathToPlayer();
-        }
 
-        //if(Input.GetKeyDown(KeyCode.LeftArrow))
-        //{
-        //    Turn(-1);
-        //}
-        //if (Input.GetKeyDown(KeyCode.RightArrow))
-        //{
-        //    Turn(1);
-        //}
-    }
+
+    //// Update is called once per frame
+    //void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.UpArrow))
+    //    {
+    //        FindNewPathToPlayer();
+    //    }
+
+    //    //if(Input.GetKeyDown(KeyCode.LeftArrow))
+    //    //{
+    //    //    Turn(-1);
+    //    //}
+    //    //if (Input.GetKeyDown(KeyCode.RightArrow))
+    //    //{
+    //    //    Turn(1);
+    //    //}
+    //}
 
     AudioClip GetRandomAudioClip()
     {
         int rand = Random.Range(0, walkSFx.Length);
         return walkSFx[rand];
     }
+    public void SnapToTargetNode()
+    {
+        if (!isMoving)
+            return;
 
-    void MoveToGridNode(GridNode targetNode)
+        transform.position = targetNode.moveToTransform.position;
+        isMoving = false;
+        //cancel any active coroutines
+        //snap rotation
+    }
+    void MoveToTargetNode()
     {
         if (isMoving)
             return;
@@ -148,7 +163,7 @@ public class NPCMovementController : MonoBehaviour
         StartCoroutine(DelayBetweenMovement());
 
         groupController.currentlyOccupiedGridnode = targetNode;
-        groupController.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(groupController.gameObject, GridNodeOccupantType.Enemy));
+        groupController.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(groupController.gameObject, GridNodeOccupantType.NPC));
     }
 
     /// <summary>

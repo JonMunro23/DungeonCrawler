@@ -45,12 +45,21 @@ public class NPCController : MonoBehaviour, IDamageable
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void InitGroup(GridNode spawnGridNode)
+    public void InitNPC(GridNode spawnGridNode)
     {
         currentlyOccupiedGridnode = spawnGridNode;
-
         SpawnNPCs();
         InitControllers();
+    }
+
+    public void SetActive(bool isActive)
+    {
+        gameObject.SetActive(isActive);
+    }
+
+    public void SnapToNode()
+    {
+        movementController.SnapToTargetNode();
     }
 
     private void SpawnNPCs()

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Fists
   m_EditorClassIdentifier: 
   itemName: Fists
+  itemIdentifier: 
   itemDescription: 
   itemSprite: {fileID: 21300000, guid: 70ce70fdb64483146b4b94db2c23512b, type: 3}
   itemWorldModel: {fileID: 0}
   itemWeight: 0
-  itemValue: 0
   isItemStackable: 0
   maxItemStackSize: 1
   itemCooldown: 1
@@ -25,6 +25,7 @@ MonoBehaviour:
   statModifiers: []
   itemPrefab: {fileID: 1613121034941279707, guid: 792e675fe942a334a9b502d24225b194,
     type: 3}
+  magDropPrefab: {fileID: 0}
   isTwoHanded: 1
   isMeleeWeapon: 1
   itemDamageMinMax: {x: 15, y: 25}
@@ -43,21 +44,30 @@ MonoBehaviour:
   attackSFX:
   - {fileID: 8300000, guid: 8abab8c1dcd4b8b418d07f3b81362a50, type: 3}
   - {fileID: 8300000, guid: 0d9dbb8c763c4964ab042cc07e8ee473, type: 3}
-  - {fileID: 8300000, guid: e63ba17118eab3d4d93280e430e69e71, type: 3}
   - {fileID: 8300000, guid: 4dd56b657b379fb41b6d13426f34c526, type: 3}
   - {fileID: 8300000, guid: d1691e507197f5146ad16ed38fd558bd, type: 3}
-  - {fileID: 8300000, guid: 850cc5cc49080fd449d7bc618b7f705a, type: 3}
+  attackSFXVolume: 0.6
   specialSFX: {fileID: 0}
-  drawSFX: {fileID: 8300000, guid: a0286b96b7b7f384fbc3ec369e55bded, type: 3}
-  hideSFX: {fileID: 8300000, guid: d1ee46a7dd2e09a4e94e6363eed07912, type: 3}
-  reloadSFX: {fileID: 0}
-  reloadStartSFX: {fileID: 0}
-  reloadInsertSFX: {fileID: 0}
-  reloadEndSFX: {fileID: 0}
+  specialSFXVolume: 0.3
   drawAnimDuration: 0.967
+  drawSFX: {fileID: 8300000, guid: a0286b96b7b7f384fbc3ec369e55bded, type: 3}
+  drawVolume: 0.3
   hideAnimDuration: 0.417
+  hideSFX: {fileID: 8300000, guid: d1ee46a7dd2e09a4e94e6363eed07912, type: 3}
+  hideVolume: 0.3
   reloadAnimDuration: 0
+  reloadSFX: {fileID: 0}
+  reloadVolume: 0.3
   bulletByBulletReload: 0
+  reloadInsertInChamberAnimDuration: 0
+  reloadInsertInChamberSFX: {fileID: 0}
+  reloadInsertInChamberVolume: 0.3
   reloadStartAnimDuration: 0
+  reloadStartSFX: {fileID: 0}
+  reloadStartVolume: 0.3
   reloadInsertAnimDuration: 0
+  reloadInsertSFX: {fileID: 0}
+  reloadInsertVolume: 0.3
   reloadEndAnimDuration: 0
+  reloadStopSFX: {fileID: 0}
+  reloadStopVolume: 0.3

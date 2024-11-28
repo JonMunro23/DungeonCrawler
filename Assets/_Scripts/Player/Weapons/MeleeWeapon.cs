@@ -4,12 +4,13 @@ public class MeleeWeapon : Weapon
     public override void UseWeapon()
     {
         base.UseWeapon();
-         
         int rand = Random.Range(0, 2);
         if (rand == 0)
             weaponAnimator.Play("Swing Right 1");
         else
             weaponAnimator.Play("Swing Left 1");
+
+        weaponAudioEmitter.ForcePlay(GetRandomClipFromArray(weaponItemData.attackSFX), weaponItemData.attackSFXVolume);
 
         GridNode forwardNode = PlayerController.currentOccupiedNode.GetNodeInDirection(transform.root.forward);
         if (!forwardNode)
