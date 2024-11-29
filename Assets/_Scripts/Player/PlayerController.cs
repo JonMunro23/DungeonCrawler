@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] float fadeOutDuration, fadeInDuration;
     
+    Vector3 defaultCamPos;
+
     public static Action<PlayerController> onPlayerInitialised;
     public static Action<float> fadeOutScreen, fadeInScreen;
 
@@ -34,6 +36,11 @@ public class PlayerController : MonoBehaviour
         itemPickupManager = GetComponent<ItemPickupManager>();
         playerStatsManager = GetComponent<PlayerStatsManager>();
         playerCamera = GetComponentInChildren<Camera>();
+    }
+
+    private void Start()
+    {
+        defaultCamPos = playerCamera.transform.localPosition;
     }
 
     public void InitPlayer(CharacterData playerCharData, GridNode spawnGridNode)
@@ -64,11 +71,20 @@ public class PlayerController : MonoBehaviour
         SetCurrentOccupiedNode(nodeToMoveTo);
     }
 
-    public void TryUseHealthSyringe()
+    public async void TryUseHealthSyringe()
     {
-        if (playerHealthController.CanHeal() && playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
+        if (playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
-            playerInventoryManager.TryUseHealthSyringe();
+            InventorySlot slotWithSyringe = playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe);
+            if (!slotWithSyringe)
+                return;
+
+            if(playerWeaponManager.currentWeapon == null)
+                return;
+
+            await playerWeaponManager.currentWeapon.HolsterWeapon();
+
+            playerHealthController.UseSyringeInSlot(slotWithSyringe);
         }
     }
 
@@ -101,7 +117,10 @@ public class PlayerController : MonoBehaviour
 
     public void ShakeScreen()
     {
-        playerCamera.DOShakePosition(.35f, .5f);
+        playerCamera.DOShakePosition(.35f, .5f).OnComplete(() =>
+        {
+            playerCamera.transform.DOLocalMove(defaultCamPos, .1f);
+        });
     }
 
     async public Task FadeOutScreen()

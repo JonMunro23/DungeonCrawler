@@ -11,14 +11,22 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
     CharacterData characterData;
     [SerializeField] GameObject syringeArms;
     [SerializeField] int currentHealth;
-    bool canUseSyringe;
     int maxHealth;
 
-    public static Action<CharacterData, int> onMaxHealthUpdated;
-    public static Action<CharacterData, int> onCurrentHealthUpdated;
+    [Header("Syringe")]
+    [SerializeField] float delayBeforeRegen;
+    [SerializeField] float syringeCooldown;
+    [SerializeField] bool isRegenActive;
+    bool canUseSyringe;
+
+
+    public static Action<CharacterData, float> onMaxHealthUpdated;
+    public static Action<CharacterData, float> onCurrentHealthUpdated;
 
     [SerializeField] AudioClip[] damageTakenSFx;
-    AudioSource audioSource;
+    [SerializeField] float damageTakenSFXVolume;
+    AudioEmitter audioEmitter;
+
     private void OnEnable()
     {
         Stat.onStatUpdated += OnStatUpdated;
@@ -27,11 +35,6 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
     private void OnDisable()
     {
         Stat.onStatUpdated -= OnStatUpdated;
-    }
-
-    private void Awake()
-    {
-        audioSource = GetComponent<AudioSource>();
     }
 
     void OnStatUpdated(Stat updatedStat)
@@ -58,6 +61,8 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
         currentHealth = maxHealth;
         canUseSyringe = true;
+
+        audioEmitter = AudioManager.Instance.RegisterSource("[AudioEmitter] CharacterBody", transform.root, spatialBlend: 0);
     }
 
     public void TakeDamageCheat(int damageToTake)
@@ -68,7 +73,7 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
     public void TakeDamage(int damageTaken, bool wasCrit = false)
     {
         int damageToTake = wasCrit ? damageTaken * 2 : damageTaken;
-        audioSource.PlayOneShot(GetRandomAudioClip());
+        audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
         playerController.ShakeScreen();
         currentHealth -= damageToTake;
         onCurrentHealthUpdated?.Invoke(characterData, currentHealth);
@@ -90,18 +95,18 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
         }
     }
 
-    public bool CanHeal() => currentHealth != maxHealth;
-    public bool CanUseSyringe() => canUseSyringe;
+    public bool CanUseSyringe() => canUseSyringe && currentHealth != maxHealth;
 
-    public async void UseHealthSyringe(ConsumableItemData syringeData)
+    public async void UseSyringeInSlot(InventorySlot slot)
     {
-        if (!canUseSyringe)
+        Debug.Log("Using syringe");
+        ConsumableItemData consumableData = slot.currentSlotItemStack.itemData as ConsumableItemData;
+        if (consumableData == null)
             return;
 
         canUseSyringe = false;
-        await PerformSyringeAnim(syringeData);
-        StartCoroutine(HealthRegen(syringeData.healthRegenDuration));
-        StartCoroutine(SyringeUseCooldown(syringeData.cooldownBetweenUses));
+
+        await InjectSyringe(slot.currentSlotItemStack.itemData as ConsumableItemData);
     }
 
     void EnableSyringeArms()
@@ -114,42 +119,48 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
         syringeArms.SetActive(false);
     }
 
-    /// <summary>
-    /// Regenerates the character progressively over time.
-    /// </summary>
-    /// <param name="healthAmount">Amount of vitality to be healed.</param>
-    /// <param name="duration">Time needed to regenerate the player.</param>
-    /// <returns></returns>
-    //private IEnumerator HealProgressively(float healthAmount, float duration = 1)
-    //{
-    //    float targetLife = Mathf.Min(m_Vitality, CurrentVitality + healthAmount);
-
-    //    for (float t = 0; t <= duration && m_Healing; t += Time.deltaTime)
-    //    {
-    //        CurrentVitality = Mathf.Lerp(CurrentVitality, targetLife, t / duration);
-    //        yield return new WaitForFixedUpdate();
-    //    }
-    //    m_Healing = false;
-    //}
-
-    IEnumerator HealthRegen(float regenLength)
+    private IEnumerator RegenHealth(int startingHealth, int targetHealth, float duration)
     {
-        yield return new WaitForSeconds(regenLength);
-        Debug.Log("Regen Ended");
+        isRegenActive = true;
+        float timeElapsed = 0;
+        while (timeElapsed < duration && isRegenActive)
+        {
+            float t = timeElapsed / duration;
+
+            if(currentHealth != maxHealth)
+            {
+                currentHealth = Mathf.CeilToInt(Mathf.Lerp(startingHealth, targetHealth, t));
+                currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+                onCurrentHealthUpdated.Invoke(characterData, currentHealth);
+            }
+
+            timeElapsed += Time.deltaTime;
+
+            yield return null;
+        }
+        isRegenActive = false;
     }
 
-    IEnumerator SyringeUseCooldown(float cooldownLength)
+    IEnumerator SyringeUseCooldown()
     {
-        yield return new WaitForSeconds(cooldownLength);
-        Debug.Log("Cooldown ended");
+        Debug.Log("Cooldown started");
+        yield return new WaitForSeconds(syringeCooldown);
         canUseSyringe = true;
+        Debug.Log("Cooldown ended");
     }
 
-    async Task PerformSyringeAnim(ConsumableItemData syringeData)
+    async Task InjectSyringe(ConsumableItemData syringeData)
     {
+        Debug.Log("Injecting...");
         EnableSyringeArms();
-        await Task.Delay((int)(syringeData.useAnimationLength * 1000));
+        StartCoroutine(SyringeUseCooldown());
+        await Task.Delay((int)(delayBeforeRegen * 1000));
+
+        StartCoroutine(RegenHealth(currentHealth, currentHealth + syringeData.totalRegenAmount, syringeData.regenDuration));
+
+        await Task.Delay((int)((syringeData.useAnimationLength - delayBeforeRegen) * 1000));
         DisableSyringeArms();
+
         await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
     }
 }

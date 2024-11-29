@@ -179,22 +179,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void RemoveHealthSyringe(int amountToRemove) => heldHealthSyringes -= amountToRemove;
 
-    async public void TryUseHealthSyringe()
-    {
-        syringeSlot = FindConsumableOfType(ConsumableType.HealSyringe);
-        if(syringeSlot)
-        {
-            ConsumableItemData consumableData = syringeSlot.currentSlotItemStack.itemData as ConsumableItemData;
-            if (!consumableData)
-                return;
-
-            IWeapon currentWeapon = playerController.playerWeaponManager.currentWeapon;
-            if (currentWeapon != null)
-                await playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
-        }
-    }
-
-    private InventorySlot FindConsumableOfType(ConsumableType typeToFind)
+    public InventorySlot FindSlotWithConsumableOfType(ConsumableType typeToFind)
     {
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
@@ -312,11 +297,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
                 break;
         }
         return ammoToReturn;
-    }
-
-    public int GetRemainingHealthSyringes()
-    {
-        throw new NotImplementedException();
     }
 
     public void DecreaseAmmoOfType(AmmoType ammoTypeToRemove, int amountToRemove)

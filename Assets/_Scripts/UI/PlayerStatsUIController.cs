@@ -10,7 +10,7 @@ public class PlayerStatsUIController : MonoBehaviour
     [SerializeField] Slider playerHealthbar, inventoryPlayerHealthbar;
     [SerializeField] TMP_Text healthbarText, inventoryHealthbarText;
 
-    float currentHealth, maxHealth;
+    int currentHealth, maxHealth;
 
     private void OnEnable()
     {
@@ -40,20 +40,20 @@ public class PlayerStatsUIController : MonoBehaviour
         inventoryPlayerPortrait.sprite = playerCharData.charPortrait;
     }
 
-    void OnCurrentHealthUpdated(CharacterData charData, int newAmount)
+    void OnCurrentHealthUpdated(CharacterData charData, float newAmount)
     {
         if(charData ==  playerCharData)
         {
-            currentHealth = newAmount;
-            UpdateCurrentHealthValue(currentHealth);
+            currentHealth = Mathf.CeilToInt(newAmount);
+            UpdateCurrentHealthValue(Mathf.CeilToInt(currentHealth));
         }
     }
 
-    void OnMaxHealthUpdated(CharacterData charData, int newAmount)
+    void OnMaxHealthUpdated(CharacterData charData, float newAmount)
     {
         if (charData == playerCharData)
         {
-            maxHealth = newAmount;
+            maxHealth = Mathf.CeilToInt(newAmount);
             UpdateMaxHealthValue(maxHealth);
         }
     }
@@ -65,14 +65,14 @@ public class PlayerStatsUIController : MonoBehaviour
 
     public void UpdateCurrentHealthValue(float newCurrentHealthValue)
     {
-        currentHealth = newCurrentHealthValue;
+        currentHealth = Mathf.CeilToInt(newCurrentHealthValue);
         playerHealthbar.value = currentHealth;
         UpdateHealthbarText();
     }
 
     public void UpdateMaxHealthValue(float newMaxHealthValue)
     {
-        maxHealth = newMaxHealthValue;
+        maxHealth = Mathf.CeilToInt(newMaxHealthValue);
         playerHealthbar.maxValue = maxHealth;
         inventoryPlayerHealthbar.maxValue = maxHealth;
         UpdateHealthbarText();
