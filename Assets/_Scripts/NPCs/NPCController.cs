@@ -36,7 +36,8 @@ public class NPCController : MonoBehaviour, IDamageable
     public List<ItemData> guaranteedDrops = new List<ItemData>();
     public List<ItemData> randomDrops = new List<ItemData>();
 
-    public static Action onNPCDeath;
+    public static Action<NPCController> onNPCDeath;
+
     private void Awake()
     {
         movementController = GetComponent<NPCMovementController>();
@@ -133,7 +134,7 @@ public class NPCController : MonoBehaviour, IDamageable
 
                 }
                 currentlyOccupiedGridnode.ClearOccupant();
-                onNPCDeath?.Invoke();
+                onNPCDeath?.Invoke(this);
                 Destroy(gameObject);
             }
         }

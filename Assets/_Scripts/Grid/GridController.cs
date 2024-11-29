@@ -124,11 +124,14 @@ public class GridController : MonoBehaviour
     private void OnEnable()
     {
         LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
+        NPCController.onNPCDeath += OnNPCDeath;
     }
 
     private void OnDisable()
     {
         LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
+        NPCController.onNPCDeath -= OnNPCDeath;
+
     }
 
     private void Awake()
@@ -142,6 +145,12 @@ public class GridController : MonoBehaviour
     {
         currentLevelIndex = startingLevelIndex;
         InstantiateLevel(currentLevelIndex);
+    }
+
+    void OnNPCDeath(NPCController deadNPC)
+    {
+        if(activeNPCs.Contains(deadNPC))
+            activeNPCs.Remove(deadNPC);
     }
 
     void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)

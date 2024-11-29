@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class NPCMovementController : MonoBehaviour
 {
-    NPCController groupController;
+    NPCController NPCController;
     public float gridSize = 3f;
-
-    PlayerController playerController;
 
     [Header("Movement")]
     public float moveDuration;
@@ -42,8 +40,11 @@ public class NPCMovementController : MonoBehaviour
         GridNode.onNodeOccupancyUpdated -= OnNodeOccupancyUpdated;
     }
 
-    void OnNPCDeath()
+    void OnNPCDeath(NPCController deadNPC)
     {
+        if (deadNPC == NPCController)
+            return;
+
         FindNewPathToPlayer();
     }
 
@@ -69,7 +70,7 @@ public class NPCMovementController : MonoBehaviour
 
         //Debug.Log("NPC coords: " + groupController.currentlyOccupiedGridnode.Coords.Pos);
         //Debug.Log("Player coords: " + (PlayerController.currentOccupiedNode ? PlayerController.currentOccupiedNode.Coords.Pos : "No Player Exists"));
-        path = Pathfinding_Custom.FindPath(groupController.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
+        path = Pathfinding_Custom.FindPath(NPCController.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
         NavigateToPlayer();
     }
 
@@ -82,7 +83,7 @@ public class NPCMovementController : MonoBehaviour
             return;
         }
 
-        if (isMoving || isTurning || groupController.attackController.isAttacking)
+        if (isMoving || isTurning || NPCController.attackController.isAttacking)
             return;
 
         targetNode = path[path.Count - 1];
@@ -113,7 +114,7 @@ public class NPCMovementController : MonoBehaviour
 
     public void Init(NPCController _groupController)
     {
-        groupController = _groupController;
+        NPCController = _groupController;
     }
 
 
@@ -156,14 +157,14 @@ public class NPCMovementController : MonoBehaviour
         if (isMoving)
             return;
 
-        groupController.currentlyOccupiedGridnode.ClearOccupant();
+        NPCController.currentlyOccupiedGridnode.ClearOccupant();
         AnimateMovement();
-        groupController.audioSource.PlayOneShot(GetRandomAudioClip());
+        NPCController.audioSource.PlayOneShot(GetRandomAudioClip());
         StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, moveDuration));
         StartCoroutine(DelayBetweenMovement());
 
-        groupController.currentlyOccupiedGridnode = targetNode;
-        groupController.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(groupController.gameObject, GridNodeOccupantType.NPC));
+        NPCController.currentlyOccupiedGridnode = targetNode;
+        NPCController.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(NPCController.gameObject, GridNodeOccupantType.NPC));
     }
 
     /// <summary>
@@ -181,7 +182,7 @@ public class NPCMovementController : MonoBehaviour
 
     void AnimateMovement()
     {
-        groupController.animController.PlayAnimation("Walk");
+        NPCController.animController.PlayAnimation("Walk");
     }
 
     void AnimateTurning(int turnDir)
@@ -189,11 +190,11 @@ public class NPCMovementController : MonoBehaviour
         isTurning = true;
         if(turnDir  == -1)
         {
-            groupController.animController.PlayAnimation("TurnLeft", turnDuration);
+            NPCController.animController.PlayAnimation("TurnLeft", turnDuration);
             
         }
         else if(turnDir == 1)
-            groupController.animController.PlayAnimation("TurnRight", turnDuration);
+            NPCController.animController.PlayAnimation("TurnRight", turnDuration);
 
         UpdateLookDir(turnDir);
     }
@@ -238,14 +239,14 @@ public class NPCMovementController : MonoBehaviour
     IEnumerator DelayBetweenMovement()
     {
         yield return new WaitForSeconds(moveDuration);
-        groupController.animController.PlayAnimation("Idle");
+        NPCController.animController.PlayAnimation("Idle");
         yield return new WaitForSeconds(minDelayBetweenMovement);
         MovementEnded();
     }
 
     void MovementEnded()
     {
-        groupController.TryAttack();
+        NPCController.TryAttack();
         FindNewPathToPlayer();
     }
 
@@ -259,7 +260,7 @@ public class NPCMovementController : MonoBehaviour
 
     void TurningEnded()
     {
-        groupController.TryAttack();
+        NPCController.TryAttack();
         NavigateToPlayer();
     }
 }

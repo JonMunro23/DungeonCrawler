@@ -52,7 +52,6 @@ public class KeycardReader : InteractableBase
 
     void TryUseKeycard(KeyItemData keyData)
     {
-        Debug.Log(keyData.keycardType);
         if (keyData.keycardType == requiredKeycard)
         {
             StartCoroutine(ReadCard());

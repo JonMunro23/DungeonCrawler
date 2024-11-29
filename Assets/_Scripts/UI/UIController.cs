@@ -121,11 +121,13 @@ public class UIController : MonoBehaviour
 
     void FadeInScreen(float fadeDuration)
     {
+        //fadeOverlay.enabled = false;
         fadeOverlay.DOFade(0, fadeDuration);
     }
 
     void FadeOutScreen(float fadeDuration)
     {
+        //fadeOverlay.enabled = false;
         fadeOverlay.DOFade(1, fadeDuration);
     }
 }
