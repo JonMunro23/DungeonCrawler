@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -18,8 +19,10 @@ public class PlayerController : MonoBehaviour
     public CharacterData playerCharacterData;
     public static GridNode currentOccupiedNode;
 
+    [SerializeField] float fadeOutDuration, fadeInDuration;
     
     public static Action<PlayerController> onPlayerInitialised;
+    public static Action<float> fadeOutScreen, fadeInScreen;
 
     private void Awake()
     {
@@ -49,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     public void MoveToCoords(Vector2 newCoords)
     {
-        Debug.Log("Moving player to " + newCoords);
+        //Debug.Log("Moving player to " + newCoords);
 
         GridNode nodeToMoveTo = GridController.Instance.GetNodeAtCoords(newCoords);
         if (!nodeToMoveTo)
@@ -99,6 +102,18 @@ public class PlayerController : MonoBehaviour
     public void ShakeScreen()
     {
         playerCamera.DOShakePosition(.35f, .5f);
+    }
+
+    async public Task FadeOutScreen()
+    {
+        fadeOutScreen?.Invoke(fadeOutDuration);
+        await Task.Delay((int)(fadeOutDuration * 1000));
+    }
+
+    async public Task FadeInScreen()
+    {
+        fadeInScreen?.Invoke(fadeInDuration);
+        await Task.Delay((int)(fadeInDuration * 1000));
     }
 
     public void MoveCameraPos(Vector3 newPos, float overDuration)

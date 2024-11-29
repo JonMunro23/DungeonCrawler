@@ -741,6 +741,8 @@ MonoBehaviour:
   playerStatsManager: {fileID: 5301202906750780191}
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
+  fadeOutDuration: 0.3
+  fadeInDuration: 0.3
 --- !u!114 &3417093745071717000
 MonoBehaviour:
   m_ObjectHideFlags: 0

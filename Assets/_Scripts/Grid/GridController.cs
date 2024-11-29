@@ -169,22 +169,22 @@ public class GridController : MonoBehaviour
 
     void SaveCurrentLevel()
     {
-        Debug.Log("Saving level " + currentLevelIndex + " ...");
+        //Debug.Log("Saving level " + currentLevelIndex + " ...");
 
         if (levels.TryGetValue(currentLevelIndex, out LevelData level))
         {
             level.UpdateLevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs);
-            Debug.Log("Updated level " + level.levelIndex + " data ...");
+            //Debug.Log("Updated level " + level.levelIndex + " data ...");
             return;
         }
 
         levels.Add(currentLevelIndex, new LevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs));
-        Debug.Log("Added level "+ currentLevelIndex +" to levels list");
+        //Debug.Log("Added level "+ currentLevelIndex +" to levels list");
     }
 
     void LoadLevel(LevelData levelData)
     {
-        Debug.Log("Loading level: " +  levelData.levelIndex);
+        //Debug.Log("Loading level: " +  levelData.levelIndex);
         foreach(GridNode node in levelData.GetNodes().Values)
         {
             //Instantiate(node, grid.GetCellCenterLocal(new Vector3Int((int)node.Coords.Pos.x, (int)node.Coords.Pos.y)), Quaternion.identity, transform);

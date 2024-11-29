@@ -1,4 +1,7 @@
+using DG.Tweening;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
@@ -7,11 +10,15 @@ public class UIController : MonoBehaviour
     [SerializeField] PlayerEquipmentUIManager PlayerEquipmentUIManager;
     [SerializeField] PlayerWeaponUIManager playerWeaponUIManager;
 
+    [SerializeField] Image fadeOverlay;
+
     PlayerController initialisedPlayer;
 
     private void OnEnable()
     {
         PlayerController.onPlayerInitialised += OnPlayerInitialised;
+        PlayerController.fadeInScreen += FadeInScreen;
+        PlayerController.fadeOutScreen += FadeOutScreen;
 
         ItemPickupManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
@@ -24,12 +31,13 @@ public class UIController : MonoBehaviour
         Weapon.onAmmoUpdated += OnWeaponAmmoUpdated;
 
         PlayerWeaponManager.onWeaponSlotSetActive += OnWeaponSlotSetActive;
-
     }
 
     private void OnDisable()
     {
         PlayerController.onPlayerInitialised -= OnPlayerInitialised;
+        PlayerController.fadeInScreen -= FadeInScreen;
+        PlayerController.fadeOutScreen -= FadeOutScreen;
 
         ItemPickupManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
@@ -50,6 +58,8 @@ public class UIController : MonoBehaviour
         initialisedPlayer = playerInitialised;
 
         playerStatsUIController.InitStatsUI(initialisedPlayer.playerCharacterData);
+
+        FadeInScreen(.5f);
     }
 
     void OnNewItemAttachedToCursor(ItemStack item)
@@ -107,5 +117,15 @@ public class UIController : MonoBehaviour
     void OnWeaponSlotSetActive(int slotIndex)
     {
         playerWeaponUIManager.SetSlotActive(slotIndex);
+    }
+
+    void FadeInScreen(float fadeDuration)
+    {
+        fadeOverlay.DOFade(0, fadeDuration);
+    }
+
+    void FadeOutScreen(float fadeDuration)
+    {
+        fadeOverlay.DOFade(1, fadeDuration);
     }
 }
