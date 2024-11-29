@@ -1467,6 +1467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6183601309913987406}
   - component: {fileID: 4360512319254851527}
+  - component: {fileID: 4193440486000460429}
   m_Layer: 0
   m_Name: WeaponHolder
   m_TagString: Untagged
@@ -1515,6 +1516,21 @@ MonoBehaviour:
   bobLimit: {x: 0.0005, y: 0.0005, z: 0.0005}
   bobExaggeration: 0
   multiplier: {x: 0, y: 0, z: 0}
+--- !u!114 &4193440486000460429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9212865591856936170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b0b4a2eb1dc1fb4b9a730a0a645030b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useBreathAnimation: 1
+  breathingSpeed: 2
+  breathingAmplitude: 0.01
 --- !u!1001 &1526676580978589587
 PrefabInstance:
   m_ObjectHideFlags: 0

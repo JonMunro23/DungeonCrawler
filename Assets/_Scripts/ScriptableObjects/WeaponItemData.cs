@@ -20,7 +20,6 @@ public class WeaponItemData : EquipmentItemData
     public int itemRange;
     public float critChance;
     public float critDamageMultiplier;
-    public float reloadDuration = 2;
     public AmmoType ammoType;
     public int magSize;
     public int projectileCount;

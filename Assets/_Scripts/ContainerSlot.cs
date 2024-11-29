@@ -22,7 +22,6 @@ public class ContainerSlot : MonoBehaviour, IPickup
 
     public void SpawnWorldItem()
     {
-        Debug.Log(storedStack.itemData.itemName);
         spawnedWorldItem = Instantiate(storedStack.itemData.itemWorldModel, transform);
     }
 

@@ -224,7 +224,7 @@ public class Weapon : MonoBehaviour, IWeapon
         isReloading = true;
         weaponAnimator.Play("Reload");
         weaponAudioEmitter.ForcePlay(weaponItemData.reloadSFX, weaponItemData.reloadVolume);
-        await Task.Delay((int)(weaponItemData.reloadDuration * 1000));
+        await Task.Delay((int)(weaponItemData.reloadAnimDuration * 1000));
         isReloading = false;
         loadedAmmo = reloadAmount;
         playerInventoryManager.DecreaseAmmoOfType(weaponItemData.ammoType, reloadAmount);

@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb7a71bee8a1924db3f815c07380154, type: 3}
+  m_Name: Python
+  m_EditorClassIdentifier: 
+  itemName: Python
+  itemIdentifier: python
+  itemDescription: A .44 caliber revolver.
+  itemSprite: {fileID: 21300000, guid: 2d2277bc7d3f26e4ba0d232410831a2e, type: 3}
+  itemWorldModel: {fileID: 1809065135982194, guid: 0c1115f4706f3e9438fd58374195e379,
+    type: 3}
+  itemWeight: 2
+  isItemStackable: 0
+  maxItemStackSize: 1
+  itemCooldown: 1.2
+  EquipmentSlotType: 0
+  statModifiers: []
+  itemPrefab: {fileID: 3989916110711570160, guid: 8803bbfc949a33844949614700e63b5b,
+    type: 3}
+  magDropPrefab: {fileID: 0}
+  isTwoHanded: 0
+  isMeleeWeapon: 0
+  itemDamageMinMax: {x: 0, y: 0}
+  itemRange: 5
+  critChance: 8
+  critDamageMultiplier: 2
+  ammoType: 0
+  magSize: 6
+  projectileCount: 1
+  isProjectile: 0
+  projectileData: {fileID: 0}
+  isBurst: 0
+  perShotInBurstDelay: 0
+  burstLength: 0
+  attackSFX:
+  - {fileID: 8300000, guid: 19d35041f281bd242ac163aa8a6abcf5, type: 3}
+  attackSFXVolume: 0.3
+  specialSFX: {fileID: 0}
+  specialSFXVolume: 0.3
+  drawAnimDuration: 1.15
+  drawSFX: {fileID: 8300000, guid: dd63e4aae2fcbf843b3638ab3d971900, type: 3}
+  drawVolume: 0.3
+  hideAnimDuration: 0.583
+  hideSFX: {fileID: 8300000, guid: e6640fe6a3b37f042964c5a47ba106c1, type: 3}
+  hideVolume: 0.3
+  reloadAnimDuration: 2.417
+  reloadSFX: {fileID: 8300000, guid: 4d47c8a24139adc49be12eaa438ceb11, type: 3}
+  reloadVolume: 0.3
+  bulletByBulletReload: 0
+  reloadInsertInChamberAnimDuration: 0
+  reloadInsertInChamberSFX: {fileID: 0}
+  reloadInsertInChamberVolume: 0.3
+  reloadStartAnimDuration: 0
+  reloadStartSFX: {fileID: 0}
+  reloadStartVolume: 0.3
+  reloadInsertAnimDuration: 0
+  reloadInsertSFX: {fileID: 0}
+  reloadInsertVolume: 0.3
+  reloadEndAnimDuration: 0
+  reloadStopSFX: {fileID: 0}
+  reloadStopVolume: 0.3

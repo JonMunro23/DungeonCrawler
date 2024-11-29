@@ -114,6 +114,7 @@ public class GridController : MonoBehaviour
 
     [Header("Triggerables")]
     [SerializeField] Door doorPrefab;
+    [SerializeField] Door secretDoorPrefab;
     List<ITriggerable> spawnedTriggerables = new List<ITriggerable>();
 
 
@@ -367,18 +368,21 @@ public class GridController : MonoBehaviour
                                 }
                                 break;
                             case "Triggerable":
+                                Door spawnedDoor = null;
                                 switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
                                 {
                                     case "Door":
-                                        //spawn door
-                                        Door spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                        spawnedDoor.SetOccupyingNode(spawnNode);
-                                        spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
-                                        spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                                        spawnNode.SetOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle));
-                                        spawnedTriggerables.Add(spawnedDoor);
+                                        spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                        break;
+                                    case "Secret_Door":
+                                        spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                         break;
                                 }
+                                spawnedDoor.SetOccupyingNode(spawnNode);
+                                spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
+                                spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                                spawnNode.SetOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle));
+                                spawnedTriggerables.Add(spawnedDoor);
                                 break;
                         }
 

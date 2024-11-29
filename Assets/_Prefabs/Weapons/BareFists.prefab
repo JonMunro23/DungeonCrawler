@@ -69,10 +69,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponItemData: {fileID: 0}
   weaponAnimator: {fileID: 0}
+  occupiedSlotIndex: 0
+  loadedAmmo: 0
+  reserveAmmo: 0
   canUse: 0
   canShootBurst: 1
   isWeaponDrawn: 0
   isReloading: 0
+  magDropTransform: {fileID: 0}
+  maxDroppedMags: 5
+  lastDroppedMag: 0
 --- !u!1001 &687923506675088210
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,6 +135,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: d6c1ad012d315af4aaf1fa54bac45333, type: 2}
+    - target: {fileID: 13700000, guid: cb6885c079cdcfe44bbf3431409bdd74, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 9500000, guid: cb6885c079cdcfe44bbf3431409bdd74, type: 3}
     m_RemovedGameObjects: []

@@ -62,7 +62,7 @@ MonoBehaviour:
   NPCSpawnPointPrefab: {fileID: 7420140500364602755, guid: 7d0c852250a8d5b4fa64f720b9ef6bbe,
     type: 3}
   spawnedNPCSpawnPoints: []
-  spawnedNPCs: []
+  activeNPCs: []
   worldItemPrefab: {fileID: 5545412917158435578, guid: 945df0abf5cc1e64c8ba274c480e94fa,
     type: 3}
   itemDataContainer: {fileID: 11400000, guid: bbf786f9fec6a344abaa6097c2f9d10c, type: 2}

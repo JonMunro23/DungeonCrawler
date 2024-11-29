@@ -27,12 +27,12 @@ public class Lever : InteractableBase
 
         if(objectsToTrigger.Count > 0 )
         {
-            foreach (ITriggerable item in objectsToTrigger)
+            foreach (ITriggerable triggerableObject in objectsToTrigger)
             {
-                if (!item.IsTriggerable())
+                if (!triggerableObject.IsTriggerable())
                     return;
 
-                item.Trigger();
+                triggerableObject.Trigger();
             }
         }
 
@@ -44,8 +44,14 @@ public class Lever : InteractableBase
     private void FlipLever()
     {
         if(isActivated)
+        {
+            isActivated = false;
             leverPivotPoint.DOLocalRotate(unflippedRotation, flipDuration);
+        }
         else
+        {
+            isActivated = true;
             leverPivotPoint.DOLocalRotate(flippedRotation, flipDuration);
+        }
     }
 }

@@ -92,7 +92,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4745176917426904}
-  - component: {fileID: 1267927635463522791}
   m_Layer: 0
   m_Name: Spas-12  Droppable
   m_TagString: Untagged
@@ -116,11 +115,3 @@ Transform:
   - {fileID: 4484893773001698}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1267927635463522791
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1908647586824534}
-  m_Mesh: {fileID: 4300000, guid: bee884454590b044e85e284a5a0eaab9, type: 3}

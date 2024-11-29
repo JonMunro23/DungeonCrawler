@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb7a71bee8a1924db3f815c07380154, type: 3}
+  m_Name: ACR
+  m_EditorClassIdentifier: 
+  itemName: ACR
+  itemIdentifier: acr
+  itemDescription: A medium caliber assualt rifle.
+  itemSprite: {fileID: 21300000, guid: 3b65cffc624c87544b5b30bb4564af65, type: 3}
+  itemWorldModel: {fileID: 1734957640529128, guid: 1357eedac1f35af4e9facf5594949974,
+    type: 3}
+  itemWeight: 3.4
+  isItemStackable: 0
+  maxItemStackSize: 1
+  itemCooldown: 1.4
+  EquipmentSlotType: 0
+  statModifiers: []
+  itemPrefab: {fileID: 3657685001478897229, guid: 86bfbcd86be44d140a6eefcd8256adc6,
+    type: 3}
+  magDropPrefab: {fileID: 54520008700056926, guid: 7e912de18c77c804e99ba1ea011e98d9,
+    type: 3}
+  isTwoHanded: 1
+  isMeleeWeapon: 0
+  itemDamageMinMax: {x: 20, y: 40}
+  itemRange: 6
+  critChance: 3
+  critDamageMultiplier: 2
+  ammoType: 1
+  magSize: 30
+  projectileCount: 1
+  isProjectile: 0
+  projectileData: {fileID: 0}
+  isBurst: 1
+  perShotInBurstDelay: 0.12
+  burstLength: 3
+  attackSFX:
+  - {fileID: 8300000, guid: 1324052f1fc863844b7fa1f764538c89, type: 3}
+  - {fileID: 8300000, guid: 0ba0920f74d30134f900dfc6cd14456d, type: 3}
+  - {fileID: 8300000, guid: a6356a8d47352774ab36fc8d8de5f286, type: 3}
+  attackSFXVolume: 0.3
+  specialSFX: {fileID: 0}
+  specialSFXVolume: 0.3
+  drawAnimDuration: 0.817
+  drawSFX: {fileID: 8300000, guid: a9d2071f54cb2b647b922dbfe2df2eed, type: 3}
+  drawVolume: 0.3
+  hideAnimDuration: 0.467
+  hideSFX: {fileID: 8300000, guid: 5ec33f6ef9c2f444b85f5775ef90ed1b, type: 3}
+  hideVolume: 0.3
+  reloadAnimDuration: 2.367
+  reloadSFX: {fileID: 8300000, guid: f8bcc8bbccd92f34093e39d92b546cb0, type: 3}
+  reloadVolume: 0.3
+  bulletByBulletReload: 0
+  reloadInsertInChamberAnimDuration: 0
+  reloadInsertInChamberSFX: {fileID: 0}
+  reloadInsertInChamberVolume: 0.3
+  reloadStartAnimDuration: 0
+  reloadStartSFX: {fileID: 0}
+  reloadStartVolume: 0.3
+  reloadInsertAnimDuration: 0
+  reloadInsertSFX: {fileID: 0}
+  reloadInsertVolume: 0.3
+  reloadEndAnimDuration: 0
+  reloadStopSFX: {fileID: 0}
+  reloadStopVolume: 0.3

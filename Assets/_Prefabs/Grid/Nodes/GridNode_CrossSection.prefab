@@ -751,7 +751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bf2d3a4bfa532a4a923eba3b4e86162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showDebugInfo: 1
+  showDebugInfo: 0
   nodeData: {fileID: 11400000, guid: 97dcdecf8ceecac4e9f063bc08e937a6, type: 2}
   highlightPathMat: {fileID: 2100000, guid: 3fab29c2075438c439a412da4df1679b, type: 2}
   highlightOpenMat: {fileID: 2100000, guid: bc708901ea0e0da48a926d2904637248, type: 2}
