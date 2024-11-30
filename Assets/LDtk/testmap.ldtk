@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 47,
+	"nextUid": 48,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -1315,7 +1315,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Player_Start",
-							"__grid": [13,8],
+							"__grid": [8,14],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 256, "y": 144, "w": 16, "h": 16 },
@@ -1324,13 +1324,13 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 2,
-							"px": [216,136],
+							"px": [136,232],
 							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 5, "realEditorValues": [{
 								"id": "V_String",
 								"params": ["North"]
 							}] }],
-							"__worldX": 216,
-							"__worldY": 136
+							"__worldX": 136,
+							"__worldY": 232
 						},
 						{
 							"__identifier": "NPC_Spawn",
@@ -1349,9 +1349,9 @@
 									"id": "V_String",
 									"params": ["West"]
 								}] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "Zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Zombie"]
+									"params": ["zombie"]
 								}] }
 							],
 							"__worldX": 40,
@@ -1782,6 +1782,81 @@
 							],
 							"__worldX": 184,
 							"__worldY": 72
+						},
+						{
+							"__identifier": "NPC_Spawn",
+							"__grid": [10,12],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "0b400b10-9b00-11ef-bc88-0958c34ea127",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [168,200],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["South"]
+								}] },
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "bug", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["bug"]
+								}] }
+							],
+							"__worldX": 168,
+							"__worldY": 200
+						},
+						{
+							"__identifier": "NPC_Spawn",
+							"__grid": [8,12],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "b6ebd6a0-9b00-11ef-bc88-a5cc5b23069d",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [136,200],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["South"]
+								}] },
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "bug", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["bug"]
+								}] }
+							],
+							"__worldX": 136,
+							"__worldY": 200
+						},
+						{
+							"__identifier": "NPC_Spawn",
+							"__grid": [6,12],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "b76faca0-9b00-11ef-bc88-855309888888",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [104,200],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["South"]
+								}] },
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "bug", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["bug"]
+								}] }
+							],
+							"__worldX": 104,
+							"__worldY": 200
 						}
 					]
 				},

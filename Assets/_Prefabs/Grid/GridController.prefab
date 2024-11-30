@@ -61,8 +61,8 @@ MonoBehaviour:
   playerController: {fileID: 0}
   NPCSpawnPointPrefab: {fileID: 7420140500364602755, guid: 7d0c852250a8d5b4fa64f720b9ef6bbe,
     type: 3}
-  spawnedNPCSpawnPoints: []
   activeNPCs: []
+  NPCDataContainer: {fileID: 11400000, guid: 733d0df4dde9208419f6f7e57ce20def, type: 2}
   worldItemPrefab: {fileID: 5545412917158435578, guid: 945df0abf5cc1e64c8ba274c480e94fa,
     type: 3}
   itemDataContainer: {fileID: 11400000, guid: bbf786f9fec6a344abaa6097c2f9d10c, type: 2}
@@ -76,6 +76,8 @@ MonoBehaviour:
     type: 3}
   pressurePlatePrefab: {fileID: 0}
   doorPrefab: {fileID: 2992099999898577703, guid: f7a6d8d37daf52d40ae50816b3fc5883,
+    type: 3}
+  secretDoorPrefab: {fileID: 2900067432425157529, guid: 60823032845347a4ba344a99ee115650,
     type: 3}
   centeredEntitySpawnOffset: {x: -1.5, y: 0, z: -1.5}
   worldItemSpawnOffset: {x: -0.25, y: 0.03, z: -1.5}

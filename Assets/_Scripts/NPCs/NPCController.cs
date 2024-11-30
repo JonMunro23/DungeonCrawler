@@ -22,10 +22,10 @@ public class NPCController : MonoBehaviour, IDamageable
     public GridNode currentlyOccupiedGridnode;
 
     [Header("Group Data")]
-    public NPCData NPCData;
     public int amountToSpawnInStack;
     [SerializeField] int hitReactionChance;
     [HideInInspector] public List<GameObject> spawnedNPCs = new List<GameObject>();
+    public NPCData NPCData { get; private set; }
 
     [Header("Group Stats")]
     public float currentGroupHealth;
@@ -46,9 +46,13 @@ public class NPCController : MonoBehaviour, IDamageable
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void InitNPC(GridNode spawnGridNode)
+    public void InitNPC(NPCData npcData, GridNode spawnGridNode = null)
     {
-        currentlyOccupiedGridnode = spawnGridNode;
+        NPCData = npcData;
+
+        if(spawnGridNode != null)
+            currentlyOccupiedGridnode = spawnGridNode;
+
         SpawnNPCs();
         InitControllers();
     }

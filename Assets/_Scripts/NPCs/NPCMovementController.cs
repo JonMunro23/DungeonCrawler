@@ -5,24 +5,17 @@ using UnityEngine;
 public class NPCMovementController : MonoBehaviour
 {
     NPCController NPCController;
-    public float gridSize = 3f;
+    public const int GRID_SIZE = 3;
 
     [Header("Movement")]
-    public float moveDuration;
     public bool isMoving;
-    [SerializeField] float minDelayBetweenMovement;
-    //[SerializeField] GridNode currentOccupiedGridNode = null;
     [SerializeField] List<GridNode> path = new List<GridNode>();
     [SerializeField] GridNode targetNode;
-    [SerializeField] AudioClip[] walkSFx;
 
     [Space]
     [Header("Turning")]
-    public float turnDuration;
-    //0 = North, 1 = East, 2 = South, 3 = West
     public Transform currentOrientation; 
     public bool isTurning;
-    [SerializeField] float minDelayBetweenTurning;
 
     [SerializeField] GridNode playerGridNode;
 
@@ -50,13 +43,12 @@ public class NPCMovementController : MonoBehaviour
 
     void OnPlayerMoved()
     {
-        FindNewPathToPlayer();
+        //FindNewPathToPlayer();
         playerGridNode = PlayerController.currentOccupiedNode;
     }
 
     void OnNodeOccupancyUpdated()
     {
-        //Debug.Log("Node Occupancy Updated");
         FindNewPathToPlayer();
     }
 
@@ -117,30 +109,10 @@ public class NPCMovementController : MonoBehaviour
         NPCController = _groupController;
     }
 
-
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.UpArrow))
-    //    {
-    //        FindNewPathToPlayer();
-    //    }
-
-    //    //if(Input.GetKeyDown(KeyCode.LeftArrow))
-    //    //{
-    //    //    Turn(-1);
-    //    //}
-    //    //if (Input.GetKeyDown(KeyCode.RightArrow))
-    //    //{
-    //    //    Turn(1);
-    //    //}
-    //}
-
     AudioClip GetRandomAudioClip()
     {
-        int rand = Random.Range(0, walkSFx.Length);
-        return walkSFx[rand];
+        int rand = Random.Range(0, NPCController.NPCData.walkSFX.Length);
+        return NPCController.NPCData.walkSFX[rand];
     }
     public void SnapToTargetNode()
     {
@@ -159,17 +131,16 @@ public class NPCMovementController : MonoBehaviour
 
         NPCController.currentlyOccupiedGridnode.ClearOccupant();
         AnimateMovement();
-        NPCController.audioSource.PlayOneShot(GetRandomAudioClip());
-        StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, moveDuration));
+        if(NPCController.NPCData.walkSFX.Length > 0)
+            NPCController.audioSource.PlayOneShot(GetRandomAudioClip());
+
+        StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, NPCController.NPCData.moveDuration));
         StartCoroutine(DelayBetweenMovement());
 
         NPCController.currentlyOccupiedGridnode = targetNode;
         NPCController.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(NPCController.gameObject, GridNodeOccupantType.NPC));
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="turnDir"> -1 = left, 1 = right </param>
     void Turn(int turnDir)
     {
@@ -190,11 +161,11 @@ public class NPCMovementController : MonoBehaviour
         isTurning = true;
         if(turnDir  == -1)
         {
-            NPCController.animController.PlayAnimation("TurnLeft", turnDuration);
+            NPCController.animController.PlayAnimation("TurnLeft", NPCController.NPCData.turnDuration);
             
         }
         else if(turnDir == 1)
-            NPCController.animController.PlayAnimation("TurnRight", turnDuration);
+            NPCController.animController.PlayAnimation("TurnRight", NPCController.NPCData.turnDuration);
 
         UpdateLookDir(turnDir);
     }
@@ -221,26 +192,11 @@ public class NPCMovementController : MonoBehaviour
         isMoving = false;
     }
 
-    IEnumerator LerpRot(Quaternion startRot, Quaternion endRot, float lerpDuration)
-    {
-        float timeElapsed = 0;
-
-        while (timeElapsed < lerpDuration)
-        {
-            float t = timeElapsed / lerpDuration;
-            transform.localRotation = Quaternion.Slerp(startRot, endRot, t);
-            timeElapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        transform.localRotation = endRot;
-    }
-
     IEnumerator DelayBetweenMovement()
     {
-        yield return new WaitForSeconds(moveDuration);
+        yield return new WaitForSeconds(NPCController.NPCData.moveDuration);
         NPCController.animController.PlayAnimation("Idle");
-        yield return new WaitForSeconds(minDelayBetweenMovement);
+        yield return new WaitForSeconds(NPCController.NPCData.minDelayBetweenMovement);
         MovementEnded();
     }
 
@@ -253,7 +209,7 @@ public class NPCMovementController : MonoBehaviour
 
     IEnumerator DelayBetweenTurning()
     {
-        yield return new WaitForSeconds(turnDuration + minDelayBetweenTurning);
+        yield return new WaitForSeconds(NPCController.NPCData.turnDuration + NPCController.NPCData.minDelayBetweenTurning);
         isTurning = false;
         TurningEnded();
     }

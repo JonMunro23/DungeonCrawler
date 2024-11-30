@@ -6112,27 +6112,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grid
       objectReference: {fileID: 0}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: secretDoorPrefab
-      value: 
-      objectReference: {fileID: 2900067432425157529, guid: 60823032845347a4ba344a99ee115650,
-        type: 3}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: worldItemsParent
-      value: 
-      objectReference: {fileID: 1752105790}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: currentLevelIndex
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: startingLevelIndex
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7918361601237953702, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
       propertyPath: m_LocalPosition.x

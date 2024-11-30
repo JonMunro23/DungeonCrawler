@@ -117,7 +117,6 @@ MonoBehaviour:
   - {fileID: 5766181276845116464}
   audioSource: {fileID: 6380403475553436966}
   currentlyOccupiedGridnode: {fileID: 0}
-  NPCData: {fileID: 11400000, guid: 9f5083d7a604a2941b7c7031480ce668, type: 2}
   amountToSpawnInStack: 1
   hitReactionChance: 5
   spawnedNPCs: []
@@ -137,20 +136,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c08036ad6edfff14f857fecd29b0ed93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: 3
-  moveDuration: 3.3
   isMoving: 0
-  minDelayBetweenMovement: 0
-  currentOccupiedGridNode: {fileID: 0}
   path: []
-  walkSFx:
-  - {fileID: 8300000, guid: 2269c2d16e02e6746ad368887be13ba7, type: 3}
-  - {fileID: 8300000, guid: 805dde646449cec47ad6e04048183274, type: 3}
-  - {fileID: 8300000, guid: 2aec7f1e8ea290d4aa2903aa2f1872b0, type: 3}
-  turnDuration: 0.6
+  targetNode: {fileID: 0}
   currentOrientation: {fileID: 4587715752689572025}
   isTurning: 0
-  minDelayBetweenTurning: 0.1
   playerGridNode: {fileID: 0}
 --- !u!114 &1006225082393101937
 MonoBehaviour:
@@ -177,19 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 585fa99baae6a1642ba7acd5f22c02a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackCooldown: 3
-  delayBetweenAttacks: 1
-  delayBeforeDamageDealt: 1.5
-  attackSFx:
-  - {fileID: 8300000, guid: 45dcff352f3428543b3c6f74b7f43984, type: 3}
-  - {fileID: 8300000, guid: 4fae566acb3e6dc48b5c2ab46f50267c, type: 3}
-  - {fileID: 8300000, guid: c88695f6913c3ab428d6de49c98d346f, type: 3}
-  - {fileID: 8300000, guid: 70f411af8e722614fb51d328b93acb64, type: 3}
-  - {fileID: 8300000, guid: 766d97c2ad0a8c94e8a414de997f2fb7, type: 3}
-  - {fileID: 8300000, guid: 6212097f0cb11a3469faf2e75d80ff23, type: 3}
-  - {fileID: 8300000, guid: a4e02142ddf17164c8b94fd3dddb80f2, type: 3}
-  - {fileID: 8300000, guid: e2ad82920cbeb164db80ca7b9ef1ad10, type: 3}
-  - {fileID: 8300000, guid: 9cb4f1fe772ef2f4a846a7e4ed0f302c, type: 3}
 --- !u!82 &6380403475553436966
 AudioSource:
   m_ObjectHideFlags: 0
@@ -502,7 +479,7 @@ Transform:
   m_GameObject: {fileID: 5785491712126688175}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

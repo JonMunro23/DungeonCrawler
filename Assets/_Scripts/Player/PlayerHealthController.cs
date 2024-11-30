@@ -12,6 +12,7 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
     [SerializeField] GameObject syringeArms;
     [SerializeField] int currentHealth;
     int maxHealth;
+    bool isDead;
 
     [Header("Syringe")]
     [SerializeField] float delayBeforeRegen;
@@ -72,11 +73,23 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
     public void TakeDamage(int damageTaken, bool wasCrit = false)
     {
+        if (isDead)
+            return;
+
         int damageToTake = wasCrit ? damageTaken * 2 : damageTaken;
         audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
         playerController.ShakeScreen();
         currentHealth -= damageToTake;
+        if (currentHealth < 0)
+            currentHealth = 0;
+
         onCurrentHealthUpdated?.Invoke(characterData, currentHealth);
+
+        if(currentHealth == 0)
+        {
+            isDead = true;
+            playerController.OnDeath();
+        }
     }
 
     AudioClip GetRandomAudioClip()

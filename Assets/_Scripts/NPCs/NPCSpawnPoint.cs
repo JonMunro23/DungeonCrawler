@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NPCSpawnPoint : MonoBehaviour
@@ -9,10 +8,10 @@ public class NPCSpawnPoint : MonoBehaviour
 
     public static Action<PlayerController> onPlayerSpawned;
 
-    public NPCController SpawnNPC(GridNode spawnGridNode)
+    public NPCController SpawnNPC(NPCData npcData, GridNode spawnGridNode)
     {
         spawnedNPC = Instantiate(NPCToSpawn, transform.position, transform.rotation);
-        spawnedNPC.InitNPC(spawnGridNode);
+        spawnedNPC.InitNPC(npcData, spawnGridNode);
 
         spawnGridNode.SetOccupant(new GridNodeOccupant(spawnedNPC.gameObject, GridNodeOccupantType.NPC));
 

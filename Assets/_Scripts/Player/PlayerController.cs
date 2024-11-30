@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
     public static Action<PlayerController> onPlayerInitialised;
     public static Action<float> fadeOutScreen, fadeInScreen;
 
+    public static Action onPlayerDeath;
+
     private void Awake()
     {
         advGridMovement = GetComponent<AdvancedGridMovement>();
@@ -55,6 +57,15 @@ public class PlayerController : MonoBehaviour
         advGridMovement.InitMovement(this);
 
         onPlayerInitialised?.Invoke(this);
+    }
+
+    public void OnDeath()
+    {
+        //play death anim
+        //show game over UI
+        //disable all player input
+
+        onPlayerDeath?.Invoke();
     }
 
     public void MoveToCoords(Vector2 newCoords)

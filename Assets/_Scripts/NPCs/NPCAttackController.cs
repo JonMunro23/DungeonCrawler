@@ -3,17 +3,15 @@ using UnityEngine;
 
 public class NPCAttackController : MonoBehaviour
 {
-    NPCController groupController;
+    NPCController npcController;
 
-    [SerializeField] float attackCooldown, delayBetweenAttacks, delayBeforeDamageDealt;
-    [SerializeField] AudioClip[] attackSFx;
     public bool isAttacking {  get; private set; }
     bool canAttack;
 
-    GridNode frontNode;
-    public void Init(NPCController newGroupController)
+    GridNode playerNode;
+    public void Init(NPCController newNPCController)
     {
-        groupController = newGroupController;
+        npcController = newNPCController;
         canAttack = true;
     }
 
@@ -25,21 +23,32 @@ public class NPCAttackController : MonoBehaviour
         StartCoroutine(Attack());
     }
 
+    int GetRandomDamageValue()
+    {
+        return (int)Random.Range(npcController.NPCData.minMaxDamage.x, npcController.NPCData.minMaxDamage.y);
+    }
+
     IEnumerator Attack()
     {
         canAttack = false;
         isAttacking = true;
-        groupController.animController.PlayAnimation("Attack");
-        groupController.audioSource.PlayOneShot(GetRandomAttackClip());
-        yield return new WaitForSeconds(delayBeforeDamageDealt);
-        var occupyingGameObject = frontNode.GetOccupyingGameobject();
+        if(playerNode == npcController.currentlyOccupiedGridnode.GetNodeInDirection(npcController.movementController.currentOrientation.forward))
+            npcController.animController.PlayAnimation("MeleeAttack");
+        else
+            npcController.animController.PlayAnimation("Attack");
+
+        if (npcController.NPCData.attackSFx.Length > 0)
+            npcController.audioSource.PlayOneShot(GetRandomAttackClip());
+
+        yield return new WaitForSeconds(npcController.NPCData.delayBeforeDamageDealt);
+        var occupyingGameObject = playerNode.GetOccupyingGameobject();
         if(occupyingGameObject)
         {
             if(occupyingGameObject.TryGetComponent(out PlayerController player))
             {
                 if(player.TryGetComponent(out IDamageable damageable))
                 {
-                    damageable.TakeDamage(groupController.NPCData.damage);
+                    damageable.TakeDamage(GetRandomDamageValue());
                 }
             }
         }
@@ -48,16 +57,31 @@ public class NPCAttackController : MonoBehaviour
 
     AudioClip GetRandomAttackClip()
     {
-        int rand = Random.Range(0, attackSFx.Length);
-        return attackSFx[rand];
+        int rand = Random.Range(0, npcController.NPCData.attackSFx.Length);
+        return npcController.NPCData.attackSFx[rand];
     }
     public bool CheckForPlayer()
     {
-        frontNode = groupController.currentlyOccupiedGridnode.GetNodeInDirection(groupController.movementController.currentOrientation.forward);
-        if (!frontNode)
+        if(npcController.NPCData.isRanged)
+        {
+            Ray ray = new Ray(npcController.movementController.currentOrientation.position, npcController.movementController.currentOrientation.forward);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, npcController.NPCData.attackRange * 3))
+            {
+                //Debug.Log(hit.transform.name);
+                if (hit.transform.CompareTag("Player"))
+                {
+                    playerNode = GridController.Instance.GetNodeFromWorldPos(hit.transform.position);
+                    return true;
+                }
+            }
+        }
+
+        playerNode = npcController.currentlyOccupiedGridnode.GetNodeInDirection(npcController.movementController.currentOrientation.forward);
+        if (!playerNode)
             return false;
 
-        if (frontNode.currentOccupant.occupantType == GridNodeOccupantType.Player)
+        if (playerNode.currentOccupant.occupantType == GridNodeOccupantType.Player)
             return true;
 
         return false;
@@ -65,10 +89,10 @@ public class NPCAttackController : MonoBehaviour
     
     IEnumerator AttackCooldown()
     {
-        yield return new WaitForSeconds(attackCooldown);
+        yield return new WaitForSeconds(npcController.NPCData.attackCooldown);
         isAttacking = false;
-        yield return new WaitForSeconds(delayBetweenAttacks);
+        yield return new WaitForSeconds(npcController.NPCData.delayBetweenAttacks);
         canAttack = true;
-        groupController.TryAttack();
+        npcController.TryAttack();
     }
 }
