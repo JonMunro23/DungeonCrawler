@@ -876,7 +876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: 3
-  walkSpeed: 3
+  walkSpeed: 3.35
   turnSpeed: 6
   walkSpeedCurve:
     serializedVersion: 2
@@ -915,8 +915,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.14674135
     - serializedVersion: 3
-      time: 0.27443272
-      value: 0.019587448
+      time: 0.30655247
+      value: 0.013926437
       inSlope: 0.053942025
       outSlope: 0.053942025
       tangentMode: 0
@@ -1165,9 +1165,7 @@ MonoBehaviour:
   currentHealth: 0
   delayBeforeRegen: 1.1
   syringeCooldown: 8
-  regenLength: 1
-  regenAmount: 0.2
-  isHealing: 0
+  isRegenActive: 0
   damageTakenSFx:
   - {fileID: 8300000, guid: d8a90167a4af0114882ae42aff1110af, type: 3}
   damageTakenSFXVolume: 0.3

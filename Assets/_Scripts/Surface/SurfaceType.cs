@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Surface Type", fileName = "Surfaces/New Surface Type", order = 201)]
+[CreateAssetMenu(fileName = "SurfaceType", menuName = "Surfaces/New Surface Type")]
 public sealed class SurfaceType : ScriptableObject
 {
     /// <summary>

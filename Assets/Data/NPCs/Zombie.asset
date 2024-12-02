@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fd1eab6751c38445a8913e8af2c6c42, type: 3}
+  m_Name: Zombie
+  m_EditorClassIdentifier: 
+  identifier: zombie
+  prefab: {fileID: 4493914613880827488, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
+  health: 100
+  experienceValue: 75
+  minMaxGroupSize: {x: 1, y: 4}
+  minMaxDamage: {x: 15, y: 40}
+  attackCooldown: 3
+  delayBetweenAttacks: 1
+  delayBeforeDamageDealt: 1.5
+  moveDuration: 3.3
+  minDelayBetweenMovement: 0
+  turnDuration: 0.6
+  minDelayBetweenTurning: 0.3
+  attackSFx:
+  - {fileID: 8300000, guid: 45dcff352f3428543b3c6f74b7f43984, type: 3}
+  - {fileID: 8300000, guid: 4fae566acb3e6dc48b5c2ab46f50267c, type: 3}
+  - {fileID: 8300000, guid: c88695f6913c3ab428d6de49c98d346f, type: 3}
+  - {fileID: 8300000, guid: 70f411af8e722614fb51d328b93acb64, type: 3}
+  - {fileID: 8300000, guid: 766d97c2ad0a8c94e8a414de997f2fb7, type: 3}
+  - {fileID: 8300000, guid: 6212097f0cb11a3469faf2e75d80ff23, type: 3}
+  - {fileID: 8300000, guid: a4e02142ddf17164c8b94fd3dddb80f2, type: 3}
+  - {fileID: 8300000, guid: e2ad82920cbeb164db80ca7b9ef1ad10, type: 3}
+  - {fileID: 8300000, guid: 9cb4f1fe772ef2f4a846a7e4ed0f302c, type: 3}
+  walkSFX:
+  - {fileID: 8300000, guid: 65857afdd1c3d5545900db5ef8421cf6, type: 3}
+  - {fileID: 8300000, guid: 3c45e7eba0b183646ac5a0fbf56b135c, type: 3}
+  - {fileID: 8300000, guid: bf3911456827a9f4dbe09734e0c242f4, type: 3}
+  turnSFX: {fileID: 0}
+  deathSFX: {fileID: 0}

@@ -1,25 +1,34 @@
 using LDtkUnity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+
+[System.Serializable]
+public class NPCSpawnData
+{
+    public NPCSpawnPoint spawnPoint;
+    public Vector2 spawnCoords;
+    public NPCData spawnData;
+
+    public NPCSpawnData (NPCSpawnPoint spawnPoint, Vector2 spawnCoords, NPCData spawnData)
+    {
+        this.spawnPoint = spawnPoint;
+        this.spawnCoords = spawnCoords;
+        this.spawnData = spawnData;
+    }
+}
 
 public class LevelData
 {
     public int levelIndex;
     Dictionary<Vector2, GridNode> levelNodes = new Dictionary<Vector2, GridNode>();
-    List<ITriggerable> spawnedTriggerables = new List<ITriggerable>();
-    List<IInteractable> spawnedInteractables = new List<IInteractable>();
     List<NPCController> spawnedNPCs = new List<NPCController>();
-
 
     public LevelData(Dictionary<Vector2, GridNode> levelNodes, List<ITriggerable> spawnedTriggerables, List<IInteractable> spawnedInteractables, List<NPCController> spawnedNPCs)
     {
         this.levelNodes = new Dictionary<Vector2, GridNode>(levelNodes);
         this.spawnedNPCs = new List<NPCController>(spawnedNPCs);
-        //this.spawnedTriggerables = spawnedTriggerables;
-        //this.spawnedInteractables = spawnedInteractables;
     }
 
     public void UpdateLevelData(Dictionary<Vector2, GridNode> updatedNodes,List<ITriggerable> updatedTriggerables, List<IInteractable> updatedInteractables, List<NPCController> updatedNPCs)
@@ -29,30 +38,12 @@ public class LevelData
 
         spawnedNPCs.Clear();
         spawnedNPCs = new List<NPCController>(updatedNPCs);
-
-
-        //spawnedTriggerables.Clear();
-        //spawnedTriggerables = updatedTriggerables;
-
-        //spawnedInteractables.Clear();
-        //spawnedInteractables = updatedInteractables;
-
     }
 
     public Dictionary<Vector2, GridNode> GetNodes()
     {
         return levelNodes;
     }
-
-    //public List<ITriggerable> GetTriggerables()
-    //{
-    //    return spawnedTriggerables;
-    //}
-
-    //public List<IInteractable> GetInteractables()
-    //{
-    //    return spawnedInteractables;
-    //}
 
     public List<NPCController> GetNPCs()
     {
@@ -91,9 +82,9 @@ public class GridController : MonoBehaviour
 
     [Header("NPCs")]
     [SerializeField] NPCSpawnPoint NPCSpawnPointPrefab;
-    [SerializeField] List<NPCSpawnPoint> spawnedNPCSpawnPoints = new List<NPCSpawnPoint>();
+    [SerializeField] List<NPCSpawnData> NPCSpawnData = new List<NPCSpawnData>();
     [SerializeField] List<NPCController> activeNPCs = new List<NPCController>();
-    List<Vector2> NPCSpawnCoords = new List<Vector2>();
+    [SerializeField] NPCDataContainer NPCDataContainer;
 
     [Header("World Items")]
     [SerializeField] WorldItem worldItemPrefab;
@@ -126,6 +117,8 @@ public class GridController : MonoBehaviour
     {
         LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
         NPCController.onNPCDeath += OnNPCDeath;
+
+        PlayerController.onPlayerDeath += OnPlayerDeath;
     }
 
     private void OnDisable()
@@ -133,6 +126,7 @@ public class GridController : MonoBehaviour
         LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
         NPCController.onNPCDeath -= OnNPCDeath;
 
+        PlayerController.onPlayerDeath -= OnPlayerDeath;
     }
 
     private void Awake()
@@ -146,6 +140,22 @@ public class GridController : MonoBehaviour
     {
         currentLevelIndex = startingLevelIndex;
         InstantiateLevel(currentLevelIndex);
+    }
+
+    void OnPlayerDeath()
+    {
+        RestartLevel();
+    }
+
+    private void RestartLevel()
+    {
+        //UnloadCurrentLevel();
+        //if (levels.TryGetValue(currentLevelIndex, out LevelData level))
+        //{
+        //    LoadLevel(level);
+        //}
+        //else
+        //    InstantiateLevel(currentLevelIndex);
     }
 
     void OnNPCDeath(NPCController deadNPC)
@@ -241,8 +251,9 @@ public class GridController : MonoBehaviour
         }
         activeNPCs.Clear();
 
-        spawnedNPCSpawnPoints.Clear();
-        NPCSpawnCoords.Clear();
+        NPCSpawnData.Clear();
+        //spawnedNPCSpawnPoints.Clear();
+        //NPCSpawnCoords.Clear();
 
         if (spawnedPlayerSpawnPoint)
             Destroy(spawnedPlayerSpawnPoint);
@@ -303,9 +314,11 @@ public class GridController : MonoBehaviour
                                 playerSpawnCoords = spawnCoords;
                                 break;
                             case "NPC_Spawn":
-                                NPCSpawnPoint NPCSpawnPonintClone = Instantiate(NPCSpawnPointPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                spawnedNPCSpawnPoints.Add(NPCSpawnPonintClone);
-                                NPCSpawnCoords.Add(spawnCoords);
+                                NPCSpawnPoint NPCSpawnPointClone = Instantiate(NPCSpawnPointPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                NPCData spawnData = GetNPCData(entityLayer.EntityInstances[k].FieldInstances[1].Value);
+                                NPCSpawnData.Add(new NPCSpawnData(NPCSpawnPointClone, spawnCoords, spawnData));
+                                //spawnedNPCSpawnPoints.Add(NPCSpawnPointClone);
+                                //NPCSpawnCoords.Add(spawnCoords);
                                 break;
                             case "WorldItem":
                                 WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
@@ -396,6 +409,12 @@ public class GridController : MonoBehaviour
         
     }
 
+    private NPCData GetNPCData(object value)
+    {
+        string npcDataIdentifier = value.ToString();
+        return NPCDataContainer.GetDataFromIdentifier(npcDataIdentifier);
+    }
+
     private void CacheGridNodeNeighbours()
     {
         foreach (var node in activeNodes.Values)
@@ -406,9 +425,9 @@ public class GridController : MonoBehaviour
 
     private void SpawnNPCs()
     {
-        for (int i = 0; i < spawnedNPCSpawnPoints.Count; i++)
+        for (int i = 0; i < NPCSpawnData.Count; i++)
         {
-            activeNPCs.Add(spawnedNPCSpawnPoints[i].SpawnNPC(GetNodeAtCoords(NPCSpawnCoords[i])));
+            activeNPCs.Add(NPCSpawnData[i].spawnPoint.SpawnNPC(NPCSpawnData[i].spawnData, GetNodeAtCoords(NPCSpawnData[i].spawnCoords)));
         }
     }
 
