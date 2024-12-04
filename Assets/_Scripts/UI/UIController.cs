@@ -1,5 +1,7 @@
 using DG.Tweening;
+using System.Collections;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,15 +12,25 @@ public class UIController : MonoBehaviour
     [SerializeField] PlayerEquipmentUIManager PlayerEquipmentUIManager;
     [SerializeField] PlayerWeaponUIManager playerWeaponUIManager;
 
-    [SerializeField] Image fadeOverlay;
+
+    [Header("Level Transition")]
+    [SerializeField] GameObject levelTransitionParent;
+    [SerializeField] TMP_Text levelTransitionText;
+    [SerializeField] TMP_Text levelTransitionEnteringText;
+    [SerializeField] Image levelTransitionDividingLine;
+    [SerializeField] float levelTextLifetimeDuration = 5;
+    [SerializeField] Image levelTransitionFadeOverlay;
+    [SerializeField] float fadeOutDuration, fadeInDuration;
 
     PlayerController initialisedPlayer;
+
+    Coroutine levelTextLifetime;
 
     private void OnEnable()
     {
         PlayerController.onPlayerInitialised += OnPlayerInitialised;
-        PlayerController.fadeInScreen += FadeInScreen;
-        PlayerController.fadeOutScreen += FadeOutScreen;
+        //PlayerController.fadeInScreen += FadeInScreen;
+        //PlayerController.fadeOutScreen += FadeOutScreen;
 
         ItemPickupManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
@@ -31,13 +43,15 @@ public class UIController : MonoBehaviour
         Weapon.onAmmoUpdated += OnWeaponAmmoUpdated;
 
         PlayerWeaponManager.onWeaponSlotSetActive += OnWeaponSlotSetActive;
+
+        LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
     }
 
     private void OnDisable()
     {
         PlayerController.onPlayerInitialised -= OnPlayerInitialised;
-        PlayerController.fadeInScreen -= FadeInScreen;
-        PlayerController.fadeOutScreen -= FadeOutScreen;
+        //PlayerController.fadeInScreen -= FadeInScreen;
+        //PlayerController.fadeOutScreen -= FadeOutScreen;
 
         ItemPickupManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
@@ -51,6 +65,12 @@ public class UIController : MonoBehaviour
 
         PlayerWeaponManager.onWeaponSlotSetActive -= OnWeaponSlotSetActive;
 
+        LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
+    }
+
+    private void Start()
+    {
+        levelTransitionFadeOverlay.enabled = true;
     }
 
     void OnPlayerInitialised(PlayerController playerInitialised)
@@ -59,7 +79,7 @@ public class UIController : MonoBehaviour
 
         playerStatsUIController.InitStatsUI(initialisedPlayer.playerCharacterData);
 
-        FadeInScreen(.5f);
+        FadeInScreen();
     }
 
     void OnNewItemAttachedToCursor(ItemStack item)
@@ -119,15 +139,49 @@ public class UIController : MonoBehaviour
         playerWeaponUIManager.SetSlotActive(slotIndex);
     }
 
-    void FadeInScreen(float fadeDuration)
+    async void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)
     {
-        //fadeOverlay.enabled = false;
-        fadeOverlay.DOFade(0, fadeDuration);
+        await FadeOutScreen();
+        await GridController.Instance.BeginLevelTransition(levelIndex, playerMoveToCoords);
+        await FadeInScreen();
+        ShowLevelName(levelIndex);
     }
 
-    void FadeOutScreen(float fadeDuration)
+    void ShowLevelName(int levelIndex)
+    {
+        levelTransitionParent.SetActive(true);
+        levelTransitionText.text = GridController.Instance.GetLevelNameFromIndex(levelIndex);
+
+        if(levelTextLifetime != null)
+            StopCoroutine(levelTextLifetime);
+
+        levelTextLifetime = StartCoroutine(LevelNameLifetime());
+    }
+
+    void HideLevelName()
+    {
+        levelTransitionText.DOFade(0, 1);
+        levelTransitionEnteringText.DOFade(0, 1);
+        levelTransitionDividingLine.DOFade(0, 1);
+    }
+
+    async Task FadeInScreen()
     {
         //fadeOverlay.enabled = false;
-        fadeOverlay.DOFade(1, fadeDuration);
+        levelTransitionFadeOverlay.DOFade(0, fadeInDuration);
+        await Task.Delay((int)(fadeInDuration * 1000));
+    }
+
+    async Task FadeOutScreen()
+    {
+        //fadeOverlay.enabled = false;
+        levelTransitionFadeOverlay.DOFade(1, fadeOutDuration);
+        await Task.Delay((int)(fadeOutDuration * 1000));
+    }
+
+    IEnumerator LevelNameLifetime()
+    {
+        yield return new WaitForSeconds(levelTextLifetimeDuration);
+        HideLevelName();
     }
 }

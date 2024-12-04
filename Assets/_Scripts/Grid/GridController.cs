@@ -115,7 +115,6 @@ public class GridController : MonoBehaviour
 
     private void OnEnable()
     {
-        LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
         NPCController.onNPCDeath += OnNPCDeath;
 
         PlayerController.onPlayerDeath += OnPlayerDeath;
@@ -123,7 +122,6 @@ public class GridController : MonoBehaviour
 
     private void OnDisable()
     {
-        LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
         NPCController.onNPCDeath -= OnNPCDeath;
 
         PlayerController.onPlayerDeath -= OnPlayerDeath;
@@ -164,7 +162,7 @@ public class GridController : MonoBehaviour
             activeNPCs.Remove(deadNPC);
     }
 
-    void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)
+    public async Task BeginLevelTransition(int levelIndex, Vector2 playerMoveToCoords)
     {
         SaveCurrentLevel();
         UnloadCurrentLevel();
@@ -180,6 +178,8 @@ public class GridController : MonoBehaviour
 
 
         MovePlayer(playerMoveToCoords);
+
+        await Task.Yield();
     }
 
     private void MovePlayer(Vector2 coordsToMoveTo)
@@ -504,5 +504,9 @@ public class GridController : MonoBehaviour
         return returnDir;
     }
 
+    public string GetLevelNameFromIndex(int levelIndex)
+    {
+        return project.Json.FromJson.Levels[levelIndex].FieldInstances[0].Value.ToString();
+    }
 
 }

@@ -18,9 +18,9 @@ public class LevelTransition : MonoBehaviour
     {
         if(other.TryGetComponent(out PlayerController playerController))
         {
-            await playerController.FadeOutScreen();
+            //await playerController.FadeOutScreen();
             onLevelTransitionEntered?.Invoke(levelIndexToGoTo, playerMoveToCoords);
-            await playerController.FadeInScreen();
+            //await playerController.FadeInScreen();
             
         }
     }
