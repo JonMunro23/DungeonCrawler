@@ -4,16 +4,15 @@ using UnityEngine;
 public enum EquipmentSlotType
 {
     None,
-    head,
-    chest,
-    legs,
-    boots,
-    gloves,
+    Head,
+    Chest,
+    Legs,
+    Boots,
+    Gloves,
     //neck,
-    back,
+    Back,
     //ring,
-    weaponSlot0,
-    weaponSlot1
+    weaponSlot
 };
 
 public enum ModifiableStats

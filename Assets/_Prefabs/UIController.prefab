@@ -7077,6 +7077,12 @@ MonoBehaviour:
   - {fileID: 8897851094792116798}
   - {fileID: 3957310915090884100}
   - {fileID: 4409153966693649637}
+  equipmentSlotParentTransforms:
+  - {fileID: 3692666315513738115}
+  - {fileID: 666867400775040935}
+  - {fileID: 3558033929946601560}
+  - {fileID: 4515482794019217129}
+  - {fileID: 2669853673599504074}
 --- !u!114 &4991282280067760860
 MonoBehaviour:
   m_ObjectHideFlags: 0

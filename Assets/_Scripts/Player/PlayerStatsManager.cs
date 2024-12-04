@@ -45,7 +45,7 @@ public class PlayerStatsManager : MonoBehaviour
         PlayerEquipmentManager.onEquippedItemRemoved -= OnEquippedItemRemoved;
     }
 
-    public void InitPlayerStats(CharacterData newPlayerCharData)
+    public void Init(CharacterData newPlayerCharData)
     {
         playerCharData = newPlayerCharData;
         playerStats = playerCharData.baseCharStats;

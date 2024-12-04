@@ -30,15 +30,11 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         tooltipTrigger = GetComponent<TooltipTrigger>();
     }
 
-    private void Start()
-    {
-        SetInteractable(true);
-    }
-
     public void InitSlot(PlayerInventoryManager newPlayerInventoryManager, int _slotIndex)
     {
         playerInventoryManager = newPlayerInventoryManager;
         slotIndex = _slotIndex;
+        SetInteractable(true);
     }
 
     public virtual void AddItem(ItemStack itemToAdd)
@@ -58,6 +54,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
                 playerInventoryManager.AddAmmo(consumableData.ammoType, itemToAdd.itemAmount);
             }
         }
+
         SetTooltipTriggerActive(true);
         UpdateSlotUI();
     }
@@ -141,7 +138,6 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             }
         }
         RemoveItem();
-        SetTooltipTriggerActive(false);
         return itemToTake;
     }
 
@@ -257,6 +253,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         currentSlotItemStack.itemData = null;
         currentSlotItemStack.itemAmount = 0;
         isSlotOccupied = false;
+        SetTooltipTriggerActive(false);
         UpdateSlotUI();
     }
 

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class EquipmentSlot : InventorySlot
 {
+
     public EquipmentSlotType slotType;
 
     public static Action<EquipmentSlotType, EquipmentItemData> onNewEquipmentItem;
@@ -11,11 +12,11 @@ public class EquipmentSlot : InventorySlot
     [SerializeField] Sprite placeholderIcon;
     [SerializeField] float placeholderIconAlpha;
 
-    private void Start()
+    public void InitEquipmentSlot()
     {
+        //set slot background img
         slotImage.sprite = placeholderIcon;
         slotImage.color = slotImage.color = new Color(255, 255, 255, placeholderIconAlpha);
-
         SetInteractable(true);
     }
 

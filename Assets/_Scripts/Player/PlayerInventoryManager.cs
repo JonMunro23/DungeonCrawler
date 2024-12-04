@@ -4,6 +4,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+[System.Serializable]
+public struct PlayerInventorySaveData
+{
+    public List<ItemStack> storedItems;
+}
 public class PlayerInventoryManager : MonoBehaviour, IInventory
 {
     PlayerController playerController;
@@ -63,12 +69,12 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             SetCursorActive(false);
     }
 
-    public void InitInventory(PlayerController newPlayerController)
+    public void Init(PlayerController newPlayerController)
     {
         playerController = newPlayerController;
 
-        SetCursorActive(false);
         SpawnInventorySlots();
+        SetCursorActive(false);
     }
 
     public void SetCursorActive(bool isActive)
@@ -96,12 +102,17 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             spawnedSlot.InitSlot(this, i);
         }
 
-        for (int i = 0;i < startingItemStacks.Count;i++)
+        AddStartingItems();
+
+        onInventorySlotsSpawned?.Invoke(spawnedInventorySlots);
+    }
+
+    private void AddStartingItems()
+    {
+        for (int i = 0; i < startingItemStacks.Count; i++)
         {
             spawnedInventorySlots[i].AddItem(startingItemStacks[i]);
         }
-
-        onInventorySlotsSpawned?.Invoke(spawnedInventorySlots);
     }
 
     public void ToggleInventory()
@@ -141,6 +152,10 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     }
 
     public void AddHealthSyringe(int amountToAdd) => heldHealthSyringes += amountToAdd;
+    void RemoveSyringes()
+    {
+        RemoveHealthSyringe(heldHealthSyringes);
+    }
     public void AddAmmo(AmmoType typeToAdd, int amountToAdd)
     {
         switch (typeToAdd)
@@ -158,7 +173,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
         onAmmoAddedToInventory?.Invoke(typeToAdd);
     }
-
     public void RemoveAmmo(AmmoType typeToAdd, int amountToRemove)
     {
         switch (typeToAdd)
@@ -176,7 +190,12 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
         onAmmoAddedToInventory?.Invoke(typeToAdd);
     }
-
+    private void RemoveAllAmmo()
+    {
+        RemoveAmmo(AmmoType.Pistol, heldPistolAmmo);
+        RemoveAmmo(AmmoType.Rifle, heldRifleAmmo);
+        RemoveAmmo(AmmoType.Shells, heldShells);
+    }
     public void RemoveHealthSyringe(int amountToRemove) => heldHealthSyringes -= amountToRemove;
 
     public InventorySlot FindSlotWithConsumableOfType(ConsumableType typeToFind)
@@ -385,4 +404,50 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
                 slot.SetInteractable(true);
         }
     }
+
+    #region Save/Load
+
+    public List<ItemStack> GetStoredItems()
+    {
+        List<ItemStack> items = new List<ItemStack>();
+        foreach (InventorySlot slot in spawnedInventorySlots)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            items.Add(slot.GetItemStack());
+        }
+        return items;
+    }
+
+    public void LoadItems(List<ItemStack> items)
+    {
+        RemoveSyringes();
+        RemoveAllAmmo();
+
+        foreach (InventorySlot slot in spawnedInventorySlots)
+        {
+            if(!slot.IsSlotEmpty())
+            {
+                slot.RemoveItem();
+            }
+        }
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            spawnedInventorySlots[i].AddItem(items[i]);
+        }
+    }
+
+    public void Save(ref PlayerInventorySaveData data)
+    {
+        data.storedItems = GetStoredItems();
+    }
+
+    public void Load(PlayerInventorySaveData data)
+    {
+        LoadItems(data.storedItems);
+    }
+
+    #endregion
 }

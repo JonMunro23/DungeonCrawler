@@ -53,12 +53,14 @@ public class Weapon : MonoBehaviour, IWeapon
     public async Task HolsterWeapon()
     {
         isWeaponDrawn = false;
-        weaponAnimator.Play("Hide");
-        weaponAudioEmitter.ForcePlay(weaponItemData.hideSFX, weaponItemData.hideVolume);
-        await Task.Delay((int)(weaponItemData.hideAnimDuration * 1000));
-        isWeaponDrawn = false;
-        if(weaponAnimator)
-            weaponAnimator.enabled = false;
+        if(weaponAnimator.enabled)
+        {
+            weaponAnimator.Play("Hide");
+            weaponAudioEmitter.ForcePlay(weaponItemData.hideSFX, weaponItemData.hideVolume);
+            await Task.Delay((int)(weaponItemData.hideAnimDuration * 1000));
+            if(weaponAnimator)
+                weaponAnimator.enabled = false;
+        }
     }
 
     public void Grab()

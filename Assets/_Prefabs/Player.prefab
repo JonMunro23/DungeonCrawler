@@ -1084,9 +1084,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingItemStacks:
-  - itemData: {fileID: 11400000, guid: a7b9b17bcb65e79499ddd4bde54d02d7, type: 2}
-    itemAmount: 3
+  - itemData: {fileID: 11400000, guid: 13678138784503d4d9aced3d3d412924, type: 2}
+    itemAmount: 43
     loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 5c8800c3adf420744a7aae4de3b6b1a0, type: 2}
+    itemAmount: 2
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
+    itemAmount: 1
+    loadedAmmo: 4
+  - itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
+    itemAmount: 1
+    loadedAmmo: 10
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
@@ -1113,7 +1122,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6089d0bd5a2210441971f190022271b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allCurrentlyEquippedItems: []
+  equipmentSlotPrefab: {fileID: 7387177318088493808, guid: ab8acc85f13a15e4281d9b18a75ce917,
+    type: 3}
+  spawnedEquipmentSlots: []
+  currentlyEquippedItems: []
   currentCarryWeight: 0
   maxCarryWeight: 0
 --- !u!114 &4808936625142989322

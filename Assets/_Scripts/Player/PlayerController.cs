@@ -3,6 +3,13 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
+[System.Serializable]
+public struct PlayerSaveData
+{
+    public Vector2 coords;
+    public float yRotation;
+}
+
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
@@ -50,11 +57,12 @@ public class PlayerController : MonoBehaviour
         playerCharacterData = playerCharData;
         currentOccupiedNode = spawnGridNode;
 
-        playerInventoryManager.InitInventory(this);
+        playerInventoryManager.Init(this);
+        playerEquipmentManager.Init(this);
         playerWeaponManager.Init(this);
-        playerStatsManager.InitPlayerStats(playerCharacterData);
-        playerHealthController.InitHealthController(this);
-        advGridMovement.InitMovement(this);
+        playerStatsManager.Init(playerCharacterData);
+        playerHealthController.Init(this);
+        advGridMovement.Init(this);
 
         onPlayerInitialised?.Invoke(this);
     }
@@ -154,5 +162,17 @@ public class PlayerController : MonoBehaviour
     public void RotCamera(Vector3 newRot, float overDuration)
     {
         playerCamera.transform.DOLocalRotate(newRot, overDuration);
+    }
+
+    public void Save(ref PlayerSaveData data)
+    {
+        data.coords = currentOccupiedNode.Coords.Pos;
+        data.yRotation = transform.rotation.eulerAngles.y;
+    }
+
+    public void Load(PlayerSaveData data)
+    {
+        MoveToCoords(data.coords);
+        advGridMovement.SetRotation(data.yRotation);
     }
 }

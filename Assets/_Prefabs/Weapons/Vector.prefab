@@ -313,7 +313,7 @@ MonoBehaviour:
   maxDroppedMags: 5
   lastDroppedMag: 0
   projectileSpawnLocation: {fileID: 2690174596056474962}
-  infinteAmmo: 1
+  infinteAmmo: 0
   shellEjectionParticleEffect: {fileID: 6889221604562446684}
   ejectionSpeed: {x: 1.5, y: 3}
   ejectionStartDelay: 0
