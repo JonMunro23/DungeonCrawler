@@ -24,8 +24,6 @@ public class PlayerController : MonoBehaviour
     Vector3 defaultCamPos;
 
     public static Action<PlayerController> onPlayerInitialised;
-    public static Action<float> fadeOutScreen, fadeInScreen;
-
     public static Action onPlayerDeath;
 
     private void Awake()
@@ -132,18 +130,6 @@ public class PlayerController : MonoBehaviour
         {
             playerCamera.transform.DOLocalMove(defaultCamPos, .1f);
         });
-    }
-
-    async public Task FadeOutScreen()
-    {
-        fadeOutScreen?.Invoke(fadeOutDuration);
-        await Task.Delay((int)(fadeOutDuration * 1000));
-    }
-
-    async public Task FadeInScreen()
-    {
-        fadeInScreen?.Invoke(fadeInDuration);
-        await Task.Delay((int)(fadeInDuration * 1000));
     }
 
     public void MoveCameraPos(Vector3 newPos, float overDuration)

@@ -5692,11 +5692,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1944252627469511409, guid: e6ee789cac96f2946b95ebffdd9b2643,
-        type: 3}
-      propertyPath: m_enableWordWrapping
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3530789331081067301, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -5756,6 +5751,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4313526163585213159, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: levelTextLifetimeDuration
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4614231872178545878, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
