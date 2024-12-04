@@ -21,7 +21,6 @@ public class NPCSpawnData
 
 public class LevelData
 {
-    public int levelIndex;
     Dictionary<Vector2, GridNode> levelNodes = new Dictionary<Vector2, GridNode>();
     List<NPCController> spawnedNPCs = new List<NPCController>();
 
@@ -60,6 +59,7 @@ public class GridController : MonoBehaviour
 
     [SerializeField] LDtkComponentProject project;
     Level currentLevel;
+    List<Level> levels = new List<Level>();
     LayerInstance entityLayer;
     LayerInstance intGridLayer;
 
@@ -72,7 +72,10 @@ public class GridController : MonoBehaviour
     [Header("Levels")]
     [SerializeField] int startingLevelIndex;
     [SerializeField] int currentLevelIndex;
-    Dictionary<int, LevelData> levels = new Dictionary<int, LevelData>();
+    /// <summary>
+    /// int = levelIndex
+    /// </summary>
+    Dictionary<int, LevelData> levelDataDictionary = new Dictionary<int, LevelData>();
 
     [Header("Player")]
     [SerializeField] CharacterData playerCharData;
@@ -136,8 +139,32 @@ public class GridController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentLevelIndex = startingLevelIndex;
-        InstantiateLevel(currentLevelIndex);
+        GetLevels();
+        InstantiateLevels();
+
+        LoadLevel(startingLevelIndex);
+
+        SpawnPlayer();
+
+        //InstantiateLevel(currentLevelIndex);
+    }
+
+    void InstantiateLevels()
+    {
+        for (int i = 0; i < levels.Count; i++)
+        {
+            InstantiateLevel(i);
+            SaveLevel(i);
+            UnloadCurrentLevel();
+        }
+    }
+
+    void GetLevels()
+    {
+        foreach (Level level in project.Json.FromJson.Levels)
+        {
+            levels.Add(level);
+        }
     }
 
     void OnPlayerDeath()
@@ -164,18 +191,10 @@ public class GridController : MonoBehaviour
 
     public async Task BeginLevelTransition(int levelIndex, Vector2 playerMoveToCoords)
     {
-        SaveCurrentLevel();
+        SaveLevel(currentLevelIndex);
         UnloadCurrentLevel();
 
-        currentLevelIndex = levelIndex;
-
-        if (levels.TryGetValue(levelIndex, out LevelData level))
-        {
-            LoadLevel(level);
-        }
-        else
-            InstantiateLevel(levelIndex);
-
+        LoadLevel(levelIndex);
 
         MovePlayer(playerMoveToCoords);
 
@@ -187,27 +206,31 @@ public class GridController : MonoBehaviour
         playerController.MoveToCoords(coordsToMoveTo);
     }
 
-    void SaveCurrentLevel()
+    void SaveLevel(int indexOfLevelToSave)
     {
-        //Debug.Log("Saving level " + currentLevelIndex + " ...");
+        Debug.Log("Saving level " + indexOfLevelToSave + " ...");
 
-        if (levels.TryGetValue(currentLevelIndex, out LevelData level))
+        if (levelDataDictionary.TryGetValue(indexOfLevelToSave, out LevelData level))
         {
             level.UpdateLevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs);
-            //Debug.Log("Updated level " + level.levelIndex + " data ...");
+            Debug.Log("Updated level " + indexOfLevelToSave + " data ...");
             return;
         }
 
-        levels.Add(currentLevelIndex, new LevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs));
-        //Debug.Log("Added level "+ currentLevelIndex +" to levels list");
+        levelDataDictionary.Add(indexOfLevelToSave, new LevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs));
+        Debug.Log("Added level "+ indexOfLevelToSave + " to levels list");
     }
 
-    void LoadLevel(LevelData levelData)
+    void LoadLevel(int indexOfLevelToLoad)
     {
-        //Debug.Log("Loading level: " +  levelData.levelIndex);
+        if (!levelDataDictionary.TryGetValue(indexOfLevelToLoad, out LevelData levelData))
+            return;
+
+        currentLevelIndex = indexOfLevelToLoad;
+
+        Debug.Log("Loading level: " + indexOfLevelToLoad);
         foreach(GridNode node in levelData.GetNodes().Values)
         {
-            //Instantiate(node, grid.GetCellCenterLocal(new Vector3Int((int)node.Coords.Pos.x, (int)node.Coords.Pos.y)), Quaternion.identity, transform);
             node.SetActive(true);
             activeNodes.Add(node.Coords.Pos, node);
         }
@@ -217,19 +240,13 @@ public class GridController : MonoBehaviour
             NPC.SetActive(true);
             activeNPCs.Add(NPC);
         }
-
-        //spawn saved nodes
-        //spawn saved npcs
-        //link triggerables to interactables
     }
 
     void InstantiateLevel(int levelIndex)
     {
-
-        currentLevel = project.Json.FromJson.Levels[levelIndex];
-
-        entityLayer = currentLevel.LayerInstances[ENTITY_LAYER_INDEX];
-        intGridLayer = currentLevel.LayerInstances[INTGRID_LAYER_INDEX];
+        //currentLevel = levels[levelIndex];
+        entityLayer = levels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
+        intGridLayer = levels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
 
         SpawnGridNodes();
 
@@ -237,7 +254,7 @@ public class GridController : MonoBehaviour
 
         SpawnNPCs();
 
-        SpawnPlayer();
+        //SpawnPlayer();
 
         CacheGridNodeNeighbours();
     }

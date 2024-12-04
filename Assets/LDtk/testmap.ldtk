@@ -2608,7 +2608,10 @@
 							"px": [72,104],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": null, "__tile": null, "defUid": 8, "realEditorValues": [] }
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "ranger", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["ranger"]
+								}] }
 							],
 							"__worldX": 328,
 							"__worldY": 104
@@ -2627,7 +2630,10 @@
 							"px": [104,152],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": null, "__tile": null, "defUid": 8, "realEditorValues": [] }
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["zombie"]
+								}] }
 							],
 							"__worldX": 360,
 							"__worldY": 152
@@ -2646,7 +2652,10 @@
 							"px": [88,184],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": null, "__tile": null, "defUid": 8, "realEditorValues": [] }
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "ranger", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["ranger"]
+								}] }
 							],
 							"__worldX": 344,
 							"__worldY": 184
@@ -2665,7 +2674,10 @@
 							"px": [136,120],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": null, "__tile": null, "defUid": 8, "realEditorValues": [] }
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "bug", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["bug"]
+								}] }
 							],
 							"__worldX": 392,
 							"__worldY": 120
