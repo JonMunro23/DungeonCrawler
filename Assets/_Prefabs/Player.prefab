@@ -43,6 +43,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.393
   m_Pitch: 1
@@ -264,9 +265,8 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4019381369253348144}
   m_Enabled: 0
-  serializedVersion: 10
+  serializedVersion: 11
   m_Type: 0
-  m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1.3
   m_Range: 25
@@ -316,8 +316,12 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
+  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+  m_LightUnit: 1
+  m_LuxAtDistance: 1
+  m_EnableSpotReflector: 1
 --- !u!114 &2763730868098078949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,6 +442,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.393
   m_Pitch: 1
@@ -541,6 +546,7 @@ GameObject:
   - component: {fileID: 5977534421063011795}
   - component: {fileID: 6917960533262647579}
   - component: {fileID: 4808936625142989322}
+  - component: {fileID: -7248779939640906649}
   - component: {fileID: 5301202906750780191}
   - component: {fileID: -2222088351250389698}
   - component: {fileID: 1969104955076474302}
@@ -1135,6 +1141,21 @@ MonoBehaviour:
   weaponSpawnParent: {fileID: 6183601309913987406}
   spawnedWeaponSlots: []
   activeSlotIndex: 0
+--- !u!114 &-7248779939640906649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6206634459118426657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e716c4fe1d51415409fd776613e9dd95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentPlayerLevel: 0
+  currentExperiencePoints: 0
+  requiredExperiencePoints: 200
 --- !u!114 &5301202906750780191
 MonoBehaviour:
   m_ObjectHideFlags: 0
