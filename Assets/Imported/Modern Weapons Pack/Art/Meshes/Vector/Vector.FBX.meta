@@ -384,8 +384,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -445,18 +443,7 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
-  referencedClips:
-  - e453872a0dabe9b41a6a0cf257428aaa
-  - 65113bf44bfa1194493d8f17fc5e98b0
-  - 65428816292d2604392d08a058fa250d
-  - b03e5f8488c631e4da9ca4be1ba54234
-  - a01ecd972eeb4354ea1eac50022df6ea
-  - 199aa8f3a355ccc47b8ebb77476a5355
-  - b1bfb653cfcf9794885d7ce569d40188
-  - b1d55712491511548a6d2cb7d981970c
-  - ca53319dcf6812648a372e0ca72380f9
-  - 2045c4fd18ebe0a498658879801b9434
-  - 6949b789b500e494d8dcb63a9d2c8f5b
+  referencedClips: []
   importAnimation: 0
   humanDescription:
     serializedVersion: 3
@@ -469,7 +456,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.005
+    globalScale: 0.5
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

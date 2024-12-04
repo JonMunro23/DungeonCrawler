@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum AmmoType
 {
+    None,
     Pistol,
     Rifle,
     Shells

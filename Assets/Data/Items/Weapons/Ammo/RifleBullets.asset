@@ -22,8 +22,8 @@ MonoBehaviour:
   isItemStackable: 1
   maxItemStackSize: 80
   consumableType: 2
-  ammoType: 1
+  ammoType: 2
   cooldownBetweenUses: 0
-  healthRegenAmount: 0.5
-  healthRegenDuration: 3
+  totalRegenAmount: 75
+  regenDuration: 3
   useAnimationLength: 0

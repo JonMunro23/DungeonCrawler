@@ -34,8 +34,7 @@ MonoBehaviour:
   itemRange: 3
   critChance: 4
   critDamageMultiplier: 2
-  reloadDuration: 3
-  ammoType: 2
+  ammoType: 3
   magSize: 8
   projectileCount: 7
   isProjectile: 0

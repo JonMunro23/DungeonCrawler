@@ -33,7 +33,7 @@ MonoBehaviour:
   itemRange: 5
   critChance: 8
   critDamageMultiplier: 2
-  ammoType: 0
+  ammoType: 1
   magSize: 6
   projectileCount: 1
   isProjectile: 0

@@ -99,12 +99,12 @@ public class Weapon : MonoBehaviour, IWeapon
             int mag = lastDroppedMag++ % maxDroppedMags;
             droppedMagList[mag].transform.position = magDropTransform.position;
             droppedMagList[mag].transform.rotation = magDropTransform.rotation;
-            droppedMagList[mag].GetComponent<Rigidbody>().velocity = Physics.gravity;
+            droppedMagList[mag].GetComponent<Rigidbody>().linearVelocity = Physics.gravity;
         }
         else
         {
             Rigidbody magazine = Instantiate(weaponItemData.magDropPrefab, magDropTransform.position, magDropTransform.rotation);
-            magazine.velocity = Physics.gravity;
+            magazine.linearVelocity = Physics.gravity;
 
             Physics.IgnoreCollision(magazine.GetComponent<Collider>(), character, true);
             droppedMagList.Add(magazine.gameObject);

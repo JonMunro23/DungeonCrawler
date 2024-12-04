@@ -150,6 +150,9 @@ public class UIController : MonoBehaviour
     void ShowLevelName(int levelIndex)
     {
         levelTransitionParent.SetActive(true);
+        levelTransitionText.color = new Color(1,1,1,1);
+        levelTransitionEnteringText.color = new Color(1,1,1,1);
+        levelTransitionDividingLine.color = new Color(.51f,.51f,.51f,1);
         levelTransitionText.text = GridController.Instance.GetLevelNameFromIndex(levelIndex);
 
         if(levelTextLifetime != null)
@@ -167,14 +170,12 @@ public class UIController : MonoBehaviour
 
     async Task FadeInScreen()
     {
-        //fadeOverlay.enabled = false;
         levelTransitionFadeOverlay.DOFade(0, fadeInDuration);
         await Task.Delay((int)(fadeInDuration * 1000));
     }
 
     async Task FadeOutScreen()
     {
-        //fadeOverlay.enabled = false;
         levelTransitionFadeOverlay.DOFade(1, fadeOutDuration);
         await Task.Delay((int)(fadeOutDuration * 1000));
     }
