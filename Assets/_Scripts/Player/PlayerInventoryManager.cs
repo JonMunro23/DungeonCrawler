@@ -73,6 +73,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void SetCursorActive(bool isActive)
     {
+        if (isInContainer)
+            return;
+
         if (isActive)
         {
             Cursor.visible = true;

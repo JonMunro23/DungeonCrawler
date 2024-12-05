@@ -5998,6 +5998,12 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7324002105295292545, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: skillData
+      value: 
+      objectReference: {fileID: 11400000, guid: b3eb0f435df11cf458b3517b1ef9fa8b,
+        type: 2}
     - target: {fileID: 7627910253917378810, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.y

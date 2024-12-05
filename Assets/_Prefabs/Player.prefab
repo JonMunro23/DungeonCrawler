@@ -547,6 +547,7 @@ GameObject:
   - component: {fileID: 6917960533262647579}
   - component: {fileID: 4808936625142989322}
   - component: {fileID: -7248779939640906649}
+  - component: {fileID: -252208920062932819}
   - component: {fileID: 5301202906750780191}
   - component: {fileID: -2222088351250389698}
   - component: {fileID: 1969104955076474302}
@@ -868,6 +869,22 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - key: 107
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: -252208920062932819}
+          m_TargetAssemblyTypeName: PlayerSkillsController, Assembly-CSharp
+          m_MethodName: ToggleSkillsMenu
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 50
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   eventMappingsKeyUp: []
 --- !u!114 &162635141120244599
 MonoBehaviour:
@@ -1156,6 +1173,19 @@ MonoBehaviour:
   currentPlayerLevel: 0
   currentExperiencePoints: 0
   requiredExperiencePoints: 200
+--- !u!114 &-252208920062932819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6206634459118426657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19126e03de01e714194d18b2220fb5ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  availableSkillPoints: 0
 --- !u!114 &5301202906750780191
 MonoBehaviour:
   m_ObjectHideFlags: 0
