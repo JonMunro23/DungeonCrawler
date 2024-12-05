@@ -47,7 +47,6 @@ public class PlayerSkill : MonoBehaviour, IPointerClickHandler
         {
             SetInteractable(false);
         }
-
         UpdateSkillLevelText();
     }
 

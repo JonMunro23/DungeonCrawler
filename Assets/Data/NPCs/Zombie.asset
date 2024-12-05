@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identifier: zombie
   prefab: {fileID: 4493914613880827488, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
-  health: 100
+  health: 50
   experienceValue: 75
   minMaxGroupSize: {x: 1, y: 4}
   minMaxDamage: {x: 15, y: 40}
   attackCooldown: 3
   delayBetweenAttacks: 1
   delayBeforeDamageDealt: 1.5
+  isRanged: 0
+  attackRange: 0
   moveDuration: 3.3
   minDelayBetweenMovement: 0
   turnDuration: 0.6

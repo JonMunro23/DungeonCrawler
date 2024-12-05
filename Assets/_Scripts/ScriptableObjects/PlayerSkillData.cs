@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerSkillData", menuName = "Player Skills/New Player Skill")]
@@ -10,5 +11,6 @@ public class PlayerSkillData : ScriptableObject
     public Sprite skillSprite;
 
     public int maxSkillLevel;
-}
 
+    public List<StatModifier> statModifiers = new List<StatModifier>();
+}

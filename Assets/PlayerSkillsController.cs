@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSkillsController : MonoBehaviour
 {
     PlayerInventoryManager inventoryManager;
+    PlayerStatsManager statsManager;
 
     public int availableSkillPoints;
     bool isSkillMenuOpen;
@@ -12,9 +14,14 @@ public class PlayerSkillsController : MonoBehaviour
     public static Action onSkillMenuOpened;
     public static Action onSkillMenuClosed;
 
+    public static Action<PlayerSkill> onSkillUpdated;
+
+    [SerializeField] List<PlayerSkill> currentPlayerSKills = new List<PlayerSkill>();
+
     private void Awake()
     {
         inventoryManager = GetComponent<PlayerInventoryManager>();
+        statsManager = GetComponent<PlayerStatsManager>();
     }
 
     private void OnEnable()
@@ -35,6 +42,9 @@ public class PlayerSkillsController : MonoBehaviour
         {
             skillClicked.BuySkill();
             RemoveSkillPoint();
+            currentPlayerSKills.Add(skillClicked);
+
+            onSkillUpdated?.Invoke(skillClicked);
         }
     }
     void OnPlayerLevelUp(int playerLevel)

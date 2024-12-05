@@ -16,6 +16,13 @@ public class PlayerWeaponManager : MonoBehaviour
     [SerializeField] WeaponSlot[] spawnedWeaponSlots;
     [SerializeField] int activeSlotIndex;
 
+    [Header("Bonus Weapon Stats")]
+    public static int bonusDamage;
+    public static int bonusBurstCount;
+    public static int bonusCritChance;
+    public static int bonusCritMultiplier;
+    public static int bonusAccuracy;
+
     public IWeapon currentWeapon;
     IWeapon defaultWeapon;
 
@@ -29,6 +36,9 @@ public class PlayerWeaponManager : MonoBehaviour
         WeaponSlot.onWeaponSwappedInSlot += OnWeaponSwappedInSlot;
 
         PlayerInventoryManager.onAmmoAddedToInventory += OnInventoryAmmoUpdated;
+
+        Stat.onStatUpdated += OnStatUpdated;
+
     }
 
     private void OnDisable()
@@ -38,6 +48,31 @@ public class PlayerWeaponManager : MonoBehaviour
         WeaponSlot.onWeaponSwappedInSlot -= OnWeaponSwappedInSlot;
 
         PlayerInventoryManager.onAmmoAddedToInventory -= OnInventoryAmmoUpdated;
+
+        Stat.onStatUpdated -= OnStatUpdated;
+
+    }
+
+    public virtual void OnStatUpdated(Stat updatedStat)
+    {
+        switch (updatedStat.stat)
+        {
+            case ModifiableStats.Damage:
+                bonusDamage = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
+                break;
+            case ModifiableStats.BurstCount:
+                bonusBurstCount = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
+                break;
+            case ModifiableStats.CritChance:
+                bonusCritChance = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
+                break;
+            case ModifiableStats.CritMultiplier:
+                bonusCritMultiplier = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
+                break;
+            case ModifiableStats.WeaponAccuracy:
+                bonusAccuracy = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
+                break;
+        }
     }
 
     void OnInventoryAmmoUpdated(AmmoType typeAdded)
@@ -59,7 +94,6 @@ public class PlayerWeaponManager : MonoBehaviour
         weaponAudioEmitter = AudioManager.Instance.RegisterSource("[AudioEmitter] Weapon", transform, AudioCategory.SFx, 10, 25, 0);
 
         SpawnWeaponSlots();
-        //SetWeaponSlotActive(0);
     }
 
     void SpawnWeaponSlots()

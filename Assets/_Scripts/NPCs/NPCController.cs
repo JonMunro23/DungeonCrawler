@@ -103,7 +103,7 @@ public class NPCController : MonoBehaviour, IDamageable
         
     }
 
-    public void TakeDamage(int damage, bool wasCrit = false)
+    public void TryDamage(int damage, bool wasCrit = false)
     {
         if(!isDead)
         {

@@ -17,7 +17,7 @@ MonoBehaviour:
   baseCharStats:
   - stat: 0
     baseStatValue: 150
-    currentStatValue: 0
+    currentStatValue: 150
   - stat: 1
     baseStatValue: 0
     currentStatValue: 0
@@ -35,4 +35,7 @@ MonoBehaviour:
     currentStatValue: 0
   - stat: 6
     baseStatValue: 0
+    currentStatValue: 0
+  - stat: 7
+    baseStatValue: 35
     currentStatValue: 0

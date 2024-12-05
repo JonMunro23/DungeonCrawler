@@ -14,6 +14,10 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
     int maxHealth;
     bool isDead;
 
+    [Header("Stats")]
+    [SerializeField] int evasion;
+    [SerializeField] int armour;
+
     [Header("Syringe")]
     [SerializeField] float delayBeforeRegen;
     [SerializeField] float syringeCooldown;
@@ -68,15 +72,27 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
     public void TakeDamageCheat(int damageToTake)
     {
-        TakeDamage(damageToTake, false);
+        TryDamage(damageToTake, false);
     }
 
-    public void TakeDamage(int damageTaken, bool wasCrit = false)
+    public void TryDamage(int damageTaken, bool wasCrit = false)
     {
         if (isDead)
             return;
 
+        if (RollForDodge())
+        {
+            Debug.Log("Dodged Attack");
+            return;
+        }
+
+        TakeDamage(damageTaken, wasCrit);
+    }
+
+    private void TakeDamage(int damageTaken, bool wasCrit)
+    {
         int damageToTake = wasCrit ? damageTaken * 2 : damageTaken;
+        damageTaken -= armour;
         audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
         playerController.ShakeScreen();
         currentHealth -= damageToTake;
@@ -85,7 +101,7 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
         onCurrentHealthUpdated?.Invoke(characterData, currentHealth);
 
-        if(currentHealth == 0)
+        if (currentHealth == 0)
         {
             isDead = true;
             playerController.OnDeath();
@@ -175,5 +191,19 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
         DisableSyringeArms();
 
         await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+    }
+
+    bool RollForDodge()
+    {
+        bool dodged = false;
+        if (evasion > 0)
+        {
+            float rand = Random.Range(0, 101);
+            if (rand <= evasion)
+            {
+                dodged = true;
+            }
+        }
+        return dodged;
     }
 }

@@ -1846,9 +1846,9 @@
 									"id": "V_String",
 									"params": ["South"]
 								}] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "bug", "__tile": null, "defUid": 8, "realEditorValues": [{
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["bug"]
+									"params": ["zombie"]
 								}] }
 							],
 							"__worldX": 136,
@@ -1871,9 +1871,9 @@
 									"id": "V_String",
 									"params": ["South"]
 								}] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "bug", "__tile": null, "defUid": 8, "realEditorValues": [{
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["bug"]
+									"params": ["zombie"]
 								}] }
 							],
 							"__worldX": 168,
@@ -1896,9 +1896,9 @@
 									"id": "V_String",
 									"params": ["South"]
 								}] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "bug", "__tile": null, "defUid": 8, "realEditorValues": [{
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["bug"]
+									"params": ["zombie"]
 								}] }
 							],
 							"__worldX": 104,

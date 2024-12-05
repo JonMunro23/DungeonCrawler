@@ -1107,9 +1107,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingItemStacks:
-  - itemData: {fileID: 11400000, guid: a7b9b17bcb65e79499ddd4bde54d02d7, type: 2}
-    itemAmount: 3
-    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
+    itemAmount: 1
+    loadedAmmo: 20
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
@@ -1186,6 +1186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   availableSkillPoints: 0
+  currentPlayerSKills: []
 --- !u!114 &5301202906750780191
 MonoBehaviour:
   m_ObjectHideFlags: 0
