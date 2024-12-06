@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class WeaponSlot : EquipmentSlot
+public class WeaponSlot : InventorySlot
 {
     IWeapon weapon;
 

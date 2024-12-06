@@ -1,8 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
+
+[System.Serializable]
+public struct PlayerEquipmentSaveData
+{
+    public List<EquippedItem> EquippedItems;
+}
 
 [System.Serializable]
 public class EquippedItem
@@ -19,8 +23,11 @@ public class EquippedItem
 
 public class PlayerEquipmentManager : MonoBehaviour
 {
+    [SerializeField] EquipmentSlot equipmentSlotPrefab;
+    [SerializeField] List<EquipmentSlot> spawnedEquipmentSlots = new List<EquipmentSlot>();
+
     [Header("Equipped Items")]
-    [SerializeField] List<EquippedItem> allCurrentlyEquippedItems = new List<EquippedItem>();
+    [SerializeField] List<EquippedItem> currentlyEquippedItems = new List<EquippedItem>();
 
     [Header("Carry Weight")]
     [SerializeField] float currentCarryWeight, maxCarryWeight;
@@ -28,23 +35,39 @@ public class PlayerEquipmentManager : MonoBehaviour
     public static Action<EquippedItem> onEquippedItemAdded;
     public static Action<EquippedItem> onEquippedItemRemoved;
 
+    public static Action<List<EquipmentSlot>> onEquipmentSlotsSpawned;
+
     private void OnEnable()
     {
-        EquipmentSlot.onNewEquipmentItem += OnNewEquipmentItem;
-        EquipmentSlot.onEquipmentItemRemoved += OnEquipmentItemRemoved;
+        EquipmentSlot.onNewEquipmentItem += EquipNewtem;
+        EquipmentSlot.onEquipmentItemRemoved += RemoveEquippedItem;
 
         WorldInteraction.OnWorldInteraction += OnWorldInteraction;
     }
 
     private void OnDisable()
     {
-        EquipmentSlot.onNewEquipmentItem -= OnNewEquipmentItem;
-        EquipmentSlot.onEquipmentItemRemoved -= OnEquipmentItemRemoved;
+        EquipmentSlot.onNewEquipmentItem -= EquipNewtem;
+        EquipmentSlot.onEquipmentItemRemoved -= RemoveEquippedItem;
 
         WorldInteraction.OnWorldInteraction -= OnWorldInteraction;
     }
 
-    
+    public void Init(PlayerController controller)
+    {
+        SpawnEquipmentSlots();
+    }
+
+    void SpawnEquipmentSlots()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            var clone = Instantiate(equipmentSlotPrefab);
+            spawnedEquipmentSlots.Add(clone);
+        }
+
+        onEquipmentSlotsSpawned.Invoke(spawnedEquipmentSlots);
+    }
 
     void OnWorldInteraction()
     {
@@ -52,32 +75,43 @@ public class PlayerEquipmentManager : MonoBehaviour
     }
 
 
-    void OnNewEquipmentItem(EquipmentSlotType slotType, EquipmentItemData newEquipmentItemData)
+    void EquipNewtem(EquipmentSlotType slotType, EquipmentItemData newEquipmentItemData)
     {
         EquippedItem newEquippedItem = new EquippedItem(slotType, newEquipmentItemData);
-        allCurrentlyEquippedItems.Add(newEquippedItem);
+        currentlyEquippedItems.Add(newEquippedItem);
         CalculateNewCurrentWeight(newEquipmentItemData.itemWeight);
         onEquippedItemAdded?.Invoke(newEquippedItem);
     }
 
-    void OnEquipmentItemRemoved(EquipmentSlotType slotType)
+    void RemoveEquippedItem(EquipmentSlotType slotType)
     {
         EquippedItem itemInSlot = GetEquippedItemInSlot(slotType);
         if(itemInSlot != null)
         {
             CalculateNewCurrentWeight(-itemInSlot.equipmentItemData.itemWeight);
 
-            if (allCurrentlyEquippedItems.Contains(itemInSlot))
-                allCurrentlyEquippedItems.Remove(itemInSlot);
+            if (currentlyEquippedItems.Contains(itemInSlot))
+                currentlyEquippedItems.Remove(itemInSlot);
 
             onEquippedItemRemoved?.Invoke(itemInSlot);
+        }
+    }
+
+    void RemoveAllEquippedItems()
+    {
+        if (currentlyEquippedItems.Count == 0)
+            return;
+
+        for (int i = currentlyEquippedItems.Count - 1; i >= 0; i--)
+        {
+            RemoveEquippedItem(currentlyEquippedItems[i].slotType);
         }
     }
 
     EquippedItem GetEquippedItemInSlot(EquipmentSlotType slot)
     {
         EquippedItem itemToReturn = null;
-        foreach (EquippedItem item in allCurrentlyEquippedItems)
+        foreach (EquippedItem item in currentlyEquippedItems)
         {
             if(item.slotType == slot)
             {
@@ -92,5 +126,42 @@ public class PlayerEquipmentManager : MonoBehaviour
     {
         currentCarryWeight += newAddedWeight;
         //check if overencucumbered
+    }
+
+    EquipmentSlot GetSlotOfType(EquipmentSlotType slotType)
+    {
+        Debug.Log("Getting slot of type: " + slotType);
+
+        foreach (EquipmentSlot slot in spawnedEquipmentSlots)
+        {
+            if(slot.slotType == slotType)
+                return slot;
+        }
+
+        return null;
+    }
+
+    void LoadEquippedItems(List<EquippedItem> equippedItems)
+    {
+        foreach (EquippedItem item in equippedItems)
+        {
+            EquipmentSlot slot = GetSlotOfType(item.slotType);
+            if (!slot.IsSlotEmpty())
+                slot.RemoveItem();
+
+
+            slot.AddItem(new ItemStack(item.equipmentItemData, 1));
+        }
+    }
+
+    public void Save(ref PlayerEquipmentSaveData data)
+    {
+        data.EquippedItems = currentlyEquippedItems;
+    }
+
+    public void Load(PlayerEquipmentSaveData data)
+    {
+        RemoveAllEquippedItems();
+        LoadEquippedItems(data.EquippedItems);
     }
 }

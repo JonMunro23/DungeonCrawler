@@ -56,7 +56,7 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
         onMaxHealthUpdated?.Invoke(characterData, maxHealth);
     }
 
-    public void InitHealthController(PlayerController newPlayerController)
+    public void Init(PlayerController newPlayerController)
     {
         playerController = newPlayerController;
         characterData = playerController.playerCharacterData;

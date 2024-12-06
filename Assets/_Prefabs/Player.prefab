@@ -1133,7 +1133,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6089d0bd5a2210441971f190022271b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allCurrentlyEquippedItems: []
+  equipmentSlotPrefab: {fileID: 7387177318088493808, guid: ab8acc85f13a15e4281d9b18a75ce917,
+    type: 3}
+  spawnedEquipmentSlots: []
+  currentlyEquippedItems: []
   currentCarryWeight: 0
   maxCarryWeight: 0
 --- !u!114 &4808936625142989322

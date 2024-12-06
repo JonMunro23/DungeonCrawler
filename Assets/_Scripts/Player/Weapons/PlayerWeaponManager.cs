@@ -1,6 +1,32 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using UnityEngine;
+
+
+[System.Serializable]
+public struct PlayerWeaponSaveData
+{
+    public int activeSlotIndex;
+    public List<WeaponSlotData> slotData;
+}
+
+[System.Serializable]
+public class WeaponSlotData
+{
+    public int slotIndex;
+
+    public WeaponItemData heldWeaponData;
+    public int heldWeaponLoadedAmmo;
+
+    public WeaponSlotData(int slotIndex, WeaponItemData heldWeaponData, int heldWeaponLoadedAmmo)
+    {
+        this.slotIndex = slotIndex;
+        this.heldWeaponData = heldWeaponData;
+        this.heldWeaponLoadedAmmo = heldWeaponLoadedAmmo;
+    }
+}
 
 public class PlayerWeaponManager : MonoBehaviour
 {
@@ -193,6 +219,8 @@ public class PlayerWeaponManager : MonoBehaviour
       
     }
 
+    
+
     async void InitialiseNewWeapon(int slotIndex, WeaponItemData weaponItemData, int startingAmmo)
     {
         if (weaponItemData.itemPrefab)
@@ -304,5 +332,37 @@ public class PlayerWeaponManager : MonoBehaviour
         await currentWeapon.TryReload();
 
         spawnedWeaponSlots[activeSlotIndex].SetInteractable(true);
+    }
+
+    List<WeaponSlotData> GetWeaponSlotData()
+    {
+        List<WeaponSlotData> slotData = new List<WeaponSlotData>();
+        foreach (WeaponSlot slot in spawnedWeaponSlots)
+        {
+            IWeapon slotWeapon = slot.GetWeapon();
+            if(slotWeapon == defaultWeapon)
+                continue;
+
+            slotData.Add(new WeaponSlotData(slot.slotIndex, slotWeapon.GetWeaponData(), slotWeapon.GetLoadedAmmo()));
+        }
+        return slotData;
+    }
+
+    public void Save(ref PlayerWeaponSaveData data)
+    {
+        data.activeSlotIndex = activeSlotIndex;
+        data.slotData = GetWeaponSlotData();
+    }
+
+    public void Load(PlayerWeaponSaveData data)
+    {
+        activeSlotIndex = data.activeSlotIndex;
+        foreach (WeaponSlotData slotData in data.slotData)
+        {
+            spawnedWeaponSlots[slotData.slotIndex].TakeItem();
+            spawnedWeaponSlots[slotData.slotIndex].AddItem(new ItemStack(slotData.heldWeaponData, 1, slotData.heldWeaponLoadedAmmo));
+        }
+        onWeaponSlotSetActive?.Invoke(activeSlotIndex);
+        //SetWeaponSlotActive(activeSlotIndex);
     }
 }

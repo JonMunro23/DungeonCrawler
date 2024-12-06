@@ -49,7 +49,7 @@ public class PlayerStatsManager : MonoBehaviour
         PlayerSkillsController.onSkillUpdated -= OnSkillUpdated;
     }
 
-    public void InitPlayerStats(CharacterData newPlayerCharData)
+    public void Init(CharacterData newPlayerCharData)
     {
         playerCharData = newPlayerCharData;
         playerStats = playerCharData.baseCharStats;

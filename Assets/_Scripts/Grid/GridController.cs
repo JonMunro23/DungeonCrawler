@@ -80,7 +80,7 @@ public class GridController : MonoBehaviour
     [Header("Player")]
     [SerializeField] CharacterData playerCharData;
     [SerializeField] PlayerSpawnPoint playerSpawnPointPrefab, spawnedPlayerSpawnPoint;
-    [SerializeField] PlayerController playerController;
+    public PlayerController playerController;
     Vector2 playerSpawnCoords = Vector2.zero;
 
     [Header("NPCs")]
@@ -171,6 +171,30 @@ public class GridController : MonoBehaviour
     {
         RestartLevel();
     }
+
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.F5))
+        {
+            QuickSave();
+        }
+        else if(Input.GetKeyDown(KeyCode.F6))
+        {
+            QuickLoad();
+        }
+    }
+
+    public void QuickSave()
+    {
+        SaveSystem.Save();
+    }
+
+    public void QuickLoad()
+    {
+        SaveSystem.Load();
+    }
+
 
     private void RestartLevel()
     {

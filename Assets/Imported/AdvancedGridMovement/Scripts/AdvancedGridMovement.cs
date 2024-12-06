@@ -91,7 +91,7 @@ public class AdvancedGridMovement : MonoBehaviour
         stepTime = 1.0f / gridSize;
     }
 
-    public void InitMovement(PlayerController playerController)
+    public void Init(PlayerController playerController)
     {
         controller = playerController;
     }
@@ -113,6 +113,13 @@ public class AdvancedGridMovement : MonoBehaviour
     {
         transform.position = destination;
         moveTowardsPosition = transform.position;
+    }
+
+    public void SetRotation(float rotation)
+    {
+        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, rotation, transform.rotation.z));
+        rotateFromDirection = transform.rotation;
+        rotateTowardsDirection = transform.rotation;
     }
 
     public void SwitchToWalking()

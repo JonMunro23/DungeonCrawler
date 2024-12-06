@@ -206,7 +206,9 @@ MonoBehaviour:
   slotImage: {fileID: 2291172033034763595}
   tooltipTrigger: {fileID: 0}
   isSlotActive: 0
-  slotType: 0
+  slotType: 7
+  placeholderIcon: {fileID: 0}
+  placeholderIconAlpha: 0
 --- !u!114 &658346518994569055
 MonoBehaviour:
   m_ObjectHideFlags: 0
