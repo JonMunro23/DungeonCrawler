@@ -15,11 +15,16 @@ public class PlayerInventoryUIController : MonoBehaviour
 
     [SerializeField] TMP_Text pickupItemText;
 
+    [Header("Syringe")]
+    [SerializeField] TMP_Text syringeAmountText;
+
     private void OnEnable()
     {
         PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
         PlayerInventoryManager.onInventoryClosed += OnInventoryClosed;
         PlayerInventoryManager.onInventorySlotsSpawned += OnInventorySlotsSpawned;
+        PlayerInventoryManager.onSyringeCountUpdated += OnSyringeCountUpdated;
+
         ItemPickupManager.onGroundItemsUpdated += OnNewGroundItemDetected;
         ItemPickupManager.onLastGroundItemRemoved += OnLastGroundItemRemoved;
         ItemPickupManager.onNearbyContainerUpdated += OnContainerDetected;
@@ -30,6 +35,8 @@ public class PlayerInventoryUIController : MonoBehaviour
         PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
         PlayerInventoryManager.onInventoryClosed -= OnInventoryClosed;
         PlayerInventoryManager.onInventorySlotsSpawned -= OnInventorySlotsSpawned;
+        PlayerInventoryManager.onSyringeCountUpdated -= OnSyringeCountUpdated;
+
         ItemPickupManager.onGroundItemsUpdated -= OnNewGroundItemDetected;
         ItemPickupManager.onLastGroundItemRemoved -= OnLastGroundItemRemoved;
         ItemPickupManager.onNearbyContainerUpdated -= OnContainerDetected;
@@ -81,5 +88,10 @@ public class PlayerInventoryUIController : MonoBehaviour
     {
         InventoryParentObject.SetActive(false);
         InventoryObject.SetActive(false);
+    }
+
+    void OnSyringeCountUpdated(int newSyringeCount)
+    {
+        syringeAmountText.text = newSyringeCount.ToString();
     }
 }

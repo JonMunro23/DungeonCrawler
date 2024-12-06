@@ -27,6 +27,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public static Action onInventoryOpened;
     public static Action onInventoryClosed;
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
+    public static Action<int> onSyringeCountUpdated;
 
     public static Action<AmmoType> onAmmoAddedToInventory;
 
@@ -73,9 +74,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void SetCursorActive(bool isActive)
     {
-        if (isInContainer)
-            return;
-
         if (isActive)
         {
             Cursor.visible = true;
@@ -143,7 +141,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             return false;
     }
 
-    public void AddHealthSyringe(int amountToAdd) => heldHealthSyringes += amountToAdd;
+    public void AddHealthSyringe(int amountToAdd)
+    {
+        heldHealthSyringes += amountToAdd;
+        onSyringeCountUpdated?.Invoke(heldHealthSyringes);
+    }
     public void AddAmmo(AmmoType typeToAdd, int amountToAdd)
     {
         switch (typeToAdd)
@@ -180,7 +182,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         onAmmoAddedToInventory?.Invoke(typeToAdd);
     }
 
-    public void RemoveHealthSyringe(int amountToRemove) => heldHealthSyringes -= amountToRemove;
+    public void RemoveHealthSyringe(int amountToRemove)
+    {
+        heldHealthSyringes -= amountToRemove;
+        onSyringeCountUpdated?.Invoke(heldHealthSyringes);
+    }
 
     public InventorySlot FindSlotWithConsumableOfType(ConsumableType typeToFind)
     {

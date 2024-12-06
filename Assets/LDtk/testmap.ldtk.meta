@@ -39,6 +39,8 @@ ScriptedImporter:
     _asset: {instanceID: 0}
   - _key: Container
     _asset: {instanceID: 0}
+  - _key: LightSource
+    _asset: {instanceID: 0}
   _enumGenerate: 0
   _enumPath: 
   _enumNamespace: 

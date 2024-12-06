@@ -7,7 +7,7 @@ public class PlayerStatsUIController : MonoBehaviour
 {
     CharacterData playerCharData;
 
-    [SerializeField] Image playerPortrait, inventoryPlayerPortrait;
+    [SerializeField] Image inventoryPlayerPortrait;
     [SerializeField] Slider playerHealthbar, inventoryPlayerHealthbar;
     [SerializeField] Slider playerExperienceBar, inventoryPlayerExperienceBar;
     [SerializeField] TMP_Text healthbarText, inventoryHealthbarText;
@@ -40,7 +40,6 @@ public class PlayerStatsUIController : MonoBehaviour
     {
         playerCharData = charData;
 
-        SetPlayerPortraitSprite(playerCharData.charPortrait);
         UpdateMaxHealthValue(playerCharData.GetStat(ModifiableStats.MaxHealth).GetCurrentStatValue());
         UpdateCurrentHealthValue(maxHealth);
     }
@@ -83,11 +82,6 @@ public class PlayerStatsUIController : MonoBehaviour
         playerExperienceBar.maxValue = requiredExperience;
         playerExperienceBar.value = currentExperience;
         UpdateExperienceText();
-    }
-
-    public void SetPlayerPortraitSprite(Sprite newSprite)
-    {
-        playerPortrait.sprite = newSprite;
     }
 
     private void UpdateExperienceText()

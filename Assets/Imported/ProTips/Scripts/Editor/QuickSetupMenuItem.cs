@@ -5,9 +5,11 @@ namespace ModelShark
 {
     public class QuickSetupMenuItem : Editor
     {
+        #pragma warning disable CS0618 // Type or member is obsolete
         [MenuItem("Window/ProTips/Quick Setup")]
         private static void NewMenuOption()
         {
+
             TooltipManager tooltipManager = FindObjectOfType<TooltipManager>();
             if (tooltipManager != null)
             {

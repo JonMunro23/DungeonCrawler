@@ -123,7 +123,10 @@ public class NPCController : MonoBehaviour, IDamageable
                 int difference = spawnedNPCs.Count - roundedEnemyCount;
                 int randIndex = Random.Range(0, difference);
                 animController.RemoveNPCsAnimator(spawnedNPCs[0]);
-                Destroy(spawnedNPCs[randIndex]);
+                foreach (GameObject npc in spawnedNPCs)
+                {
+                    Destroy(npc);
+                }
                 spawnedNPCs.RemoveAt(randIndex);
             }
 

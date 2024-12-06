@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 49,
+	"nextUid": 51,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -1176,6 +1176,41 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "LightSource",
+			"uid": 50,
+			"tags": [],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#FEE761",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 3,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 3, "x": 400, "y": 0, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -1221,7 +1256,19 @@
 			{ "id": "Medium", "tileRect": null, "color": 14120515 },
 			{ "id": "Small", "tileRect": null, "color": 15389866 }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
-		{ "identifier": "Level_Tileset", "uid": 45, "values": [ { "id": "Laboratory", "tileRect": null, "color": 12470831 }, { "id": "Bunker", "tileRect": null, "color": 14120515 } ], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] }
+		{ "identifier": "Level_Tileset", "uid": 45, "values": [ { "id": "Laboratory", "tileRect": null, "color": 12470831 }, { "id": "Bunker", "tileRect": null, "color": 14120515 } ], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
+		{ "identifier": "Item_Type", "uid": 49, "values": [
+			{ "id": "Pistol_Ammo", "tileRect": null, "color": 12470831 },
+			{ "id": "Rifle_Ammo", "tileRect": null, "color": 14120515 },
+			{ "id": "Shotgun_Ammo", "tileRect": null, "color": 15389866 },
+			{ "id": "Spas12", "tileRect": null, "color": 14984818 },
+			{ "id": "ACR", "tileRect": null, "color": 7552569 },
+			{ "id": "Vector", "tileRect": null, "color": 4073265 },
+			{ "id": "Python", "tileRect": null, "color": 16690740 },
+			{ "id": "Health_Syringe", "tileRect": null, "color": 16705377 },
+			{ "id": "Red_Keycard", "tileRect": null, "color": 6539085 },
+			{ "id": "Blue_Keycard", "tileRect": null, "color": 4098376 }
+		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] }
 	], "externalEnums": [], "levelFields": [
 		{
 			"identifier": "Level_Name",
@@ -1361,7 +1408,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "Player_Start",
-							"__grid": [8,13],
+							"__grid": [13,7],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 256, "y": 144, "w": 16, "h": 16 },
@@ -1370,13 +1417,13 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 2,
-							"px": [136,216],
+							"px": [216,120],
 							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 5, "realEditorValues": [{
 								"id": "V_String",
 								"params": ["North"]
 							}] }],
-							"__worldX": 136,
-							"__worldY": 216
+							"__worldX": 216,
+							"__worldY": 120
 						},
 						{
 							"__identifier": "NPC_Spawn",
@@ -1402,33 +1449,6 @@
 							],
 							"__worldX": 40,
 							"__worldY": 120
-						},
-						{
-							"__identifier": "WorldItem",
-							"__grid": [11,1],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#EAD4AA",
-							"iid": "e47cb4b0-9b00-11ef-b25f-23a6462ae8dc",
-							"width": 16,
-							"height": 16,
-							"defUid": 10,
-							"px": [184,24],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["East"]
-								}] },
-								{ "__identifier": "Item_Name", "__type": "String", "__value": "spas_12", "__tile": null, "defUid": 14, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["spas_12"]
-								}] },
-								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 1, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
-								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 4, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [4] }] }
-							],
-							"__worldX": 184,
-							"__worldY": 24
 						},
 						{
 							"__identifier": "Interactable",
@@ -1615,7 +1635,7 @@
 						},
 						{
 							"__identifier": "Container",
-							"__grid": [13,5],
+							"__grid": [9,5],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 192, "y": 256, "w": 16, "h": 16 },
@@ -1624,29 +1644,26 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 35,
-							"px": [216,88],
+							"px": [152,88],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 39, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 39, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["North"]
+									"params": ["West"]
 								}] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
-								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "red_keycard", "shells", "rifle_bullets", "pistol_bullets" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
-									"id": "V_String",
-									"params": ["red_keycard"]
-								}, {
-									"id": "V_String",
-									"params": ["shells"]
-								}, {
-									"id": "V_String",
-									"params": ["rifle_bullets"]
-								}, {
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "pistol_bullets", "health_syringe", "health_syringe" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["pistol_bullets"]
+								}, {
+									"id": "V_String",
+									"params": ["health_syringe"]
+								}, {
+									"id": "V_String",
+									"params": ["health_syringe"]
 								} ] },
-								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [1,60,80,120], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [1] }, { "id": "V_Int", "params": [60] }, { "id": "V_Int", "params": [80] }, { "id": "V_Int", "params": [120] } ] }
+								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [60,3,3], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [60] }, { "id": "V_Int", "params": [3] }, { "id": "V_Int", "params": [3] } ] }
 							],
-							"__worldX": 216,
+							"__worldX": 152,
 							"__worldY": 88
 						},
 						{
@@ -1666,12 +1683,12 @@
 									"id": "V_String",
 									"params": ["West"]
 								}] },
-								{ "__identifier": "Item_Name", "__type": "String", "__value": "spas_12", "__tile": null, "defUid": 14, "realEditorValues": [{
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "acr", "__tile": null, "defUid": 14, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["spas_12"]
+									"params": ["acr"]
 								}] },
 								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 1, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
-								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 25, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [25] }] }
 							],
 							"__worldX": 24,
 							"__worldY": 120
@@ -1750,7 +1767,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [11,2],
+							"__grid": [13,5],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -1759,7 +1776,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [184,40],
+							"px": [216,88],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
@@ -1770,41 +1787,14 @@
 									"params": ["python"]
 								}] },
 								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 1, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
-								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 2, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
+								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 5, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
 							],
-							"__worldX": 184,
-							"__worldY": 40
+							"__worldX": 216,
+							"__worldY": 88
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [11,3],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#EAD4AA",
-							"iid": "9a5897d0-9b00-11ef-aeeb-b1f4e5396abd",
-							"width": 16,
-							"height": 16,
-							"defUid": 10,
-							"px": [184,56],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["East"]
-								}] },
-								{ "__identifier": "Item_Name", "__type": "String", "__value": "acr", "__tile": null, "defUid": 14, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["acr"]
-								}] },
-								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 1, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
-								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 15, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [15] }] }
-							],
-							"__worldX": 184,
-							"__worldY": 56
-						},
-						{
-							"__identifier": "WorldItem",
-							"__grid": [11,4],
+							"__grid": [11,1],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -1813,11 +1803,11 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [184,72],
+							"px": [184,24],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["East"]
+									"params": ["North"]
 								}] },
 								{ "__identifier": "Item_Name", "__type": "String", "__value": "vector", "__tile": null, "defUid": 14, "realEditorValues": [{
 									"id": "V_String",
@@ -1827,36 +1817,11 @@
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 24, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [24] }] }
 							],
 							"__worldX": 184,
-							"__worldY": 72
+							"__worldY": 24
 						},
 						{
 							"__identifier": "NPC_Spawn",
-							"__grid": [8,10],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
-							"__smartColor": "#D77643",
-							"iid": "b6ebd6a0-9b00-11ef-bc88-a5cc5b23069d",
-							"width": 16,
-							"height": 16,
-							"defUid": 7,
-							"px": [136,168],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["South"]
-								}] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["zombie"]
-								}] }
-							],
-							"__worldX": 136,
-							"__worldY": 168
-						},
-						{
-							"__identifier": "NPC_Spawn",
-							"__grid": [10,11],
+							"__grid": [10,13],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
@@ -1865,44 +1830,84 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [168,184],
+							"px": [168,216],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["South"]
 								}] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "ranger", "__tile": null, "defUid": 8, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["zombie"]
+									"params": ["ranger"]
 								}] }
 							],
 							"__worldX": 168,
-							"__worldY": 184
+							"__worldY": 216
 						},
 						{
 							"__identifier": "NPC_Spawn",
-							"__grid": [6,11],
+							"__grid": [6,13],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
 							"__smartColor": "#D77643",
-							"iid": "349316d0-9b00-11ef-b4ee-6508de0bef58",
+							"iid": "9ae3e9a0-9b00-11ef-aed1-d11f22917820",
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [104,184],
+							"px": [104,216],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["South"]
 								}] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "ranger", "__tile": null, "defUid": 8, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["zombie"]
+									"params": ["ranger"]
 								}] }
 							],
 							"__worldX": 104,
-							"__worldY": 184
+							"__worldY": 216
+						},
+						{
+							"__identifier": "WorldItem",
+							"__grid": [1,6],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "c00d0130-9b00-11ef-aed1-d7f53b175ca5",
+							"width": 16,
+							"height": 16,
+							"defUid": 10,
+							"px": [24,104],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [] },
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "rifle_bullets", "__tile": null, "defUid": 14, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["rifle_bullets"]
+								}] },
+								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 45, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [45] }] },
+								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
+							],
+							"__worldX": 24,
+							"__worldY": 104
+						},
+						{
+							"__identifier": "LightSource",
+							"__grid": [12,5],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 400, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#FEE761",
+							"iid": "c7929800-9b00-11ef-aed1-659829047dda",
+							"width": 16,
+							"height": 16,
+							"defUid": 50,
+							"px": [200,88],
+							"fieldInstances": [],
+							"__worldX": 200,
+							"__worldY": 88
 						}
 					]
 				},
@@ -2087,7 +2092,7 @@
 						},
 						{
 							"__identifier": "NPC_Spawn",
-							"__grid": [11,6],
+							"__grid": [11,5],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
@@ -2096,7 +2101,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [184,104],
+							"px": [184,88],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
@@ -2108,7 +2113,7 @@
 								}] }
 							],
 							"__worldX": 184,
-							"__worldY": -152
+							"__worldY": -168
 						},
 						{
 							"__identifier": "Container",
@@ -2125,11 +2130,14 @@
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 39, "realEditorValues": [] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
-								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": ["blue_keycard"], "__tile": null, "defUid": 37, "realEditorValues": [{
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "blue_keycard", "kevlar_vest" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["blue_keycard"]
-								}] },
-								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [1], "__tile": null, "defUid": 38, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }
+								}, {
+									"id": "V_String",
+									"params": ["kevlar_vest"]
+								} ] },
+								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [1,1], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [1] }, { "id": "V_Int", "params": [1] } ] }
 							],
 							"__worldX": 136,
 							"__worldY": -40
@@ -2270,14 +2278,44 @@
 									"params": ["West"]
 								}] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
-								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": ["health_syringe"], "__tile": null, "defUid": 37, "realEditorValues": [{
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "health_syringe", "shells" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["health_syringe"]
-								}] },
-								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [3], "__tile": null, "defUid": 38, "realEditorValues": [{ "id": "V_Int", "params": [3] }] }
+								}, {
+									"id": "V_String",
+									"params": ["shells"]
+								} ] },
+								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [3,24], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [3] }, { "id": "V_Int", "params": [24] } ] }
 							],
 							"__worldX": 88,
 							"__worldY": -200
+						},
+						{
+							"__identifier": "WorldItem",
+							"__grid": [6,2],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "e6af4b40-9b00-11ef-aed1-c3607e72c917",
+							"width": 16,
+							"height": 16,
+							"defUid": 10,
+							"px": [104,40],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["East"]
+								}] },
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "spas_12", "__tile": null, "defUid": 14, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["spas_12"]
+								}] },
+								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 1, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
+								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [0] }] }
+							],
+							"__worldX": 104,
+							"__worldY": -216
 						}
 					]
 				},
@@ -2453,13 +2491,35 @@
 							"px": [216,152],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "ranger", "__tile": null, "defUid": 8, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["zombie"]
+									"params": ["ranger"]
 								}] }
 							],
 							"__worldX": 472,
 							"__worldY": -104
+						},
+						{
+							"__identifier": "NPC_Spawn",
+							"__grid": [7,3],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "7ee57840-9b00-11ef-aed1-43b6560f7a9f",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [120,56],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "ranger", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["ranger"]
+								}] }
+							],
+							"__worldX": 376,
+							"__worldY": -200
 						}
 					]
 				},
@@ -2681,6 +2741,36 @@
 							],
 							"__worldX": 392,
 							"__worldY": 120
+						},
+						{
+							"__identifier": "Container",
+							"__grid": [13,9],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 192, "y": 256, "w": 16, "h": 16 },
+							"__smartColor": "#FEAE34",
+							"iid": "1c2730d0-9b00-11ef-aed1-8b7654d81161",
+							"width": 16,
+							"height": 16,
+							"defUid": 35,
+							"px": [216,152],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 39, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["North"]
+								}] },
+								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "pistol_bullets", "health_syringe" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
+									"id": "V_String",
+									"params": ["pistol_bullets"]
+								}, {
+									"id": "V_String",
+									"params": ["health_syringe"]
+								} ] },
+								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [54,3], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [54] }, { "id": "V_Int", "params": [3] } ] }
+							],
+							"__worldX": 472,
+							"__worldY": 152
 						}
 					]
 				},
@@ -2704,11 +2794,11 @@
 					"optionalRules": [],
 					"intGridCsv": [
 						1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,
-						1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,2,2,2,
-						1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,
-						2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,2,2,1,1,1,1,2,2,2,2,2,2,2,2,1,
-						1,2,2,1,1,1,1,2,2,2,2,2,2,2,2,1,1,2,2,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,
-						1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,2,2,2,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,
+						2,1,1,1,1,1,1,1,1,1,2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,2,2,1,1,1,2,2,2,1,
+						1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,1,2,2,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,1,
+						1,2,2,2,2,1,2,2,2,1,2,2,2,2,2,1,1,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1
 					],

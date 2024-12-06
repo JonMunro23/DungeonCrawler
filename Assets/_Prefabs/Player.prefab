@@ -1106,10 +1106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b540e6fc33d904b41aba33e18efb0788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingItemStacks:
-  - itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
-    itemAmount: 1
-    loadedAmmo: 20
+  startingItemStacks: []
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
@@ -1215,6 +1212,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syringeArms: {fileID: 4879892857341237695}
   currentHealth: 0
+  evasion: 0
+  armour: 0
   delayBeforeRegen: 1.1
   syringeCooldown: 8
   isRegenActive: 0

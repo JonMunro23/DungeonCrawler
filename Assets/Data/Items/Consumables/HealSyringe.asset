@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Health Syringe
   itemIdentifier: health_syringe
   itemDescription: A syringe full of healing juice.
-  itemSprite: {fileID: 21300000, guid: 0cd4e2aae88ad4141af0a272f572ece3, type: 3}
+  itemSprite: {fileID: 21300000, guid: c65e79ba9e0f54d2986698e34f854bac, type: 3}
   itemWorldModel: {fileID: 5030101105682670932, guid: 8bbd8752b394a0444b798d59bf6c597d,
     type: 3}
   itemWeight: 0.25

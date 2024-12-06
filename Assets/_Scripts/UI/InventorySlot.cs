@@ -68,13 +68,22 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         int availableSpace = currentSlotItemStack.itemData.maxItemStackSize - currentSlotItemStack.itemAmount;
         if (availableSpace < amountToAdd)
         {
-            currentSlotItemStack.itemAmount += availableSpace;
+            AddToCurrentSlot(availableSpace);
             remainder = amountToAdd - availableSpace;
         }
         else if(availableSpace >= amountToAdd)
         {
-            currentSlotItemStack.itemAmount += amountToAdd;
+            AddToCurrentSlot(amountToAdd);
         }
+
+        UpdateSlotUI();
+
+        return remainder;
+    }
+
+    void AddToCurrentSlot(int amountToAdd)
+    {
+        currentSlotItemStack.itemAmount += amountToAdd;
 
         ConsumableItemData consumableData = GetDataAsConsumable(currentSlotItemStack.itemData);
         if (consumableData)
@@ -88,10 +97,6 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
                 playerInventoryManager.AddAmmo(consumableData.ammoType, amountToAdd);
             }
         }
-
-        UpdateSlotUI();
-
-        return remainder;
     }
 
     public int RemoveFromExistingStack(int amountToRemove)

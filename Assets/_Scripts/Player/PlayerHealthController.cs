@@ -134,7 +134,7 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
             return;
 
         canUseSyringe = false;
-
+        playerController.playerInventoryManager.RemoveHealthSyringe(1);
         await InjectSyringe(slot.currentSlotItemStack.itemData as ConsumableItemData);
     }
 
