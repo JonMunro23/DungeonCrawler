@@ -66,8 +66,6 @@ public class Weapon : MonoBehaviour, IWeapon
         weaponAnimator.Play("Interact");
     }
 
-
-
     public virtual void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter)
     {
         occupiedSlotIndex = occupyingSlotIndex;
@@ -234,7 +232,21 @@ public class Weapon : MonoBehaviour, IWeapon
     public int CalculateDamage()
     {
         float damage = Random.Range(weaponItemData.itemDamageMinMax.x, weaponItemData.itemDamageMinMax.y);
-        return Mathf.CeilToInt(damage);
+        return Mathf.CeilToInt(damage) + PlayerWeaponManager.bonusDamage;
+    }
+
+    public bool RollForHit()
+    {
+        bool hasHit = false;
+        if (weaponItemData.accuracy > 0)
+        {
+            float rand = Random.Range(0, 101);
+            if (rand <= weaponItemData.accuracy + PlayerWeaponManager.bonusAccuracy)
+            {
+                hasHit = true;
+            }
+        }
+        return hasHit;
     }
 
     public bool RollForCrit()
@@ -243,7 +255,7 @@ public class Weapon : MonoBehaviour, IWeapon
         if (weaponItemData.critChance > 0)
         {
             float rand = Random.Range(0, 101);
-            if (rand <= weaponItemData.critChance)
+            if (rand <= weaponItemData.critChance + PlayerWeaponManager.bonusCritChance)
             {
                 wasCrit = true;
             }

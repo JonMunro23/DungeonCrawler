@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     [SerializeField] PlayerInventoryUIController playerInventoryUIController;
     [SerializeField] PlayerEquipmentUIManager PlayerEquipmentUIManager;
     [SerializeField] PlayerWeaponUIManager playerWeaponUIManager;
+    [SerializeField] PlayerSkillsUIManager playerSkillsUIManager;
 
 
     [Header("Level Transition")]
@@ -29,8 +30,6 @@ public class UIController : MonoBehaviour
     private void OnEnable()
     {
         PlayerController.onPlayerInitialised += OnPlayerInitialised;
-        //PlayerController.fadeInScreen += FadeInScreen;
-        //PlayerController.fadeOutScreen += FadeOutScreen;
 
         ItemPickupManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
@@ -50,8 +49,6 @@ public class UIController : MonoBehaviour
     private void OnDisable()
     {
         PlayerController.onPlayerInitialised -= OnPlayerInitialised;
-        //PlayerController.fadeInScreen -= FadeInScreen;
-        //PlayerController.fadeOutScreen -= FadeOutScreen;
 
         ItemPickupManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
@@ -78,8 +75,9 @@ public class UIController : MonoBehaviour
         initialisedPlayer = playerInitialised;
 
         playerStatsUIController.InitStatsUI(initialisedPlayer.playerCharacterData);
+        playerSkillsUIManager.Init();
 
-        FadeInScreen();
+        _ = FadeInScreen();
     }
 
     void OnNewItemAttachedToCursor(ItemStack item)

@@ -103,7 +103,7 @@ public class NPCController : MonoBehaviour, IDamageable
         
     }
 
-    public void TakeDamage(int damage, bool wasCrit = false)
+    public void TryDamage(int damage, bool wasCrit = false)
     {
         if(!isDead)
         {
@@ -122,8 +122,11 @@ public class NPCController : MonoBehaviour, IDamageable
             {
                 int difference = spawnedNPCs.Count - roundedEnemyCount;
                 int randIndex = Random.Range(0, difference);
-                animController.RemoveNPCsAnimator(spawnedNPCs[randIndex]);
-                Destroy(spawnedNPCs[randIndex]);
+                animController.RemoveNPCsAnimator(spawnedNPCs[0]);
+                foreach (GameObject npc in spawnedNPCs)
+                {
+                    Destroy(npc);
+                }
                 spawnedNPCs.RemoveAt(randIndex);
             }
 

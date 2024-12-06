@@ -96,12 +96,15 @@ public class RangedWeapon : Weapon
                 IDamageable damageable = hit.transform.GetComponent<IDamageable>();
                 if (damageable != null)
                 {
-                    int damage = CalculateDamage();
-                    bool isCrit = RollForCrit();
-                    if (isCrit)
-                        damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                    if(RollForHit())
+                    {
+                        int damage = CalculateDamage();
+                        bool isCrit = RollForCrit();
+                        if (isCrit)
+                            damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
 
-                    damageable.TakeDamage(damage, isCrit);
+                        damageable.TryDamage(damage, isCrit);
+                    }
                 }
 
                 SurfaceIdentifier surf = hit.collider.GetSurface();
@@ -130,7 +133,7 @@ public class RangedWeapon : Weapon
 
     IEnumerator ShootBurst()
     {
-        for (int i = 0; i < weaponItemData.burstLength; i++)
+        for (int i = 0; i < weaponItemData.burstLength + PlayerWeaponManager.bonusBurstCount; i++)
         {
             if (canShootBurstShot && loadedAmmo > 0)
             {

@@ -37,12 +37,16 @@ public class PlayerStatsManager : MonoBehaviour
     {
         PlayerEquipmentManager.onEquippedItemAdded += OnEquippedItemAdded;
         PlayerEquipmentManager.onEquippedItemRemoved += OnEquippedItemRemoved;
+
+        PlayerSkillsController.onSkillUpdated += OnSkillUpdated;
     }
 
     private void OnDisable()
     {
         PlayerEquipmentManager.onEquippedItemAdded -= OnEquippedItemAdded;
         PlayerEquipmentManager.onEquippedItemRemoved -= OnEquippedItemRemoved;
+
+        PlayerSkillsController.onSkillUpdated -= OnSkillUpdated;
     }
 
     public void InitPlayerStats(CharacterData newPlayerCharData)
@@ -78,22 +82,30 @@ public class PlayerStatsManager : MonoBehaviour
         }
     }
 
-    void ApplyStatModifier(StatModifier statModifier)
+    void OnSkillUpdated(PlayerSkill unlockedSkill)
+    {
+        foreach (StatModifier statModifier in unlockedSkill.skillData.statModifiers)
+        {
+            ApplyStatModifier(statModifier, unlockedSkill.currentSkillLevel);
+        }
+    }
+
+    void ApplyStatModifier(StatModifier statModifier, int levelMultiplier = 1)
     {
         Stat stat = GetPlayerStat(statModifier.statToModify);
         switch (statModifier.modifyOperation)
         {
             case ModifyOperation.Increase:
-                stat.UpdateStat(stat.GetCurrentStatValue() + statModifier.modifyAmount);
+                stat.UpdateStat(stat.GetCurrentStatValue() + statModifier.modifyAmount * levelMultiplier);
                 break;
             case ModifyOperation.Decrease:
-                stat.UpdateStat(stat.GetCurrentStatValue() - statModifier.modifyAmount);
+                stat.UpdateStat(stat.GetCurrentStatValue() - statModifier.modifyAmount * levelMultiplier);
                 break;
             case ModifyOperation.IncreaseByPercentage:
-                stat.UpdateStat(stat.GetCurrentStatValue() + stat.baseStatValue * (statModifier.modifyAmount / 100));
+                stat.UpdateStat(stat.GetCurrentStatValue() + stat.baseStatValue * ((statModifier.modifyAmount * levelMultiplier) / 100));
                 break;
             case ModifyOperation.DecreaseByPercentage:
-                stat.UpdateStat(stat.GetCurrentStatValue() - stat.baseStatValue * (statModifier.modifyAmount / 100));
+                stat.UpdateStat(stat.GetCurrentStatValue() - stat.baseStatValue * ((statModifier.modifyAmount * levelMultiplier) / 100));
                 break;
         }
     }
@@ -119,7 +131,7 @@ public class PlayerStatsManager : MonoBehaviour
         }
     }
 
-    public Stat GetPlayerStat(ModifiableStats statToGet)
+    Stat GetPlayerStat(ModifiableStats statToGet)
     {
         Stat statToReturn = null;
         foreach (Stat stat in playerStats)

@@ -41,6 +41,7 @@ namespace ModelShark
 
         public static TooltipManager Instance
         {
+            #pragma warning disable CS0618 // Type or member is obsolete
             get
             {
                 if (instance == null)

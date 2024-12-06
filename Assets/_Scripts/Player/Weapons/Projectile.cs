@@ -55,7 +55,7 @@ public class Projectile : MonoBehaviour
                 {
                     if (canDealDamage == true)
                     {
-                        other.GetComponent<NPCController>().TakeDamage(CalculateDamage(projectile));
+                        other.GetComponent<NPCController>().TryDamage(CalculateDamage(projectile));
                         canDealDamage = false;
                     }
                 }
@@ -63,7 +63,7 @@ public class Projectile : MonoBehaviour
                 {
                     if (canDealDamage == true)
                     {
-                        other.GetComponent<NPCController>().TakeDamage(damage);
+                        other.GetComponent<NPCController>().TryDamage(damage);
                         canDealDamage = false;
                     }
                 }
@@ -91,7 +91,7 @@ public class Projectile : MonoBehaviour
             {
                 if (canDealDamage == true)
                 {
-                    other.GetComponent<NPCController>().TakeDamage(CalculateDamage(projectile));
+                    other.GetComponent<NPCController>().TryDamage(CalculateDamage(projectile));
                     canDealDamage = false;
                 }
             }
@@ -99,7 +99,7 @@ public class Projectile : MonoBehaviour
             {
                 if (canDealDamage == true)
                 {
-                    other.GetComponent<NPCController>().TakeDamage(damage);
+                    other.GetComponent<NPCController>().TryDamage(damage);
                     canDealDamage = false;
                 }
 

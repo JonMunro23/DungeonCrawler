@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identifier: bug
   prefab: {fileID: 2704255636958882687, guid: 24c3b49c6355bb74fad0e40a1b391c7f, type: 3}
-  health: 100
-  experienceValue: 44
+  health: 10
+  experienceValue: 150
   minMaxGroupSize: {x: 1, y: 1}
   minMaxDamage: {x: 25, y: 50}
   attackCooldown: 2

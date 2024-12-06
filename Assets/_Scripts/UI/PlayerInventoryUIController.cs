@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class PlayerInventoryUIController : MonoBehaviour
 {
-    [SerializeField] GameObject InventoryUIObject;
+    [SerializeField] GameObject InventoryParentObject;
+    [SerializeField] GameObject InventoryObject;
     [SerializeField] InventorySlot inventorySlot;
     [SerializeField] InventorySlot[] spawnedInventorySlots;
     [SerializeField] GridLayoutGroup invSlotSpawnParent;
@@ -14,11 +15,16 @@ public class PlayerInventoryUIController : MonoBehaviour
 
     [SerializeField] TMP_Text pickupItemText;
 
+    [Header("Syringe")]
+    [SerializeField] TMP_Text syringeAmountText;
+
     private void OnEnable()
     {
         PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
         PlayerInventoryManager.onInventoryClosed += OnInventoryClosed;
         PlayerInventoryManager.onInventorySlotsSpawned += OnInventorySlotsSpawned;
+        PlayerInventoryManager.onSyringeCountUpdated += OnSyringeCountUpdated;
+
         ItemPickupManager.onGroundItemsUpdated += OnNewGroundItemDetected;
         ItemPickupManager.onLastGroundItemRemoved += OnLastGroundItemRemoved;
         ItemPickupManager.onNearbyContainerUpdated += OnContainerDetected;
@@ -29,6 +35,8 @@ public class PlayerInventoryUIController : MonoBehaviour
         PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
         PlayerInventoryManager.onInventoryClosed -= OnInventoryClosed;
         PlayerInventoryManager.onInventorySlotsSpawned -= OnInventorySlotsSpawned;
+        PlayerInventoryManager.onSyringeCountUpdated -= OnSyringeCountUpdated;
+
         ItemPickupManager.onGroundItemsUpdated -= OnNewGroundItemDetected;
         ItemPickupManager.onLastGroundItemRemoved -= OnLastGroundItemRemoved;
         ItemPickupManager.onNearbyContainerUpdated -= OnContainerDetected;
@@ -72,11 +80,18 @@ public class PlayerInventoryUIController : MonoBehaviour
 
     void OnInventoryOpened()
     {
-        InventoryUIObject.SetActive(true);
+        InventoryParentObject.SetActive(true);
+        InventoryObject.SetActive(true);
     }
 
     void OnInventoryClosed()
     {
-        InventoryUIObject.SetActive(false);
+        InventoryParentObject.SetActive(false);
+        InventoryObject.SetActive(false);
+    }
+
+    void OnSyringeCountUpdated(int newSyringeCount)
+    {
+        syringeAmountText.text = newSyringeCount.ToString();
     }
 }

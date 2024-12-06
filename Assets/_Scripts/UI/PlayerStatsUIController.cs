@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,30 +7,39 @@ public class PlayerStatsUIController : MonoBehaviour
 {
     CharacterData playerCharData;
 
-    [SerializeField] Image playerPortrait, inventoryPlayerPortrait;
+    [SerializeField] Image inventoryPlayerPortrait;
     [SerializeField] Slider playerHealthbar, inventoryPlayerHealthbar;
+    [SerializeField] Slider playerExperienceBar, inventoryPlayerExperienceBar;
     [SerializeField] TMP_Text healthbarText, inventoryHealthbarText;
+    [SerializeField] TMP_Text experienceBarText, inventoryExperienceBarText;
 
     int currentHealth, maxHealth;
+    int currentExperience, requiredExperience;
 
     private void OnEnable()
     {
         PlayerHealthController.onCurrentHealthUpdated += OnCurrentHealthUpdated;
         PlayerHealthController.onMaxHealthUpdated += OnMaxHealthUpdated;
         PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
+
+        PlayerLevelController.onPlayerExperienceUpdated += OnPlayerExperienceUpdated;
+        PlayerLevelController.onPlayerRequiredExperienceUpdated += OnPlayerRequiredExperienceUpdated;
     }
 
     private void OnDisable()
     {
         PlayerHealthController.onCurrentHealthUpdated -= OnCurrentHealthUpdated;
         PlayerHealthController.onMaxHealthUpdated -= OnMaxHealthUpdated;
+        PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
+
+        PlayerLevelController.onPlayerExperienceUpdated -= OnPlayerExperienceUpdated;
+        PlayerLevelController.onPlayerRequiredExperienceUpdated -= OnPlayerRequiredExperienceUpdated;
     }
 
     public void InitStatsUI(CharacterData charData)
     {
         playerCharData = charData;
 
-        SetPlayerPortraitSprite(playerCharData.charPortrait);
         UpdateMaxHealthValue(playerCharData.GetStat(ModifiableStats.MaxHealth).GetCurrentStatValue());
         UpdateCurrentHealthValue(maxHealth);
     }
@@ -58,9 +68,26 @@ public class PlayerStatsUIController : MonoBehaviour
         }
     }
 
-    public void SetPlayerPortraitSprite(Sprite newSprite)
+    void OnPlayerExperienceUpdated(int newExperienceValue)
     {
-        playerPortrait.sprite = newSprite;
+        currentExperience = newExperienceValue;
+        playerExperienceBar.value = currentExperience;
+        UpdateExperienceText();
+    }
+
+    void OnPlayerRequiredExperienceUpdated(int newRequiredExperienceValue)
+    {
+        playerExperienceBar.minValue = requiredExperience;
+        requiredExperience = newRequiredExperienceValue;
+        playerExperienceBar.maxValue = requiredExperience;
+        playerExperienceBar.value = currentExperience;
+        UpdateExperienceText();
+    }
+
+    private void UpdateExperienceText()
+    {
+        experienceBarText.text = $"{currentExperience} / {requiredExperience}";
+        inventoryExperienceBarText.text = $"{currentExperience} / {requiredExperience}";
     }
 
     public void UpdateCurrentHealthValue(float newCurrentHealthValue)

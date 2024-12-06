@@ -19,6 +19,7 @@ public class WeaponItemData : EquipmentItemData
     //public string itemDamageType;
     public Vector2 itemDamageMinMax;
     public int itemRange;
+    public int accuracy;
     public float critChance;
     public float critDamageMultiplier;
     public AmmoType ammoType;

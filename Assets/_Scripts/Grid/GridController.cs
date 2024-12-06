@@ -429,6 +429,7 @@ public class GridController : MonoBehaviour
     private NPCData GetNPCData(object value)
     {
         string npcDataIdentifier = value.ToString();
+        Debug.Log($"Trying to spawn: {npcDataIdentifier}");
         return NPCDataContainer.GetDataFromIdentifier(npcDataIdentifier);
     }
 

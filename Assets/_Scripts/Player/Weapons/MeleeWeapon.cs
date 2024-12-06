@@ -21,12 +21,15 @@ public class MeleeWeapon : Weapon
 
         if (forwardNode.GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
         {
-            int damage = CalculateDamage();
-            bool isCrit = RollForCrit();
-            if (isCrit)
-                damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+            //if (RollForHit())
+            //{
+                int damage = CalculateDamage();
+                bool isCrit = RollForCrit();
+                if (isCrit)
+                    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier + PlayerWeaponManager.bonusCritMultiplier);
 
-            damageable.TakeDamage(damage, isCrit);
+                damageable.TryDamage(damage, isCrit);
+           // }
         }
     }
 }

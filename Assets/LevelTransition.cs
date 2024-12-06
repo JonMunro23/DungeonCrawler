@@ -14,13 +14,11 @@ public class LevelTransition : MonoBehaviour
         playerMoveToCoords = _playerMoveToCoords;
     }
 
-    private async void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if(other.TryGetComponent(out PlayerController playerController))
         {
-            //await playerController.FadeOutScreen();
             onLevelTransitionEntered?.Invoke(levelIndexToGoTo, playerMoveToCoords);
-            //await playerController.FadeInScreen();
             
         }
     }

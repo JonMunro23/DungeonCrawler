@@ -32,6 +32,7 @@ MonoBehaviour:
   isMeleeWeapon: 0
   itemDamageMinMax: {x: 20, y: 35}
   itemRange: 3
+  accuracy: 55
   critChance: 4
   critDamageMultiplier: 2
   ammoType: 3

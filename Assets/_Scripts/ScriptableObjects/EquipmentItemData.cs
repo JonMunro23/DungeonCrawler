@@ -24,7 +24,8 @@ public enum ModifiableStats
     Damage,
     CritChance,
     CritMultiplier,
-    BurstAmount
+    BurstCount,
+    WeaponAccuracy
 }
 
 public enum ModifyOperation

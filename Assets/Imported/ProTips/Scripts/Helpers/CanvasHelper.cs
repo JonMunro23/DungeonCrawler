@@ -3,6 +3,7 @@ using Object = UnityEngine.Object;
 
 namespace ModelShark
 {
+    #pragma warning disable CS0618 // Type or member is obsolete
     public static class CanvasHelper
     {
         /// <summary>Searches all canvases in the scene and tries to find the root one (isRootCanvas TRUE).</summary>
