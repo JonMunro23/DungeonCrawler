@@ -356,13 +356,21 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void Load(PlayerWeaponSaveData data)
     {
+
+        //Unload all weapons
+        //Set slots to default
+        //Load weapons from saveData
+
+        foreach (WeaponSlot slot in spawnedWeaponSlots)
+        {
+            slot.UnloadWeapon();
+        }
+
         activeSlotIndex = data.activeSlotIndex;
+
         foreach (WeaponSlotData slotData in data.slotData)
         {
-            spawnedWeaponSlots[slotData.slotIndex].TakeItem();
             spawnedWeaponSlots[slotData.slotIndex].AddItem(new ItemStack(slotData.heldWeaponData, 1, slotData.heldWeaponLoadedAmmo));
         }
-        onWeaponSlotSetActive?.Invoke(activeSlotIndex);
-        //SetWeaponSlotActive(activeSlotIndex);
     }
 }

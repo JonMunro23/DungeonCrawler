@@ -197,7 +197,12 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         RemoveAmmo(AmmoType.Rifle, heldRifleAmmo);
         RemoveAmmo(AmmoType.Shells, heldShells);
     }
-    
+
+    private void RemoveAllSyringes()
+    {
+        RemoveHealthSyringe(heldHealthSyringes);
+    }
+
     public void RemoveHealthSyringe(int amountToRemove)
     {
         heldHealthSyringes -= amountToRemove;
@@ -428,7 +433,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void LoadItems(List<ItemStack> items)
     {
-        RemoveSyringes();
+        RemoveAllSyringes();
         RemoveAllAmmo();
 
         foreach (InventorySlot slot in spawnedInventorySlots)

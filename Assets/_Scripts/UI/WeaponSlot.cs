@@ -91,4 +91,9 @@ public class WeaponSlot : InventorySlot
         weapon.RemoveWeapon();
         weapon = null;
     }
+
+    public void UnloadWeapon()
+    {
+        TakeItem();
+    }
 }
