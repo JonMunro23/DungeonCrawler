@@ -59,13 +59,15 @@ MonoBehaviour:
     type: 3}
   spawnedPlayerSpawnPoint: {fileID: 0}
   playerController: {fileID: 0}
-  NPCSpawnPointPrefab: {fileID: 7420140500364602755, guid: 7d0c852250a8d5b4fa64f720b9ef6bbe,
+  npcPrefab: {fileID: 3120243568235660886, guid: 89ade3ceb54b48e4dade0019bad8a785,
     type: 3}
+  spawnedNPCs: []
   activeNPCs: []
   NPCDataContainer: {fileID: 11400000, guid: 733d0df4dde9208419f6f7e57ce20def, type: 2}
   worldItemPrefab: {fileID: 5545412917158435578, guid: 945df0abf5cc1e64c8ba274c480e94fa,
     type: 3}
   itemDataContainer: {fileID: 11400000, guid: bbf786f9fec6a344abaa6097c2f9d10c, type: 2}
+  spawnedWorldItems: []
   levelTransitionPrefab: {fileID: 1429862990062753556, guid: aa4ae444892f5814f99f601b8ee5174a,
     type: 3}
   largeContainerPrefab: {fileID: 3550158488799289131, guid: 0aceb50fab28f27468fe2487a72fbdd1,

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Lever : InteractableBase
 {
-    [Space]
     [Header("Animation")]
     [SerializeField] Transform leverPivotPoint;
     [SerializeField] Vector3 flippedRotation, unflippedRotation;
@@ -25,20 +24,7 @@ public class Lever : InteractableBase
 
         FlipLever();
 
-        if(objectsToTrigger.Count > 0 )
-        {
-            foreach (ITriggerable triggerableObject in objectsToTrigger)
-            {
-                if (!triggerableObject.IsTriggerable())
-                    return;
-
-                triggerableObject.Trigger();
-            }
-        }
-
-
-        if (isSingleUse)
-            canUse = false;
+        TriggerObjects();
     }
 
     private void FlipLever()
@@ -52,6 +38,19 @@ public class Lever : InteractableBase
         {
             isActivated = true;
             leverPivotPoint.DOLocalRotate(flippedRotation, flipDuration);
+        }
+    }
+
+    public override void SetIsActivated(bool _isActivated)
+    {
+        isActivated = _isActivated;
+
+        if(isActivated)
+        {
+            if (isSingleUse)
+                canUse = false;
+
+            leverPivotPoint.rotation = Quaternion.Euler(flippedRotation);
         }
     }
 }

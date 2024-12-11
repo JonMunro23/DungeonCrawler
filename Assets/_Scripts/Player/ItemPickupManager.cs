@@ -232,8 +232,11 @@ public class ItemPickupManager : MonoBehaviour
 
             if (remainingItems == 0)
             {
-                Destroy(itemToPickup.gameObject);
+                IPickup pickupInterface = itemToPickup as IPickup;
+                pickupInterface.Pickup();
+
                 groundItems.Remove(itemToPickup);
+                Destroy(itemToPickup.gameObject);
                 UpdatePickupItemUI();
             }
             else
@@ -247,7 +250,7 @@ public class ItemPickupManager : MonoBehaviour
 
     private void PlayGrabAnim(AudioClip grabSFX = null)
     {
-        if (playerWeaponManager.currentWeapon != null && !playerWeaponManager.currentWeapon.IsInUse())
+        if (playerWeaponManager.currentWeapon != null && playerWeaponManager.currentWeapon.CanUse())
         {
             playerWeaponManager.currentWeapon.Grab();
             if(grabSFX != null)

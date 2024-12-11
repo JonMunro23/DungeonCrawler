@@ -40,7 +40,7 @@ public class PlayerWeaponManager : MonoBehaviour
     AudioEmitter weaponAudioEmitter;
 
     [SerializeField] WeaponSlot[] spawnedWeaponSlots;
-    [SerializeField] int activeSlotIndex;
+    [SerializeField] int activeSlotIndex = 0;
 
     [Header("Bonus Weapon Stats")]
     public static int bonusDamage;
@@ -50,10 +50,11 @@ public class PlayerWeaponManager : MonoBehaviour
     public static int bonusAccuracy;
 
     public IWeapon currentWeapon;
-    IWeapon defaultWeapon;
+    //IWeapon defaultWeapon;
 
     public static Action<WeaponSlot[]> onWeaponSlotsSpawned;
     public static Action<int> onWeaponSlotSetActive;
+    public static Action<int, WeaponItemData> onNewWeaponInitialised;
 
     private void OnEnable()
     {
@@ -106,53 +107,68 @@ public class PlayerWeaponManager : MonoBehaviour
         if (currentWeapon == null)
             return;
 
+        if (currentWeapon.IsMeleeWeapon())
+            return;
+
+        if(currentWeapon.GetRangedWeapon() == null)
+            return;
+
         if (typeAdded == currentWeapon.GetWeaponData().ammoType)
         {
-            currentWeapon.UpdateReserveAmmo();
+            currentWeapon.GetRangedWeapon().UpdateReserveAmmo();
         }
 
     }
 
-    public void Init(PlayerController controller)
+    public async void Init(PlayerController controller)
     {
         playerController = controller;
 
         weaponAudioEmitter = AudioManager.Instance.RegisterSource("[AudioEmitter] Weapon", transform, AudioCategory.SFx, 10, 25, 0);
 
         SpawnWeaponSlots();
+
+        InitialiseDefaultWeapons();
+
+        await SetSlotActive(activeSlotIndex);
     }
 
     void SpawnWeaponSlots()
     {
         spawnedWeaponSlots = new WeaponSlot[numWeaponSlots];
 
-        for (int i = 0; i < numWeaponSlots; i++)
+        for (int i = 0; i < spawnedWeaponSlots.Length; i++)
         {
             WeaponSlot spawnedSlot = Instantiate(slotToSpawn);
             spawnedWeaponSlots[i] = spawnedSlot;
-            spawnedSlot.InitWeaponSlot(i);
+            spawnedSlot.InitWeaponSlot(i, playerController.playerInventoryManager, weaponAudioEmitter);
         }
-        InitialiseDefaultWeapon(0, defaultWeaponData);
         onWeaponSlotsSpawned?.Invoke(spawnedWeaponSlots);
     }
 
-    async void InitialiseDefaultWeapon(int slotIndex, WeaponItemData weaponItemData)
+    void InitialiseDefaultWeapons()
     {
-        if (weaponItemData.itemPrefab)
+        if (defaultWeaponData.itemPrefab)
         {
-            GameObject spawnedWeapon = Instantiate(weaponItemData.itemPrefab, weaponSpawnParent);
+            GameObject spawnedWeapon = Instantiate(defaultWeaponData.itemPrefab, weaponSpawnParent);
             if (spawnedWeapon.TryGetComponent(out IWeapon weapon))
             {
-                defaultWeapon = weapon;
-                weapon.SetInventoryManager(playerController.playerInventoryManager);
-                spawnedWeaponSlots[0].SetWeaponToDefault(weapon, weaponItemData, weaponAudioEmitter);
-                spawnedWeaponSlots[1].SetWeaponToDefault(weapon, weaponItemData, weaponAudioEmitter);
-
-                spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(true);
-                await spawnedWeaponSlots[slotIndex].DrawWeapon();
-                currentWeapon = spawnedWeaponSlots[slotIndex].GetWeapon();
+                //defaultWeapon = weapon;
+                for (int i = 0; i < spawnedWeaponSlots.Length; i++)
+                {
+                    weapon.InitWeapon(i, defaultWeaponData, weaponAudioEmitter, playerController.playerInventoryManager);
+                    spawnedWeaponSlots[i].InitDefaultWeapon(weapon);
+                    spawnedWeaponSlots[i].SetWeaponToDefault();
+                }
             }
         }
+    }
+
+    private async Task SetSlotActive(int slotIndex)
+    {
+        spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(true);
+        await spawnedWeaponSlots[slotIndex].DrawWeapon();
+        currentWeapon = spawnedWeaponSlots[slotIndex].GetWeapon();
     }
 
     /// <summary>
@@ -170,9 +186,21 @@ public class PlayerWeaponManager : MonoBehaviour
             {
                 await spawnedWeaponSlots[slotIndex].HolsterWeapon();
             }
+
+            if (!spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon())
+                spawnedWeaponSlots[slotIndex].RemoveWeapon();
+            else if (!spawnedWeaponSlots[activeSlotIndex].GetWeapon().IsDefaultWeapon())
+                spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(false);
         }
 
         InitialiseNewWeapon(slotIndex, newWeaponItemData, startingAmmo);
+
+        if (activeSlotIndex == slotIndex)
+        {
+            await SetSlotActive(slotIndex);
+        }
+
+        spawnedWeaponSlots[slotIndex].SetInteractable(true);
     }
 
     async void OnWeaponRemovedFromSlot(int slotIndex)
@@ -184,11 +212,15 @@ public class PlayerWeaponManager : MonoBehaviour
             await spawnedWeaponSlots[slotIndex].HolsterWeapon();
         }
 
-        if (spawnedWeaponSlots[slotIndex].GetWeapon() != defaultWeapon)
+        if (!spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon())
             spawnedWeaponSlots[slotIndex].RemoveWeapon();
+        else if (!spawnedWeaponSlots[activeSlotIndex].GetWeapon().IsDefaultWeapon())
+            spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(false);
 
 
         SetSlotToDefault(slotIndex);
+
+        spawnedWeaponSlots[slotIndex].SetInteractable(true);
     }
 
     async void OnWeaponSwappedInSlot(int slotIndex, WeaponItemData weaponData, int newWeaponLoadedAmmo)
@@ -198,64 +230,67 @@ public class PlayerWeaponManager : MonoBehaviour
         {
             await spawnedWeaponSlots[slotIndex].HolsterWeapon();
         }
-        if (spawnedWeaponSlots[slotIndex].GetWeapon() != defaultWeapon)
+        if (!spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon())
             spawnedWeaponSlots[slotIndex].RemoveWeapon();
+        else if (!spawnedWeaponSlots[activeSlotIndex].GetWeapon().IsDefaultWeapon())
+            spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(false);
 
         InitialiseNewWeapon(slotIndex, weaponData, newWeaponLoadedAmmo);
 
+        if (activeSlotIndex == slotIndex)
+        {
+            await SetSlotActive(slotIndex);
+        }
+
+        spawnedWeaponSlots[slotIndex].SetInteractable(true);
     }
 
     async void SetSlotToDefault(int slotIndex)
     {
-        spawnedWeaponSlots[slotIndex].SetWeaponToDefault(defaultWeapon, defaultWeaponData, weaponAudioEmitter);
+        spawnedWeaponSlots[slotIndex].SetWeaponToDefault();
         if (activeSlotIndex == slotIndex)
         {
-            spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(true);
-            await spawnedWeaponSlots[slotIndex].DrawWeapon();
-            currentWeapon = defaultWeapon;
+            await SetSlotActive(slotIndex);
         }
         spawnedWeaponSlots[slotIndex].SetInteractable(true);
-
-      
     }
 
     
 
-    async void InitialiseNewWeapon(int slotIndex, WeaponItemData weaponItemData, int startingAmmo)
+    void InitialiseNewWeapon(int slotIndex, WeaponItemData weaponItemData, int startingAmmo)
     {
         if (weaponItemData.itemPrefab)
         {
             GameObject spawnedWeapon = Instantiate(weaponItemData.itemPrefab, weaponSpawnParent);
             if (spawnedWeapon.TryGetComponent(out IWeapon weapon))
             {
+                weapon.InitWeapon(slotIndex, weaponItemData, weaponAudioEmitter, playerController.playerInventoryManager);
                 weapon.SetWeaponActive(false);
-                if (spawnedWeaponSlots[slotIndex].GetWeapon() == defaultWeapon && spawnedWeaponSlots[activeSlotIndex].GetWeapon() != defaultWeapon)
-                    spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(false);
+                //if (spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon() && !spawnedWeaponSlots[activeSlotIndex].GetWeapon().IsDefaultWeapon())
+                //    spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(false);
 
-                weapon.SetInventoryManager(playerController.playerInventoryManager);
-                weapon.SetLoadedAmmo(startingAmmo);
-                spawnedWeaponSlots[slotIndex].SetWeapon(weapon, weaponItemData, weaponAudioEmitter);
 
-                if (activeSlotIndex == slotIndex)
+                if(weapon.GetRangedWeapon() != null)
                 {
-                    spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(true);
-                    await spawnedWeaponSlots[slotIndex].DrawWeapon();
-                    currentWeapon = spawnedWeaponSlots[slotIndex].GetWeapon();
+                    weapon.GetRangedWeapon().SetLoadedAmmo(startingAmmo);
                 }
 
-                spawnedWeaponSlots[slotIndex].SetInteractable(true);
+                spawnedWeaponSlots[slotIndex].SetWeapon(weapon);
+
             }
+
+            onNewWeaponInitialised?.Invoke(slotIndex, weaponItemData);
         }
     }
 
     public void SwitchWeaponSets()
     {
-        if (currentWeapon.IsInUse())
+        if (!currentWeapon.CanUse())
             return;
 
         if (activeSlotIndex == 0)
         {
-            if (currentWeapon == defaultWeapon && spawnedWeaponSlots[1].GetWeapon() == defaultWeapon)
+            if (currentWeapon.IsDefaultWeapon() && spawnedWeaponSlots[1].GetWeapon().IsDefaultWeapon())
                 return;
 
             activeSlotIndex = 1;
@@ -263,7 +298,7 @@ public class PlayerWeaponManager : MonoBehaviour
         }
         else if (activeSlotIndex == 1)
         {
-            if (currentWeapon == defaultWeapon && spawnedWeaponSlots[0].GetWeapon() == defaultWeapon)
+            if (currentWeapon.IsDefaultWeapon() && spawnedWeaponSlots[0].GetWeapon().IsDefaultWeapon())
                 return;
 
             activeSlotIndex = 0;
@@ -299,10 +334,8 @@ public class PlayerWeaponManager : MonoBehaviour
 
         onWeaponSlotSetActive?.Invoke(slotIndex);
 
-        spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(true);
-        await spawnedWeaponSlots[slotIndex].DrawWeapon();
+        await SetSlotActive(slotIndex);
 
-        currentWeapon = spawnedWeaponSlots[slotIndex].GetWeapon();
         spawnedWeaponSlots[slotIndex].SetInteractable(true);
     }
 
@@ -311,7 +344,7 @@ public class PlayerWeaponManager : MonoBehaviour
         if (currentWeapon == null)
             return;
 
-        currentWeapon.Use();
+        currentWeapon.TryUse();
     }
 
     public void UseCurrentWeaponSpecial()
@@ -319,7 +352,7 @@ public class PlayerWeaponManager : MonoBehaviour
         if (currentWeapon == null)
             return;
 
-        currentWeapon.UseSpecial();
+        currentWeapon.TryUseSpecial();
     }
 
     public async void ReloadCurrentWeapon()
@@ -327,9 +360,15 @@ public class PlayerWeaponManager : MonoBehaviour
         if (currentWeapon == null)
             return;
 
+        if (currentWeapon.IsMeleeWeapon())
+            return;
+
         spawnedWeaponSlots[activeSlotIndex].SetInteractable(false);
 
-        await currentWeapon.TryReload();
+        if (currentWeapon.GetRangedWeapon() != null)
+        {
+            await currentWeapon.GetRangedWeapon().TryReload();
+        }
 
         spawnedWeaponSlots[activeSlotIndex].SetInteractable(true);
     }
@@ -340,10 +379,17 @@ public class PlayerWeaponManager : MonoBehaviour
         foreach (WeaponSlot slot in spawnedWeaponSlots)
         {
             IWeapon slotWeapon = slot.GetWeapon();
-            if(slotWeapon == defaultWeapon)
+            if(slotWeapon.IsDefaultWeapon())
                 continue;
 
-            slotData.Add(new WeaponSlotData(slot.slotIndex, slotWeapon.GetWeaponData(), slotWeapon.GetLoadedAmmo()));
+            int loadedAmmo = 0;
+            RangedWeapon rangedWeapon = slot.GetWeapon() as RangedWeapon;
+            if(rangedWeapon != null)
+            {
+                loadedAmmo = rangedWeapon.GetLoadedAmmo();
+            }
+
+            slotData.Add(new WeaponSlotData(slot.slotIndex, slotWeapon.GetWeaponData(), loadedAmmo));
         }
         return slotData;
     }
@@ -356,21 +402,18 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void Load(PlayerWeaponSaveData data)
     {
-
-        //Unload all weapons
-        //Set slots to default
-        //Load weapons from saveData
-
         foreach (WeaponSlot slot in spawnedWeaponSlots)
         {
-            slot.UnloadWeapon();
+            slot.UnloadSlot();
         }
-
         activeSlotIndex = data.activeSlotIndex;
 
-        foreach (WeaponSlotData slotData in data.slotData)
+        for (int i = 0; i < data.slotData.Count; i++)
         {
-            spawnedWeaponSlots[slotData.slotIndex].AddItem(new ItemStack(slotData.heldWeaponData, 1, slotData.heldWeaponLoadedAmmo));
+            spawnedWeaponSlots[i].AddItem(new ItemStack(data.slotData[i].heldWeaponData, 1, data.slotData[i].heldWeaponLoadedAmmo)); 
         }
+
+
+        SetWeaponSlotActive(activeSlotIndex);
     }
 }

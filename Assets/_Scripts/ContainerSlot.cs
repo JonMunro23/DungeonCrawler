@@ -37,7 +37,7 @@ public class ContainerSlot : MonoBehaviour, IPickup
         parentContainer.RemoveStoredItemFromSlot(slotIndex);
     }
 
-    public void GrabPickup()
+    public void Pickup(bool wasGrabbed = false)
     {
         if (storedStack.itemData == null)
             return;

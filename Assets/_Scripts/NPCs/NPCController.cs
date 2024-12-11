@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
@@ -7,6 +6,8 @@ using Random = UnityEngine.Random;
 
 public class NPCController : MonoBehaviour, IDamageable
 {
+    public int levelIndex;
+
     [HideInInspector] public NPCAnimationController animController;
     [HideInInspector] public NPCMovementController movementController;
     [HideInInspector] public NPCAttackController attackController;
@@ -46,14 +47,15 @@ public class NPCController : MonoBehaviour, IDamageable
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void InitNPC(NPCData npcData, GridNode spawnGridNode = null)
+    public void InitNPC(int _levelIndex, NPCData npcData, GridNode spawnGridNode = null)
     {
+        levelIndex = _levelIndex;
         NPCData = npcData;
 
         if(spawnGridNode != null)
             currentlyOccupiedGridnode = spawnGridNode;
 
-        SpawnNPCs();
+        SpawnNPCModels();
         InitControllers();
     }
 
@@ -67,7 +69,7 @@ public class NPCController : MonoBehaviour, IDamageable
         movementController.SnapToTargetNode();
     }
 
-    private void SpawnNPCs()
+    private void SpawnNPCModels()
     {
         currentGroupHealth = maxGroupHealth;
         if (amountToSpawnInStack > 1)
@@ -127,7 +129,7 @@ public class NPCController : MonoBehaviour, IDamageable
                 {
                     Destroy(npc);
                 }
-                spawnedNPCs.RemoveAt(randIndex);
+                spawnedNPCs.RemoveAt(0);
             }
 
             if (currentGroupHealth <= 0)

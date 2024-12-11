@@ -21,7 +21,6 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public TooltipTrigger tooltipTrigger;
 
     public bool isSlotOccupied { get; private set; }
-    public bool isSlotActive = true;
 
     public static Action<ISlot> onInventorySlotClicked;
 
@@ -172,7 +171,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         }
     }
 
-     void UpdateSlotUI()
+     public void UpdateSlotUI()
     {
         UpdateTooltipData();
 

@@ -1,6 +1,17 @@
+using System.Threading.Tasks;
 using UnityEngine;
 public class MeleeWeapon : Weapon
 {
+    public override MeleeWeapon GetMeleeWeapon()
+    {
+        return this;
+    }
+
+    public override RangedWeapon GetRangedWeapon()
+    {
+        return null;
+    }
+
     public override void UseWeapon()
     {
         base.UseWeapon();

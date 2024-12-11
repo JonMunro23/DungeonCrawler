@@ -1,22 +1,18 @@
-using System;
-using System.Collections;
 using System.Threading.Tasks;
 
 public interface IWeapon : IUseable
 {
-    public void InitWeapon(int slotIndex, WeaponItemData dataToInit, AudioEmitter weaponAudioEmitter);
-    public void SetInventoryManager(IInventory playerInventory);
+    public bool IsMeleeWeapon();
+    public bool IsDefaultWeapon();
+    public bool CanUse();
     public void SetWeaponActive(bool isActive);
-    public Task HolsterWeapon();
-    public Task DrawWeapon();
-    public void RemoveWeapon();
-    public void UpdateReserveAmmo();
-    public int GetLoadedAmmo();
-    public void SetLoadedAmmo(int loadedAmmo);
+    public void SetDefaultWeapon(bool isDefault);
     public WeaponItemData GetWeaponData();
-    public Task TryReload();
+    public MeleeWeapon GetMeleeWeapon();
+    public RangedWeapon GetRangedWeapon();
+    public void InitWeapon(int slotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory);
+    public Task DrawWeapon();
+    public Task HolsterWeapon();
     public void Grab();
-    public bool IsReloading();
-    public bool IsTwoHanded();
-    public bool IsInUse();
+    public void RemoveWeapon();
 }

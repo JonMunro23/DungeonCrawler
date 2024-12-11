@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -7,7 +9,10 @@ public class RangedWeapon : Weapon
     [SerializeField] Transform projectileSpawnLocation;
     ParticleSystem muzzleFX;
     Coroutine burstCoroutine;
+    bool isReloading;
+    bool canShootBurst = true;
     bool canShootBurstShot = true;
+    int loadedAmmo, reserveAmmo;
 
     public bool infinteAmmo = false;
 
@@ -16,14 +21,25 @@ public class RangedWeapon : Weapon
     [SerializeField] float ejectionStartDelay;
     ParticleSystem[] cachedParticleEffect;
 
+    [Header("Magazine Dropping")]
+    [SerializeField] Transform magDropTransform;
+    [SerializeField] int maxDroppedMags = 5;
+    [SerializeField] int lastDroppedMag;
+    List<GameObject> droppedMagList = new List<GameObject>();
+
     private void Start()
     {
         muzzleFX = projectileSpawnLocation.GetComponent<ParticleSystem>();
     }
 
-    public override void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter weaponAudioEmitter)
+    public override bool CanUse()
     {
-        base.InitWeapon(occupyingSlotIndex, dataToInit, weaponAudioEmitter);
+        return base.CanUse() && !IsReloading() && loadedAmmo > 0;
+    }
+
+    public override void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory)
+    {
+        base.InitWeapon(occupyingSlotIndex, dataToInit, _weaponAudioEmitter, playerInventory);
 
         if (!shellEjectionParticleEffect)
             return;
@@ -36,6 +52,12 @@ public class RangedWeapon : Weapon
 
     }
 
+    public override Task DrawWeapon()
+    {
+        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+        canShootBurst = true;
+        return base.DrawWeapon();
+    }
     public override void UseWeapon()
     {
         if (!isWeaponDrawn && !canUse)
@@ -64,16 +86,14 @@ public class RangedWeapon : Weapon
             }
         }
     }
-
     private Vector3 GetBulletSpread()
     {
         Vector2 randomPoint = new Vector2(Random.Range(-.05f, .05f), Random.Range(-.05f, .05f));
         return new Vector3(randomPoint.x, randomPoint.y, 1);
     }
-
     private void Shoot()
     {
-        weaponAnimator.Play("Fire");
+        weaponAnimator.CrossFadeInFixedTime("Fire", .025f);
         muzzleFX.Play();
         EjectCartridge();
 
@@ -112,7 +132,6 @@ public class RangedWeapon : Weapon
             }
         }
     }
-
     void TryShootBurst()
     {
         if (canShootBurst)
@@ -121,7 +140,6 @@ public class RangedWeapon : Weapon
             burstCoroutine = StartCoroutine(ShootBurst());
         }
     }
-
     public void StopBurst()
     {
         if (burstCoroutine != null)
@@ -130,7 +148,6 @@ public class RangedWeapon : Weapon
             canShootBurst = true;
         }
     }
-
     IEnumerator ShootBurst()
     {
         for (int i = 0; i < weaponItemData.burstLength + PlayerWeaponManager.bonusBurstCount; i++)
@@ -144,7 +161,19 @@ public class RangedWeapon : Weapon
             }
         }
     }
-
+    public bool RollForHit()
+    {
+        bool hasHit = false;
+        if (weaponItemData.accuracy > 0)
+        {
+            float rand = Random.Range(0, 101);
+            if (rand <= weaponItemData.accuracy + PlayerWeaponManager.bonusAccuracy)
+            {
+                hasHit = true;
+            }
+        }
+        return hasHit;
+    }
     public void EjectCartridge()
     {
         if (!shellEjectionParticleEffect)
@@ -164,5 +193,150 @@ public class RangedWeapon : Weapon
         }
 
         shellEjectionParticleEffect.Play();
+    }
+    public bool IsReloading() => isReloading;
+    public void DropMagazine(Collider character)
+    {
+
+        if (!weaponItemData.magDropPrefab || !magDropTransform)
+            return;
+
+        // Object pooling
+        if (droppedMagList.Count == maxDroppedMags)
+        {
+            int mag = lastDroppedMag++ % maxDroppedMags;
+            droppedMagList[mag].transform.position = magDropTransform.position;
+            droppedMagList[mag].transform.rotation = magDropTransform.rotation;
+            droppedMagList[mag].GetComponent<Rigidbody>().linearVelocity = Physics.gravity;
+        }
+        else
+        {
+            Rigidbody magazine = Instantiate(weaponItemData.magDropPrefab, magDropTransform.position, magDropTransform.rotation);
+            magazine.linearVelocity = Physics.gravity;
+
+            Physics.IgnoreCollision(magazine.GetComponent<Collider>(), character, true);
+            droppedMagList.Add(magazine.gameObject);
+        }
+    }
+    public async Task TryReload()
+    {
+        if (isReloading || !isWeaponDrawn)
+            return;
+
+        if (loadedAmmo == weaponItemData.magSize)
+            return;
+
+        int remainingAmmo = playerInventory.GetRemainingAmmoOfType(weaponItemData.ammoType);
+        if (remainingAmmo == 0)
+            return;
+
+        playerInventory.LockSlotsWithAmmoOfType(weaponItemData.ammoType);
+        if (!weaponItemData.bulletByBulletReload)
+        {
+            playerInventory.IncreaseAmmoOfType(weaponItemData.ammoType, loadedAmmo);
+            loadedAmmo = 0;
+            onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+
+            DropMagazine(transform.root.GetComponent<Collider>());
+        }
+        remainingAmmo = playerInventory.GetRemainingAmmoOfType(weaponItemData.ammoType);
+
+        int amountToReload = 0;
+        if (remainingAmmo >= weaponItemData.magSize)
+        {
+            amountToReload = weaponItemData.magSize;
+        }
+        else if (remainingAmmo < weaponItemData.magSize)
+        {
+            amountToReload = remainingAmmo;
+        }
+
+
+        await PerformReload(amountToReload);
+
+        playerInventory.UnlockSlots();
+    }
+    public async Task PerformReload(int reloadAmount)
+    {
+        if (weaponItemData.bulletByBulletReload)
+        {
+            await BulletByBulletReload();
+            return;
+        }
+
+        isReloading = true;
+        weaponAnimator.Play("Reload");
+        weaponAudioEmitter.ForcePlay(weaponItemData.reloadSFX, weaponItemData.reloadVolume);
+        await Task.Delay((int)(weaponItemData.reloadAnimDuration * 1000));
+        isReloading = false;
+        loadedAmmo = reloadAmount;
+        playerInventory.DecreaseAmmoOfType(weaponItemData.ammoType, reloadAmount);
+        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+    }
+    private async Task BulletByBulletReload()
+    {
+        isReloading = true;
+        if (loadedAmmo == 0)
+        {
+            weaponAnimator.Play("InsertInChamber");
+            weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertInChamberSFX, weaponItemData.reloadInsertInChamberVolume);
+            await Task.Delay((int)(weaponItemData.reloadInsertInChamberAnimDuration * 1000));
+            loadedAmmo++;
+            playerInventory.DecreaseAmmoOfType(weaponItemData.ammoType, 1);
+            onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+        }
+        else
+        {
+            weaponAnimator.Play("StartReload");
+            weaponAudioEmitter.ForcePlay(weaponItemData.reloadStartSFX, weaponItemData.reloadStartVolume);
+            await Task.Delay((int)(weaponItemData.reloadStartAnimDuration * 1000));
+        }
+
+        while (loadedAmmo < weaponItemData.magSize && reserveAmmo > 0)
+        {
+            //weaponAnimator.Play("Insert");
+            weaponAnimator.CrossFadeInFixedTime("Insert", .1f);
+            weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertSFX, weaponItemData.reloadInsertVolume);
+            await Task.Delay((int)(weaponItemData.reloadInsertAnimDuration * 1000));
+            loadedAmmo++;
+            playerInventory.DecreaseAmmoOfType(weaponItemData.ammoType, 1);
+            onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+        }
+
+        weaponAnimator.Play("StopReload");
+        weaponAudioEmitter.ForcePlay(weaponItemData.reloadStopSFX, weaponItemData.reloadStopVolume);
+        await Task.Delay((int)(weaponItemData.reloadEndAnimDuration * 1000));
+        isReloading = false;
+        return;
+    }
+    public virtual int GetLoadedAmmo()
+    {
+        return loadedAmmo;
+    }
+    public void SetLoadedAmmo(int loadedAmmo)
+    {
+        this.loadedAmmo = loadedAmmo;
+    }
+    public int GetReserveAmmo()
+    {
+        return playerInventory.GetRemainingAmmoOfType(weaponItemData.ammoType);
+    }
+    public void UpdateReserveAmmo()
+    {
+        reserveAmmo = GetReserveAmmo();
+        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
+    }
+    public override MeleeWeapon GetMeleeWeapon()
+    {
+        return null;
+    }
+    public override RangedWeapon GetRangedWeapon()
+    {
+        return this;
+    }
+    public override IEnumerator UseCooldown()
+    {
+        canShootBurst = true;
+        return base.UseCooldown();
     }
 }

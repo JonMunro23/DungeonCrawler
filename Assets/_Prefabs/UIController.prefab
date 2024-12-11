@@ -1069,7 +1069,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5300235435751280935
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3873,7 +3873,7 @@ RectTransform:
   m_Father: {fileID: 7242381802289544070}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4994,9 +4994,9 @@ RectTransform:
   m_Father: {fileID: 3179546207541974876}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -22, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &540749445231844836
 CanvasRenderer:
@@ -5699,7 +5699,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ed3bb678da7315840a7d338efa5389ea, type: 2}
   m_sharedMaterial: {fileID: -6742766265802831930, guid: ed3bb678da7315840a7d338efa5389ea,
@@ -10214,7 +10214,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2401794808848818858}
   m_HandleRect: {fileID: 1124270374090328844}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -11439,7 +11439,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ed9540d947406446b81735ea2038668, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPortrait: {fileID: 1061647873189402712}
   inventoryPlayerPortrait: {fileID: 1767531110914325187}
   playerHealthbar: {fileID: 6393981770990840393}
   inventoryPlayerHealthbar: {fileID: 3546557455892438826}
@@ -11696,8 +11695,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00012207031}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
+  m_SizeDelta: {x: 0, y: -529.1192}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6389279333848953672
 MonoBehaviour:
