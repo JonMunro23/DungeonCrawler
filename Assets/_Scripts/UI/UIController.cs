@@ -27,6 +27,8 @@ public class UIController : MonoBehaviour
 
     Coroutine levelTextLifetime;
 
+    WeaponItemData defaultWeaponData;
+
     private void OnEnable()
     {
         PlayerController.onPlayerInitialised += OnPlayerInitialised;
@@ -34,7 +36,6 @@ public class UIController : MonoBehaviour
         ItemPickupManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
 
-        WeaponSlot.onWeaponAddedToSlot += OnWeaponAddedToSlot;
         WeaponSlot.onWeaponRemovedFromSlot += OnWeaponRemovedFromSlot;
         WeaponSlot.onWeaponSwappedInSlot += OnWeaponSwappedInSlot;
         WeaponSlot.onWeaponSetToDefault += OnWeaponSetToDefault;
@@ -42,6 +43,7 @@ public class UIController : MonoBehaviour
         Weapon.onAmmoUpdated += OnWeaponAmmoUpdated;
 
         PlayerWeaponManager.onWeaponSlotSetActive += OnWeaponSlotSetActive;
+        PlayerWeaponManager.onNewWeaponInitialised += OnNewWeaponInitialised;
 
         LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
     }
@@ -53,13 +55,13 @@ public class UIController : MonoBehaviour
         ItemPickupManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
 
-        WeaponSlot.onWeaponAddedToSlot -= OnWeaponAddedToSlot;
         WeaponSlot.onWeaponRemovedFromSlot -= OnWeaponRemovedFromSlot;
         WeaponSlot.onWeaponSwappedInSlot -= OnWeaponSwappedInSlot;
         WeaponSlot.onWeaponSetToDefault -= OnWeaponSetToDefault;
 
         Weapon.onAmmoUpdated -= OnWeaponAmmoUpdated;
 
+        PlayerWeaponManager.onNewWeaponInitialised -= OnNewWeaponInitialised;
         PlayerWeaponManager.onWeaponSlotSetActive -= OnWeaponSlotSetActive;
 
         LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
@@ -107,7 +109,7 @@ public class UIController : MonoBehaviour
         playerWeaponUIManager.RenableSlots();
     }
 
-    void OnWeaponAddedToSlot(int slotIndex, WeaponItemData newItemData, int loadedAmmo)
+    void OnNewWeaponInitialised(int slotIndex, WeaponItemData newItemData)
     {
         playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, newItemData);
     }
@@ -119,12 +121,13 @@ public class UIController : MonoBehaviour
 
     void OnWeaponRemovedFromSlot(int slotIndex)
     {
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, null);
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, defaultWeaponData);
     }
 
-    void OnWeaponSetToDefault(int slotIndex, WeaponItemData defaultWeaponData)
+    void OnWeaponSetToDefault(int slotIndex, WeaponItemData _defaultWeaponData)
     {
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, defaultWeaponData);
+        defaultWeaponData = _defaultWeaponData;
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, _defaultWeaponData);
     }
 
     void OnWeaponAmmoUpdated(int slotIndex, int loaded, int reserve)

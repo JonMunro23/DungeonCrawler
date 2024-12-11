@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractableBase : MonoBehaviour, IInteractable
+public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
+    int levelIndex;
+
     public bool isSingleUse;
     public bool canUse = true;
     public bool isActivated = false;
@@ -10,12 +12,8 @@ public class InteractableBase : MonoBehaviour, IInteractable
     public List<ITriggerable> objectsToTrigger = new List<ITriggerable>();
     public List<Dictionary<string, object>> entityRefsToTrigger = new List<Dictionary<string, object>>();
 
-    public virtual void Interact()
-    {
-    }
-    public virtual void InteractWithItem(ItemData item)
-    {
-    }
+    public abstract void Interact();
+    public abstract void InteractWithItem(ItemData item);
 
     public void AddObjectToTrigger(ITriggerable objectToTrigger)
     {
@@ -41,5 +39,31 @@ public class InteractableBase : MonoBehaviour, IInteractable
         }
 
         return list;
+    }
+
+    public void TriggerObjects()
+    {
+        isActivated = !isActivated;
+
+        foreach (ITriggerable obj in objectsToTrigger)
+        {
+            obj.Trigger();
+        }
+
+        if (isSingleUse)
+            canUse = false;
+    }
+
+    public abstract void SetIsActivated(bool activatedState);
+    public bool GetIsActivated() => isActivated;
+
+    public void SetLevelIndex(int _levelIndex)
+    {
+        levelIndex = _levelIndex;
+    }
+
+    public int GetLevelIndex()
+    {
+        return levelIndex;
     }
 }

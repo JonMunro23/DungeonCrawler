@@ -19,7 +19,6 @@ public class PlayerWeaponUIManager : MonoBehaviour
     {
         PlayerWeaponManager.onWeaponSlotsSpawned -= OnWeaponSlotsSpawned;
     }
-
     void OnWeaponSlotsSpawned(WeaponSlot[] slots)
     {
         weaponSlots = slots;
@@ -36,7 +35,6 @@ public class PlayerWeaponUIManager : MonoBehaviour
             slot.SetInteractable(false);
         }
     }
-
     public void RenableSlots()
     {
         foreach (WeaponSlot slot in weaponSlots)
@@ -44,7 +42,6 @@ public class PlayerWeaponUIManager : MonoBehaviour
             slot.SetInteractable(true);
         }
     }
-
     public void SetSlotActive(int slotIndex)
     {
         activeSlotIndex = slotIndex;
@@ -59,25 +56,13 @@ public class PlayerWeaponUIManager : MonoBehaviour
             weaponDisplays[0].SetDisplayAsPrimary(false);
         }
     }
-
     public void UpdateWeaponDisplayImages(int slotIndex, WeaponItemData weaponData)
     {
         if(weaponData)
             weaponDisplays[slotIndex].UpdateWeaponData(weaponData);
     }
-
     public void UpdateWeaponDisplayAmmoCount(int slotIndex, int loadedAmmo, int reserveAmmo)
     {
         weaponDisplays[slotIndex].UpdateAmmoText(loadedAmmo, reserveAmmo);
     }
-
-    //public void UpdateWeaponDisplayLoadedAmmoCount(int slotIndex, int loadedAmmo)
-    //{
-    //    weaponDisplays[slotIndex].UpdateLoadedAmmoText(loadedAmmo);
-    //}
-
-    //public void UpdateWeaponDisplayReserveAmmoCount(int slotIndex, int reserveAmmo)
-    //{
-    //    weaponDisplays[slotIndex].UpdateReserveAmmoText(reserveAmmo);
-    //}
 }

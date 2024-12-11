@@ -23,13 +23,20 @@ public class ItemStack
 
 public class WorldItem : MonoBehaviour, IPickup
 {
+    public int levelIndex;
+
     public ItemStack item;
+    public Vector2 coords;
+
     public bool isOnPressurePlate;
-
     public static Action<WorldItem> onWorldItemGrabbed;
+    public static Action<WorldItem> onWorldItemPickedUp;
 
-    public void InitWorldItem(ItemStack itemToInitialise)
+    public void InitWorldItem(int _levelIndex, Vector2 _coords, ItemStack itemToInitialise)
     {
+        levelIndex = _levelIndex;
+        coords = _coords;
+
         item.itemData = itemToInitialise.itemData;
         item.itemAmount = itemToInitialise.itemAmount;
         item.loadedAmmo = itemToInitialise.loadedAmmo;
@@ -42,9 +49,12 @@ public class WorldItem : MonoBehaviour, IPickup
         Instantiate(item.itemData.itemWorldModel, transform);
     }
 
-    public void GrabPickup()
+    public void Pickup(bool wasGrabbed = false)
     {
         //Debug.Log($"Grabbed {item.itemData.itemName}");
-        onWorldItemGrabbed?.Invoke(this);
+        if(wasGrabbed)
+            onWorldItemGrabbed?.Invoke(this);
+        else
+            onWorldItemPickedUp?.Invoke(this);
     }
 }

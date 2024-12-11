@@ -309,21 +309,17 @@ MonoBehaviour:
   weaponItemData: {fileID: 0}
   weaponAnimator: {fileID: 0}
   occupiedSlotIndex: 0
-  loadedAmmo: 0
-  reserveAmmo: 0
   canUse: 0
-  canShootBurst: 1
   isWeaponDrawn: 0
-  isReloading: 0
-  bonusDamage: 0
-  magDropTransform: {fileID: 4742245573466163060}
-  maxDroppedMags: 5
-  lastDroppedMag: 0
+  isDefaultWeapon: 0
   projectileSpawnLocation: {fileID: 2690174596056474962}
   infinteAmmo: 0
   shellEjectionParticleEffect: {fileID: 6889221604562446684}
   ejectionSpeed: {x: 1.5, y: 3}
   ejectionStartDelay: 0
+  magDropTransform: {fileID: 4742245573466163060}
+  maxDroppedMags: 5
+  lastDroppedMag: 0
 --- !u!95 &5015189803529875003
 Animator:
   serializedVersion: 7
@@ -424,7 +420,7 @@ SkinnedMeshRenderer:
   m_SortingOrder: 0
   serializedVersion: 2
   m_Quality: 0
-  m_UpdateWhenOffscreen: 0
+  m_UpdateWhenOffscreen: 1
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 4300002, guid: 673376756edff81469dbeeb43f3d0da9, type: 3}
   m_Bones:
@@ -438,7 +434,7 @@ SkinnedMeshRenderer:
   m_RootBone: {fileID: 5015189803522179513}
   m_AABB:
     m_Center: {x: 0.000000044237822, y: 0.037797138, z: -0.023856904}
-    m_Extent: {x: 0.0076555437, y: 0.10066177, z: 0.06518733}
+    m_Extent: {x: 0.0076555437, y: 0.051584765, z: 0.032516748}
   m_DirtyAABB: 0
 --- !u!1 &5015189803522481241
 GameObject:

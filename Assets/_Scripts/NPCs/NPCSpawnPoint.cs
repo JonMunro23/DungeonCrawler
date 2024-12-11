@@ -8,15 +8,15 @@ public class NPCSpawnPoint : MonoBehaviour
 
     public static Action<PlayerController> onPlayerSpawned;
 
-    public NPCController SpawnNPC(NPCData npcData, GridNode spawnGridNode)
-    {
-        spawnedNPC = Instantiate(NPCToSpawn, transform.position, transform.rotation);
-        spawnedNPC.InitNPC(npcData, spawnGridNode);
+    //public NPCController SpawnNPC(NPCData npcData, GridNode spawnGridNode)
+    //{
+    //    spawnedNPC = Instantiate(NPCToSpawn, transform.position, transform.rotation);
+    //    spawnedNPC.InitNPC(npcData, spawnGridNode);
 
-        spawnGridNode.SetOccupant(new GridNodeOccupant(spawnedNPC.gameObject, GridNodeOccupantType.NPC));
+    //    spawnGridNode.SetOccupant(new GridNodeOccupant(spawnedNPC.gameObject, GridNodeOccupantType.NPC));
 
-        return spawnedNPC;
-    }
+    //    return spawnedNPC;
+    //}
 
     public void DespawnNPC()
     {

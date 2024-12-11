@@ -25,7 +25,7 @@ public class WorldInteraction : MonoBehaviour
             {
                 if (hit.collider.TryGetComponent(out IPickup pickup))
                 {
-                    pickup.GrabPickup();
+                    pickup.Pickup(true);
                     OnWorldInteraction?.Invoke();
                 }
                 else if (hit.collider.TryGetComponent(out IInteractable interactable))

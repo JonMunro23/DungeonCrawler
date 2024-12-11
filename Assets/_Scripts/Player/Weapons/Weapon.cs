@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Weapon : MonoBehaviour, IWeapon
+public abstract class Weapon : MonoBehaviour, IWeapon
 {
     [Header("References")]
     public WeaponItemData weaponItemData;
@@ -13,13 +12,11 @@ public class Weapon : MonoBehaviour, IWeapon
     public AudioEmitter weaponAudioEmitter;
 
     public int occupiedSlotIndex;
-    public IInventory playerInventoryManager;
-    public int loadedAmmo, reserveAmmo;
+    public IInventory playerInventory;
 
     public bool canUse;
-    public bool canShootBurst = true;
     public bool isWeaponDrawn;
-    public bool isReloading;
+    public bool isDefaultWeapon;
 
     /// <summary>
     /// In order:
@@ -33,27 +30,48 @@ public class Weapon : MonoBehaviour, IWeapon
     /// </summary>
     public static Action<float> onWeaponCooldownActive;
 
-    [SerializeField] Transform magDropTransform;
-    [SerializeField] int maxDroppedMags = 5;
-    [SerializeField] int lastDroppedMag;
-    List<GameObject> droppedMagList = new List<GameObject>();
 
+    public virtual bool CanUse()
+    {
+        return canUse && isWeaponDrawn;
+    }
+   
+    public bool IsMeleeWeapon() => GetWeaponData().isMeleeWeapon;
+    public bool IsDefaultWeapon() => isDefaultWeapon;
+    public void SetWeaponActive(bool isActive)
+    {
+        gameObject.SetActive(isActive);
+    }
+    public void SetDefaultWeapon(bool isDefault)
+    {
+        isDefaultWeapon = isDefault;
+    }
+    public WeaponItemData GetWeaponData() => weaponItemData;
+    public abstract MeleeWeapon GetMeleeWeapon();
+    public abstract RangedWeapon GetRangedWeapon();
+    public virtual void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory _playerInventory)
+    {
+        playerInventory = _playerInventory;
+        occupiedSlotIndex = occupyingSlotIndex;
+        weaponItemData = dataToInit;
+        canUse = true;
+        weaponAnimator = GetComponent<Animator>();
+
+        weaponAudioEmitter = _weaponAudioEmitter;
+    }
     public virtual async Task DrawWeapon()
     {
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
         weaponAnimator.enabled = true;
         weaponAnimator.Play("Draw");
         weaponAudioEmitter.ForcePlay(weaponItemData.drawSFX, weaponItemData.drawVolume);
         await Task.Delay((int)(weaponItemData.drawAnimDuration * 1000));
         isWeaponDrawn = true;
         canUse = true;
-        canShootBurst = true;
     }
-
     public async Task HolsterWeapon()
     {
         isWeaponDrawn = false;
-        if(weaponAnimator.enabled)
+        if(weaponAnimator.gameObject.activeSelf && weaponAnimator.enabled)
         {
             weaponAnimator.Play("Hide");
             weaponAudioEmitter.ForcePlay(weaponItemData.hideSFX, weaponItemData.hideVolume);
@@ -62,195 +80,44 @@ public class Weapon : MonoBehaviour, IWeapon
                 weaponAnimator.enabled = false;
         }
     }
-
     public void Grab()
     {
         weaponAnimator.Play("Interact");
     }
-
-    public virtual void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter)
-    {
-        occupiedSlotIndex = occupyingSlotIndex;
-        weaponItemData = dataToInit;
-        canUse = true;
-        weaponAnimator = GetComponent<Animator>();
-
-        weaponAudioEmitter = _weaponAudioEmitter;
-    }
-
-    public bool IsReloading() => isReloading;
-
-    public bool IsTwoHanded() => weaponItemData.isTwoHanded;
-
     public virtual void RemoveWeapon()
     {
         Destroy(gameObject);
     }
-
-    public void DropMagazine(Collider character)
+    public void TryUse()
     {
-
-        if (!weaponItemData.magDropPrefab || !magDropTransform)
-            return;
-
-        // Object pooling
-        if (droppedMagList.Count == maxDroppedMags)
-        {
-            int mag = lastDroppedMag++ % maxDroppedMags;
-            droppedMagList[mag].transform.position = magDropTransform.position;
-            droppedMagList[mag].transform.rotation = magDropTransform.rotation;
-            droppedMagList[mag].GetComponent<Rigidbody>().linearVelocity = Physics.gravity;
-        }
-        else
-        {
-            Rigidbody magazine = Instantiate(weaponItemData.magDropPrefab, magDropTransform.position, magDropTransform.rotation);
-            magazine.linearVelocity = Physics.gravity;
-
-            Physics.IgnoreCollision(magazine.GetComponent<Collider>(), character, true);
-            droppedMagList.Add(magazine.gameObject);
-        }
-    }
-
-    
-
-    public async Task TryReload()
-    {
-        if (isReloading || !isWeaponDrawn)
-            return;
-
-        if (loadedAmmo == weaponItemData.magSize)
-            return;
-
-        int remainingAmmo = playerInventoryManager.GetRemainingAmmoOfType(weaponItemData.ammoType);
-        if (remainingAmmo == 0)
-            return;
-
-        playerInventoryManager.LockSlotsWithAmmoOfType(weaponItemData.ammoType);
-        if(!weaponItemData.bulletByBulletReload)
-        {
-            playerInventoryManager.IncreaseAmmoOfType(weaponItemData.ammoType, loadedAmmo);
-            loadedAmmo = 0;
-            onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
-
-            DropMagazine(transform.root.GetComponent<Collider>());
-        }
-        remainingAmmo = playerInventoryManager.GetRemainingAmmoOfType(weaponItemData.ammoType);
-
-        int amountToReload = 0;
-        if (remainingAmmo >= weaponItemData.magSize)
-        {
-            amountToReload = weaponItemData.magSize;
-        }
-        else if (remainingAmmo < weaponItemData.magSize)
-        {
-            amountToReload = remainingAmmo;
-        }
-
-
-        await PerformReload(amountToReload);
-
-        playerInventoryManager.UnlockSlots();
-    }
-
-    public void Use()
-    {
-        if (!canUse || !isWeaponDrawn || isReloading || (!weaponItemData.isMeleeWeapon && loadedAmmo == 0))
+        if (!CanUse())
             return;
 
         UseWeapon();
     }
-
-    public void UseSpecial()
-    {
-        if(!canUse || !isWeaponDrawn || isReloading) 
-            return;
-
-        Debug.Log("Used special");
-    }
-
     public virtual void UseWeapon()
     {
         canUse = false;
         StartCoroutine(UseCooldown());
     }
+    public void TryUseSpecial()
+    {
+        if(!CanUse()) 
+            return;
 
-    public IEnumerator UseCooldown()
+        Debug.Log("Used special");
+    }
+    public virtual IEnumerator UseCooldown()
     {
         onWeaponCooldownActive?.Invoke(weaponItemData.itemCooldown);
         yield return new WaitForSeconds(weaponItemData.itemCooldown);
         canUse = true;
-        canShootBurst = true;
     }
-
-    async Task PerformReload(int reloadAmount)
-    {
-        if(weaponItemData.bulletByBulletReload)
-        {
-            isReloading = true;
-            if (loadedAmmo == 0)
-            {
-                weaponAnimator.Play("InsertInChamber");
-                weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertInChamberSFX, weaponItemData.reloadInsertInChamberVolume);
-                await Task.Delay((int)(weaponItemData.reloadInsertInChamberAnimDuration * 1000));
-                loadedAmmo++;
-                playerInventoryManager.DecreaseAmmoOfType(weaponItemData.ammoType, 1);
-                onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
-            }
-            else
-            {
-                weaponAnimator.Play("StartReload");
-                weaponAudioEmitter.ForcePlay(weaponItemData.reloadStartSFX, weaponItemData.reloadStartVolume);
-                await Task.Delay((int)(weaponItemData.reloadStartAnimDuration * 1000));
-            }
-
-            while(loadedAmmo < weaponItemData.magSize && reserveAmmo > 0)
-            {
-                //weaponAnimator.Play("Insert");
-                weaponAnimator.CrossFadeInFixedTime("Insert", .1f);
-                weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertSFX, weaponItemData.reloadInsertVolume);
-                await Task.Delay((int)(weaponItemData.reloadInsertAnimDuration * 1000));
-                loadedAmmo++;
-                playerInventoryManager.DecreaseAmmoOfType(weaponItemData.ammoType, 1);
-                onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
-            }
-
-            weaponAnimator.Play("StopReload");
-            weaponAudioEmitter.ForcePlay(weaponItemData.reloadStopSFX, weaponItemData.reloadStopVolume);
-            await Task.Delay((int)(weaponItemData.reloadEndAnimDuration * 1000));
-            isReloading = false;
-            return;
-        }
-
-        isReloading = true;
-        weaponAnimator.Play("Reload");
-        weaponAudioEmitter.ForcePlay(weaponItemData.reloadSFX, weaponItemData.reloadVolume);
-        await Task.Delay((int)(weaponItemData.reloadAnimDuration * 1000));
-        isReloading = false;
-        loadedAmmo = reloadAmount;
-        playerInventoryManager.DecreaseAmmoOfType(weaponItemData.ammoType, reloadAmount);
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
-    }
-
     public int CalculateDamage()
     {
         float damage = Random.Range(weaponItemData.itemDamageMinMax.x, weaponItemData.itemDamageMinMax.y);
         return Mathf.CeilToInt(damage) + PlayerWeaponManager.bonusDamage;
     }
-
-    public bool RollForHit()
-    {
-        bool hasHit = false;
-        if (weaponItemData.accuracy > 0)
-        {
-            float rand = Random.Range(0, 101);
-            if (rand <= weaponItemData.accuracy + PlayerWeaponManager.bonusAccuracy)
-            {
-                hasHit = true;
-            }
-        }
-        return hasHit;
-    }
-
     public bool RollForCrit()
     {
         bool wasCrit = false;
@@ -264,49 +131,6 @@ public class Weapon : MonoBehaviour, IWeapon
         }
         return wasCrit;
     }
-
-    public void SetWeaponActive(bool isActive)
-    {
-        gameObject.SetActive(isActive);
-    }
-
-    public bool IsInUse()
-    {
-        bool isInUse = !canUse || !canShootBurst || !isWeaponDrawn || isReloading;
-        return isInUse;
-    }
-
-    public WeaponItemData GetWeaponData()
-    {
-        return weaponItemData;
-    }
-
-    public void SetInventoryManager(IInventory playerInventory)
-    {
-        playerInventoryManager = playerInventory;
-    }
-
-    public virtual int GetLoadedAmmo()
-    {
-        return loadedAmmo;
-    }
-
-    public void SetLoadedAmmo(int loadedAmmo)
-    {
-        this.loadedAmmo = loadedAmmo;
-    }
-
-    public int GetReserveAmmo()
-    {
-        return playerInventoryManager.GetRemainingAmmoOfType(weaponItemData.ammoType);
-    }
-
-    public void UpdateReserveAmmo()
-    {
-        reserveAmmo = GetReserveAmmo();
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
-    }
-
     public AudioClip GetRandomClipFromArray(AudioClip[] arrayToPullFrom)
     {
         AudioClip randClip = null;
@@ -315,4 +139,5 @@ public class Weapon : MonoBehaviour, IWeapon
         randClip = arrayToPullFrom[rand];
         return randClip;
     }
+
 }

@@ -31,6 +31,7 @@ public interface ICoords
     public Vector2 Pos { get; set; }
 }
 
+[System.Serializable]
 public class GridNode : MonoBehaviour
 {
     [SerializeField] bool showDebugInfo;

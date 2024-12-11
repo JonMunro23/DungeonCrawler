@@ -1,22 +1,21 @@
 ﻿using UnityEngine;
 
-public class TriggerableBase : MonoBehaviour, ITriggerable
+public abstract class TriggerableBase : MonoBehaviour, ITriggerable
 {
+    int levelIndex;
+
     public GridNode occupyingGridNode;
-    public bool isTriggerable;
+    public bool isTriggered;
     public int requiredNumOfTriggers = 1;
     public int currentNumOfTriggers = 0;
     
     public string entityRef = string.Empty;
 
-    public virtual void Trigger()
-    {
-        
-    }
+    public abstract void Trigger();
 
-    public bool IsTriggerable()
+    public bool GetIsTriggered()
     {
-        return isTriggerable;
+        return isTriggered;
     }
     public void SetRequiredNumberOfTriggers(int requiredNum)
     {
@@ -35,5 +34,27 @@ public class TriggerableBase : MonoBehaviour, ITriggerable
     public void SetOccupyingNode(GridNode occupyingNode)
     {
         occupyingGridNode = occupyingNode;
+    }
+
+    public void SetLevelIndex(int _levelIndex)
+    {
+        levelIndex = _levelIndex;
+    }
+
+    public int GetLevelIndex()
+    {
+        return levelIndex;
+    }
+
+    public abstract void SetIsTriggered(bool isTriggered);
+
+    public int GetCurrentNumberOfTriggers()
+    {
+        return currentNumOfTriggers;
+    }
+
+    public void SetCurrentNumberOfTriggers(int newNumberOfTriggers)
+    {
+        currentNumOfTriggers = newNumberOfTriggers;
     }
 }

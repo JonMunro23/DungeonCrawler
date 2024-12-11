@@ -3,14 +3,30 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class ContainerItemStack
+{
+    public int containerIndex;
+    public ItemStack itemStack;
+
+    public ContainerItemStack(int containerIndex, ItemStack itemStack)
+    {
+        this.containerIndex = containerIndex;
+        this.itemStack = itemStack;
+    }
+}
+
 public class Container : MonoBehaviour, IContainer
 {
-    [SerializeField] Grid grid;
+    int levelIndex;
+    Vector2 coords;
+
+    [SerializeField] Grid containerGrid;
     [SerializeField] ContainerSlot containerSlotPrefab;
     const int X_NUMSLOTS = 4, Y_NUMSLOTS = 2;
     bool isOpen;
 
-    [SerializeField] List<ItemStack> storedItems = new List<ItemStack>();
+    [SerializeField] List<ContainerItemStack> storedItems = new List<ContainerItemStack>();
 
     [Header("Animation")]
     [SerializeField] Transform lidTransform;
@@ -20,9 +36,11 @@ public class Container : MonoBehaviour, IContainer
     public static Action onContainerOpened;
     public static Action onContainerClosed;
 
-    // Start is called before the first frame update
-    public void InitContainer()
+    public void InitContainer(int _levelIndex, Vector2 _coords)
     {
+        levelIndex = _levelIndex;
+        coords = _coords;
+
         GenerateSlots();
     }
 
@@ -33,19 +51,19 @@ public class Container : MonoBehaviour, IContainer
         {
             for (int j = 0; j < Y_NUMSLOTS; j++)
             {
-                ContainerSlot clone = Instantiate(containerSlotPrefab, grid.GetCellCenterWorld(new Vector3Int(-i, j)), Quaternion.identity, grid.transform);
+                ContainerSlot clone = Instantiate(containerSlotPrefab, containerGrid.GetCellCenterWorld(new Vector3Int(-i, j)), Quaternion.identity, containerGrid.transform);
                 if (storedItems.Count - 1 >= index)
                     if (storedItems[index] != null)
-                        clone.InitSlot(storedItems[index], this, index);
+                        clone.InitSlot(storedItems[index].itemStack, this, index);
 
                 index++;
             }
         }
     }
 
-    public void AddNewStoredItem(ItemStack itemStackToAdd)
+    public void AddNewStoredItem(int containerIndex, ItemStack itemStackToAdd)
     {
-        storedItems.Add(itemStackToAdd);
+        storedItems.Add(new ContainerItemStack(containerIndex, itemStackToAdd));
     }
 
     public void RemoveStoredItemFromSlot(int slotIndex)
@@ -86,5 +104,20 @@ public class Container : MonoBehaviour, IContainer
     public bool IsOpen()
     {
         return isOpen;
+    }
+
+    public List<ContainerItemStack> GetStoredItems()
+    {
+        return storedItems;
+    }
+
+    public Vector2 GetCoords()
+    {
+        return coords;
+    }
+
+    public int GetLevelIndex()
+    {
+        return levelIndex;
     }
 }

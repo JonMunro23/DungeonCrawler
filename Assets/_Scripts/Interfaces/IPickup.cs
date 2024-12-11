@@ -1,4 +1,4 @@
 public interface IPickup
 {
-    public void GrabPickup();  
+    public void Pickup(bool wasGrabbed = false);  
 }

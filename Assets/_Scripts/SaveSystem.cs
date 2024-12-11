@@ -12,6 +12,7 @@ public class SaveSystem
         public PlayerInventorySaveData playerInventoryData;
         public PlayerEquipmentSaveData playerEquipmentData;
         public PlayerWeaponSaveData playerWeaponData;
+        public LevelSaveData LevelData;
     }
 
     public static string SaveFileName()
@@ -32,6 +33,7 @@ public class SaveSystem
         GridController.Instance.playerController.playerInventoryManager.Save(ref saveData.playerInventoryData);
         GridController.Instance.playerController.playerEquipmentManager.Save(ref saveData.playerEquipmentData);
         GridController.Instance.playerController.playerWeaponManager.Save(ref saveData.playerWeaponData);
+        GridController.Instance.Save(ref saveData.LevelData);
     }
 
     public static void Load()
@@ -49,5 +51,6 @@ public class SaveSystem
         GridController.Instance.playerController.playerInventoryManager.Load(saveData.playerInventoryData);
         GridController.Instance.playerController.playerEquipmentManager.Load(saveData.playerEquipmentData);
         GridController.Instance.playerController.playerWeaponManager.Load(saveData.playerWeaponData);
+        GridController.Instance.Load(saveData.LevelData);
     }
 }

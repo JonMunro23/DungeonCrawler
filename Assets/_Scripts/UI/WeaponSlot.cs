@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class WeaponSlot : InventorySlot
 {
-    IWeapon weapon;
+    IWeapon currentWeapon;
+
+    IWeapon defaultWeapon;
+    WeaponItemData defaultWeaponData;
+
+    IInventory playerInventory;
 
     public static Action<int, WeaponItemData, int> onWeaponAddedToSlot;
     public static Action<int> onWeaponRemovedFromSlot;
@@ -12,9 +17,16 @@ public class WeaponSlot : InventorySlot
 
     public static Action<int, WeaponItemData> onWeaponSetToDefault;
 
-    public void InitWeaponSlot(int newSlotIndex)
+
+    AudioEmitter audioEmitter;
+
+    public void InitWeaponSlot(int newSlotIndex, IInventory _playerInventory, AudioEmitter weaponAudioEmitter)
     {
         slotIndex = newSlotIndex;
+        playerInventory = _playerInventory;
+        audioEmitter = weaponAudioEmitter;
+
+
         SetInteractable(true);
     }
 
@@ -39,7 +51,7 @@ public class WeaponSlot : InventorySlot
     public override ItemStack TakeItem()
     {
         ItemStack itemToTake = base.TakeItem();
-        itemToTake.loadedAmmo = weapon.GetLoadedAmmo();
+        itemToTake.loadedAmmo = currentWeapon.GetRangedWeapon() != null ? currentWeapon.GetRangedWeapon().GetLoadedAmmo() : 0;
         DeinitialiseWeaponItem();
         return itemToTake;
 
@@ -52,48 +64,60 @@ public class WeaponSlot : InventorySlot
 
     public void SetSlotWeaponActive(bool isActive)
     {
-        if(weapon != null)
-            weapon.SetWeaponActive(isActive);           
+        if(currentWeapon != null)
+            currentWeapon.SetWeaponActive(isActive);           
     }
 
     public async Task HolsterWeapon()
     {
-        if(weapon != null)
-            await weapon.HolsterWeapon();
+        if(currentWeapon != null)
+            await currentWeapon.HolsterWeapon();
     }
 
     public async Task DrawWeapon()
     {
-        if (weapon != null)
-            await weapon.DrawWeapon();
+        if (currentWeapon != null)
+            await currentWeapon.DrawWeapon();
     }
 
-    public void SetWeapon(IWeapon newWeapon, WeaponItemData newWeaponData, AudioEmitter weaponAudioEmitter)
+    public void SetWeapon(IWeapon newWeapon)
     {
-        weapon = newWeapon;
-        weapon.InitWeapon(slotIndex, newWeaponData, weaponAudioEmitter);
+        currentWeapon = newWeapon;
+        currentWeapon.SetDefaultWeapon(false);
+        currentWeapon.InitWeapon(slotIndex, newWeapon.GetWeaponData(), audioEmitter, playerInventory);     
+
+        //UpdateSlotUI();
+    }
+    public void InitDefaultWeapon(IWeapon _defaultWeapon)
+    {
+        defaultWeapon = _defaultWeapon;
+        defaultWeaponData = defaultWeapon.GetWeaponData();
     }
 
-    public void SetWeaponToDefault(IWeapon defaultWeapon, WeaponItemData defaultWeaponData, AudioEmitter weaponAudioEmitter)
+    public void SetWeaponToDefault()
     {
-        weapon = defaultWeapon;
-        weapon.InitWeapon(slotIndex, defaultWeaponData, weaponAudioEmitter);
+        currentWeapon = defaultWeapon;
+        currentWeapon.SetDefaultWeapon(true);
+        currentWeapon.InitWeapon(slotIndex, defaultWeaponData, audioEmitter, playerInventory);
         onWeaponSetToDefault?.Invoke(slotIndex, defaultWeaponData);
     }
 
     public IWeapon GetWeapon()
     {
-        return weapon;
+        return currentWeapon;
     }
 
     public void RemoveWeapon()
     {
-        weapon.RemoveWeapon();
-        weapon = null;
+        currentWeapon.RemoveWeapon();
+        currentWeapon = null;
     }
 
-    public void UnloadWeapon()
+    public void UnloadSlot()
     {
-        TakeItem();
+        if (currentWeapon.IsDefaultWeapon())
+            SetSlotWeaponActive(false);
+        else
+            RemoveItem();
     }
 }

@@ -61,17 +61,6 @@ public class KeycardReader : InteractableBase
         StartCoroutine(Error());
     }
 
-    void TriggerObjects()
-    {
-        foreach (ITriggerable obj in objectsToTrigger)
-        {
-            obj.Trigger();
-        }
-
-        if (isSingleUse)
-            canUse = false;
-    }
-
     void SetIndicatorMaterial(Material newMat)
     {
         indicatorMesh.material = newMat;
@@ -100,5 +89,23 @@ public class KeycardReader : InteractableBase
         SetIndicatorMaterial(errorMat);
         yield return new WaitForSeconds(errorIndicatorDuration);
         SetIndicatorMaterial(defaultMat);
+    }
+
+    public override void Interact()
+    {
+        //somehow show player that a keycard is required
+    }
+
+    public override void SetIsActivated(bool _isActivated)
+    {
+        isActivated = _isActivated;
+
+        if(isActivated)
+        {
+            if (isSingleUse)
+                canUse = false;
+
+            SetIndicatorMaterial(successMat);
+        }
     }
 }

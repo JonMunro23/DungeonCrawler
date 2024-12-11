@@ -5,6 +5,13 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 [System.Serializable]
+public struct LevelSaveData
+{
+    public int currentLevelIndex;
+    public List<SaveableLevelData> levels;
+}
+
+[System.Serializable]
 public class NPCSpawnData
 {
     public NPCSpawnPoint spawnPoint;
@@ -19,18 +26,98 @@ public class NPCSpawnData
     }
 }
 
+[System.Serializable]
+public class SaveableLevelData
+{
+    [System.Serializable]
+    public class TriggerableSaveData
+    {
+        public bool isTriggered;
+        public int currentNumberOfTriggers;
+
+        public TriggerableSaveData(bool isTriggered, int currentNumberOfTriggers)
+        {
+            this.isTriggered = isTriggered;
+            this.currentNumberOfTriggers = currentNumberOfTriggers;
+        }
+    }
+
+    [System.Serializable]
+    public class WorldItemSaveData
+    {
+        public Vector2 coords;
+        public float rotation;
+        public ItemStack itemStack;
+
+        public WorldItemSaveData(Vector2 coords, float rotation, ItemStack itemStack)
+        {
+            this.coords = coords;
+            this.rotation = rotation;
+            this.itemStack = itemStack;
+        }
+    }
+
+    [System.Serializable]
+    public class ContainerSaveData
+    {
+        public Vector2 coords;
+        public List<ContainerItemStack> containedItemStacks;
+
+        public ContainerSaveData(Vector2 coords, List<ContainerItemStack> containedItemStacks)
+        {
+            this.coords = coords;
+            this.containedItemStacks = containedItemStacks;
+        }
+    }
+
+    [System.Serializable]
+    public class NPCSaveData
+    {
+        public Vector2 coords;
+        public float rotation;
+        public int currentHealth;
+        public NPCData npcData;
+
+        public NPCSaveData(Vector2 coords, float rotation, int currentHealth, NPCData npcData)
+        {
+            this.coords = coords;
+            this.rotation = rotation;
+            this.currentHealth = currentHealth;
+            this.npcData = npcData;
+        }
+    }
+
+    public int levelIndex;
+    public List<bool> interactableActivationStates = new List<bool>();
+    public List<TriggerableSaveData> triggerableSaveData = new List<TriggerableSaveData>();
+    public List<WorldItemSaveData> worldItems = new List<WorldItemSaveData>();
+    public List<ContainerSaveData> containers = new List<ContainerSaveData>();
+    public List<NPCSaveData> spawnedNPCs = new List<NPCSaveData>();
+
+    public SaveableLevelData(int levelIndex, List<bool> interactableActivationStates, List<TriggerableSaveData> triggerableSaveData, List<WorldItemSaveData> worldItems, List<ContainerSaveData> containers, List<NPCSaveData> NPCs)
+    {
+        this.levelIndex = levelIndex;
+        this.interactableActivationStates = new List<bool>(interactableActivationStates);
+        this.triggerableSaveData = new List<TriggerableSaveData>(triggerableSaveData);
+        this.worldItems = new List<WorldItemSaveData>(worldItems);
+        this.containers = new List<ContainerSaveData>(containers);
+        this.spawnedNPCs = new List<NPCSaveData>(NPCs);
+    }
+}
+
+[System.Serializable]
 public class LevelData
 {
-    Dictionary<Vector2, GridNode> levelNodes = new Dictionary<Vector2, GridNode>();
-    List<NPCController> spawnedNPCs = new List<NPCController>();
+    public Dictionary<Vector2, GridNode> levelNodes = new Dictionary<Vector2, GridNode>();
+    public List<NPCController> spawnedNPCs = new List<NPCController>();
 
-    public LevelData(Dictionary<Vector2, GridNode> levelNodes, List<ITriggerable> spawnedTriggerables, List<IInteractable> spawnedInteractables, List<NPCController> spawnedNPCs)
+    public LevelData(Dictionary<Vector2, GridNode> levelNodes, List<NPCController> spawnedNPCs)
     {
         this.levelNodes = new Dictionary<Vector2, GridNode>(levelNodes);
         this.spawnedNPCs = new List<NPCController>(spawnedNPCs);
     }
 
-    public void UpdateLevelData(Dictionary<Vector2, GridNode> updatedNodes,List<ITriggerable> updatedTriggerables, List<IInteractable> updatedInteractables, List<NPCController> updatedNPCs)
+    public void UpdateLevelData(Dictionary<Vector2, GridNode> updatedNodes, List<NPCController> updatedNPCs)
     {
         levelNodes.Clear();
         levelNodes = new Dictionary<Vector2, GridNode>(updatedNodes);
@@ -58,7 +145,6 @@ public class GridController : MonoBehaviour
     const int INTGRID_LAYER_INDEX = 1;
 
     [SerializeField] LDtkComponentProject project;
-    Level currentLevel;
     List<Level> levels = new List<Level>();
     LayerInstance entityLayer;
     LayerInstance intGridLayer;
@@ -77,6 +163,7 @@ public class GridController : MonoBehaviour
     /// </summary>
     Dictionary<int, LevelData> levelDataDictionary = new Dictionary<int, LevelData>();
 
+
     [Header("Player")]
     [SerializeField] CharacterData playerCharData;
     [SerializeField] PlayerSpawnPoint playerSpawnPointPrefab, spawnedPlayerSpawnPoint;
@@ -84,21 +171,24 @@ public class GridController : MonoBehaviour
     Vector2 playerSpawnCoords = Vector2.zero;
 
     [Header("NPCs")]
-    [SerializeField] NPCSpawnPoint NPCSpawnPointPrefab;
-    [SerializeField] List<NPCSpawnData> NPCSpawnData = new List<NPCSpawnData>();
+    [SerializeField] NPCController npcPrefab;
+    //[SerializeField] NPCSpawnPoint NPCSpawnPointPrefab;
+    //[SerializeField] List<NPCSpawnData> NPCSpawnData = new List<NPCSpawnData>();
+    [SerializeField] List<NPCController> spawnedNPCs = new List<NPCController>();
     [SerializeField] List<NPCController> activeNPCs = new List<NPCController>();
     [SerializeField] NPCDataContainer NPCDataContainer;
 
     [Header("World Items")]
     [SerializeField] WorldItem worldItemPrefab;
     [SerializeField] ItemDataContainer itemDataContainer;
-    //[SerializeField] Transform worldItemsParent;
+    [SerializeField] List<WorldItem> spawnedWorldItems;
 
     [Header("Level Transitions")]
     [SerializeField] LevelTransition levelTransitionPrefab;
 
     [Header("Containers")]
     [SerializeField] Container largeContainerPrefab;
+    [SerializeField] List<IContainer> spawnedContainers = new List<IContainer>();
 
     [Header("Interactables")]
     [SerializeField] Lever leverPrefab;
@@ -121,6 +211,10 @@ public class GridController : MonoBehaviour
         NPCController.onNPCDeath += OnNPCDeath;
 
         PlayerController.onPlayerDeath += OnPlayerDeath;
+
+        //Needs changed 
+        WorldItem.onWorldItemPickedUp += OnWorldItemPickedUp;
+        WorldItem.onWorldItemGrabbed += OnWorldItemPickedUp;
     }
 
     private void OnDisable()
@@ -128,6 +222,9 @@ public class GridController : MonoBehaviour
         NPCController.onNPCDeath -= OnNPCDeath;
 
         PlayerController.onPlayerDeath -= OnPlayerDeath;
+
+        WorldItem.onWorldItemPickedUp -= OnWorldItemPickedUp;
+        WorldItem.onWorldItemGrabbed -= OnWorldItemPickedUp;
     }
 
     private void Awake()
@@ -140,6 +237,7 @@ public class GridController : MonoBehaviour
     void Start()
     {
         GetLevels();
+
         InstantiateLevels();
 
         LoadLevel(startingLevelIndex);
@@ -161,6 +259,7 @@ public class GridController : MonoBehaviour
 
     void GetLevels()
     {
+        levels.Clear();
         foreach (Level level in project.Json.FromJson.Levels)
         {
             levels.Add(level);
@@ -172,6 +271,11 @@ public class GridController : MonoBehaviour
         RestartLevel();
     }
 
+    void OnWorldItemPickedUp(WorldItem grabbedItem)
+    {
+        if(spawnedWorldItems.Contains(grabbedItem))
+            spawnedWorldItems.Remove(grabbedItem);
+    }
 
     private void Update()
     {
@@ -209,6 +313,9 @@ public class GridController : MonoBehaviour
 
     void OnNPCDeath(NPCController deadNPC)
     {
+        if(spawnedNPCs.Contains(deadNPC))
+            spawnedNPCs.Remove(deadNPC);
+
         if(activeNPCs.Contains(deadNPC))
             activeNPCs.Remove(deadNPC);
     }
@@ -232,17 +339,25 @@ public class GridController : MonoBehaviour
 
     void SaveLevel(int indexOfLevelToSave)
     {
-        Debug.Log("Saving level " + indexOfLevelToSave + " ...");
+        //Debug.Log("Saving level " + indexOfLevelToSave + " ...");
 
         if (levelDataDictionary.TryGetValue(indexOfLevelToSave, out LevelData level))
         {
-            level.UpdateLevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs);
-            Debug.Log("Updated level " + indexOfLevelToSave + " data ...");
+            level.UpdateLevelData(activeNodes, activeNPCs);
+            //Debug.Log("Updated level " + indexOfLevelToSave + " data ...");
             return;
         }
 
-        levelDataDictionary.Add(indexOfLevelToSave, new LevelData(activeNodes, spawnedTriggerables, spawnedInteractables, activeNPCs));
-        Debug.Log("Added level "+ indexOfLevelToSave + " to levels list");
+        List<NPCController> npcsToSave = new List<NPCController>();
+        foreach (NPCController npc in spawnedNPCs)
+        {
+            if(npc.levelIndex ==  indexOfLevelToSave)
+                npcsToSave.Add(npc);
+
+        }
+
+        levelDataDictionary.Add(indexOfLevelToSave, new LevelData(activeNodes, npcsToSave));
+        //Debug.Log("Added level "+ indexOfLevelToSave + " to levels list");
     }
 
     void LoadLevel(int indexOfLevelToLoad)
@@ -268,18 +383,11 @@ public class GridController : MonoBehaviour
 
     void InstantiateLevel(int levelIndex)
     {
-        //currentLevel = levels[levelIndex];
         entityLayer = levels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
         intGridLayer = levels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
 
-        SpawnGridNodes();
-
+        SpawnGridNodes(levelIndex);
         LinkInteractablesToTriggerables();
-
-        SpawnNPCs();
-
-        //SpawnPlayer();
-
         CacheGridNodeNeighbours();
     }
 
@@ -292,7 +400,7 @@ public class GridController : MonoBehaviour
         }
         activeNPCs.Clear();
 
-        NPCSpawnData.Clear();
+        //NPCSpawnData.Clear();
         //spawnedNPCSpawnPoints.Clear();
         //NPCSpawnCoords.Clear();
 
@@ -307,13 +415,11 @@ public class GridController : MonoBehaviour
         activeNodes.Clear();
     }
 
-    private async void SpawnGridNodes()
+    private async void SpawnGridNodes(int levelIndex)
     {
         int index = 0;
-        GridNode clone = null;
         Vector2 spawnCoords = Vector2.zero;
-
-        GameObject levelParent = new GameObject($"Level {currentLevelIndex}");
+        GameObject levelParent = new GameObject($"Level {levelIndex}");
         Transform levelParentTransform = levelParent.transform;
         levelParentTransform.SetParent(transform);
 
@@ -321,6 +427,7 @@ public class GridController : MonoBehaviour
         {
             for (int j = 0; j < intGridLayer.CHei; j++)
             {
+                GridNode clone;
                 //Spawn tiles
                 //i index is reversed to match orientation in LDtk
                 switch (intGridLayer.IntGridCsv[index])
@@ -331,14 +438,13 @@ public class GridController : MonoBehaviour
                         spawnCoords = new Vector2(-i, j);
                         clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
                         activeNodes.Add(spawnCoords, clone);
-
-                        break;
+                        break; //Spawn Walls
                     case 2:
                         clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, levelParentTransform);
                         spawnCoords = new Vector2(-i, j);
                         clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
                         activeNodes.Add(spawnCoords, clone);
-                        break;
+                        break; //Spawn Walkables
                 }
 
                 //Spawn Entities
@@ -355,41 +461,47 @@ public class GridController : MonoBehaviour
                                 playerSpawnCoords = spawnCoords;
                                 break;
                             case "NPC_Spawn":
-                                NPCSpawnPoint NPCSpawnPointClone = Instantiate(NPCSpawnPointPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                NPCController NPCClone = Instantiate(npcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                 NPCData spawnData = GetNPCData(entityLayer.EntityInstances[k].FieldInstances[1].Value);
-                                NPCSpawnData.Add(new NPCSpawnData(NPCSpawnPointClone, spawnCoords, spawnData));
+                                NPCClone.InitNPC(levelIndex, spawnData, spawnNode);
+                                NPCClone.SetActive(false);
+                                spawnedNPCs.Add(NPCClone);
+                                //NPCSpawnPoint NPCSpawnPointClone = Instantiate(NPCSpawnPointPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                //NPCSpawnData.Add(new NPCSpawnData(NPCSpawnPointClone, spawnCoords, spawnData));
                                 //spawnedNPCSpawnPoints.Add(NPCSpawnPointClone);
                                 //NPCSpawnCoords.Add(spawnCoords);
                                 break;
                             case "WorldItem":
                                 WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                spawnedWorldItems.Add(spawnedWorldItem);
                                 ItemData worldItemData = itemDataContainer.GetDataFromIdentifier(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString());
-                                spawnedWorldItem.InitWorldItem(new ItemStack(worldItemData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value)));
+                                spawnedWorldItem.InitWorldItem(levelIndex, spawnCoords, new ItemStack(worldItemData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value)));
                                 break;
                             case "Level_Transition":
                                 LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0,1.5f,0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                int levelIndex = Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[1].Value);
+                                int levelIndexToGoTo = Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[1].Value);
                                 List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
-                                spawnedLevelTransition.InitLevelTransition(levelIndex, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
+                                spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
                                 break;
                             case "Container":
-
+                                IContainer spawnedContainer = null;
                                 switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
                                 {
                                     case "Large":
-                                        IContainer spawnedContainer = Instantiate(largeContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                        spawnedContainer = Instantiate(largeContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                         List<object> itemNames = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
+                                        List<object> itemAmounts = (List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value;
                                         for (int l = 0; l < itemNames.Count; l++)
                                         {
                                             ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
-                                            List<object> itemAmounts = (List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value;
                                             int itemAmount = Convert.ToInt32(itemAmounts[l]);
-                                            spawnedContainer.AddNewStoredItem(new ItemStack(itemData, itemAmount));
+                                            spawnedContainer.AddNewStoredItem(l, new ItemStack(itemData, itemAmount));
 
                                         }
-                                        spawnedContainer.InitContainer();
                                         break;
                                 }
+                                spawnedContainer.InitContainer(levelIndex, spawnCoords);
+                                spawnedContainers.Add(spawnedContainer);
 
                                 break;
                             case "Interactable":
@@ -406,6 +518,7 @@ public class GridController : MonoBehaviour
                                         {
                                             spawnedLever.AddEntityRefToTrigger((Dictionary<string, object>)entityRef);
                                         }
+                                        spawnedLever.SetLevelIndex(levelIndex);
                                         spawnedInteractables.Add(spawnedLever);
                                         break;
                                     case "Keycard_Reader":
@@ -417,6 +530,7 @@ public class GridController : MonoBehaviour
                                         {
                                             spawnedKeycardReader.AddEntityRefToTrigger((Dictionary<string, object>)entityRef);
                                         }
+                                        spawnedKeycardReader.SetLevelIndex(levelIndex);
                                         spawnedInteractables.Add(spawnedKeycardReader);
                                         break;
                                 }
@@ -435,25 +549,23 @@ public class GridController : MonoBehaviour
                                 spawnedDoor.SetOccupyingNode(spawnNode);
                                 spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
                                 spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                                spawnedDoor.SetLevelIndex(levelIndex);
                                 spawnNode.SetOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle));
                                 spawnedTriggerables.Add(spawnedDoor);
                                 break;
                         }
-
                     }
                 }
                 index++;
                 await Task.Delay(0);
             }
         }
-
-        
     }
 
     private NPCData GetNPCData(object value)
     {
         string npcDataIdentifier = value.ToString();
-        Debug.Log($"Trying to spawn: {npcDataIdentifier}");
+        //Debug.Log($"Trying to spawn: {npcDataIdentifier}");
         return NPCDataContainer.GetDataFromIdentifier(npcDataIdentifier);
     }
 
@@ -465,13 +577,17 @@ public class GridController : MonoBehaviour
         }
     }
 
-    private void SpawnNPCs()
-    {
-        for (int i = 0; i < NPCSpawnData.Count; i++)
-        {
-            activeNPCs.Add(NPCSpawnData[i].spawnPoint.SpawnNPC(NPCSpawnData[i].spawnData, GetNodeAtCoords(NPCSpawnData[i].spawnCoords)));
-        }
-    }
+    //private void SetLevelNPCsActive(int levelIndex)
+    //{
+    //    foreach (NPCController npc in spawnedNPCs)
+    //    {
+    //        if(npc.levelIndex == levelIndex)
+    //        {
+    //            npc.SetActive(true);
+    //            activeNPCs.Add(npc);
+    //        }
+    //    }
+    //}
 
     private void SpawnPlayer()
     {
@@ -549,6 +665,101 @@ public class GridController : MonoBehaviour
     public string GetLevelNameFromIndex(int levelIndex)
     {
         return project.Json.FromJson.Levels[levelIndex].FieldInstances[0].Value.ToString();
+    }
+
+    private List<bool> GetInteractableActivationStatesInLevel(int levelIndex)
+    {
+        List<bool> interactableActivationStates = new List<bool>();
+        foreach (IInteractable interactable in spawnedInteractables)
+        {
+            if(interactable.GetLevelIndex() == levelIndex)
+                interactableActivationStates.Add(interactable.GetIsActivated());
+        }
+
+        return interactableActivationStates;
+    }
+
+    private List<SaveableLevelData> GetSaveableLevelData()
+    {
+        List<SaveableLevelData> saveableLevelDatas = new List<SaveableLevelData>();
+        foreach (int levelIndex in levelDataDictionary.Keys)
+        {
+            saveableLevelDatas.Add(new SaveableLevelData(
+                levelIndex,
+                GetInteractableActivationStatesInLevel(levelIndex),
+                GetTriggerableSaveData(levelIndex),
+                GetWorldItemSaveData(levelIndex),
+                GetContainerSaveData(levelIndex),
+                GetNPCSaveData(levelIndex)
+            ));
+        }
+
+        return saveableLevelDatas;
+    }
+
+    private List<SaveableLevelData.NPCSaveData> GetNPCSaveData(int levelIndex)
+    {
+        List<SaveableLevelData.NPCSaveData> NPCSaveData = new List<SaveableLevelData.NPCSaveData>();
+        foreach (NPCController npc in spawnedNPCs)
+        {
+            if(npc.levelIndex == levelIndex)
+                NPCSaveData.Add(new SaveableLevelData.NPCSaveData(npc.currentlyOccupiedGridnode.Coords.Pos, npc.transform.localRotation.eulerAngles.y, Mathf.RoundToInt(npc.currentGroupHealth), npc.NPCData));
+        }
+
+        return NPCSaveData;
+    }
+
+    private List<SaveableLevelData.ContainerSaveData> GetContainerSaveData(int levelIndex)
+    {
+        List<SaveableLevelData.ContainerSaveData> containerSaveData = new List<SaveableLevelData.ContainerSaveData>();
+        foreach (IContainer container in spawnedContainers)
+        {
+            if (container.GetLevelIndex() == levelIndex)
+                containerSaveData.Add(new SaveableLevelData.ContainerSaveData(container.GetCoords(), container.GetStoredItems()));
+        }
+
+        return containerSaveData;
+    }
+
+    private List<SaveableLevelData.WorldItemSaveData> GetWorldItemSaveData(int levelIndex)
+    {
+        List<SaveableLevelData.WorldItemSaveData> worldItemSaveData = new List<SaveableLevelData.WorldItemSaveData>();
+        foreach (WorldItem worldItem in spawnedWorldItems)
+        {
+            if(worldItem.levelIndex == levelIndex)
+                worldItemSaveData.Add(new SaveableLevelData.WorldItemSaveData(worldItem.coords, worldItem.transform.rotation.eulerAngles.y, worldItem.item));
+        }
+
+        return worldItemSaveData;
+    }
+    private List<SaveableLevelData.TriggerableSaveData> GetTriggerableSaveData(int levelIndex)
+    {
+        List<SaveableLevelData.TriggerableSaveData> triggerableSaveData = new List<SaveableLevelData.TriggerableSaveData>();
+        foreach (ITriggerable triggerable in spawnedTriggerables)
+        {
+            if (triggerable.GetLevelIndex() == levelIndex)
+                triggerableSaveData.Add(new SaveableLevelData.TriggerableSaveData(triggerable.GetIsTriggered(), triggerable.GetCurrentNumberOfTriggers()));
+        }
+
+        return triggerableSaveData;
+    }
+
+    public void Save(ref LevelSaveData data)
+    {
+        data.currentLevelIndex = currentLevelIndex;
+        data.levels = GetSaveableLevelData();
+    }
+
+    public void Load(LevelSaveData data)
+    {
+        //InstantiateLevels
+        //Set triggerable states to saved state
+        //Set interactable states to saved state
+        //Spawn WorldItems
+        //Spawn and populate Containers
+        //Spawn saved NPCs
+
+        LoadLevel(data.currentLevelIndex);
     }
 
 }
