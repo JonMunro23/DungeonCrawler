@@ -111,7 +111,13 @@ public class GridNode : MonoBehaviour
         Connection = nodeBase;
     }
 
-    public float GetDistance(GridNode other) => Coords.GetDistance(other.Coords); // Helper to reduce noise in pathfinding
+    public float GetDistance(GridNode other)
+    {
+        if (other == null)
+            return 0;
+
+        return Coords.GetDistance(other.Coords);
+    }
 
     public void SetG(float g)
     {

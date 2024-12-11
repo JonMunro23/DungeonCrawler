@@ -57,4 +57,16 @@ public abstract class TriggerableBase : MonoBehaviour, ITriggerable
     {
         currentNumOfTriggers = newNumberOfTriggers;
     }
+
+    public abstract void LoadData(SaveableLevelData.TriggerableSaveData data);
+
+    public Vector2 GetCoords()
+    {
+        return occupyingGridNode.Coords.Pos;
+    }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
+    }
 }

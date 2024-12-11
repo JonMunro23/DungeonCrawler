@@ -71,6 +71,15 @@ public class Door : TriggerableBase
         if(isTriggered)
         {
             transformToMove.localPosition = openedPos;
+            if (occupyingGridNode)
+                occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.None));
         }
+    }
+
+    public override void LoadData(SaveableLevelData.TriggerableSaveData data)
+    {
+        SetIsTriggered(data.isTriggered);
+        if (requiredNumOfTriggers > 0)
+            currentNumOfTriggers = data.currentNumberOfTriggers;
     }
 }

@@ -47,10 +47,13 @@ public class SaveSystem
 
     static void HandleLoadData()
     {
+        GridController.Instance.Load(saveData.LevelData);
+        if (!GridController.Instance.playerController)
+            return;
+
         GridController.Instance.playerController.Load(saveData.playerData);
         GridController.Instance.playerController.playerInventoryManager.Load(saveData.playerInventoryData);
         GridController.Instance.playerController.playerEquipmentManager.Load(saveData.playerEquipmentData);
         GridController.Instance.playerController.playerWeaponManager.Load(saveData.playerWeaponData);
-        GridController.Instance.Load(saveData.LevelData);
     }
 }

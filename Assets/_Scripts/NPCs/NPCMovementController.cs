@@ -10,7 +10,7 @@ public class NPCMovementController : MonoBehaviour
     [Header("Movement")]
     public bool isMoving;
     [SerializeField] List<GridNode> path = new List<GridNode>();
-    [SerializeField] GridNode targetNode;
+    public GridNode targetNode;
 
     [Space]
     [Header("Turning")]
@@ -114,16 +114,23 @@ public class NPCMovementController : MonoBehaviour
         int rand = Random.Range(0, NPCController.NPCData.walkSFX.Length);
         return NPCController.NPCData.walkSFX[rand];
     }
-    public void SnapToTargetNode()
+    public void SnapToNode(GridNode node)
     {
         if (!isMoving)
             return;
 
-        transform.position = targetNode.moveToTransform.position;
+        transform.position = node.moveToTransform.position;
         isMoving = false;
         //cancel any active coroutines
         //snap rotation
     }
+
+    public void SnapToRotation(float newRot)
+    {
+        transform.Rotate(new Vector3(0, newRot, 0));
+        currentOrientation.Rotate(new Vector3(0, newRot, 0));
+    }
+
     void MoveToTargetNode()
     {
         if (isMoving)

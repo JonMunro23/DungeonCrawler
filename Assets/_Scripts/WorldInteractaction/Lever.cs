@@ -31,12 +31,12 @@ public class Lever : InteractableBase
     {
         if(isActivated)
         {
-            isActivated = false;
+            //isActivated = false;
             leverPivotPoint.DOLocalRotate(unflippedRotation, flipDuration);
         }
         else
         {
-            isActivated = true;
+            //isActivated = true;
             leverPivotPoint.DOLocalRotate(flippedRotation, flipDuration);
         }
     }
@@ -50,7 +50,7 @@ public class Lever : InteractableBase
             if (isSingleUse)
                 canUse = false;
 
-            leverPivotPoint.rotation = Quaternion.Euler(flippedRotation);
+            leverPivotPoint.localRotation = Quaternion.Euler(flippedRotation);
         }
     }
 }

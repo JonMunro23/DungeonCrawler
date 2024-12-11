@@ -50,10 +50,10 @@ public class PlayerController : MonoBehaviour
         defaultCamPos = playerCamera.transform.localPosition;
     }
 
-    public void InitPlayer(CharacterData playerCharData, GridNode spawnGridNode)
+    public void InitPlayer(CharacterData playerCharData/*, GridNode spawnGridNode*/)
     {
         playerCharacterData = playerCharData;
-        currentOccupiedNode = spawnGridNode;
+        //currentOccupiedNode = spawnGridNode;
 
         playerInventoryManager.Init(this);
         playerEquipmentManager.Init(this);
@@ -82,7 +82,9 @@ public class PlayerController : MonoBehaviour
         if (!nodeToMoveTo)
             return;
 
-        currentOccupiedNode.ClearOccupant();
+        if(currentOccupiedNode)
+            currentOccupiedNode.ClearOccupant();
+
         advGridMovement.Teleport(nodeToMoveTo.moveToTransform.position);
         nodeToMoveTo.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
         SetCurrentOccupiedNode(nodeToMoveTo);
@@ -153,12 +155,12 @@ public class PlayerController : MonoBehaviour
     public void Save(ref PlayerSaveData data)
     {
         data.coords = currentOccupiedNode.Coords.Pos;
-        data.yRotation = transform.rotation.eulerAngles.y;
+        data.yRotation = Mathf.RoundToInt(advGridMovement.GetTargetRot());
     }
 
     public void Load(PlayerSaveData data)
     {
         MoveToCoords(data.coords);
-        advGridMovement.SetRotation(data.yRotation);
+        advGridMovement.SetRotation(Mathf.RoundToInt(data.yRotation));
     }
 }

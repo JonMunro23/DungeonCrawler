@@ -26,7 +26,7 @@ public class Container : MonoBehaviour, IContainer
     const int X_NUMSLOTS = 4, Y_NUMSLOTS = 2;
     bool isOpen;
 
-    [SerializeField] List<ContainerItemStack> storedItems = new List<ContainerItemStack>();
+    [SerializeField] Dictionary<int, ItemStack> storedItemStacks = new Dictionary<int, ItemStack>();
 
     [Header("Animation")]
     [SerializeField] Transform lidTransform;
@@ -52,24 +52,36 @@ public class Container : MonoBehaviour, IContainer
             for (int j = 0; j < Y_NUMSLOTS; j++)
             {
                 ContainerSlot clone = Instantiate(containerSlotPrefab, containerGrid.GetCellCenterWorld(new Vector3Int(-i, j)), Quaternion.identity, containerGrid.transform);
-                if (storedItems.Count - 1 >= index)
-                    if (storedItems[index] != null)
-                        clone.InitSlot(storedItems[index].itemStack, this, index);
-
+                if(storedItemStacks.TryGetValue(index, out ItemStack stack))
+                {
+                    clone.InitSlot(stack, this, index);
+                }
+                //foreach (ContainerItemStack itemStack in storedItemStacks.Values)
+                //{
+                //    if(itemStack.containerIndex == index)
+                //    {
+                //        clone.InitSlot(itemStack.itemStack, this, index);
+                //    }
+                //}
                 index++;
             }
         }
     }
 
-    public void AddNewStoredItem(int containerIndex, ItemStack itemStackToAdd)
+    public void AddNewStoredItemStack(ContainerItemStack itemStackToAdd)
     {
-        storedItems.Add(new ContainerItemStack(containerIndex, itemStackToAdd));
+        storedItemStacks.Add(itemStackToAdd.containerIndex, itemStackToAdd.itemStack);
     }
 
     public void RemoveStoredItemFromSlot(int slotIndex)
     {
-        storedItems.RemoveAt(slotIndex);
+        storedItemStacks.Remove(slotIndex);
     }
+
+    //public void RemoveStoredItem(ContainerItemStack itemToRemove)
+    //{
+    //    storedItemStacks.Remove(itemToRemove);
+    //}
 
     void OpenContainer()
     {
@@ -108,6 +120,12 @@ public class Container : MonoBehaviour, IContainer
 
     public List<ContainerItemStack> GetStoredItems()
     {
+        List<ContainerItemStack > storedItems = new List<ContainerItemStack>();
+        foreach (int index in storedItemStacks.Keys)
+        {
+            storedItems.Add(new ContainerItemStack(index, storedItemStacks[index]));
+        }
+
         return storedItems;
     }
 
@@ -119,5 +137,23 @@ public class Container : MonoBehaviour, IContainer
     public int GetLevelIndex()
     {
         return levelIndex;
+    }
+
+    public void LoadContainerItemStacks(List<ContainerItemStack> itemStacks)
+    {
+        foreach (ContainerItemStack itemStack in itemStacks)
+        {
+            AddNewStoredItemStack(itemStack);
+        }
+    }
+
+    public float GetRotation()
+    {
+        return transform.localRotation.eulerAngles.y;
+    }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
     }
 }
