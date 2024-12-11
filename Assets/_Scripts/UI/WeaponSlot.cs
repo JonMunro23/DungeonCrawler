@@ -118,6 +118,10 @@ public class WeaponSlot : InventorySlot
         if (currentWeapon.IsDefaultWeapon())
             SetSlotWeaponActive(false);
         else
+        {
             RemoveItem();
+            RemoveWeapon();
+            SetWeaponToDefault();
+        }
     }
 }

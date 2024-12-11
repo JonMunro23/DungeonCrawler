@@ -117,9 +117,14 @@ public class AdvancedGridMovement : MonoBehaviour
 
     public void SetRotation(float rotation)
     {
-        transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, rotation, transform.rotation.z));
-        rotateFromDirection = transform.rotation;
-        rotateTowardsDirection = transform.rotation;
+        transform.root.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, rotation, transform.rotation.z));
+        rotateFromDirection = transform.root.rotation;
+        rotateTowardsDirection = transform.root.rotation;
+    }
+
+    public float GetTargetRot()
+    {
+        return rotateTowardsDirection.eulerAngles.y;
     }
 
     public void SwitchToWalking()

@@ -12,8 +12,10 @@ public class ContainerSlot : MonoBehaviour, IPickup
 
     public static Action<ContainerSlot> onContainerItemGrabbed;
 
-    public void InitSlot(ItemStack stackToInit, Container _parentContainer, int slotIndex)
+    public void InitSlot(ItemStack stackToInit, Container _parentContainer, int _slotIndex)
     {
+        slotIndex = _slotIndex;
+
         parentContainer = _parentContainer;
         storedStack = stackToInit;
 
@@ -35,6 +37,7 @@ public class ContainerSlot : MonoBehaviour, IPickup
         storedStack.loadedAmmo = 0;
 
         parentContainer.RemoveStoredItemFromSlot(slotIndex);
+        //parentContainer.RemoveStoredItem(new ContainerItemStack(slotIndex, storedStack));
     }
 
     public void Pickup(bool wasGrabbed = false)

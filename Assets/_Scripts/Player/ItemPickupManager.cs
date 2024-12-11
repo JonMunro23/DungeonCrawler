@@ -277,7 +277,7 @@ public class ItemPickupManager : MonoBehaviour
 
         if(other.TryGetComponent(out IContainer container))
         {
-            if(transform.root.rotation.y == other.transform.rotation.y)
+            if(transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
             {
                 nearbyContainer = container;
                 onNearbyContainerUpdated?.Invoke(nearbyContainer);

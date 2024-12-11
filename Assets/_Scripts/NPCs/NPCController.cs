@@ -53,10 +53,18 @@ public class NPCController : MonoBehaviour, IDamageable
         NPCData = npcData;
 
         if(spawnGridNode != null)
+        {
+            //spawnGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.NPC));
             currentlyOccupiedGridnode = spawnGridNode;
+        }
 
         SpawnNPCModels();
         InitControllers();
+    }
+
+    public void SetNPCHealth(int newHealthValue)
+    {
+        currentGroupHealth = newHealthValue;
     }
 
     public void SetActive(bool isActive)
@@ -64,9 +72,15 @@ public class NPCController : MonoBehaviour, IDamageable
         gameObject.SetActive(isActive);
     }
 
-    public void SnapToNode()
+    public void SnapToNode(GridNode node)
     {
-        movementController.SnapToTargetNode();
+        movementController.SnapToNode(node);
+    }
+
+    void SnapToRotation(float newRot)
+    {
+        movementController.SnapToRotation(newRot);
+
     }
 
     private void SpawnNPCModels()

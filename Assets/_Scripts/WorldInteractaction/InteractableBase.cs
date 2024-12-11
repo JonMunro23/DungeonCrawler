@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
     int levelIndex;
+    Vector2 coords;
 
     public bool isSingleUse;
     public bool canUse = true;
@@ -44,7 +45,6 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     public void TriggerObjects()
     {
         isActivated = !isActivated;
-
         foreach (ITriggerable obj in objectsToTrigger)
         {
             obj.Trigger();
@@ -65,5 +65,30 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     public int GetLevelIndex()
     {
         return levelIndex;
+    }
+
+    public Vector2 GetCoords()
+    {
+        return coords;
+    }
+
+    public void SetCoords(Vector2 _coords)
+    {
+        coords = _coords;
+    }
+
+    public virtual void SetRequiredKeycardType(string keycardType)
+    {
+        
+    }
+
+    public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData)
+    {
+        SetIsActivated(interactableSaveData.isActivated);
+    }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
     }
 }

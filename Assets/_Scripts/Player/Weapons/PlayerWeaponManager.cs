@@ -379,7 +379,7 @@ public class PlayerWeaponManager : MonoBehaviour
         foreach (WeaponSlot slot in spawnedWeaponSlots)
         {
             IWeapon slotWeapon = slot.GetWeapon();
-            if(slotWeapon.IsDefaultWeapon())
+            if (slotWeapon.IsDefaultWeapon())
                 continue;
 
             int loadedAmmo = 0;
@@ -410,7 +410,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
         for (int i = 0; i < data.slotData.Count; i++)
         {
-            spawnedWeaponSlots[i].AddItem(new ItemStack(data.slotData[i].heldWeaponData, 1, data.slotData[i].heldWeaponLoadedAmmo)); 
+            spawnedWeaponSlots[data.slotData[i].slotIndex].AddItem(new ItemStack(data.slotData[i].heldWeaponData, 1, data.slotData[i].heldWeaponLoadedAmmo)); 
         }
 
 
