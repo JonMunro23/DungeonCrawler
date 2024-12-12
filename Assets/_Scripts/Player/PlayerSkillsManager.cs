@@ -134,14 +134,14 @@ public class PlayerSkillsManager : MonoBehaviour
     private void OpenSkillsMenu()
     {
         isSkillMenuOpen = true;
-        inventoryManager.SetCursorActive(true);
+        HelperFunctions.SetCursorActive(true);
         onSkillMenuOpened?.Invoke();
     }
 
     public void CloseSkillsMenu()
     {
         isSkillMenuOpen = false;
-        inventoryManager.SetCursorActive(false);
+        HelperFunctions.SetCursorActive(false);
         onSkillMenuClosed?.Invoke();
     }
 

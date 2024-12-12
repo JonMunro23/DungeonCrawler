@@ -89,6 +89,7 @@ public class PlayerEquipmentManager : MonoBehaviour
 
             onEquippedItemRemoved?.Invoke(itemInSlot);
         }
+        
     }
 
     void RemoveAllEquippedItems()
@@ -99,6 +100,11 @@ public class PlayerEquipmentManager : MonoBehaviour
         for (int i = currentlyEquippedItems.Count - 1; i >= 0; i--)
         {
             RemoveEquippedItem(currentlyEquippedItems[i].slotType);
+        }
+
+        foreach (var slot in spawnedEquipmentSlots)
+        {
+            slot.RemoveItemStack();
         }
     }
 

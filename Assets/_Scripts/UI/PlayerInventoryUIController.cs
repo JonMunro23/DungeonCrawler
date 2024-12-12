@@ -18,6 +18,8 @@ public class PlayerInventoryUIController : MonoBehaviour
     [Header("Syringe")]
     [SerializeField] TMP_Text syringeAmountText;
 
+    public static bool isInventoryOpen;
+
     private void OnEnable()
     {
         PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
@@ -82,12 +84,26 @@ public class PlayerInventoryUIController : MonoBehaviour
     {
         InventoryParentObject.SetActive(true);
         InventoryObject.SetActive(true);
+
+        HelperFunctions.SetCursorActive(true);
+
+        isInventoryOpen = true;
     }
 
     void OnInventoryClosed()
     {
         InventoryParentObject.SetActive(false);
         InventoryObject.SetActive(false);
+
+        if(!PlayerInventoryManager.isInContainer)
+            HelperFunctions.SetCursorActive(false);
+
+        isInventoryOpen = false;
+    }
+
+    public void CloseInventory()
+    {
+        OnInventoryClosed();
     }
 
     void OnSyringeCountUpdated(int newSyringeCount)

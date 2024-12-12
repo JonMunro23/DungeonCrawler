@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeapon()
     {
-        if(!playerInventoryManager.isInventoryOpen && !playerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
+        if(!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeapon();
         }
@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeaponSpecial()
     {
-        if (!playerInventoryManager.isInventoryOpen && !playerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
+        if (!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeaponSpecial();
         }

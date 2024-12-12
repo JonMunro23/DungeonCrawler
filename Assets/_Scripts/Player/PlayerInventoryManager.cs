@@ -13,8 +13,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     InventorySlot syringeSlot;
     public InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
-    public bool isInventoryOpen { get; private set; }
-    public bool isInContainer { get; private set; }
+    public static bool isInContainer { get; private set; }
 
     [SerializeField] int heldHealthSyringes, heldPistolAmmo, heldRifleAmmo, heldShells;
     [Space]
@@ -48,8 +47,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
         isInContainer = true;
 
-        if (!isInventoryOpen)
-            SetCursorActive(true);
+        if (!PlayerInventoryUIController.isInventoryOpen)
+            HelperFunctions.SetCursorActive(true);
     }
 
     void OnContainerClosed()
@@ -59,8 +58,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
         isInContainer = false;
 
-        if(!isInventoryOpen)
-            SetCursorActive(false);
+        if(!PlayerInventoryUIController.isInventoryOpen)
+            HelperFunctions.SetCursorActive(false);
     }
 
     public void Init(PlayerController newPlayerController)
@@ -68,21 +67,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         playerController = newPlayerController;
 
         SpawnInventorySlots();
-        SetCursorActive(false);
-    }
-
-    public void SetCursorActive(bool isActive)
-    {
-        if (isActive)
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.Confined;
-        }
-        else
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        HelperFunctions.SetCursorActive(false);
     }
 
     void SpawnInventorySlots()
@@ -111,11 +96,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void ToggleInventory()
     {
-        if (isInventoryOpen == true)
+        if (PlayerInventoryUIController.isInventoryOpen == true)
         {
             CloseInventory();
         }
-        else if (isInventoryOpen == false)
+        else if (PlayerInventoryUIController.isInventoryOpen == false)
         {
             OpenInventory();
         }
@@ -123,17 +108,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     private void OpenInventory()
     {
-        isInventoryOpen = true;
-        SetCursorActive(true);
         onInventoryOpened?.Invoke();
     }
 
     public void CloseInventory()
     {
-        isInventoryOpen = false;
-        if(!isInContainer)
-            SetCursorActive(false);
-
         onInventoryClosed?.Invoke();
     }
 
