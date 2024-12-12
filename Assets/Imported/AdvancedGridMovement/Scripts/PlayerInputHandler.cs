@@ -28,6 +28,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     void Update()
     {
+        if(PauseMenu.isPaused) return;
+
         Action<EventMapping> actionKeyDown = new Action<EventMapping>(InputMappingKeyDown);
         Array.ForEach(eventMappingsKeyDown, actionKeyDown);
 

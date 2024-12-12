@@ -13,8 +13,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     InventorySlot syringeSlot;
     public InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
-    public bool isInventoryOpen { get; private set; }
-    public bool isInContainer { get; private set; }
+    public static bool isInContainer { get; private set; }
 
     [SerializeField] int heldHealthSyringes, heldPistolAmmo, heldRifleAmmo, heldShells;
     [Space]
@@ -48,7 +47,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
         isInContainer = true;
 
-        if (!isInventoryOpen)
+        if (!PlayerInventoryUIController.isInventoryOpen)
             HelperFunctions.SetCursorActive(true);
     }
 
@@ -59,7 +58,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
         isInContainer = false;
 
-        if(!isInventoryOpen)
+        if(!PlayerInventoryUIController.isInventoryOpen)
             HelperFunctions.SetCursorActive(false);
     }
 
@@ -97,11 +96,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void ToggleInventory()
     {
-        if (isInventoryOpen == true)
+        if (PlayerInventoryUIController.isInventoryOpen == true)
         {
             CloseInventory();
         }
-        else if (isInventoryOpen == false)
+        else if (PlayerInventoryUIController.isInventoryOpen == false)
         {
             OpenInventory();
         }
@@ -109,17 +108,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     private void OpenInventory()
     {
-        isInventoryOpen = true;
-        HelperFunctions.SetCursorActive(true);
         onInventoryOpened?.Invoke();
     }
 
     public void CloseInventory()
     {
-        isInventoryOpen = false;
-        if(!isInContainer)
-            HelperFunctions.SetCursorActive(false);
-
         onInventoryClosed?.Invoke();
     }
 

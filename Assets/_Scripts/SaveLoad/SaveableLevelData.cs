@@ -5,6 +5,7 @@ using UnityEngine;
 public struct LevelSaveData
 {
     public int currentLevelIndex;
+    public string currentLevelName;
     public List<SaveableLevelData> levels;
 }
 

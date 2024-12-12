@@ -11,6 +11,9 @@ public class WeaponMotion : MonoBehaviour
 
     private void Update()
     {
+        if (PauseMenu.isPaused)
+            return;
+
         BreathingAnimation(1);
 
         transform.localRotation = transform.localRotation * Quaternion.Euler(breathingRot);

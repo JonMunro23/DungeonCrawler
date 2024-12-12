@@ -2,7 +2,6 @@ using LDtkUnity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridController : MonoBehaviour
@@ -11,6 +10,8 @@ public class GridController : MonoBehaviour
 
     const int ENTITY_LAYER_INDEX = 0;
     const int INTGRID_LAYER_INDEX = 1;
+
+    [SerializeField] float gameTime;
 
     [SerializeField] LDtkComponentProject project;
     List<Level> levels = new List<Level>();
@@ -167,6 +168,10 @@ public class GridController : MonoBehaviour
     #region QuickSave/Load
     private void Update()
     {
+        if(PauseMenu.isPaused) return;
+
+        gameTime += Time.deltaTime;
+
         if (Input.GetKeyDown(KeyCode.F5))
         {
             QuickSave();
@@ -179,12 +184,12 @@ public class GridController : MonoBehaviour
 
     public void QuickSave()
     {
-        SaveSystem.Save(quickSaveSlotIndex);
+        SaveSystem.Save(quickSaveSlotIndex, "Quick Save");
     }
 
     public void QuickLoad()
     {
-        SaveSystem.Load(quickSaveSlotIndex);
+        SaveSystem.Load(quickSaveSlotIndex, "Quick Save");
     }
     #endregion
 
@@ -765,15 +770,18 @@ public class GridController : MonoBehaviour
         return saveableLevelDatas;
     }
 
-    public void Save(ref LevelSaveData data)
+    public void Save(ref SaveSystem.SaveData data)
     {
-        data.currentLevelIndex = currentLevelIndex;
-        data.levels = GetSaveableLevelData();
+        data.gameTime = gameTime;
+        data.LevelData.currentLevelIndex = currentLevelIndex;
+        data.LevelData.currentLevelName = GetLevelNameFromIndex(currentLevelIndex);
+        data.LevelData.levels = GetSaveableLevelData();
     }
 
-    public void Load(LevelSaveData data)
+    public void Load(SaveSystem.SaveData data)
     {
-        LoadGame(data);
+        gameTime = data.gameTime;
+        LoadGame(data.LevelData);
     }
 
 
