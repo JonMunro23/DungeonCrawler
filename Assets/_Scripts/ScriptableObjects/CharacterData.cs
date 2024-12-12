@@ -8,12 +8,12 @@ public class CharacterData : ScriptableObject
     public string charName;
     public Sprite charPortrait;
 
-    public List<Stat> baseCharStats = new List<Stat>();
+    public List<StatData> baseCharStats = new List<StatData>();
 
-    public Stat GetStat(ModifiableStats statToGet)
+    public StatData GetStat(ModifiableStats statToGet)
     {
-        Stat statToReturn = null;
-        foreach (Stat stat in baseCharStats)
+        StatData statToReturn = null;
+        foreach (StatData stat in baseCharStats)
         {
             if (stat.stat == statToGet)
                 statToReturn = stat;

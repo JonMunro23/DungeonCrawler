@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using System;
 using Random = UnityEngine.Random;
-using DG.Tweening;
 using System.Collections;
 using System.Threading.Tasks;
 
-public class PlayerHealthController : MonoBehaviour, IDamageable
+public class PlayerHealthManager : MonoBehaviour, IDamageable
 {
     PlayerController playerController;
     CharacterData characterData;
@@ -34,15 +33,15 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
     private void OnEnable()
     {
-        Stat.onStatUpdated += OnStatUpdated;
+        StatData.onStatUpdated += OnStatUpdated;
     }
 
     private void OnDisable()
     {
-        Stat.onStatUpdated -= OnStatUpdated;
+        StatData.onStatUpdated -= OnStatUpdated;
     }
 
-    void OnStatUpdated(Stat updatedStat)
+    void OnStatUpdated(StatData updatedStat)
     {
         if(updatedStat.stat == ModifiableStats.MaxHealth)
         {
@@ -61,7 +60,7 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
         playerController = newPlayerController;
         characterData = playerController.playerCharacterData;
 
-        maxHealth = Mathf.CeilToInt(characterData.GetStat(ModifiableStats.MaxHealth).baseStatValue);
+        maxHealth = Mathf.CeilToInt(characterData.GetStat(ModifiableStats.MaxHealth).GetBaseStatValue());
         onMaxHealthUpdated?.Invoke(characterData, maxHealth);
 
         currentHealth = maxHealth;
@@ -135,6 +134,7 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
 
         canUseSyringe = false;
         playerController.playerInventoryManager.RemoveHealthSyringe(1);
+        slot.RemoveFromExistingStack(1);
         await InjectSyringe(slot.currentSlotItemStack.itemData as ConsumableItemData);
     }
 
@@ -205,5 +205,16 @@ public class PlayerHealthController : MonoBehaviour, IDamageable
             }
         }
         return dodged;
+    }
+
+    public void Save(ref PlayerSaveData data)
+    {
+        data.currentHealth = currentHealth;
+    }
+
+    public void Load(PlayerSaveData data)
+    {
+        currentHealth = data.currentHealth;
+        onCurrentHealthUpdated?.Invoke(characterData, currentHealth);
     }
 }

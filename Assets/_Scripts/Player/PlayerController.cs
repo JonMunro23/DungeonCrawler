@@ -1,13 +1,33 @@
 using DG.Tweening;
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 [System.Serializable]
 public struct PlayerSaveData
 {
+    //Movement Data
     public Vector2 coords;
     public float yRotation;
+
+    //Health data
+    public int currentHealth;
+
+    //Inventory Data
+    public List<ItemStack> storedItems;
+
+    //Equipment Data
+    public List<EquippedItem> equippedItems;
+
+    //Weapon Data
+    public int activeWeaponSlotIndex;
+    public List<WeaponSlotData> weaponSlotData;
+
+    //Skill Data
+    public int availableSkillPoints;
+    public List<UnlockedSKillData> unlockedSkills;
 }
 
 public class PlayerController : MonoBehaviour
@@ -15,11 +35,12 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     public AdvancedGridMovement advGridMovement;
     public ItemPickupManager itemPickupManager;
-    public PlayerHealthController playerHealthController;
+    public PlayerHealthManager playerHealthController;
     public PlayerInventoryManager playerInventoryManager;
     public PlayerEquipmentManager playerEquipmentManager;
     public PlayerWeaponManager playerWeaponManager;
     public PlayerStatsManager playerStatsManager;
+    public PlayerSkillsManager playerSkillsManager;
     [HideInInspector] public Camera playerCamera;
 
     [Header("Player Data")]
@@ -36,12 +57,13 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         advGridMovement = GetComponent<AdvancedGridMovement>();
-        playerHealthController = GetComponent<PlayerHealthController>();
+        playerHealthController = GetComponent<PlayerHealthManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
         itemPickupManager = GetComponent<ItemPickupManager>();
         playerStatsManager = GetComponent<PlayerStatsManager>();
+        playerSkillsManager = GetComponent<PlayerSkillsManager>();
         playerCamera = GetComponentInChildren<Camera>();
     }
 
@@ -60,6 +82,7 @@ public class PlayerController : MonoBehaviour
         playerWeaponManager.Init(this);
         playerStatsManager.Init(playerCharacterData);
         playerHealthController.Init(this);
+        playerSkillsManager.Init();
         advGridMovement.Init(this);
 
         onPlayerInitialised?.Invoke(this);
@@ -156,11 +179,45 @@ public class PlayerController : MonoBehaviour
     {
         data.coords = currentOccupiedNode.Coords.Pos;
         data.yRotation = Mathf.RoundToInt(advGridMovement.GetTargetRot());
+
+        if (playerHealthController)
+            playerHealthController.Save(ref data);
+
+        if (playerInventoryManager)
+            playerInventoryManager.Save(ref data);
+
+        if (playerEquipmentManager)
+            playerEquipmentManager.Save(ref data);
+
+        if (playerWeaponManager)
+            playerWeaponManager.Save(ref data);
+
+        if (playerSkillsManager)
+            playerSkillsManager.Save(ref data);
     }
 
     public void Load(PlayerSaveData data)
     {
         MoveToCoords(data.coords);
         advGridMovement.SetRotation(Mathf.RoundToInt(data.yRotation));
+
+        if(playerStatsManager)
+            playerStatsManager.Load();
+
+        if(playerSkillsManager)
+            playerSkillsManager.Load(data);
+
+        if(playerHealthController)
+            playerHealthController.Load(data);
+
+        if(playerInventoryManager)
+            playerInventoryManager.Load(data);
+
+        if(playerEquipmentManager)
+            playerEquipmentManager.Load(data);
+
+        if(playerWeaponManager)
+            playerWeaponManager.Load(data);
+
     }
 }

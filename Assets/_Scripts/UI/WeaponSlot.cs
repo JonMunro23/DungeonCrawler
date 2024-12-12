@@ -119,7 +119,7 @@ public class WeaponSlot : InventorySlot
             SetSlotWeaponActive(false);
         else
         {
-            RemoveItem();
+            RemoveItemStack();
             RemoveWeapon();
             SetWeaponToDefault();
         }

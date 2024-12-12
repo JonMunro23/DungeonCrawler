@@ -2,14 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
-
-[System.Serializable]
-public struct PlayerInventorySaveData
-{
-    public List<ItemStack> storedItems;
-}
 public class PlayerInventoryManager : MonoBehaviour, IInventory
 {
     PlayerController playerController;
@@ -440,7 +433,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         {
             if(!slot.IsSlotEmpty())
             {
-                slot.RemoveItem();
+                slot.RemoveItemStack();
             }
         }
 
@@ -450,12 +443,12 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
-    public void Save(ref PlayerInventorySaveData data)
+    public void Save(ref PlayerSaveData data)
     {
         data.storedItems = GetStoredItems();
     }
 
-    public void Load(PlayerInventorySaveData data)
+    public void Load(PlayerSaveData data)
     {
         LoadItems(data.storedItems);
     }

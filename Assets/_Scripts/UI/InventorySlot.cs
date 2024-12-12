@@ -112,7 +112,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
         if (currentSlotItemStack.itemAmount <= 0)
         {
-            RemoveItem();
+            RemoveItemStack();
         }
 
         UpdateSlotUI();
@@ -141,7 +141,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
                 playerInventoryManager.RemoveAmmo(consumableData.ammoType, itemToTake.itemAmount);
             }
         }
-        RemoveItem();
+        RemoveItemStack();
         return itemToTake;
     }
 
@@ -167,7 +167,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             currentSlotItemStack.itemAmount--;
             UpdateSlotUI();
             if (currentSlotItemStack.itemAmount == 0)
-                RemoveItem();
+                RemoveItemStack();
         }
     }
 
@@ -252,7 +252,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         onInventorySlotClicked?.Invoke(this);
     }
 
-    public void RemoveItem()
+    public void RemoveItemStack()
     {
         currentSlotItemStack.itemData = null;
         currentSlotItemStack.itemAmount = 0;

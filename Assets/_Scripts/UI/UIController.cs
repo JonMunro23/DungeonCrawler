@@ -77,7 +77,6 @@ public class UIController : MonoBehaviour
         initialisedPlayer = playerInitialised;
 
         playerStatsUIController.InitStatsUI(initialisedPlayer.playerCharacterData);
-        playerSkillsUIManager.Init();
 
         _ = FadeInScreen();
     }

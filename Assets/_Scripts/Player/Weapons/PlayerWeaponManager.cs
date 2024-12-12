@@ -64,7 +64,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
         PlayerInventoryManager.onAmmoAddedToInventory += OnInventoryAmmoUpdated;
 
-        Stat.onStatUpdated += OnStatUpdated;
+        StatData.onStatUpdated += OnStatUpdated;
 
     }
 
@@ -76,11 +76,11 @@ public class PlayerWeaponManager : MonoBehaviour
 
         PlayerInventoryManager.onAmmoAddedToInventory -= OnInventoryAmmoUpdated;
 
-        Stat.onStatUpdated -= OnStatUpdated;
+        StatData.onStatUpdated -= OnStatUpdated;
 
     }
 
-    public virtual void OnStatUpdated(Stat updatedStat)
+    public virtual void OnStatUpdated(StatData updatedStat)
     {
         switch (updatedStat.stat)
         {
@@ -394,23 +394,23 @@ public class PlayerWeaponManager : MonoBehaviour
         return slotData;
     }
 
-    public void Save(ref PlayerWeaponSaveData data)
+    public void Save(ref PlayerSaveData data)
     {
-        data.activeSlotIndex = activeSlotIndex;
-        data.slotData = GetWeaponSlotData();
+        data.activeWeaponSlotIndex = activeSlotIndex;
+        data.weaponSlotData = GetWeaponSlotData();
     }
 
-    public void Load(PlayerWeaponSaveData data)
+    public void Load(PlayerSaveData data)
     {
         foreach (WeaponSlot slot in spawnedWeaponSlots)
         {
             slot.UnloadSlot();
         }
-        activeSlotIndex = data.activeSlotIndex;
+        activeSlotIndex = data.activeWeaponSlotIndex;
 
-        for (int i = 0; i < data.slotData.Count; i++)
+        for (int i = 0; i < data.weaponSlotData.Count; i++)
         {
-            spawnedWeaponSlots[data.slotData[i].slotIndex].AddItem(new ItemStack(data.slotData[i].heldWeaponData, 1, data.slotData[i].heldWeaponLoadedAmmo)); 
+            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(data.weaponSlotData[i].heldWeaponData, 1, data.weaponSlotData[i].heldWeaponLoadedAmmo)); 
         }
 
 
