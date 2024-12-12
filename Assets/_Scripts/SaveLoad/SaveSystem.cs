@@ -60,7 +60,7 @@ public class SaveSystem
 
     static void HandleLoadData(int slotIndex)
     {
-        GridController.Instance.Load(saveSlotDictionary[slotIndex].LevelData);
+        GridController.Instance.Load(saveSlotDictionary[slotIndex]);
         GridController.Instance.playerController.Load(saveSlotDictionary[slotIndex].playerData);
     }
 
