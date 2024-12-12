@@ -1,39 +1,65 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PauseMenu : MonoBehaviour
 {
-    public static GameObject pauseMenu;
-
-    [SerializeField]
-    GameObject menuObject;
+    [SerializeField] GameObject pauseMenu;
+    [SerializeField] GameObject saveMenu;
+    [SerializeField] GameObject loadMenu;
 
     public static bool isPaused = false;
+
     // Start is called before the first frame update
     void Start()
     {
-        pauseMenu = menuObject;
-        pauseMenu.SetActive(false);
+        ClosePauseMenu();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if(Input.GetButtonDown("Escape"))
+        if(Input.GetKeyDown(KeyCode.P))
         {
-            if(isPaused != true)
-            {
-                pauseMenu.SetActive(true);
-                Time.timeScale = 0;
-                isPaused = true;
-            }
-            else
-            {
-                pauseMenu.SetActive(false);
-                Time.timeScale = 1;
-                isPaused = false;
-            }
+            TogglePauseMenu();
         }
+    }
+    private void TogglePauseMenu()
+    {
+        if (!isPaused)
+        {
+            OpenPauseMenu();
+        }
+        else
+        {
+            ClosePauseMenu();
+        }
+
+        HelperFunctions.SetCursorActive(isPaused);
+    }
+    private void ClosePauseMenu()
+    {
+        isPaused = false;
+        pauseMenu.SetActive(false);
+        Time.timeScale = 1;
+    }
+    private void OpenPauseMenu()
+    {
+        isPaused = true;
+        pauseMenu.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void ResumeGame()
+    {
+        ClosePauseMenu();
+        HelperFunctions.SetCursorActive(false);
+    }
+
+    public void OpenSaveMenu()
+    {
+
+    }
+
+    public void OpenLoadMenu()
+    {
+
     }
 }

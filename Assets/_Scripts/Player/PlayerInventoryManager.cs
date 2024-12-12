@@ -49,7 +49,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         isInContainer = true;
 
         if (!isInventoryOpen)
-            SetCursorActive(true);
+            HelperFunctions.SetCursorActive(true);
     }
 
     void OnContainerClosed()
@@ -60,7 +60,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         isInContainer = false;
 
         if(!isInventoryOpen)
-            SetCursorActive(false);
+            HelperFunctions.SetCursorActive(false);
     }
 
     public void Init(PlayerController newPlayerController)
@@ -68,21 +68,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         playerController = newPlayerController;
 
         SpawnInventorySlots();
-        SetCursorActive(false);
-    }
-
-    public void SetCursorActive(bool isActive)
-    {
-        if (isActive)
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.Confined;
-        }
-        else
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        HelperFunctions.SetCursorActive(false);
     }
 
     void SpawnInventorySlots()
@@ -124,7 +110,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     private void OpenInventory()
     {
         isInventoryOpen = true;
-        SetCursorActive(true);
+        HelperFunctions.SetCursorActive(true);
         onInventoryOpened?.Invoke();
     }
 
@@ -132,7 +118,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         isInventoryOpen = false;
         if(!isInContainer)
-            SetCursorActive(false);
+            HelperFunctions.SetCursorActive(false);
 
         onInventoryClosed?.Invoke();
     }

@@ -18,6 +18,7 @@ public class GridController : MonoBehaviour
     LayerInstance intGridLayer;
 
     [SerializeField] bool newGameOnStart = true;
+    public int quickSaveSlotIndex = 0;
     
     [Header("Grid")]
     [SerializeField] GridNode wallPrefab;
@@ -178,12 +179,12 @@ public class GridController : MonoBehaviour
 
     public void QuickSave()
     {
-        SaveSystem.Save();
+        SaveSystem.Save(quickSaveSlotIndex);
     }
 
     public void QuickLoad()
     {
-        SaveSystem.Load();
+        SaveSystem.Load(quickSaveSlotIndex);
     }
     #endregion
 

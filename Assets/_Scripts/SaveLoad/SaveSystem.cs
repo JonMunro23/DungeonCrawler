@@ -1,8 +1,12 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Policy;
 using UnityEngine;
 
 public class SaveSystem
 {
+    public static Dictionary<int, SaveData> saveSlotDictionary = new Dictionary<int, SaveData>();
     public static SaveData saveData = new SaveData();
 
     [System.Serializable]
@@ -12,36 +16,51 @@ public class SaveSystem
         public PlayerSaveData playerData;
     }
 
-    public static string SaveFileName()
+    public static string SaveFileName(int slotIndex)
     {
-        string saveFile = Application.persistentDataPath + "/save" + ".meme";
+        string saveFile = $"{Application.persistentDataPath}/save{slotIndex}.meme";
         return saveFile;
     }
 
-    public static void Save()
+    public static void Save(int slotIndex)
     {
-        HandeSaveData();
-        File.WriteAllText(SaveFileName(), JsonUtility.ToJson(saveData, true));
+        HandeSaveData(slotIndex);
+        File.WriteAllText(SaveFileName(slotIndex), JsonUtility.ToJson(saveSlotDictionary[slotIndex], true));
     }
 
-    static void HandeSaveData()
+    static void HandeSaveData(int slotIndex)
     {
         GridController.Instance.Save(ref saveData.LevelData);
         GridController.Instance.playerController.Save(ref saveData.playerData);
+
+        if (saveSlotDictionary.ContainsKey(slotIndex))
+        {
+            saveSlotDictionary[slotIndex] = saveData;
+        }
+        else
+        {
+            saveSlotDictionary.Add(slotIndex, saveData);
+        }  
+
     }
 
-    public static void Load()
+    public static void Load(int slotIndex)
     {
-        string saveContent = File.ReadAllText(SaveFileName());
+        string saveContent = File.ReadAllText(SaveFileName(slotIndex));
 
-        saveData = JsonUtility.FromJson<SaveData>(saveContent);
+        saveSlotDictionary[slotIndex] = JsonUtility.FromJson<SaveData>(saveContent);
 
-        HandleLoadData();
+        HandleLoadData(slotIndex);
     }
 
-    static void HandleLoadData()
+    static void HandleLoadData(int slotIndex)
     {
-        GridController.Instance.Load(saveData.LevelData);
-        GridController.Instance.playerController.Load(saveData.playerData);
+        GridController.Instance.Load(saveSlotDictionary[slotIndex].LevelData);
+        GridController.Instance.playerController.Load(saveSlotDictionary[slotIndex].playerData);
+    }
+
+    public static Dictionary<int, SaveData> GetSaves()
+    {
+        return saveSlotDictionary;
     }
 }
