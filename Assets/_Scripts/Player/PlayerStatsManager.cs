@@ -3,42 +3,64 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Stat
+public class StatData
 {
     public ModifiableStats stat;
-    public float baseStatValue;
+    [SerializeField] float baseStatValue;
     [SerializeField] float currentStatValue;
 
-    public static Action<Stat> onStatUpdated;
+    public static Action<StatData> onStatUpdated;
+
+    public StatData(ModifiableStats stat, float baseStatValue, float currentStatValue)
+    {
+        this.stat = stat;
+        this.baseStatValue = baseStatValue;
+        this.currentStatValue = currentStatValue;
+    }
 
     public void InitStat()
     {
-        currentStatValue = baseStatValue;
+        SetCurrentStatValue(baseStatValue);
     }
 
-    public void UpdateStat(float newValue)
+    public void SetCurrentStatValue(float newValue)
     {
         currentStatValue = newValue;
         onStatUpdated?.Invoke(this);
+    }
+
+    public void IncreaseCurrentStatValue(float valueToAdd)
+    {
+        SetCurrentStatValue(currentStatValue + valueToAdd);
+    }
+
+    public void DecreaseCurrentStatValue(float valueToRemove)
+    {
+        SetCurrentStatValue(currentStatValue - valueToRemove);
     }
 
     public float GetCurrentStatValue()
     {
         return currentStatValue;
     }
+
+    public float GetBaseStatValue()
+    {
+        return baseStatValue;
+    }
 }
 
 public class PlayerStatsManager : MonoBehaviour
 {
     [SerializeField] CharacterData playerCharData;
-    public List<Stat> playerStats = new List<Stat>();
+    public List<StatData> playerStats = new List<StatData>();
 
     private void OnEnable()
     {
         PlayerEquipmentManager.onEquippedItemAdded += OnEquippedItemAdded;
         PlayerEquipmentManager.onEquippedItemRemoved += OnEquippedItemRemoved;
 
-        PlayerSkillsController.onSkillUpdated += OnSkillUpdated;
+        PlayerSkillsManager.onSkillUpdated += OnSkillUpdated;
     }
 
     private void OnDisable()
@@ -46,17 +68,18 @@ public class PlayerStatsManager : MonoBehaviour
         PlayerEquipmentManager.onEquippedItemAdded -= OnEquippedItemAdded;
         PlayerEquipmentManager.onEquippedItemRemoved -= OnEquippedItemRemoved;
 
-        PlayerSkillsController.onSkillUpdated -= OnSkillUpdated;
+        PlayerSkillsManager.onSkillUpdated -= OnSkillUpdated;
     }
 
     public void Init(CharacterData newPlayerCharData)
     {
         playerCharData = newPlayerCharData;
-        playerStats = playerCharData.baseCharStats;
 
-        foreach (Stat stat in playerStats)
+        foreach (StatData stat in playerCharData.baseCharStats)
         {
-            stat.InitStat();
+            StatData newStat = new StatData(stat.stat, stat.GetBaseStatValue(), stat.GetCurrentStatValue());
+            playerStats.Add(newStat);
+            newStat.InitStat();
         }
     }
 
@@ -86,26 +109,26 @@ public class PlayerStatsManager : MonoBehaviour
     {
         foreach (StatModifier statModifier in unlockedSkill.skillData.statModifiers)
         {
-            ApplyStatModifier(statModifier, unlockedSkill.currentSkillLevel);
+            ApplyStatModifier(statModifier);
         }
     }
 
-    void ApplyStatModifier(StatModifier statModifier, int levelMultiplier = 1)
+    void ApplyStatModifier(StatModifier statModifier)
     {
-        Stat stat = GetPlayerStat(statModifier.statToModify);
+        StatData stat = GetPlayerStat(statModifier.statToModify);
         switch (statModifier.modifyOperation)
         {
             case ModifyOperation.Increase:
-                stat.UpdateStat(stat.GetCurrentStatValue() + statModifier.modifyAmount * levelMultiplier);
+                stat.IncreaseCurrentStatValue(statModifier.modifyAmount);
                 break;
             case ModifyOperation.Decrease:
-                stat.UpdateStat(stat.GetCurrentStatValue() - statModifier.modifyAmount * levelMultiplier);
+                stat.DecreaseCurrentStatValue(statModifier.modifyAmount);
                 break;
             case ModifyOperation.IncreaseByPercentage:
-                stat.UpdateStat(stat.GetCurrentStatValue() + stat.baseStatValue * ((statModifier.modifyAmount * levelMultiplier) / 100));
+                stat.IncreaseCurrentStatValue(stat.GetBaseStatValue() * ((statModifier.modifyAmount) / 100));
                 break;
             case ModifyOperation.DecreaseByPercentage:
-                stat.UpdateStat(stat.GetCurrentStatValue() - stat.baseStatValue * ((statModifier.modifyAmount * levelMultiplier) / 100));
+                stat.DecreaseCurrentStatValue(stat.GetBaseStatValue() * ((statModifier.modifyAmount) / 100));
                 break;
         }
     }
@@ -113,32 +136,40 @@ public class PlayerStatsManager : MonoBehaviour
     //Same as apply just reversed
     void RemoveStatModifier(StatModifier statModifier)
     {
-        Stat stat = GetPlayerStat(statModifier.statToModify);
+        StatData stat = GetPlayerStat(statModifier.statToModify);
         switch (statModifier.modifyOperation)
         {
             case ModifyOperation.Increase:
-                stat.UpdateStat(stat.GetCurrentStatValue() - statModifier.modifyAmount);
+                stat.DecreaseCurrentStatValue(statModifier.modifyAmount);
                 break;
             case ModifyOperation.Decrease:
-                stat.UpdateStat(stat.GetCurrentStatValue() + statModifier.modifyAmount);
+                stat.IncreaseCurrentStatValue(statModifier.modifyAmount);
                 break;
             case ModifyOperation.IncreaseByPercentage:
-                stat.UpdateStat(stat.GetCurrentStatValue() - stat.baseStatValue * (statModifier.modifyAmount / 100));
+                stat.DecreaseCurrentStatValue(stat.GetBaseStatValue() * ((statModifier.modifyAmount) / 100));
                 break;
             case ModifyOperation.DecreaseByPercentage:
-                stat.UpdateStat(stat.GetCurrentStatValue() + stat.baseStatValue * (statModifier.modifyAmount / 100));
+                stat.IncreaseCurrentStatValue(stat.GetBaseStatValue() * ((statModifier.modifyAmount) / 100));
                 break;
         }
     }
 
-    Stat GetPlayerStat(ModifiableStats statToGet)
+    StatData GetPlayerStat(ModifiableStats statToGet)
     {
-        Stat statToReturn = null;
-        foreach (Stat stat in playerStats)
+        StatData statToReturn = null;
+        foreach (StatData stat in playerStats)
         {
             if (stat.stat == statToGet)
                 statToReturn = stat;
         }
         return statToReturn;
+    }
+
+    public void Load()
+    {
+        foreach (StatData stat in playerStats)
+        {
+            stat.InitStat();
+        }
     }
 }

@@ -547,9 +547,9 @@ GameObject:
   - component: {fileID: 6917960533262647579}
   - component: {fileID: 4808936625142989322}
   - component: {fileID: -7248779939640906649}
-  - component: {fileID: -252208920062932819}
+  - component: {fileID: 2246600626564427077}
+  - component: {fileID: 5689203347496627508}
   - component: {fileID: 5301202906750780191}
-  - component: {fileID: -2222088351250389698}
   - component: {fileID: 1969104955076474302}
   - component: {fileID: 4072594988189052085}
   m_Layer: 0
@@ -590,11 +590,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   advGridMovement: {fileID: 162635141120244599}
   itemPickupManager: {fileID: 8472107880212972518}
-  playerHealthController: {fileID: -2222088351250389698}
+  playerHealthController: {fileID: 0}
   playerInventoryManager: {fileID: 5977534421063011795}
   playerEquipmentManager: {fileID: 6917960533262647579}
   playerWeaponManager: {fileID: 4808936625142989322}
   playerStatsManager: {fileID: 5301202906750780191}
+  playerSkillsManager: {fileID: 0}
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
   fadeOutDuration: 0.3
@@ -825,7 +826,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: -2222088351250389698}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: PlayerHealthController, Assembly-CSharp
           m_MethodName: TakeDamageCheat
           m_Mode: 3
@@ -873,8 +874,8 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: -252208920062932819}
-          m_TargetAssemblyTypeName: PlayerSkillsController, Assembly-CSharp
+        - m_Target: {fileID: 2246600626564427077}
+          m_TargetAssemblyTypeName: PlayerSkillsManager, Assembly-CSharp
           m_MethodName: ToggleSkillsMenu
           m_Mode: 1
           m_Arguments:
@@ -1173,7 +1174,7 @@ MonoBehaviour:
   currentPlayerLevel: 0
   currentExperiencePoints: 0
   requiredExperiencePoints: 200
---- !u!114 &-252208920062932819
+--- !u!114 &2246600626564427077
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1182,11 +1183,40 @@ MonoBehaviour:
   m_GameObject: {fileID: 6206634459118426657}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 19126e03de01e714194d18b2220fb5ab, type: 3}
+  m_Script: {fileID: 11500000, guid: a53ae2e06412a0c4bb0e4c16ae9c89d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  availableSkillPoints: 0
-  currentPlayerSKills: []
+  availablePlayerSkills:
+  - {fileID: 11400000, guid: b3eb0f435df11cf458b3517b1ef9fa8b, type: 2}
+  - {fileID: 11400000, guid: f1e602d3b8eddee4bb5086f13a603056, type: 2}
+  - {fileID: 11400000, guid: ed6fae68960acd844bf4e67ac3d33b77, type: 2}
+  spawnedPlayerSkills: []
+  unlockedPlayerSkills: []
+  playerSkillPrefab: {fileID: 3251469895491198469, guid: 8a5126f7779dd844fa310863cecf55fc,
+    type: 3}
+  startingSkillPoints: 20
+--- !u!114 &5689203347496627508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6206634459118426657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab161ab360d76bf4f9664a5f864c5e97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syringeArms: {fileID: 4879892857341237695}
+  currentHealth: 0
+  evasion: 0
+  armour: 0
+  delayBeforeRegen: 1.1
+  syringeCooldown: 8
+  isRegenActive: 0
+  damageTakenSFx:
+  - {fileID: 8300000, guid: d8a90167a4af0114882ae42aff1110af, type: 3}
+  damageTakenSFXVolume: 0.3
 --- !u!114 &5301202906750780191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1201,28 +1231,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCharData: {fileID: 0}
   playerStats: []
---- !u!114 &-2222088351250389698
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6206634459118426657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: caecb57aeac3dd64eac2e70f34392f54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syringeArms: {fileID: 4879892857341237695}
-  currentHealth: 0
-  evasion: 0
-  armour: 0
-  delayBeforeRegen: 1.1
-  syringeCooldown: 8
-  isRegenActive: 0
-  damageTakenSFx:
-  - {fileID: 8300000, guid: d8a90167a4af0114882ae42aff1110af, type: 3}
-  damageTakenSFXVolume: 0.3
 --- !u!65 &1969104955076474302
 BoxCollider:
   m_ObjectHideFlags: 0

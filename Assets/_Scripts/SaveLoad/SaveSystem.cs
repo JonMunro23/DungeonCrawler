@@ -8,11 +8,8 @@ public class SaveSystem
     [System.Serializable]
     public struct SaveData
     {
-        public PlayerSaveData playerData;
-        public PlayerInventorySaveData playerInventoryData;
-        public PlayerEquipmentSaveData playerEquipmentData;
-        public PlayerWeaponSaveData playerWeaponData;
         public LevelSaveData LevelData;
+        public PlayerSaveData playerData;
     }
 
     public static string SaveFileName()
@@ -29,11 +26,8 @@ public class SaveSystem
 
     static void HandeSaveData()
     {
-        GridController.Instance.playerController.Save(ref saveData.playerData);
-        GridController.Instance.playerController.playerInventoryManager.Save(ref saveData.playerInventoryData);
-        GridController.Instance.playerController.playerEquipmentManager.Save(ref saveData.playerEquipmentData);
-        GridController.Instance.playerController.playerWeaponManager.Save(ref saveData.playerWeaponData);
         GridController.Instance.Save(ref saveData.LevelData);
+        GridController.Instance.playerController.Save(ref saveData.playerData);
     }
 
     public static void Load()
@@ -48,12 +42,6 @@ public class SaveSystem
     static void HandleLoadData()
     {
         GridController.Instance.Load(saveData.LevelData);
-        if (!GridController.Instance.playerController)
-            return;
-
         GridController.Instance.playerController.Load(saveData.playerData);
-        GridController.Instance.playerController.playerInventoryManager.Load(saveData.playerInventoryData);
-        GridController.Instance.playerController.playerEquipmentManager.Load(saveData.playerEquipmentData);
-        GridController.Instance.playerController.playerWeaponManager.Load(saveData.playerWeaponData);
     }
 }

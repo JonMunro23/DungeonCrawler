@@ -12,7 +12,7 @@ public class PlayerSkill : MonoBehaviour, IPointerClickHandler
     [SerializeField] TMP_Text skillNameText;
     [SerializeField] TMP_Text skillDescriptionText;
     [SerializeField] TMP_Text skillLevelText;
-    public int currentSkillLevel;
+    public int currentSkillLevel {  get; private set; }
     public int maxSkillLevel = 5;
 
     bool interactable;
@@ -40,13 +40,20 @@ public class PlayerSkill : MonoBehaviour, IPointerClickHandler
         SetInteractable(true);
     }
 
-    public void BuySkill()
+    public void AddSkillLevel()
     {
         currentSkillLevel++;
         if (currentSkillLevel == maxSkillLevel)
         {
             SetInteractable(false);
         }
+        UpdateSkillLevelText();
+    }
+
+    public void ResetSkill()
+    {
+        currentSkillLevel = 0;
+        SetInteractable(true);
         UpdateSkillLevelText();
     }
 

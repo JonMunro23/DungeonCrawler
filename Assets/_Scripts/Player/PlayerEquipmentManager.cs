@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct PlayerEquipmentSaveData
-{
-    public List<EquippedItem> EquippedItems;
-}
-
-[System.Serializable]
 public class EquippedItem
 {
     public EquipmentSlotType slotType;
@@ -147,21 +141,21 @@ public class PlayerEquipmentManager : MonoBehaviour
         {
             EquipmentSlot slot = GetSlotOfType(item.slotType);
             if (!slot.IsSlotEmpty())
-                slot.RemoveItem();
+                slot.RemoveItemStack();
 
 
             slot.AddItem(new ItemStack(item.equipmentItemData, 1));
         }
     }
 
-    public void Save(ref PlayerEquipmentSaveData data)
+    public void Save(ref PlayerSaveData data)
     {
-        data.EquippedItems = currentlyEquippedItems;
+        data.equippedItems = currentlyEquippedItems;
     }
 
-    public void Load(PlayerEquipmentSaveData data)
+    public void Load(PlayerSaveData data)
     {
         RemoveAllEquippedItems();
-        LoadEquippedItems(data.EquippedItems);
+        LoadEquippedItems(data.equippedItems);
     }
 }

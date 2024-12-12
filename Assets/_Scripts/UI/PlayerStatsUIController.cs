@@ -18,8 +18,8 @@ public class PlayerStatsUIController : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerHealthController.onCurrentHealthUpdated += OnCurrentHealthUpdated;
-        PlayerHealthController.onMaxHealthUpdated += OnMaxHealthUpdated;
+        PlayerHealthManager.onCurrentHealthUpdated += OnCurrentHealthUpdated;
+        PlayerHealthManager.onMaxHealthUpdated += OnMaxHealthUpdated;
         PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
 
         PlayerLevelController.onPlayerExperienceUpdated += OnPlayerExperienceUpdated;
@@ -28,8 +28,8 @@ public class PlayerStatsUIController : MonoBehaviour
 
     private void OnDisable()
     {
-        PlayerHealthController.onCurrentHealthUpdated -= OnCurrentHealthUpdated;
-        PlayerHealthController.onMaxHealthUpdated -= OnMaxHealthUpdated;
+        PlayerHealthManager.onCurrentHealthUpdated -= OnCurrentHealthUpdated;
+        PlayerHealthManager.onMaxHealthUpdated -= OnMaxHealthUpdated;
         PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
 
         PlayerLevelController.onPlayerExperienceUpdated -= OnPlayerExperienceUpdated;
