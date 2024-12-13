@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerInventoryManager : MonoBehaviour, IInventory
@@ -41,14 +42,16 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         Container.onContainerClosed -= OnContainerClosed;
     }
 
-    void OnContainerOpened()
+    async void OnContainerOpened()
     {
         playerController.MoveCameraPos(openContainerCamPos, openContainerCamMovementDuration);
         playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
         isInContainer = true;
 
+        await Task.Delay((int)((openContainerCamMovementDuration / 2) * 1000));
+
         if (!PlayerInventoryUIController.isInventoryOpen)
-            HelperFunctions.SetCursorActive(true);
+            OpenInventory();
     }
 
     void OnContainerClosed()
