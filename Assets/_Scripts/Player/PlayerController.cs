@@ -117,12 +117,15 @@ public class PlayerController : MonoBehaviour
     {
         if (playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
+            Debug.Log(playerHealthController.CanUseSyringe());
             InventorySlot slotWithSyringe = playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe);
             if (!slotWithSyringe)
                 return;
 
             if(playerWeaponManager.currentWeapon == null)
                 return;
+
+            playerHealthController.canUseSyringe = false;
 
             await playerWeaponManager.currentWeapon.HolsterWeapon();
 
