@@ -34,12 +34,25 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         Container.onContainerOpened += OnContainerOpened;
         Container.onContainerClosed += OnContainerClosed;
+
+        ItemPickupManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
     }
 
     void OnDisable()
     {
         Container.onContainerOpened -= OnContainerOpened;
         Container.onContainerClosed -= OnContainerClosed;
+
+        ItemPickupManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
+    }
+
+    void OnNearbyContainerUpdated(IContainer nearbyContainer)
+    {
+        if(nearbyContainer == null)
+        {
+            playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
+            playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
+        }
     }
 
     async void OnContainerOpened()

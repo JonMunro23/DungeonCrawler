@@ -12,7 +12,8 @@ public class ItemPickupManager : MonoBehaviour
     [SerializeField] float throwVeloctiy;
     public Vector3 mousePos = Vector3.zero;
     public ItemStack currentGrabbedItem = null;
-    public bool hasGrabbedItem, canPickUpItem = true;
+    public static bool hasGrabbedItem;
+    public bool canPickUpItem = true;
     float maxGrabDistance = 3;
 
     public AudioEmitter itemPickupAudioEmitter;
@@ -46,6 +47,7 @@ public class ItemPickupManager : MonoBehaviour
         ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
 
         AdvancedGridMovement.turnEvent -= OnPlayerTurn;
+
     }
 
     private void Awake()
@@ -137,7 +139,6 @@ public class ItemPickupManager : MonoBehaviour
         }
 
     }
-
     void AttachItemToMouseCursor(ItemStack itemToAttach, WorldItem worldItem = null)
     {
         currentGrabbedItem = new ItemStack(itemToAttach.itemData, itemToAttach.itemAmount, itemToAttach.loadedAmmo);
@@ -150,7 +151,7 @@ public class ItemPickupManager : MonoBehaviour
         hasGrabbedItem = true;
     }
 
-    void DetachItemFromMouseCursor()
+    public void DetachItemFromMouseCursor()
     {
         onCurrentItemDettachedFromCursor?.Invoke();
 

@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeapon()
     {
-        if(!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
+        if(!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !ItemPickupManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeapon();
         }
@@ -140,10 +140,23 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeaponSpecial()
     {
-        if (!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
+        if(ItemPickupManager.hasGrabbedItem)
+        {
+            RemoveGrabbedItem();
+            return;
+        }
+
+        if (!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer)
         {
             playerWeaponManager.UseCurrentWeaponSpecial();
         }
+    }
+
+    void RemoveGrabbedItem()
+    {
+        playerInventoryManager.TryAddItemToInventory(itemPickupManager.currentGrabbedItem);
+        itemPickupManager.DetachItemFromMouseCursor();
+        HelperFunctions.SetCursorActive(false);
     }
 
     public void TryReloadCurrentWeapon()

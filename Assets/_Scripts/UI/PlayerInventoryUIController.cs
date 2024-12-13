@@ -54,6 +54,7 @@ public class PlayerInventoryUIController : MonoBehaviour
         if(container == null)
         {
             pickupItemText.text = "";
+
             return;
         }
 
@@ -95,7 +96,7 @@ public class PlayerInventoryUIController : MonoBehaviour
         InventoryParentObject.SetActive(false);
         InventoryObject.SetActive(false);
 
-        if(!PlayerInventoryManager.isInContainer)
+        if(!PlayerInventoryManager.isInContainer && !ItemPickupManager.hasGrabbedItem)
             HelperFunctions.SetCursorActive(false);
 
         isInventoryOpen = false;
