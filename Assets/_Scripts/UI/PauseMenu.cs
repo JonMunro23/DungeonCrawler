@@ -27,6 +27,12 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] TMP_InputField saveNameInputField;
     [SerializeField] Button saveNameSubmitButton;
 
+    [Header("Game Over")]
+    [SerializeField] GameObject gameOverScreen;
+    [SerializeField] TMP_Text deathCounterText;
+    public int deathCounter;
+
+
     public static bool isPaused = false;
 
     private void OnEnable()
@@ -45,6 +51,11 @@ public class PauseMenu : MonoBehaviour
 
     void OnSaveLoaded()
     {
+        if(!PlayerController.isPlayerAlive)
+        {
+            gameOverScreen.SetActive(false);
+        }
+
         ResumeGame();
     }
 
@@ -68,13 +79,16 @@ public class PauseMenu : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
                 SubmitName();
         });
-
+        gameOverScreen.SetActive(false);
         ResumeGame();
         SaveSystem.GetSavesFromDirectory();
     }
 
-    private void Update()
+    void Update()
     {
+        if (!PlayerController.isPlayerAlive)
+            return;
+
         if(Input.GetKeyDown(pauseKey))
         {
             if(isInputtingName)
@@ -98,7 +112,7 @@ public class PauseMenu : MonoBehaviour
             TogglePauseMenu();
         }
     }
-    private void TogglePauseMenu()
+    void TogglePauseMenu()
     {
         if (!isPaused)
         {
@@ -111,7 +125,8 @@ public class PauseMenu : MonoBehaviour
 
         HelperFunctions.SetCursorActive(isPaused);
     }
-    private void ClosePauseMenu()
+
+    void ClosePauseMenu()
     {
         isPaused = false;
         pauseMenu.SetActive(false);
@@ -120,7 +135,8 @@ public class PauseMenu : MonoBehaviour
         HideSaveNamePopup();
         Time.timeScale = 1;
     }
-    private void OpenPauseMenu()
+
+    void OpenPauseMenu()
     {
         isPaused = true;
         pauseMenu.SetActive(true);
@@ -135,8 +151,7 @@ public class PauseMenu : MonoBehaviour
         ClosePauseMenu();
     }
 
-
-    private void SpawnSaveSlots()
+    void SpawnSaveSlots()
     {
         foreach (SaveSlot item in spawnedSaveSlots)
         {
@@ -150,7 +165,7 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
-    private void SpawnLoadSlots()
+    void SpawnLoadSlots()
     {
         foreach (SaveSlot item in spawnedLoadSlots)
         {
@@ -172,7 +187,7 @@ public class PauseMenu : MonoBehaviour
         spawnedSaveSlots.Add(clone);
     }
 
-    private void CreateLoadSlot(SaveSystem.SaveData saveData)
+    void CreateLoadSlot(SaveSystem.SaveData saveData)
     {
         var clone = Instantiate(loadSlotPrefab, loadMenuSlotParent);
         clone.Init(saveData);
@@ -181,7 +196,7 @@ public class PauseMenu : MonoBehaviour
     public void OpenSaveMenu()
     {
         saveMenu.SetActive(true);
-        pauseMenu.SetActive(false);
+        //pauseMenu.SetActive(false);
 
         SpawnSaveSlots();
     }
@@ -189,18 +204,18 @@ public class PauseMenu : MonoBehaviour
     public void CloseSaveMenu()
     {
         saveMenu.SetActive(false);
-        pauseMenu.SetActive(true);
+        //pauseMenu.SetActive(true);
     }
 
     public void CloseLoadMenu()
     {
         loadMenu.SetActive(false);
-        pauseMenu.SetActive(true);
+        //pauseMenu.SetActive(true);
     }
 
     public void OpenLoadMenu()
     {
-        pauseMenu.SetActive(false);
+        //pauseMenu.SetActive(false);
         loadMenu.SetActive(true);
 
         SpawnLoadSlots();
@@ -241,4 +256,16 @@ public class PauseMenu : MonoBehaviour
         else
             saveNameSubmitButton.interactable = false;
     }
+
+    #region Game Over
+
+    public void ShowGameOverScreen()
+    {
+        gameOverScreen.SetActive(true);
+        //deathCounterText.text = deathCounter.ToString();
+        HelperFunctions.SetCursorActive(true);
+        Time.timeScale = 0;
+    }
+
+    #endregion
 }

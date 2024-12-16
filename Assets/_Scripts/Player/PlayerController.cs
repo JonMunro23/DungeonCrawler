@@ -48,7 +48,9 @@ public class PlayerController : MonoBehaviour
     public static GridNode currentOccupiedNode;
 
     [SerializeField] float fadeOutDuration, fadeInDuration;
-    
+
+    public static bool isPlayerAlive;
+
     Vector3 defaultCamPos;
 
     public static Action<PlayerController> onPlayerInitialised;
@@ -74,6 +76,8 @@ public class PlayerController : MonoBehaviour
 
     public void InitPlayer(CharacterData playerCharData/*, GridNode spawnGridNode*/)
     {
+        isPlayerAlive = true;
+
         playerCharacterData = playerCharData;
         //currentOccupiedNode = spawnGridNode;
 
@@ -90,10 +94,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnDeath()
     {
-        //play death anim
-        //show game over UI
-        //disable all player input
-
+        isPlayerAlive = false;
         onPlayerDeath?.Invoke();
     }
 
@@ -214,6 +215,8 @@ public class PlayerController : MonoBehaviour
 
     public void Load(PlayerSaveData data)
     {
+        isPlayerAlive = true;
+
         MoveToCoords(data.coords);
         advGridMovement.SetRotation(Mathf.RoundToInt(data.yRotation));
 

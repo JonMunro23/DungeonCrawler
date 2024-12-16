@@ -822,18 +822,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - key: 283
+  - key: 276
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: PlayerHealthController, Assembly-CSharp
+        - m_Target: {fileID: 5689203347496627508}
+          m_TargetAssemblyTypeName: PlayerHealthManager, Assembly-CSharp
           m_MethodName: TakeDamageCheat
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
+            m_IntArgument: 100
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -1090,7 +1090,6 @@ MonoBehaviour:
     itemData: {fileID: 0}
     itemAmount: 0
     loadedAmmo: 0
-  hasGrabbedItem: 0
   canPickUpItem: 1
   grabSFX: {fileID: 8300000, guid: 39a9b6d6cf0e72143af0fb793abf0ac5, type: 3}
   grabSFXVolume: 0.6
@@ -1214,6 +1213,7 @@ MonoBehaviour:
   delayBeforeRegen: 1.1
   syringeCooldown: 8
   isRegenActive: 0
+  canUseSyringe: 0
   damageTakenSFx:
   - {fileID: 8300000, guid: d8a90167a4af0114882ae42aff1110af, type: 3}
   damageTakenSFXVolume: 0.3

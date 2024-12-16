@@ -170,7 +170,7 @@ public class GridController : MonoBehaviour
     #region QuickSave/Load
     private void Update()
     {
-        if(PauseMenu.isPaused) return;
+        if(PauseMenu.isPaused || !PlayerController.isPlayerAlive) return;
 
         gameTime += Time.deltaTime;
 

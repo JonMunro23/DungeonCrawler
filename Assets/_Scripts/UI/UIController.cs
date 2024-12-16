@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour
     [SerializeField] PlayerEquipmentUIManager PlayerEquipmentUIManager;
     [SerializeField] PlayerWeaponUIManager playerWeaponUIManager;
     [SerializeField] PlayerSkillsUIManager playerSkillsUIManager;
+    [SerializeField] PauseMenu pauseMenu;
 
 
     [Header("Level Transition")]
@@ -36,6 +37,7 @@ public class UIController : MonoBehaviour
     private void OnEnable()
     {
         PlayerController.onPlayerInitialised += OnPlayerInitialised;
+        PlayerController.onPlayerDeath += OnPlayerDeath;
 
         ItemPickupManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
@@ -57,6 +59,7 @@ public class UIController : MonoBehaviour
     private void OnDisable()
     {
         PlayerController.onPlayerInitialised -= OnPlayerInitialised;
+        PlayerController.onPlayerDeath -= OnPlayerDeath;
 
         ItemPickupManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
         ItemPickupManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
@@ -87,6 +90,11 @@ public class UIController : MonoBehaviour
         playerStatsUIController.InitStatsUI(initialisedPlayer.playerCharacterData);
 
         _ = FadeInScreen();
+    }
+
+    void OnPlayerDeath()
+    {
+        pauseMenu.ShowGameOverScreen();
     }
 
     void OnNewItemAttachedToCursor(ItemStack item)
