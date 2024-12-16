@@ -23,6 +23,10 @@ public class UIController : MonoBehaviour
     [SerializeField] Image levelTransitionFadeOverlay;
     [SerializeField] float fadeOutDuration, fadeInDuration;
 
+    [Header("Quick Saving")]
+    [SerializeField] TMP_Text saveStatusText;
+    [SerializeField] float saveStatusTextFadeDuration;
+
     PlayerController initialisedPlayer;
 
     Coroutine levelTextLifetime;
@@ -46,6 +50,8 @@ public class UIController : MonoBehaviour
         PlayerWeaponManager.onNewWeaponInitialised += OnNewWeaponInitialised;
 
         LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
+
+        GridController.onQuickSave += OnQuickSave;
     }
 
     private void OnDisable()
@@ -65,6 +71,8 @@ public class UIController : MonoBehaviour
         PlayerWeaponManager.onWeaponSlotSetActive -= OnWeaponSlotSetActive;
 
         LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
+
+        GridController.onQuickSave -= OnQuickSave;
     }
 
     private void Start()
@@ -145,6 +153,12 @@ public class UIController : MonoBehaviour
         await GridController.Instance.BeginLevelTransition(levelIndex, playerMoveToCoords);
         await FadeInScreen();
         ShowLevelName(levelIndex);
+    }
+
+    void OnQuickSave()
+    {
+        saveStatusText.color = new Color(1, 0.9529412f, 0, 1);
+        saveStatusText.DOFade(0, saveStatusTextFadeDuration).SetDelay(3);
     }
 
     void ShowLevelName(int levelIndex)

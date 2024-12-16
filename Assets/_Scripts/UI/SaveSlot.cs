@@ -1,19 +1,23 @@
+using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SaveSlot : MonoBehaviour
 {
     [SerializeField] int slotIndex;
     [SerializeField] string slotName;
-    [SerializeField] SaveSystem.SaveData slotData;
+    public SaveSystem.SaveData slotData;
 
-    [SerializeField] TMP_Text saveNameText, areaNameText, gameTimeText;
-    
-    public void Init(int slotIndex, SaveSystem.SaveData slotData)
+    [SerializeField] TMP_Text saveNameText, areaNameText, gameTimeText, saveDataText;
+
+    public static Action onSaveLoaded;
+    public static Action<SaveSlot> onSaveDeleted;
+    public static Action onCreateNewSaveButtonPressed;
+
+    public void Init(SaveSystem.SaveData slotData)
     {
-        this.slotIndex = slotIndex;
         this.slotData = slotData;
+        slotIndex = slotData.saveIndex;
         slotName = slotData.saveName;
 
         UpdateSlotUI();
@@ -31,6 +35,7 @@ public class SaveSlot : MonoBehaviour
         saveNameText.text = $"{slotData.saveName}";
         areaNameText.text = $"{slotData.LevelData.currentLevelName}";
         gameTimeText.text = $"Game Time:  {timeText}";
+        saveDataText.text = slotData.saveDate;
 
     }
 
@@ -38,5 +43,22 @@ public class SaveSlot : MonoBehaviour
     {
         slotData = SaveSystem.Save(slotIndex, slotName);
         UpdateSlotUI();
+    }
+
+    public void Load()
+    {
+        onSaveLoaded?.Invoke();
+        SaveSystem.Load(slotIndex, slotName);
+    }
+
+    public void DeleteSave()
+    {
+        SaveSystem.DeleteSaveData(slotData);
+        onSaveDeleted?.Invoke(this);
+    }
+
+    public void CreateNewSaveButtonClicked()
+    {
+        onCreateNewSaveButtonPressed?.Invoke();
     }
 }

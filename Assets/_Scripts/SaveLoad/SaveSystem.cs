@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Policy;
@@ -6,14 +6,18 @@ using UnityEngine;
 
 public class SaveSystem
 {
-    public static Dictionary<int, SaveData> saveSlotDictionary = new Dictionary<int, SaveData>();
+    public static List<SaveData> saveDatas = new List<SaveData>();
     public static SaveData saveData = new SaveData();
+
+    public static List<FileInfo> saveFileInfo = new List<FileInfo>();
 
     [System.Serializable]
     public struct SaveData
     {
         public string saveName;
+        public int saveIndex;
         public float gameTime;
+        public string saveDate;
         public LevelSaveData LevelData;
         public PlayerSaveData playerData;
     }
@@ -27,8 +31,14 @@ public class SaveSystem
     public static SaveData Save(int slotIndex, string saveName)
     {
         HandeSaveData(slotIndex, saveName);
-        File.WriteAllText(SaveFileName(saveName), JsonUtility.ToJson(saveSlotDictionary[slotIndex], true));
-        return saveSlotDictionary[slotIndex];
+
+        string path = SaveFileName(saveName);
+        File.WriteAllText(path, JsonUtility.ToJson(saveDatas[slotIndex], true));
+        
+        FileInfo fileInfo = new FileInfo(path);
+        saveFileInfo.Add(fileInfo);
+
+        return saveDatas[slotIndex];
     }
 
     static void HandeSaveData(int slotIndex, string saveName)
@@ -37,52 +47,66 @@ public class SaveSystem
         GridController.Instance.playerController.Save(ref saveData.playerData);
 
         saveData.saveName = saveName;
-
-        if (saveSlotDictionary.ContainsKey(slotIndex))
+        saveData.saveIndex = slotIndex;
+        saveData.saveDate = System.DateTime.Now.ToString();
+        
+        foreach (SaveData data in saveDatas)
         {
-            saveSlotDictionary[slotIndex] = saveData;
+            if(data.saveIndex == slotIndex)
+            {
+                Debug.Log($"overwritten {saveData.saveName}");
+                saveDatas[slotIndex] = saveData;
+                return;
+            }
         }
-        else
-        {
-            saveSlotDictionary.Add(slotIndex, saveData);
-        }  
 
+        saveDatas.Add(saveData);
     }
 
     public static void Load(int slotIndex, string saveName)
     {
-        string saveContent = File.ReadAllText(SaveFileName(saveName));
-
-        saveSlotDictionary[slotIndex] = JsonUtility.FromJson<SaveData>(saveContent);
-
         HandleLoadData(slotIndex);
     }
 
     static void HandleLoadData(int slotIndex)
     {
-        GridController.Instance.Load(saveSlotDictionary[slotIndex]);
-        GridController.Instance.playerController.Load(saveSlotDictionary[slotIndex].playerData);
+        GridController.Instance.Load(saveDatas[slotIndex]);
+        GridController.Instance.playerController.Load(saveDatas[slotIndex].playerData);
     }
 
-    public static Dictionary<int, SaveData> GetSaves()
+    public static void GetSavesFromDirectory()
     {
         DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath);
         FileInfo[] info = dir.GetFiles("*.*");
 
-        int i = 0;
+        //saveDatas.Clear();
+        //saveFileInfo.Clear();
+
         foreach (FileInfo f in info)
         {
             if (f.Extension == ".meme")
             {
-                if (saveSlotDictionary.ContainsKey(i))
-                    continue;
-
-                saveSlotDictionary.Add(i, JsonUtility.FromJson<SaveData>(File.ReadAllText($"{Application.persistentDataPath}/{f.Name}")));
-                Debug.Log($"Added {saveSlotDictionary[i].saveName}");
-                i++;
+                saveFileInfo.Add(f);
+                SaveData newSaveData = JsonUtility.FromJson<SaveData>(File.ReadAllText($"{Application.persistentDataPath}/{f.Name}"));
+                saveDatas.Add(newSaveData);
             }
         }
+    }
 
-        return saveSlotDictionary;
+    public static List<SaveData> GetSaveData()
+    {
+        return saveDatas;
+    }
+
+    public static void DeleteSaveData(SaveData data)
+    {
+        saveDatas.Remove(data);
+        foreach (FileInfo fileInfo in saveFileInfo)
+        {
+            if(fileInfo.Name == $"{data.saveName}.meme")
+            {
+                fileInfo.Delete();
+            }
+        }
     }
 }
