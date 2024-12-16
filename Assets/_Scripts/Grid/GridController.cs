@@ -186,13 +186,13 @@ public class GridController : MonoBehaviour
 
     public void QuickSave()
     {
-        SaveSystem.Save(quickSaveSlotIndex, "Quick Save");
+        SaveSystem.Save("Quick Save");
         onQuickSave.Invoke();
     }
 
     public void QuickLoad()
     {
-        SaveSystem.Load(quickSaveSlotIndex, "Quick Save");
+        SaveSystem.Load("Quick Save");
     }
     #endregion
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using TMPro;
 using UnityEngine;
@@ -21,10 +20,14 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] SaveSlot saveSlotPrefab;
     [SerializeField] Transform saveMenuSlotParent;
 
+
     [Header("Load Menu")]
     [SerializeField] GameObject loadMenu;
     [SerializeField] SaveSlot loadSlotPrefab;
     [SerializeField] Transform loadMenuSlotParent;
+    [SerializeField] GameObject loadGameConfrimPopup;
+    [SerializeField] TMP_Text LoadGameConfirmPopupText;
+    SaveSlot slotToLoad;
 
     [Header("New Save")]
     [SerializeField] bool isInputtingName;
@@ -33,9 +36,14 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] Button saveNameSubmitButton;
 
     [Header("Save Deletion")]
-    [SerializeField] GameObject deleteSaveConfirmationPopup;
+    [SerializeField] GameObject deleteSaveConfirmPopup;
     [SerializeField] TMP_Text deleteSaveConfirmationPopupText;
     SaveSlot slotToDelete;
+
+    [Header("Save Overwrite")]
+    [SerializeField] GameObject overwriteSaveConfrimPopup;
+    [SerializeField] TMP_Text overwriteSaveConfirmPopupText;
+    SaveSlot slotToOverwrite;
 
     [Header("Game Over")]
     [SerializeField] GameObject gameOverScreen;
@@ -45,26 +53,12 @@ public class PauseMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        SaveSlot.onSaveLoaded += OnSaveLoaded;
-        SaveSlot.onSaveDeleteButtonPressed += OnSaveDeleteButtonPressed;
         SaveSlot.onCreateNewSaveButtonPressed += DisplaySaveNamePopup;
     }
 
     private void OnDisable()
     {
-        SaveSlot.onSaveLoaded -= OnSaveLoaded;
-        SaveSlot.onSaveDeleteButtonPressed -= OnSaveDeleteButtonPressed;
         SaveSlot.onCreateNewSaveButtonPressed -= DisplaySaveNamePopup;
-    }
-
-    void OnSaveLoaded()
-    {
-        if(!PlayerController.isPlayerAlive)
-        {
-            gameOverScreen.SetActive(false);
-        }
-
-        ResumeGame();
     }
 
     void Start()
@@ -76,7 +70,9 @@ public class PauseMenu : MonoBehaviour
                 SubmitName();
         });
         gameOverScreen.SetActive(false);
-        deleteSaveConfirmationPopup.SetActive(false);
+        deleteSaveConfirmPopup.SetActive(false);
+        overwriteSaveConfrimPopup.SetActive(false);
+        loadGameConfrimPopup.SetActive(false);
         ResumeGame();
         SaveSystem.GetSavesFromDirectory();
     }
@@ -88,9 +84,21 @@ public class PauseMenu : MonoBehaviour
 
         if(Input.GetKeyDown(pauseKey))
         {
-            if(deleteSaveConfirmationPopup.activeSelf)
+            if(deleteSaveConfirmPopup.activeSelf)
             {
-                CancelDeleteSave();
+                CloseDeleteSaveConfirmation();
+                return;
+            }
+
+            if(loadGameConfrimPopup.activeSelf)
+            {
+                CloseLoadGameConfirmation();
+                return;
+            }
+
+            if(overwriteSaveConfrimPopup.activeSelf)
+            {
+                CloseSaveOverwriteConfirmation();
                 return;
             }
 
@@ -118,11 +126,11 @@ public class PauseMenu : MonoBehaviour
 
     #region Save Deletion
 
-    void OnSaveDeleteButtonPressed(SaveSlot slotToDelete)
+    void DeleteSaveConfirmation(SaveSlot slotToDelete)
     {
         this.slotToDelete = slotToDelete;
 
-        deleteSaveConfirmationPopup.SetActive(true);
+        deleteSaveConfirmPopup.SetActive(true);
         deleteSaveConfirmationPopupText.text = $"Delete save {slotToDelete.slotData.saveName}?";
     }
 
@@ -147,13 +155,14 @@ public class PauseMenu : MonoBehaviour
 
     public void ConfirmDeleteSave()
     {
-        deleteSaveConfirmationPopup.SetActive(false);
         DeleteSave();
+        CloseDeleteSaveConfirmation();
     }
 
-    public void CancelDeleteSave()
+    public void CloseDeleteSaveConfirmation()
     {
-        deleteSaveConfirmationPopup.SetActive(false);
+        deleteSaveConfirmPopup.SetActive(false);
+        slotToDelete = null;
     }
 
     #endregion
@@ -241,7 +250,40 @@ public class PauseMenu : MonoBehaviour
     {
         var clone = Instantiate(loadSlotPrefab, loadMenuSlotParent);
         clone.Init(saveData);
+        clone.slotButton.onClick.AddListener(delegate { LoadGameConfirmation(clone); });
+        clone.deleteButton.onClick.AddListener(delegate { DeleteSaveConfirmation(clone); });
         spawnedLoadSlots.Add(clone);
+    }
+
+    void LoadGameConfirmation(SaveSlot slotToLoad)
+    {
+        this.slotToLoad = slotToLoad;
+
+        loadGameConfrimPopup.SetActive(true);
+        LoadGameConfirmPopupText.text = $"Load {slotToLoad.slotData.saveName}?";
+    }
+
+    public void ConfirmLoadGame()
+    {
+        slotToLoad.Load();
+        CloseLoadGameConfirmation();
+        OnSaveLoaded();
+    }
+
+    public void CloseLoadGameConfirmation()
+    {
+        loadGameConfrimPopup.SetActive(false);
+        slotToLoad = null;
+    }
+
+    void OnSaveLoaded()
+    {
+        if (!PlayerController.isPlayerAlive)
+        {
+            gameOverScreen.SetActive(false);
+        }
+
+        ResumeGame();
     }
     #endregion
 
@@ -251,9 +293,12 @@ public class PauseMenu : MonoBehaviour
     {
         SaveSlot clone = Instantiate(saveSlotPrefab, saveMenuSlotParent);
         clone.Init(saveData);
+        clone.slotButton.onClick.AddListener(delegate { OverwriteSaveConfirmation(clone); });
+        clone.deleteButton.onClick.AddListener(delegate { DeleteSaveConfirmation(clone); });
         spawnedSaveSlots.Add(clone);
     }
 
+    
     public void OpenSaveMenu()
     {
         saveMenu.SetActive(true);
@@ -284,8 +329,7 @@ public class PauseMenu : MonoBehaviour
 
     public void CreateNewSave(string saveName)
     {
-        int saveIndex = SaveSystem.saveDatas.Count;
-        SaveSystem.SaveData data = SaveSystem.Save(saveIndex, saveName);
+        SaveSystem.SaveData data = SaveSystem.Save(saveName);
         CreateSaveSlot(data);
     }
 
@@ -316,6 +360,26 @@ public class PauseMenu : MonoBehaviour
             saveNameSubmitButton.interactable = true;
         else
             saveNameSubmitButton.interactable = false;
+    }
+
+    void OverwriteSaveConfirmation(SaveSlot slotToOverwrite)
+    {
+        this.slotToOverwrite = slotToOverwrite;
+
+        overwriteSaveConfrimPopup.SetActive(true);
+        overwriteSaveConfirmPopupText.text = $"Overwrite {slotToOverwrite.slotData.saveName}?";
+    }
+
+    public void ConfirmSaveOverwite()
+    {
+        slotToOverwrite.Save();
+        CloseSaveOverwriteConfirmation();
+    }
+
+    public void CloseSaveOverwriteConfirmation()
+    {
+        overwriteSaveConfrimPopup.SetActive(false);
+        slotToOverwrite = null;
     }
 
     #endregion

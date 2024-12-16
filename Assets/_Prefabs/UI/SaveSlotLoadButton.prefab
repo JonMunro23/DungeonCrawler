@@ -277,11 +277,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3abbc688702dcd2428892b7d5c3ade14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotIndex: 0
   slotName: 
   slotData:
     saveName: 
-    saveIndex: 0
     gameTime: 0
     saveDate: 
     LevelData:
@@ -302,6 +300,8 @@ MonoBehaviour:
   areaNameText: {fileID: 7328677877298963561}
   gameTimeText: {fileID: 7817566218701831714}
   saveDataText: {fileID: 6059083163325786581}
+  slotButton: {fileID: 1253207928198833169}
+  deleteButton: {fileID: 1892829057807836878}
 --- !u!114 &4790414646302873614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,19 +375,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2354420852759903258}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3437130211201156652}
-        m_TargetAssemblyTypeName: SaveSlot, Assembly-CSharp
-        m_MethodName: Load
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &4525182396433701137
 GameObject:
   m_ObjectHideFlags: 0

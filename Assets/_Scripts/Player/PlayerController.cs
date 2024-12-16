@@ -33,14 +33,14 @@ public struct PlayerSaveData
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
-    public AdvancedGridMovement advGridMovement;
-    public ItemPickupManager itemPickupManager;
-    public PlayerHealthManager playerHealthController;
-    public PlayerInventoryManager playerInventoryManager;
-    public PlayerEquipmentManager playerEquipmentManager;
-    public PlayerWeaponManager playerWeaponManager;
-    public PlayerStatsManager playerStatsManager;
-    public PlayerSkillsManager playerSkillsManager;
+    [HideInInspector] public AdvancedGridMovement advGridMovement;
+    [HideInInspector] public ItemPickupManager itemPickupManager;
+    [HideInInspector] public PlayerHealthManager playerHealthManager;
+    [HideInInspector] public PlayerInventoryManager playerInventoryManager;
+    [HideInInspector] public PlayerEquipmentManager playerEquipmentManager;
+    [HideInInspector] public PlayerWeaponManager playerWeaponManager;
+    [HideInInspector] public PlayerStatsManager playerStatsManager;
+    [HideInInspector] public PlayerSkillsManager playerSkillsManager;
     [HideInInspector] public Camera playerCamera;
 
     [Header("Player Data")]
@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         advGridMovement = GetComponent<AdvancedGridMovement>();
-        playerHealthController = GetComponent<PlayerHealthManager>();
+        playerHealthManager = GetComponent<PlayerHealthManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
         playerEquipmentManager.Init(this);
         playerWeaponManager.Init(this);
         playerStatsManager.Init(playerCharacterData);
-        playerHealthController.Init(this);
+        playerHealthManager.Init(this);
         playerSkillsManager.Init();
         advGridMovement.Init(this);
 
@@ -116,9 +116,9 @@ public class PlayerController : MonoBehaviour
 
     public async void TryUseHealthSyringe()
     {
-        if (playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
+        if (playerHealthManager.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
-            Debug.Log(playerHealthController.CanUseSyringe());
+            Debug.Log(playerHealthManager.CanUseSyringe());
             InventorySlot slotWithSyringe = playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe);
             if (!slotWithSyringe)
                 return;
@@ -126,11 +126,11 @@ public class PlayerController : MonoBehaviour
             if(playerWeaponManager.currentWeapon == null)
                 return;
 
-            playerHealthController.canUseSyringe = false;
+            playerHealthManager.canUseSyringe = false;
 
             await playerWeaponManager.currentWeapon.HolsterWeapon();
 
-            playerHealthController.UseSyringeInSlot(slotWithSyringe);
+            playerHealthManager.UseSyringeInSlot(slotWithSyringe);
         }
     }
 
@@ -197,8 +197,8 @@ public class PlayerController : MonoBehaviour
         data.coords = currentOccupiedNode.Coords.Pos;
         data.yRotation = Mathf.RoundToInt(advGridMovement.GetTargetRot());
 
-        if (playerHealthController)
-            playerHealthController.Save(ref data);
+        if (playerHealthManager)
+            playerHealthManager.Save(ref data);
 
         if (playerInventoryManager)
             playerInventoryManager.Save(ref data);
@@ -226,8 +226,8 @@ public class PlayerController : MonoBehaviour
         if(playerSkillsManager)
             playerSkillsManager.Load(data);
 
-        if(playerHealthController)
-            playerHealthController.Load(data);
+        if(playerHealthManager)
+            playerHealthManager.Load(data);
 
         if(playerInventoryManager)
             playerInventoryManager.Load(data);

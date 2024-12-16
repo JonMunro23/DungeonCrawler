@@ -17,7 +17,6 @@ public class SaveSystem
     public struct SaveData
     {
         public string saveName;
-        public int saveIndex;
         public float gameTime;
         public string saveDate;
         public LevelSaveData LevelData;
@@ -30,34 +29,43 @@ public class SaveSystem
         return saveFile;
     }
 
-    public static SaveData Save(int slotIndex, string saveName)
+    public static SaveData Save(string saveName)
     {
-        HandeSaveData(slotIndex, saveName);
+
+        HandeSaveData(saveName);
+
+        SaveData saveData = new SaveData();
+        for (int i = 0; i < saveDatas.Count; i++)
+        {
+            if (saveDatas[i].saveName == saveName)
+            {
+                saveData = saveDatas[i];
+            }
+        }
 
         string path = SaveFileName(saveName);
-        File.WriteAllText(path, JsonUtility.ToJson(saveDatas[slotIndex], true));
+        File.WriteAllText(path, JsonUtility.ToJson(saveData, true));
         
         FileInfo fileInfo = new FileInfo(path);
         saveFileInfo.Add(fileInfo);
 
-        return saveDatas[slotIndex];
+        return saveData;
     }
 
-    static void HandeSaveData(int slotIndex, string saveName)
+    static void HandeSaveData(string saveName)
     {
         GridController.Instance.Save(ref saveData);
         GridController.Instance.playerController.Save(ref saveData.playerData);
 
         saveData.saveName = saveName;
-        saveData.saveIndex = slotIndex;
+        //saveData.saveIndex = slotIndex;
         saveData.saveDate = System.DateTime.Now.ToString();
-        
-        foreach (SaveData data in saveDatas)
+
+        for (int i = 0; i < saveDatas.Count; i++)
         {
-            if(data.saveIndex == slotIndex)
+            if (saveDatas[i].saveName == saveName)
             {
-                Debug.Log($"overwritten {saveData.saveName}");
-                saveDatas[slotIndex] = saveData;
+                saveDatas[i] = saveData;
                 return;
             }
         }
@@ -65,15 +73,26 @@ public class SaveSystem
         saveDatas.Add(saveData);
     }
 
-    public static void Load(int slotIndex, string saveName)
+    public static void Load(string saveName)
     {
-        HandleLoadData(slotIndex);
+        HandleLoadData(saveName);
     }
 
-    static void HandleLoadData(int slotIndex)
+    static void HandleLoadData(string saveName)
     {
-        GridController.Instance.Load(saveDatas[slotIndex]);
-        GridController.Instance.playerController.Load(saveDatas[slotIndex].playerData);
+        SaveData data = new SaveData();
+
+        foreach (SaveData data1 in saveDatas)
+        {
+            if(data1.saveName == saveName)
+            {
+                data = data1;
+                break;
+            }
+        }
+
+        GridController.Instance.Load(data);
+        GridController.Instance.playerController.Load(data.playerData);
     }
 
     public static void GetSavesFromDirectory()

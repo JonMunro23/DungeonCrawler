@@ -97,10 +97,10 @@ public class PlayerEquipmentManager : MonoBehaviour
         if (currentlyEquippedItems.Count == 0)
             return;
 
-        for (int i = currentlyEquippedItems.Count - 1; i >= 0; i--)
-        {
-            RemoveEquippedItem(currentlyEquippedItems[i].slotType);
-        }
+        //for (int i = currentlyEquippedItems.Count - 1; i >= 0; i--)
+        //{
+        //    RemoveEquippedItem(currentlyEquippedItems[i].slotType);
+        //}
 
         foreach (var slot in spawnedEquipmentSlots)
         {
@@ -130,8 +130,6 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     EquipmentSlot GetSlotOfType(EquipmentSlotType slotType)
     {
-        Debug.Log("Getting slot of type: " + slotType);
-
         foreach (EquipmentSlot slot in spawnedEquipmentSlots)
         {
             if(slot.slotType == slotType)
