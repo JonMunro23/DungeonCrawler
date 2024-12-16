@@ -142,7 +142,9 @@ MonoBehaviour:
   slotName: 
   slotData:
     saveName: 
+    saveIndex: 0
     gameTime: 0
+    saveDate: 
     LevelData:
       currentLevelIndex: 0
       currentLevelName: 
@@ -160,6 +162,7 @@ MonoBehaviour:
   saveNameText: {fileID: 2354420852759903258}
   areaNameText: {fileID: 7328677877298963561}
   gameTimeText: {fileID: 7817566218701831714}
+  saveDataText: {fileID: 0}
 --- !u!114 &4790414646302873614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}

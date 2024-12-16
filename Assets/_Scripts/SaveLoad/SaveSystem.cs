@@ -11,6 +11,8 @@ public class SaveSystem
 
     public static List<FileInfo> saveFileInfo = new List<FileInfo>();
 
+    public const string saveFileExtenstion = ".meme";
+
     [System.Serializable]
     public struct SaveData
     {
@@ -24,7 +26,7 @@ public class SaveSystem
 
     public static string SaveFileName(string saveName)
     {
-        string saveFile = $"{Application.persistentDataPath}/{saveName}.meme";
+        string saveFile = $"{Application.persistentDataPath}/{saveName}{saveFileExtenstion}";
         return saveFile;
     }
 
@@ -84,7 +86,7 @@ public class SaveSystem
 
         foreach (FileInfo f in info)
         {
-            if (f.Extension == ".meme")
+            if (f.Extension == saveFileExtenstion)
             {
                 saveFileInfo.Add(f);
                 SaveData newSaveData = JsonUtility.FromJson<SaveData>(File.ReadAllText($"{Application.persistentDataPath}/{f.Name}"));
@@ -103,7 +105,7 @@ public class SaveSystem
         saveDatas.Remove(data);
         foreach (FileInfo fileInfo in saveFileInfo)
         {
-            if(fileInfo.Name == $"{data.saveName}.meme")
+            if(fileInfo.Name == $"{data.saveName}{saveFileExtenstion}")
             {
                 fileInfo.Delete();
             }

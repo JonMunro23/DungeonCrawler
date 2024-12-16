@@ -11,7 +11,7 @@ public class SaveSlot : MonoBehaviour
     [SerializeField] TMP_Text saveNameText, areaNameText, gameTimeText, saveDataText;
 
     public static Action onSaveLoaded;
-    public static Action<SaveSlot> onSaveDeleted;
+    public static Action<SaveSlot> onSaveDeleteButtonPressed;
     public static Action onCreateNewSaveButtonPressed;
 
     public void Init(SaveSystem.SaveData slotData)
@@ -51,14 +51,12 @@ public class SaveSlot : MonoBehaviour
         SaveSystem.Load(slotIndex, slotName);
     }
 
-    public void DeleteSave()
-    {
-        SaveSystem.DeleteSaveData(slotData);
-        onSaveDeleted?.Invoke(this);
-    }
-
     public void CreateNewSaveButtonClicked()
     {
         onCreateNewSaveButtonPressed?.Invoke();
+    }
+    public void TryDeleteSave()
+    {
+        onSaveDeleteButtonPressed?.Invoke(this);
     }
 }
