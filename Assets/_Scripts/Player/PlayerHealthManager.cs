@@ -21,7 +21,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     [SerializeField] float delayBeforeRegen;
     [SerializeField] float syringeCooldown;
     [SerializeField] bool isRegenActive;
-    bool canUseSyringe;
+    public bool canUseSyringe;
 
 
     public static Action<CharacterData, float> onMaxHealthUpdated;
@@ -127,7 +127,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public async void UseSyringeInSlot(InventorySlot slot)
     {
-        Debug.Log("Using syringe");
+        //Debug.Log("Using syringe");
         ConsumableItemData consumableData = slot.currentSlotItemStack.itemData as ConsumableItemData;
         if (consumableData == null)
             return;
@@ -172,15 +172,15 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     IEnumerator SyringeUseCooldown()
     {
-        Debug.Log("Cooldown started");
+        //Debug.Log("Cooldown started");
         yield return new WaitForSeconds(syringeCooldown);
         canUseSyringe = true;
-        Debug.Log("Cooldown ended");
+        //Debug.Log("Cooldown ended");
     }
 
     async Task InjectSyringe(ConsumableItemData syringeData)
     {
-        Debug.Log("Injecting...");
+        //Debug.Log("Injecting...");
         EnableSyringeArms();
         StartCoroutine(SyringeUseCooldown());
         await Task.Delay((int)(delayBeforeRegen * 1000));

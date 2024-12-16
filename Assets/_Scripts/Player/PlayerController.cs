@@ -117,12 +117,15 @@ public class PlayerController : MonoBehaviour
     {
         if (playerHealthController.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
+            Debug.Log(playerHealthController.CanUseSyringe());
             InventorySlot slotWithSyringe = playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe);
             if (!slotWithSyringe)
                 return;
 
             if(playerWeaponManager.currentWeapon == null)
                 return;
+
+            playerHealthController.canUseSyringe = false;
 
             await playerWeaponManager.currentWeapon.HolsterWeapon();
 
@@ -132,7 +135,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeapon()
     {
-        if(!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
+        if(!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !ItemPickupManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeapon();
         }
@@ -140,10 +143,23 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeaponSpecial()
     {
-        if (!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !itemPickupManager.hasGrabbedItem)
+        if(ItemPickupManager.hasGrabbedItem)
+        {
+            RemoveGrabbedItem();
+            return;
+        }
+
+        if (!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer)
         {
             playerWeaponManager.UseCurrentWeaponSpecial();
         }
+    }
+
+    void RemoveGrabbedItem()
+    {
+        playerInventoryManager.TryAddItemToInventory(itemPickupManager.currentGrabbedItem);
+        itemPickupManager.DetachItemFromMouseCursor();
+        HelperFunctions.SetCursorActive(false);
     }
 
     public void TryReloadCurrentWeapon()

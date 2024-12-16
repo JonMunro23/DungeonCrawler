@@ -79,6 +79,8 @@ public class GridController : MonoBehaviour
     [SerializeField] Vector3 centeredEntitySpawnOffset;
     [SerializeField] Vector3 worldItemSpawnOffset;
 
+    public static Action onQuickSave;
+
     public struct SquareCoords : ICoords
     {
         public float GetDistance(ICoords other)
@@ -185,6 +187,7 @@ public class GridController : MonoBehaviour
     public void QuickSave()
     {
         SaveSystem.Save(quickSaveSlotIndex, "Quick Save");
+        onQuickSave.Invoke();
     }
 
     public void QuickLoad()

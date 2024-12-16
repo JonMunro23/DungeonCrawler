@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 4790414646302873614}
   - component: {fileID: 1253207928198833169}
   m_Layer: 5
-  m_Name: SaveSlotButton
+  m_Name: SaveSlotNewSaveButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
