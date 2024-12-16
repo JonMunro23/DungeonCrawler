@@ -9,9 +9,8 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     PlayerController playerController;
     CharacterData characterData;
     [SerializeField] GameObject syringeArms;
+    [SerializeField] int maxHealth;
     [SerializeField] int currentHealth;
-    int maxHealth;
-    bool isDead;
 
     [Header("Stats")]
     [SerializeField] int evasion;
@@ -45,6 +44,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     {
         if(updatedStat.stat == ModifiableStats.MaxHealth)
         {
+            Debug.Log("max health updated: " + updatedStat.GetCurrentStatValue());
             UpdateMaxHealth(updatedStat.GetCurrentStatValue());
         }
     }
@@ -60,8 +60,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         playerController = newPlayerController;
         characterData = playerController.playerCharacterData;
 
-        maxHealth = Mathf.CeilToInt(characterData.GetStat(ModifiableStats.MaxHealth).GetBaseStatValue());
-        onMaxHealthUpdated?.Invoke(characterData, maxHealth);
+        UpdateMaxHealth(Mathf.CeilToInt(characterData.GetStat(ModifiableStats.MaxHealth).GetBaseStatValue()));
 
         currentHealth = maxHealth;
         canUseSyringe = true;
@@ -76,7 +75,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public void TryDamage(int damageTaken, bool wasCrit = false)
     {
-        if (isDead)
+        if (!PlayerController.isPlayerAlive)
             return;
 
         if (RollForDodge())
@@ -102,7 +101,6 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
         if (currentHealth == 0)
         {
-            isDead = true;
             playerController.OnDeath();
         }
     }

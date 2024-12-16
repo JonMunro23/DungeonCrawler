@@ -11,7 +11,7 @@ public class WeaponMotion : MonoBehaviour
 
     private void Update()
     {
-        if (PauseMenu.isPaused)
+        if (PauseMenu.isPaused || !PlayerController.isPlayerAlive)
             return;
 
         BreathingAnimation(1);
