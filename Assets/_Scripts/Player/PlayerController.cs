@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
 
         playerCharacterData = playerCharData;
         //currentOccupiedNode = spawnGridNode;
-
+        itemPickupManager.Init(this);
         playerInventoryManager.Init(this);
         playerEquipmentManager.Init(this);
         playerWeaponManager.Init(this);

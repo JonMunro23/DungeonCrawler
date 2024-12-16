@@ -44,7 +44,6 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     {
         if(updatedStat.stat == ModifiableStats.MaxHealth)
         {
-            Debug.Log("max health updated: " + updatedStat.GetCurrentStatValue());
             UpdateMaxHealth(updatedStat.GetCurrentStatValue());
         }
     }

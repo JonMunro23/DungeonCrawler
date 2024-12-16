@@ -2,12 +2,13 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Unity.VisualScripting;
 
 public class ItemPickupManager : MonoBehaviour
 {
-    PlayerInventoryManager inventoryManager;
-    PlayerWeaponManager playerWeaponManager;
+    PlayerController playerController;
 
+    [SerializeField] WorldItem worldItemPrefab;
     [SerializeField] Transform thrownItemSpawnLocation;
     [SerializeField] float throwVeloctiy;
     public Vector3 mousePos = Vector3.zero;
@@ -50,15 +51,14 @@ public class ItemPickupManager : MonoBehaviour
 
     }
 
-    private void Awake()
-    {
-        inventoryManager = GetComponent<PlayerInventoryManager>();
-        playerWeaponManager = GetComponent<PlayerWeaponManager>();
-    }
-
     private void Start()
     {
         itemPickupAudioEmitter = AudioManager.Instance.RegisterSource("[AudioEmitter] CharacterBody", transform.root, spatialBlend: 0);
+    }
+
+    public void Init(PlayerController playerController)
+    {
+        this.playerController = playerController;
     }
 
     void OnPlayerTurn(int turnDir)
@@ -160,14 +160,18 @@ public class ItemPickupManager : MonoBehaviour
         hasGrabbedItem = false;
     }
 
-    void PlaceGrabbedItemInWorld(Vector3 placementLocation)
+    void PlaceGrabbedItemInWorld(GridNode nodePlacedIn, Vector3 placementLocation)
     {
         if (!hasGrabbedItem)
             return;
 
-        //WorldItem spawnedWorldItem = Instantiate(currentGrabbedItem.itemData.itemWorldModel, placementLocation, Quaternion.identity);
-        //spawnedWorldItem.InitWorldItem(currentGrabbedItem);
-        //DetachItemFromMouseCursor();
+        Debug.Log(currentGrabbedItem.itemData.itemName);
+
+        WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, playerController.advGridMovement.GetTargetRot(),0)));
+        worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), nodePlacedIn.Coords.Pos, currentGrabbedItem);
+        worldItem.transform.GetChild(0).localPosition = new Vector3(worldItem.transform.GetChild(0).localPosition.x, worldItem.transform.GetChild(0).localPosition.y, 0);
+        worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
+        DetachItemFromMouseCursor();
     }
 
     void ThrowGrabbedItemIntoWorld()
@@ -183,18 +187,24 @@ public class ItemPickupManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (hasGrabbedItem == true)
+        if (hasGrabbedItem)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hit))
                 {
-                    //Debug.Log(hit.distance);
                     if (hit.transform.CompareTag("Ground") && hit.distance < maxGrabDistance)
                     {
-                        PlaceGrabbedItemInWorld(hit.point);
+                        GridNode node = hit.transform.GetComponentInParent<GridNode>();
+                        if (!node) 
+                            return;
+
+                        //if (node != PlayerController.currentOccupiedNode)
+                        //    return;
+
+                        PlaceGrabbedItemInWorld(node, hit.point);
                     }
                     //else if (hit.distance > maxGrabDistance)
                     //{
@@ -226,7 +236,7 @@ public class ItemPickupManager : MonoBehaviour
 
     void PickupItem(WorldItem itemToPickup)
     {
-        int remainingItems = inventoryManager.TryAddItemToInventory(itemToPickup.item);
+        int remainingItems = playerController.playerInventoryManager.TryAddItemToInventory(itemToPickup.item);
         if(remainingItems != itemToPickup.item.itemAmount)
         {
             PlayGrabAnim(grabSFX);
@@ -251,9 +261,9 @@ public class ItemPickupManager : MonoBehaviour
 
     private void PlayGrabAnim(AudioClip grabSFX = null)
     {
-        if (playerWeaponManager.currentWeapon != null && playerWeaponManager.currentWeapon.CanUse())
+        if (playerController.playerWeaponManager.currentWeapon != null && playerController.playerWeaponManager.currentWeapon.CanUse())
         {
-            playerWeaponManager.currentWeapon.Grab();
+            playerController.playerWeaponManager.currentWeapon.Grab();
             if(grabSFX != null)
                 itemPickupAudioEmitter.ForcePlay(grabSFX, grabSFXVolume);
         }
