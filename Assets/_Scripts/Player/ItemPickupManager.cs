@@ -201,8 +201,8 @@ public class ItemPickupManager : MonoBehaviour
                         if (!node) 
                             return;
 
-                        if (node != PlayerController.currentOccupiedNode)
-                            return;
+                        //if (node != PlayerController.currentOccupiedNode)
+                        //    return;
 
                         PlaceGrabbedItemInWorld(node, hit.point);
                     }
