@@ -590,7 +590,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   advGridMovement: {fileID: 162635141120244599}
   itemPickupManager: {fileID: 8472107880212972518}
-  playerHealthController: {fileID: 0}
+  playerHealthManager: {fileID: 0}
   playerInventoryManager: {fileID: 5977534421063011795}
   playerEquipmentManager: {fileID: 6917960533262647579}
   playerWeaponManager: {fileID: 4808936625142989322}
@@ -1083,6 +1083,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56eec65ce0e8e5649a4b843d3c297571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldItemPrefab: {fileID: 5545412917158435578, guid: 945df0abf5cc1e64c8ba274c480e94fa,
+    type: 3}
   thrownItemSpawnLocation: {fileID: 1458012736219982796}
   throwVeloctiy: 1200
   mousePos: {x: 0, y: 0, z: 0}
@@ -1207,6 +1209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syringeArms: {fileID: 4879892857341237695}
+  maxHealth: 0
   currentHealth: 0
   evasion: 0
   armour: 0

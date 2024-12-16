@@ -19,7 +19,6 @@ public class GridController : MonoBehaviour
     LayerInstance intGridLayer;
 
     [SerializeField] bool newGameOnStart = true;
-    public int quickSaveSlotIndex = 0;
     
     [Header("Grid")]
     [SerializeField] GridNode wallPrefab;
@@ -157,6 +156,8 @@ public class GridController : MonoBehaviour
             levels.Add(level);
         }
     }
+
+    public int GetCurrentLevelIndex() => currentLevelIndex;
 
     // Start is called before the first frame update
     void Start()
