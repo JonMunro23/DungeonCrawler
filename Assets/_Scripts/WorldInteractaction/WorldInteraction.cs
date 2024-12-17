@@ -30,6 +30,9 @@ public class WorldInteraction : MonoBehaviour
                 }
                 else if (hit.collider.TryGetComponent(out IInteractable interactable))
                 {
+                    if (interactable.GetIsPressurePlate())
+                        return;
+
                     ItemData currentGrabbedItemData = playerController.itemPickupManager.currentGrabbedItem.itemData;
                     if (currentGrabbedItemData != null)
                     {

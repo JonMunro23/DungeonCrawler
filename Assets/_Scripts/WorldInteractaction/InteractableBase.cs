@@ -91,4 +91,6 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     {
         Destroy(gameObject);
     }
+
+    public abstract bool GetIsPressurePlate();
 }

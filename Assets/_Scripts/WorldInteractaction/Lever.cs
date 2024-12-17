@@ -53,4 +53,9 @@ public class Lever : InteractableBase
             leverPivotPoint.localRotation = Quaternion.Euler(flippedRotation);
         }
     }
+
+    public override bool GetIsPressurePlate()
+    {
+        return false;
+    }
 }

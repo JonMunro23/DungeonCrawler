@@ -11,6 +11,7 @@ public interface IInteractable
     public bool GetIsActivated();
     public int GetLevelIndex();
     public Vector2 GetCoords();
+    public bool GetIsPressurePlate();
     public void SetIsActivated(bool activatedState);
     public void SetLevelIndex(int _levelIndex);
     public void SetCoords(Vector2 _coords);
