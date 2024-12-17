@@ -108,4 +108,9 @@ public class KeycardReader : InteractableBase
             SetIndicatorMaterial(successMat);
         }
     }
+
+    public override bool GetIsPressurePlate()
+    {
+        return false;
+    }
 }

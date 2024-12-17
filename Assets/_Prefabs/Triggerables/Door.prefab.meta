@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/_Prefabs/Grid/GridController.prefab.meta
 guid: f7a6d8d37daf52d40ae50816b3fc5883
-========
-guid: befb4da36953d844abe6ece7b01e2a18
->>>>>>>> setting-up-triggerables:Assets/_Prefabs/Triggerables/Door.prefab.meta
 PrefabImporter:
   externalObjects: {}
   userData: 

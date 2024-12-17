@@ -51,6 +51,7 @@ public class Door : TriggerableBase
         if(occupyingGridNode)
             occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.None));
 
+        transformToMove.DOKill();
         transformToMove.DOLocalMove(openedPos, openDuration);
     }
 
@@ -61,6 +62,7 @@ public class Door : TriggerableBase
         if (occupyingGridNode)
             occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle));
 
+        transformToMove.DOKill();
         transformToMove.DOLocalMove(closedPos, closeDuration);
     }
 

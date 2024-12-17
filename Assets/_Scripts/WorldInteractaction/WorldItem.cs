@@ -21,6 +21,7 @@ public class ItemStack
     }
 }
 
+[SelectionBase]
 public class WorldItem : MonoBehaviour, IPickup
 {
     public int levelIndex;
@@ -28,7 +29,7 @@ public class WorldItem : MonoBehaviour, IPickup
     public ItemStack item;
     public Vector2 coords;
 
-    public bool isOnPressurePlate;
+    public PressurePlate occupiedPressurePlate;
     public static Action<WorldItem> onWorldItemGrabbed;
     public static Action<WorldItem> onWorldItemPickedUp;
 
@@ -51,10 +52,16 @@ public class WorldItem : MonoBehaviour, IPickup
 
     public void Pickup(bool wasGrabbed = false)
     {
+        if(occupiedPressurePlate != null)
+        {
+            occupiedPressurePlate.RemoveGameobjectFromPlate(gameObject);
+        }
+
         //Debug.Log($"Grabbed {item.itemData.itemName}");
         if(wasGrabbed)
             onWorldItemGrabbed?.Invoke(this);
         else
             onWorldItemPickedUp?.Invoke(this);
+
     }
 }

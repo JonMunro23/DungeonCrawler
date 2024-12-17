@@ -1,53 +1,82 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PressurePlate : MonoBehaviour
+[SelectionBase]
+public class PressurePlate : InteractableBase
 {
-    public bool isPlatePressed;
-    public GameObject linkedObject;
-
     public List<GameObject> presentObjects = new List<GameObject>();
+    [SerializeField] Transform plateTransform;
+    [SerializeField] float pressDownPos;
+    float defaultPos;
 
-    public void ToggleLinked()
+    private void Start()
     {
-        if (!linkedObject)
-            return;
+        defaultPos = plateTransform.localPosition.y;
+    }
 
-        if(isPlatePressed == true)
+    public override bool GetIsPressurePlate()
+    {
+        return true;
+    }
+
+    public override void Interact()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void InteractWithItem(ItemData item)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    void PressPlateAnim()
+    {
+        plateTransform.localPosition = new Vector3(0, pressDownPos, 0);
+    }
+
+    void ReleasePlateAnim()
+    {
+        plateTransform.localPosition = new Vector3(0, defaultPos, 0);
+
+    }
+
+    public override void SetIsActivated(bool activatedState)
+    {
+        if (activatedState)
+            PressPlateAnim();
+        else
+            ReleasePlateAnim();
+
+        TriggerObjects();
+    }
+
+    public void RemoveGameobjectFromPlate(GameObject objectToRemove)
+    {
+        if (presentObjects.Contains(objectToRemove))
+            presentObjects.Remove(objectToRemove);
+
+        if (presentObjects.Count == 0)
         {
-            linkedObject.GetComponent<Door>().ToggleDoor();
-        }
-        else if(isPlatePressed == false)
-        {
-            linkedObject.GetComponent<Door>().ToggleDoor();
+            SetIsActivated(false);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if(presentObjects.Count == 0)
+            SetIsActivated(true);
+
         presentObjects.Add(other.gameObject);
-        if (other.CompareTag("WorldItem"))
-        {
-            other.GetComponent<WorldItem>().isOnPressurePlate = true;
-        }
-        if (isPlatePressed == false)
-        {
-            isPlatePressed = true;
-            ToggleLinked();
-        }
+
+        if (!other.TryGetComponent(out WorldItem item))
+            return;
+
+        item.occupiedPressurePlate = this;
     }
 
     private void OnTriggerExit(Collider other)
     {
-        presentObjects.Remove(other.gameObject);
-        if(isPlatePressed == true)
-        {
-            if(presentObjects.Count == 0)
-            {
-                isPlatePressed = false;
-                ToggleLinked();
-            }
-        }
+        RemoveGameobjectFromPlate(other.gameObject);
     }
 }

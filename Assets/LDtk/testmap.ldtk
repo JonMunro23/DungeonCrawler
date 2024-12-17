@@ -1242,7 +1242,11 @@
 			{ "id": "West", "tileRect": null, "color": 15389866 },
 			{ "id": "South", "tileRect": null, "color": 14984818 }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
-		{ "identifier": "Interactable_Type", "uid": 18, "values": [ { "id": "Keycard_Reader", "tileRect": null, "color": 12470831 }, { "id": "Lever", "tileRect": null, "color": 14120515 } ], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
+		{ "identifier": "Interactable_Type", "uid": 18, "values": [
+			{ "id": "Keycard_Reader", "tileRect": null, "color": 12470831 },
+			{ "id": "Lever", "tileRect": null, "color": 14120515 },
+			{ "id": "Pressure_Plate", "tileRect": null, "color": 15389866 }
+		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Triggerable_Type", "uid": 19, "values": [ { "id": "Door", "tileRect": null, "color": 12470831 }, { "id": "Secret_Door", "tileRect": null, "color": 14120515 } ], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Keycard_Type", "uid": 32, "values": [
 			{ "id": "None", "tileRect": null, "color": 0 },
@@ -1452,7 +1456,7 @@
 						},
 						{
 							"__identifier": "Interactable",
-							"__grid": [9,2],
+							"__grid": [9,3],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
@@ -1461,15 +1465,15 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [152,40],
+							"px": [152,56],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["West"]
 								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Keycard_Reader", "__tile": null, "defUid": 20, "realEditorValues": [{
+								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Pressure_Plate", "__tile": null, "defUid": 20, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Keycard_Reader"]
+									"params": ["Pressure_Plate"]
 								}] },
 								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
 									"entityIid": "f53519f0-9b00-11ef-b25f-4bad2c91391a",
@@ -1480,13 +1484,13 @@
 									"id": "V_String",
 									"params": ["f53519f0-9b00-11ef-b25f-4bad2c91391a"]
 								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "Red", "__tile": null, "defUid": 33, "realEditorValues": [{
+								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Red"]
+									"params": ["None"]
 								}] }
 							],
 							"__worldX": 152,
-							"__worldY": 40
+							"__worldY": 56
 						},
 						{
 							"__identifier": "Triggerable",
@@ -1501,9 +1505,9 @@
 							"defUid": 12,
 							"px": [136,56],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 17, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 17, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["West"]
+									"params": ["East"]
 								}] },
 								{ "__identifier": "Triggerable_Type", "__type": "LocalEnum.Triggerable_Type", "__value": "Door", "__tile": null, "defUid": 21, "realEditorValues": [] },
 								{ "__identifier": "Required_Triggers", "__type": "Int", "__value": 1, "__tile": null, "defUid": 34, "realEditorValues": [] }
@@ -1547,9 +1551,9 @@
 							"defUid": 12,
 							"px": [88,120],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 17, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 17, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["East"]
+									"params": ["West"]
 								}] },
 								{ "__identifier": "Triggerable_Type", "__type": "LocalEnum.Triggerable_Type", "__value": "Door", "__tile": null, "defUid": 21, "realEditorValues": [] },
 								{ "__identifier": "Required_Triggers", "__type": "Int", "__value": 2, "__tile": null, "defUid": 34, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }

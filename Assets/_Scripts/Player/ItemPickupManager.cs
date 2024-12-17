@@ -1,8 +1,6 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Unity.VisualScripting;
 
 public class ItemPickupManager : MonoBehaviour
 {
@@ -165,13 +163,14 @@ public class ItemPickupManager : MonoBehaviour
         if (!hasGrabbedItem)
             return;
 
-        Debug.Log(currentGrabbedItem.itemData.itemName);
-
         WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, playerController.advGridMovement.GetTargetRot(),0)));
         worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), nodePlacedIn.Coords.Pos, currentGrabbedItem);
         worldItem.transform.GetChild(0).localPosition = new Vector3(worldItem.transform.GetChild(0).localPosition.x, worldItem.transform.GetChild(0).localPosition.y, 0);
         worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
         DetachItemFromMouseCursor();
+
+        if(!PlayerInventoryManager.isInContainer && !PlayerInventoryUIController.isInventoryOpen)
+            HelperFunctions.SetCursorActive(false);
     }
 
     void ThrowGrabbedItemIntoWorld()
@@ -243,7 +242,7 @@ public class ItemPickupManager : MonoBehaviour
 
             if (remainingItems == 0)
             {
-                IPickup pickupInterface = itemToPickup as IPickup;
+                IPickup pickupInterface = itemToPickup;
                 pickupInterface.Pickup();
 
                 groundItems.Remove(itemToPickup);
