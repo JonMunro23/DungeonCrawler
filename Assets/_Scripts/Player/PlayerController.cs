@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("References")]
     [HideInInspector] public AdvancedGridMovement advGridMovement;
-    [HideInInspector] public ItemPickupManager itemPickupManager;
+    [HideInInspector] public WorldInteractionManager itemPickupManager;
     [HideInInspector] public PlayerHealthManager playerHealthManager;
     [HideInInspector] public PlayerInventoryManager playerInventoryManager;
     [HideInInspector] public PlayerEquipmentManager playerEquipmentManager;
@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
-        itemPickupManager = GetComponent<ItemPickupManager>();
+        itemPickupManager = GetComponent<WorldInteractionManager>();
         playerStatsManager = GetComponent<PlayerStatsManager>();
         playerSkillsManager = GetComponent<PlayerSkillsManager>();
         playerCamera = GetComponentInChildren<Camera>();
@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeapon()
     {
-        if(!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !ItemPickupManager.hasGrabbedItem)
+        if(!PlayerInventoryUIController.isInventoryOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeapon();
         }
@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeaponSpecial()
     {
-        if(ItemPickupManager.hasGrabbedItem)
+        if(WorldInteractionManager.hasGrabbedItem)
         {
             RemoveGrabbedItem();
             return;

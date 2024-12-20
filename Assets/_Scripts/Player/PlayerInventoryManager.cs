@@ -11,11 +11,10 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     List<ItemStack> startingItemStacks = new List<ItemStack>(); 
 
     [SerializeField] InventorySlot slotToSpawn;
-    InventorySlot syringeSlot;
     public InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
     public static bool isInContainer { get; private set; }
-
+    [SerializeField] ItemData pistolAmmo, rifleAmmo, shotgunAmmo;
     [SerializeField] int heldHealthSyringes, heldPistolAmmo, heldRifleAmmo, heldShells;
     [Space]
     [Header("Camera Anim On Container Interaction")]
@@ -35,7 +34,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         Container.onContainerOpened += OnContainerOpened;
         Container.onContainerClosed += OnContainerClosed;
 
-        ItemPickupManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
+        WorldInteractionManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
+
+        InventoryContextMenu.onInventorySlotWeaponUnloaded += OnInventorySlotWeaponUnloaded;
     }
 
     void OnDisable()
@@ -43,7 +44,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         Container.onContainerOpened -= OnContainerOpened;
         Container.onContainerClosed -= OnContainerClosed;
 
-        ItemPickupManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
+        WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
+
+        InventoryContextMenu.onInventorySlotWeaponUnloaded -= OnInventorySlotWeaponUnloaded;
     }
 
     void OnNearbyContainerUpdated(IContainer nearbyContainer)
@@ -76,6 +79,32 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
         if(!PlayerInventoryUIController.isInventoryOpen)
             HelperFunctions.SetCursorActive(false);
+    }
+
+    void OnInventorySlotWeaponUnloaded(ISlot slot)
+    {
+        WeaponItemData weaponItemData = slot.GetItemStack().itemData as WeaponItemData;
+        if (!weaponItemData)
+            return;
+
+        ItemData ammoItemData = null;
+        switch (weaponItemData.ammoType)
+        { 
+            case AmmoType.Pistol:
+                ammoItemData = pistolAmmo;
+                break;
+            case AmmoType.Rifle:
+                ammoItemData = rifleAmmo;
+                break;
+            case AmmoType.Shells:
+                ammoItemData = shotgunAmmo;
+                break;
+        }
+
+        ItemStack slotAmmo = new ItemStack(ammoItemData, slot.UnloadAmmo());
+        TryAddItemToInventory(slotAmmo);
+
+        
     }
 
     public void Init(PlayerController newPlayerController)
@@ -201,10 +230,10 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
-            if (!slot.currentSlotItemStack.itemData)
+            if (!slot.GetItemStack().itemData)
                 continue;
 
-            ConsumableItemData consumableData = slot.currentSlotItemStack.itemData as ConsumableItemData;
+            ConsumableItemData consumableData = slot.GetItemStack().itemData as ConsumableItemData;
             if (!consumableData)
                 continue;
 
@@ -221,7 +250,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         foreach(InventorySlot slot in spawnedInventorySlots)
         {
-            if(!slot.isSlotOccupied)
+            if(slot.IsSlotEmpty())
                 return slot;
         }
 
@@ -233,12 +262,12 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         List<InventorySlot> slotsWithItemAndSpace = new List<InventorySlot>();
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
-            if (!slot.isSlotOccupied)
+            if (!slot.IsSlotEmpty())
                 continue;
 
-            if(slot.currentSlotItemStack.itemData == itemData)
+            if(slot.GetItemStack().itemData == itemData)
             {
-                if(slot.currentSlotItemStack.GetRemainingSpaceInStack() > 0)
+                if(slot.GetItemStack().GetRemainingSpaceInStack() > 0)
                 {
                     slotsWithItemAndSpace.Add(slot);
                 }
@@ -259,7 +288,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             int remainingAmountToAdd = itemToAdd.itemAmount;
             foreach (InventorySlot slot in slotsWithSpace)
             {
-                int spaceInSlot = slot.currentSlotItemStack.GetRemainingSpaceInStack();
+                int spaceInSlot = slot.GetItemStack().GetRemainingSpaceInStack();
                 if (spaceInSlot > remainingAmountToAdd)
                 {
                     slot.AddToCurrentItemStack(remainingAmountToAdd);

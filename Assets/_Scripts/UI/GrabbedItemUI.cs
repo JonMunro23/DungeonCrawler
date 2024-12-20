@@ -9,14 +9,14 @@ public class GrabbedItemUI : MonoBehaviour
     bool hasGrabbedItem;
     private void OnEnable()
     {
-        ItemPickupManager.onNewItemAttachedToCursor += InitGrabbedItem;
-        ItemPickupManager.onCurrentItemDettachedFromCursor += ClearGrabbedItem;
+        WorldInteractionManager.onNewItemAttachedToCursor += InitGrabbedItem;
+        WorldInteractionManager.onCurrentItemDettachedFromCursor += ClearGrabbedItem;
     }
 
     private void OnDisable()
     {
-        ItemPickupManager.onNewItemAttachedToCursor -= InitGrabbedItem;
-        ItemPickupManager.onCurrentItemDettachedFromCursor -= ClearGrabbedItem;
+        WorldInteractionManager.onNewItemAttachedToCursor -= InitGrabbedItem;
+        WorldInteractionManager.onCurrentItemDettachedFromCursor -= ClearGrabbedItem;
     }
 
     private void Start()

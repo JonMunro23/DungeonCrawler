@@ -541,8 +541,7 @@ GameObject:
   - component: {fileID: 3417093745071717000}
   - component: {fileID: 162635141120244599}
   - component: {fileID: 4620442606277676960}
-  - component: {fileID: 2379057600127577040}
-  - component: {fileID: 8472107880212972518}
+  - component: {fileID: 7813209075847040319}
   - component: {fileID: 5977534421063011795}
   - component: {fileID: 6917960533262647579}
   - component: {fileID: 4808936625142989322}
@@ -574,6 +573,7 @@ Transform:
   m_Children:
   - {fileID: 854004732151512115}
   - {fileID: 9192000465837751480}
+  - {fileID: 3106928982722646368}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4750780804372824305
@@ -589,7 +589,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   advGridMovement: {fileID: 162635141120244599}
-  itemPickupManager: {fileID: 8472107880212972518}
+  itemPickupManager: {fileID: 0}
   playerHealthManager: {fileID: 0}
   playerInventoryManager: {fileID: 5977534421063011795}
   playerEquipmentManager: {fileID: 6917960533262647579}
@@ -794,9 +794,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 8472107880212972518}
-          m_TargetAssemblyTypeName: ItemPickupManager, Assembly-CSharp
-          m_MethodName: TryPickupGroundItem
+        - m_Target: {fileID: 7813209075847040319}
+          m_TargetAssemblyTypeName: WorldInteractionManager, Assembly-CSharp
+          m_MethodName: Interact
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1058,7 +1058,7 @@ MonoBehaviour:
   rightMinimumPitch: 1
   turnClip: {fileID: 8300000, guid: 8544ef406feee6c45b8838e817e19246, type: 3}
   turnMinimumPitch: 1
---- !u!114 &2379057600127577040
+--- !u!114 &7813209075847040319
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1067,26 +1067,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6206634459118426657}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f69b6c7ecd29ac14490c2fb5a03e009e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxInteractionDistance: 3
---- !u!114 &8472107880212972518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6206634459118426657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eec65ce0e8e5649a4b843d3c297571, type: 3}
+  m_Script: {fileID: 11500000, guid: 641059b0efd59ce40adda61354ce4466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   worldItemPrefab: {fileID: 5545412917158435578, guid: 945df0abf5cc1e64c8ba274c480e94fa,
     type: 3}
-  thrownItemSpawnLocation: {fileID: 1458012736219982796}
-  throwVeloctiy: 1200
+  itemDropLocation: {fileID: 3106928982722646368}
   mousePos: {x: 0, y: 0, z: 0}
   currentGrabbedItem:
     itemData: {fileID: 0}
@@ -1108,11 +1094,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b540e6fc33d904b41aba33e18efb0788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingItemStacks: []
+  startingItemStacks:
+  - itemData: {fileID: 11400000, guid: 08bb6ab52fe4a8842980544472333318, type: 2}
+    itemAmount: 1
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 447d605a20175084e8b6fed12b4d99c6, type: 2}
+    itemAmount: 1
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
+    itemAmount: 1
+    loadedAmmo: 0
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
   totalNumInventorySlots: 30
+  pistolAmmo: {fileID: 11400000, guid: 13678138784503d4d9aced3d3d412924, type: 2}
+  rifleAmmo: {fileID: 11400000, guid: bc054ada91f0705468e8177d904162be, type: 2}
+  shotgunAmmo: {fileID: 11400000, guid: 5c8800c3adf420744a7aae4de3b6b1a0, type: 2}
   heldHealthSyringes: 0
   heldPistolAmmo: 0
   heldRifleAmmo: 0
@@ -1314,6 +1312,37 @@ Transform:
   - {fileID: 3351975446943679685}
   m_Father: {fileID: 854004732151512115}
   m_LocalEulerAnglesHint: {x: -7.5, y: 0, z: 0}
+--- !u!1 &8428373342101472742
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3106928982722646368}
+  m_Layer: 0
+  m_Name: ItemDropLocation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3106928982722646368
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8428373342101472742}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3180298802843086112}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9212865591856936170
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,9 +10,10 @@ public interface IWeapon : IUseable
     public WeaponItemData GetWeaponData();
     public MeleeWeapon GetMeleeWeapon();
     public RangedWeapon GetRangedWeapon();
-    public void InitWeapon(int slotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory);
+    public void InitWeapon(WeaponSlot occupyingSlot, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory);
     public Task DrawWeapon();
     public Task HolsterWeapon();
     public void Grab();
     public void RemoveWeapon();
+    public int UnloadAmmo();
 }

@@ -11,4 +11,8 @@ public interface ISlot
     public bool IsInteractable();
     public bool IsSlotEmpty();
     public int GetSlotIndex();
+    public void HideTooltip();
+    public void ShowTooltip();
+    public InventorySlot GetSlot();
+    public int UnloadAmmo();
 }

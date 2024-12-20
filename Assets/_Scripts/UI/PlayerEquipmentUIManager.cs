@@ -6,6 +6,7 @@ public class PlayerEquipmentUIManager : MonoBehaviour
 {
     [SerializeField] List<EquipmentSlot> equipmentSlots;
     [SerializeField] List<Transform> equipmentSlotParentTransforms;
+    [SerializeField] Sprite[] equipmentSlotDefaultIcons;
 
     private void OnEnable()
     {
@@ -25,7 +26,7 @@ public class PlayerEquipmentUIManager : MonoBehaviour
         {
             equipmentSlots[i].slotType = (EquipmentSlotType)i+1;
             equipmentSlots[i].transform.SetParent(equipmentSlotParentTransforms[i], false);
-            equipmentSlots[i].InitEquipmentSlot();
+            equipmentSlots[i].InitEquipmentSlot(equipmentSlotDefaultIcons[i]);
         }
     }
     

@@ -202,7 +202,7 @@ public class PauseMenu : MonoBehaviour
     }
     public void ResumeGame()
     {
-        if(!ItemPickupManager.hasGrabbedItem && !PlayerInventoryManager.isInContainer && !PlayerInventoryUIController.isInventoryOpen)
+        if(!WorldInteractionManager.hasGrabbedItem && !PlayerInventoryManager.isInContainer && !PlayerInventoryUIController.isInventoryOpen)
             HelperFunctions.SetCursorActive(false);
 
         ClosePauseMenu();

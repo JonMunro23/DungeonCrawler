@@ -36,7 +36,6 @@ public class StatData
 
     public void DecreaseCurrentStatValue(float valueToRemove)
     {
-        Debug.Log(currentStatValue);
         SetCurrentStatValue(currentStatValue - valueToRemove);
     }
 
