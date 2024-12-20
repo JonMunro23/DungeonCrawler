@@ -14,6 +14,5 @@ public interface ISlot
     public void HideTooltip();
     public void ShowTooltip();
     public InventorySlot GetSlot();
-
     public int UnloadAmmo();
 }

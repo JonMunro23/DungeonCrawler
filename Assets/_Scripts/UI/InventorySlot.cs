@@ -316,12 +316,15 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public int UnloadAmmo()
     {
         WeaponSlot weaponSlot = this as WeaponSlot;
-        if(weaponSlot)
+        if (weaponSlot)
         {
-            GetItemStack().loadedAmmo = 0;
             return weaponSlot.GetWeapon().UnloadAmmo();
         }
-
-        return 0;
+        else
+        {
+            int loadedAmmo = GetItemStack().loadedAmmo;
+            GetItemStack().loadedAmmo = 0;
+            return loadedAmmo;
+        }
     }
 }

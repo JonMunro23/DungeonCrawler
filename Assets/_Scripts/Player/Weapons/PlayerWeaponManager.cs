@@ -418,7 +418,7 @@ public class PlayerWeaponManager : MonoBehaviour
                 loadedAmmo = rangedWeapon.GetLoadedAmmo();
             }
 
-            slotData.Add(new WeaponSlotData(slot.slotIndex, slotWeapon.GetWeaponData(), loadedAmmo));
+            slotData.Add(new WeaponSlotData(slot.GetSlotIndex(), slotWeapon.GetWeaponData(), loadedAmmo));
         }
         return slotData;
     }

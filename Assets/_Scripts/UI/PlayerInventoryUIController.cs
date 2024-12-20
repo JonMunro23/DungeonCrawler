@@ -34,7 +34,6 @@ public class PlayerInventoryUIController : MonoBehaviour
         WorldInteractionManager.onNearbyContainerUpdated += OnContainerDetected;
 
         InventorySlot.onInventorySlotRightClicked += ShowContextMenu;
-        InventorySlot.onInventorySlotLeftClicked += HideContextMenu;
     }
 
     private void OnDisable()
@@ -49,7 +48,6 @@ public class PlayerInventoryUIController : MonoBehaviour
         WorldInteractionManager.onNearbyContainerUpdated -= OnContainerDetected;
 
         InventorySlot.onInventorySlotRightClicked -= ShowContextMenu;
-        InventorySlot.onInventorySlotLeftClicked -= HideContextMenu;
 
     }
 
@@ -88,6 +86,15 @@ public class PlayerInventoryUIController : MonoBehaviour
     private void Start()
     {
         OnInventoryClosed();
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            if (contextMenu.gameObject.activeSelf)
+                HideContextMenu();
+        }
     }
 
     void OnInventoryOpened()
@@ -129,7 +136,6 @@ public class PlayerInventoryUIController : MonoBehaviour
         contextMenu.gameObject.SetActive(true);
         contextMenu.transform.position = Input.mousePosition;
         contextMenu.Init(slot);
-        //update context menu buttons depending on item in slot
     }
 
     void HideContextMenu(ISlot slot = null)
