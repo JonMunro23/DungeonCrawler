@@ -9,13 +9,13 @@ public class EquipmentSlot : InventorySlot
     public static Action<EquipmentSlotType, EquipmentItemData> onNewEquipmentItem;
     public static Action<EquipmentSlotType> onEquipmentItemRemoved;
 
-    [SerializeField] Sprite placeholderIcon;
+    [SerializeField] Sprite defaultSlotIcon;
     [SerializeField] float placeholderIconAlpha;
 
-    public void InitEquipmentSlot()
+    public void InitEquipmentSlot(Sprite defaultSlotIcon)
     {
-        //set slot background img
-        slotImage.sprite = placeholderIcon;
+        this.defaultSlotIcon = defaultSlotIcon;
+        slotImage.sprite = defaultSlotIcon;
         slotImage.color = slotImage.color = new Color(255, 255, 255, placeholderIconAlpha);
         SetInteractable(true);
     }
@@ -23,7 +23,7 @@ public class EquipmentSlot : InventorySlot
     public override void AddItem(ItemStack itemToAdd)
     {
         base.AddItem(itemToAdd);
-        InitialiseEquipmentItem(currentSlotItemStack);
+        InitialiseEquipmentItem(GetItemStack());
     }
 
     public override ItemStack SwapItem(ItemStack itemToSwap)
@@ -38,6 +38,8 @@ public class EquipmentSlot : InventorySlot
     {
         ItemStack itemToTake = base.TakeItem();
         DeinitialiseEquipmentItem(itemToTake);
+        slotImage.sprite = defaultSlotIcon;
+        slotImage.color = new Color(.75f, .75f, .75f, .33f);
         return itemToTake;
 
     }

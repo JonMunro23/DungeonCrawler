@@ -53,6 +53,7 @@ public class WeaponSlot : InventorySlot
         ItemStack itemToTake = base.TakeItem();
         itemToTake.loadedAmmo = currentWeapon.GetRangedWeapon() != null ? currentWeapon.GetRangedWeapon().GetLoadedAmmo() : 0;
         DeinitialiseWeaponItem();
+        slotImage.sprite = defaultWeapon.GetWeaponData().itemSprite;
         return itemToTake;
 
     }
@@ -84,7 +85,7 @@ public class WeaponSlot : InventorySlot
     {
         currentWeapon = newWeapon;
         currentWeapon.SetDefaultWeapon(false);
-        currentWeapon.InitWeapon(slotIndex, newWeapon.GetWeaponData(), audioEmitter, playerInventory);     
+        currentWeapon.InitWeapon(this, newWeapon.GetWeaponData(), audioEmitter, playerInventory);     
 
         //UpdateSlotUI();
     }
@@ -98,7 +99,7 @@ public class WeaponSlot : InventorySlot
     {
         currentWeapon = defaultWeapon;
         currentWeapon.SetDefaultWeapon(true);
-        currentWeapon.InitWeapon(slotIndex, defaultWeaponData, audioEmitter, playerInventory);
+        currentWeapon.InitWeapon(this, defaultWeaponData, audioEmitter, playerInventory);
         onWeaponSetToDefault?.Invoke(slotIndex, defaultWeaponData);
     }
 
@@ -123,5 +124,10 @@ public class WeaponSlot : InventorySlot
             RemoveWeapon();
             SetWeaponToDefault();
         }
+    }
+
+    public void SetItemStackLoadedAmmo(int newLoadedAmmo)
+    {
+        GetItemStack().loadedAmmo = newLoadedAmmo;
     }
 }

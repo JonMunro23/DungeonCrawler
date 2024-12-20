@@ -11,7 +11,7 @@ public abstract class Weapon : MonoBehaviour, IWeapon
     public Animator weaponAnimator;
     public AudioEmitter weaponAudioEmitter;
 
-    public int occupiedSlotIndex;
+    public WeaponSlot occupyingSlot;
     public IInventory playerInventory;
 
     public bool canUse;
@@ -49,10 +49,10 @@ public abstract class Weapon : MonoBehaviour, IWeapon
     public WeaponItemData GetWeaponData() => weaponItemData;
     public abstract MeleeWeapon GetMeleeWeapon();
     public abstract RangedWeapon GetRangedWeapon();
-    public virtual void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory _playerInventory)
+    public virtual void InitWeapon(WeaponSlot occupyingSlot, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory _playerInventory)
     {
         playerInventory = _playerInventory;
-        occupiedSlotIndex = occupyingSlotIndex;
+        this.occupyingSlot = occupyingSlot;
         weaponItemData = dataToInit;
         canUse = true;
         weaponAnimator = GetComponent<Animator>();
@@ -140,4 +140,16 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         return randClip;
     }
 
+    public int UnloadAmmo()
+    {
+        RangedWeapon rangedWeapon = this as RangedWeapon;
+        if(rangedWeapon)
+        {
+            int ammoToReturn = rangedWeapon.GetLoadedAmmo();
+            rangedWeapon.SetLoadedAmmo(0);
+            return ammoToReturn;
+        }
+
+        return 0;
+    }
 }

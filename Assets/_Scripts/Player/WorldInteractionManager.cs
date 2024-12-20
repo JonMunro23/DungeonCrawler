@@ -2,18 +2,19 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class ItemPickupManager : MonoBehaviour
+public class WorldInteractionManager : MonoBehaviour
 {
     PlayerController playerController;
-
+    [Header("References")]
     [SerializeField] WorldItem worldItemPrefab;
-    [SerializeField] Transform thrownItemSpawnLocation;
-    [SerializeField] float throwVeloctiy;
-    public Vector3 mousePos = Vector3.zero;
+    [SerializeField] Transform itemDropLocation;
+    //[SerializeField] Transform thrownItemSpawnLocation;
+    //[SerializeField] float throwVeloctiy;
+    [HideInInspector] public Vector3 mousePos = Vector3.zero;
     public ItemStack currentGrabbedItem = null;
     public static bool hasGrabbedItem;
-    public bool canPickUpItem = true;
-    float maxGrabDistance = 3;
+    [HideInInspector] public bool canPickUpItem = true;
+    float maxItemGrabDistance = 3;
 
     public AudioEmitter itemPickupAudioEmitter;
     public AudioClip grabSFX;
@@ -21,6 +22,7 @@ public class ItemPickupManager : MonoBehaviour
 
     [SerializeField] List<WorldItem> groundItems = new List<WorldItem>();
     IContainer nearbyContainer;
+
 
     public static Action<ItemStack> onNewItemAttachedToCursor;
     public static Action onCurrentItemDettachedFromCursor;
@@ -33,20 +35,23 @@ public class ItemPickupManager : MonoBehaviour
     private void OnEnable()
     {
         WorldItem.onWorldItemGrabbed += OnWorldItemGrabbed;
-        InventorySlot.onInventorySlotClicked += OnInventorySlotClicked;
+        InventorySlot.onInventorySlotLeftClicked += OnInventorySlotClicked;
         ContainerSlot.onContainerItemGrabbed += OnContainerItemGrabbed;
 
         AdvancedGridMovement.turnEvent += OnPlayerTurn;
+
+        InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
 
     private void OnDisable()
     {
         WorldItem.onWorldItemGrabbed -= OnWorldItemGrabbed;
-        InventorySlot.onInventorySlotClicked -= OnInventorySlotClicked;
+        InventorySlot.onInventorySlotLeftClicked -= OnInventorySlotClicked;
         ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
 
         AdvancedGridMovement.turnEvent -= OnPlayerTurn;
 
+        InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
 
     private void Start()
@@ -163,13 +168,23 @@ public class ItemPickupManager : MonoBehaviour
         if (!hasGrabbedItem)
             return;
 
-        WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, playerController.advGridMovement.GetTargetRot(),0)));
-        worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), nodePlacedIn.Coords.Pos, currentGrabbedItem);
+        SpawnWorldItem(currentGrabbedItem, nodePlacedIn, placementLocation);
+    }
+
+    void DropItemFromInventoryIntoWorld(ISlot slot)
+    {
+        SpawnWorldItem(slot.TakeItem(), PlayerController.currentOccupiedNode, itemDropLocation.position);
+    }
+
+    void SpawnWorldItem(ItemStack itemStackToSpawn, GridNode nodePlacedIn, Vector3 placementLocation)
+    {
+        WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, playerController.advGridMovement.GetTargetRot(), 0)));
+        worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), nodePlacedIn.Coords.Pos, itemStackToSpawn);
         worldItem.transform.GetChild(0).localPosition = new Vector3(worldItem.transform.GetChild(0).localPosition.x, worldItem.transform.GetChild(0).localPosition.y, 0);
         worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
         DetachItemFromMouseCursor();
 
-        if(!PlayerInventoryManager.isInContainer && !PlayerInventoryUIController.isInventoryOpen)
+        if (!PlayerInventoryManager.isInContainer && !PlayerInventoryUIController.isInventoryOpen)
             HelperFunctions.SetCursorActive(false);
     }
 
@@ -194,7 +209,7 @@ public class ItemPickupManager : MonoBehaviour
                 Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hit))
                 {
-                    if (hit.transform.CompareTag("Ground") && hit.distance < maxGrabDistance)
+                    if (hit.transform.CompareTag("Ground") && hit.distance < maxItemGrabDistance)
                     {
                         GridNode node = hit.transform.GetComponentInParent<GridNode>();
                         if (!node) 
@@ -217,7 +232,7 @@ public class ItemPickupManager : MonoBehaviour
     /// <summary>
     /// Called from InputHandler on key press
     /// </summary>
-    public void TryPickupGroundItem()
+    public void Interact()
     {
         if (groundItems.Count > 0)
         {

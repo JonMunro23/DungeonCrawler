@@ -125,14 +125,14 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     public async void UseSyringeInSlot(InventorySlot slot)
     {
         //Debug.Log("Using syringe");
-        ConsumableItemData consumableData = slot.currentSlotItemStack.itemData as ConsumableItemData;
+        ConsumableItemData consumableData = slot.GetItemStack().itemData as ConsumableItemData;
         if (consumableData == null)
             return;
 
         canUseSyringe = false;
         playerController.playerInventoryManager.RemoveHealthSyringe(1);
         slot.RemoveFromExistingStack(1);
-        await InjectSyringe(slot.currentSlotItemStack.itemData as ConsumableItemData);
+        await InjectSyringe(slot.GetItemStack().itemData as ConsumableItemData);
     }
 
     void EnableSyringeArms()

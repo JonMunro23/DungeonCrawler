@@ -34,12 +34,12 @@ public class RangedWeapon : Weapon
 
     public override bool CanUse()
     {
-        return base.CanUse() && !IsReloading() && loadedAmmo > 0;
+        return base.CanUse() && !IsReloading();
     }
 
-    public override void InitWeapon(int occupyingSlotIndex, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory)
+    public override void InitWeapon(WeaponSlot occupyingSlot, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory)
     {
-        base.InitWeapon(occupyingSlotIndex, dataToInit, _weaponAudioEmitter, playerInventory);
+        base.InitWeapon(occupyingSlot, dataToInit, _weaponAudioEmitter, playerInventory);
 
         if (!shellEjectionParticleEffect)
             return;
@@ -48,13 +48,13 @@ public class RangedWeapon : Weapon
             cachedParticleEffect = shellEjectionParticleEffect.GetComponentsInChildren<ParticleSystem>();
 
         reserveAmmo = GetReserveAmmo();
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
+        onAmmoUpdated?.Invoke(base.occupyingSlot.GetSlotIndex(), loadedAmmo, reserveAmmo);
 
     }
 
     public override Task DrawWeapon()
     {
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+        onAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, GetReserveAmmo());
         canShootBurst = true;
         return base.DrawWeapon();
     }
@@ -98,11 +98,11 @@ public class RangedWeapon : Weapon
         EjectCartridge();
 
         weaponAudioEmitter.ForcePlay(GetRandomClipFromArray(weaponItemData.attackSFX), weaponItemData.attackSFXVolume);
-        
-        if(!infinteAmmo)
-            loadedAmmo--;
 
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
+        if (!infinteAmmo)
+            SetLoadedAmmo(loadedAmmo - 1);
+
+        onAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, reserveAmmo);
 
         RaycastHit hit;
         for (int i = 0; i < weaponItemData.projectileCount; i++)
@@ -234,8 +234,8 @@ public class RangedWeapon : Weapon
         if (!weaponItemData.bulletByBulletReload)
         {
             playerInventory.IncreaseAmmoOfType(weaponItemData.ammoType, loadedAmmo);
-            loadedAmmo = 0;
-            onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+            SetLoadedAmmo(0);
+            onAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, GetReserveAmmo());
 
             DropMagazine(transform.root.GetComponent<Collider>());
         }
@@ -252,11 +252,11 @@ public class RangedWeapon : Weapon
         }
 
 
-        await PerformReload(amountToReload);
+        await PerformReloadAnim(amountToReload);
 
         playerInventory.UnlockSlots();
     }
-    public async Task PerformReload(int reloadAmount)
+    public async Task PerformReloadAnim(int reloadAmount)
     {
         if (weaponItemData.bulletByBulletReload)
         {
@@ -269,9 +269,9 @@ public class RangedWeapon : Weapon
         weaponAudioEmitter.ForcePlay(weaponItemData.reloadSFX, weaponItemData.reloadVolume);
         await Task.Delay((int)(weaponItemData.reloadAnimDuration * 1000));
         isReloading = false;
-        loadedAmmo = reloadAmount;
+        SetLoadedAmmo(reloadAmount);
         playerInventory.DecreaseAmmoOfType(weaponItemData.ammoType, reloadAmount);
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+        onAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, GetReserveAmmo());
     }
     private async Task BulletByBulletReload()
     {
@@ -281,9 +281,9 @@ public class RangedWeapon : Weapon
             weaponAnimator.Play("InsertInChamber");
             weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertInChamberSFX, weaponItemData.reloadInsertInChamberVolume);
             await Task.Delay((int)(weaponItemData.reloadInsertInChamberAnimDuration * 1000));
-            loadedAmmo++;
+            SetLoadedAmmo(loadedAmmo + 1);
             playerInventory.DecreaseAmmoOfType(weaponItemData.ammoType, 1);
-            onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+            onAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, GetReserveAmmo());
         }
         else
         {
@@ -298,9 +298,9 @@ public class RangedWeapon : Weapon
             weaponAnimator.CrossFadeInFixedTime("Insert", .1f);
             weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertSFX, weaponItemData.reloadInsertVolume);
             await Task.Delay((int)(weaponItemData.reloadInsertAnimDuration * 1000));
-            loadedAmmo++;
+            SetLoadedAmmo(loadedAmmo + 1);
             playerInventory.DecreaseAmmoOfType(weaponItemData.ammoType, 1);
-            onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, GetReserveAmmo());
+            onAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, GetReserveAmmo());
         }
 
         weaponAnimator.Play("StopReload");
@@ -316,6 +316,7 @@ public class RangedWeapon : Weapon
     public void SetLoadedAmmo(int loadedAmmo)
     {
         this.loadedAmmo = loadedAmmo;
+        occupyingSlot.SetItemStackLoadedAmmo(loadedAmmo);
     }
     public int GetReserveAmmo()
     {
@@ -324,7 +325,7 @@ public class RangedWeapon : Weapon
     public void UpdateReserveAmmo()
     {
         reserveAmmo = GetReserveAmmo();
-        onAmmoUpdated?.Invoke(occupiedSlotIndex, loadedAmmo, reserveAmmo);
+        onAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, reserveAmmo);
     }
     public override MeleeWeapon GetMeleeWeapon()
     {

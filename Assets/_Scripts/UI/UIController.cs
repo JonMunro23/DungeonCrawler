@@ -39,8 +39,8 @@ public class UIController : MonoBehaviour
         PlayerController.onPlayerInitialised += OnPlayerInitialised;
         PlayerController.onPlayerDeath += OnPlayerDeath;
 
-        ItemPickupManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
-        ItemPickupManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
+        WorldInteractionManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
+        WorldInteractionManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
 
         WeaponSlot.onWeaponRemovedFromSlot += OnWeaponRemovedFromSlot;
         WeaponSlot.onWeaponSwappedInSlot += OnWeaponSwappedInSlot;
@@ -61,8 +61,8 @@ public class UIController : MonoBehaviour
         PlayerController.onPlayerInitialised -= OnPlayerInitialised;
         PlayerController.onPlayerDeath -= OnPlayerDeath;
 
-        ItemPickupManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
-        ItemPickupManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
+        WorldInteractionManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
+        WorldInteractionManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
 
         WeaponSlot.onWeaponRemovedFromSlot -= OnWeaponRemovedFromSlot;
         WeaponSlot.onWeaponSwappedInSlot -= OnWeaponSwappedInSlot;

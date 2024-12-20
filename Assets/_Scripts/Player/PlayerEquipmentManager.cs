@@ -17,6 +17,8 @@ public class EquippedItem
 
 public class PlayerEquipmentManager : MonoBehaviour
 {
+    PlayerController playerController;
+
     [SerializeField] EquipmentSlot equipmentSlotPrefab;
     [SerializeField] List<EquipmentSlot> spawnedEquipmentSlots = new List<EquipmentSlot>();
 
@@ -36,7 +38,8 @@ public class PlayerEquipmentManager : MonoBehaviour
         EquipmentSlot.onNewEquipmentItem += EquipNewtem;
         EquipmentSlot.onEquipmentItemRemoved += RemoveEquippedItem;
 
-        WorldInteraction.OnWorldInteraction += OnWorldInteraction;
+        InventoryContextMenu.onInventorySlotEquipmentItemEquipped += OnInventorySlotEquipmentItemEquipped;
+        InventoryContextMenu.onInventorySlotEquipmentItemUnequipped += OnInventorySlotEquipmentItemUnequipped;
     }
 
     private void OnDisable()
@@ -44,11 +47,36 @@ public class PlayerEquipmentManager : MonoBehaviour
         EquipmentSlot.onNewEquipmentItem -= EquipNewtem;
         EquipmentSlot.onEquipmentItemRemoved -= RemoveEquippedItem;
 
-        WorldInteraction.OnWorldInteraction -= OnWorldInteraction;
+        InventoryContextMenu.onInventorySlotEquipmentItemEquipped -= OnInventorySlotEquipmentItemEquipped;
+        InventoryContextMenu.onInventorySlotEquipmentItemUnequipped -= OnInventorySlotEquipmentItemUnequipped;
+    }
+
+    void OnInventorySlotEquipmentItemEquipped(ISlot slot)
+    {
+        EquipmentItemData equipmentItemData = slot.GetItemStack().itemData as EquipmentItemData;
+        if (equipmentItemData)
+        {
+            EquippedItem currentlyEquippedItem = GetEquippedItemInSlot(equipmentItemData.EquipmentSlotType);
+            if (currentlyEquippedItem == null)
+            {
+                GetSlotOfType(equipmentItemData.EquipmentSlotType).AddItem(slot.TakeItem());
+            }
+            else
+            {
+                slot.AddItem(GetSlotOfType(currentlyEquippedItem.slotType).SwapItem(slot.GetItemStack()));
+            }
+
+        }
+    }
+
+    void OnInventorySlotEquipmentItemUnequipped(ISlot slot)
+    {
+        playerController.playerInventoryManager.TryAddItemToInventory(slot.TakeItem());
     }
 
     public void Init(PlayerController controller)
     {
+        playerController = controller;
         SpawnEquipmentSlots();
     }
 
@@ -62,12 +90,6 @@ public class PlayerEquipmentManager : MonoBehaviour
 
         onEquipmentSlotsSpawned.Invoke(spawnedEquipmentSlots);
     }
-
-    void OnWorldInteraction()
-    {
-
-    }
-
 
     void EquipNewtem(EquipmentSlotType slotType, EquipmentItemData newEquipmentItemData)
     {

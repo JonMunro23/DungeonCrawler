@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +17,10 @@ public class PlayerInventoryUIController : MonoBehaviour
     [Header("Syringe")]
     [SerializeField] TMP_Text syringeAmountText;
 
-    public static bool isInventoryOpen;
+    [Header("Context Menu")]
+    [SerializeField] InventoryContextMenu contextMenu;
+
+    public static bool isInventoryOpen, isContextMenuOpen;
 
     private void OnEnable()
     {
@@ -27,9 +29,12 @@ public class PlayerInventoryUIController : MonoBehaviour
         PlayerInventoryManager.onInventorySlotsSpawned += OnInventorySlotsSpawned;
         PlayerInventoryManager.onSyringeCountUpdated += OnSyringeCountUpdated;
 
-        ItemPickupManager.onGroundItemsUpdated += OnNewGroundItemDetected;
-        ItemPickupManager.onLastGroundItemRemoved += OnLastGroundItemRemoved;
-        ItemPickupManager.onNearbyContainerUpdated += OnContainerDetected;
+        WorldInteractionManager.onGroundItemsUpdated += OnNewGroundItemDetected;
+        WorldInteractionManager.onLastGroundItemRemoved += OnLastGroundItemRemoved;
+        WorldInteractionManager.onNearbyContainerUpdated += OnContainerDetected;
+
+        InventorySlot.onInventorySlotRightClicked += ShowContextMenu;
+        InventorySlot.onInventorySlotLeftClicked += HideContextMenu;
     }
 
     private void OnDisable()
@@ -39,9 +44,13 @@ public class PlayerInventoryUIController : MonoBehaviour
         PlayerInventoryManager.onInventorySlotsSpawned -= OnInventorySlotsSpawned;
         PlayerInventoryManager.onSyringeCountUpdated -= OnSyringeCountUpdated;
 
-        ItemPickupManager.onGroundItemsUpdated -= OnNewGroundItemDetected;
-        ItemPickupManager.onLastGroundItemRemoved -= OnLastGroundItemRemoved;
-        ItemPickupManager.onNearbyContainerUpdated -= OnContainerDetected;
+        WorldInteractionManager.onGroundItemsUpdated -= OnNewGroundItemDetected;
+        WorldInteractionManager.onLastGroundItemRemoved -= OnLastGroundItemRemoved;
+        WorldInteractionManager.onNearbyContainerUpdated -= OnContainerDetected;
+
+        InventorySlot.onInventorySlotRightClicked -= ShowContextMenu;
+        InventorySlot.onInventorySlotLeftClicked -= HideContextMenu;
+
     }
 
     void OnNewGroundItemDetected(ItemStack detectedItem)
@@ -86,6 +95,8 @@ public class PlayerInventoryUIController : MonoBehaviour
         InventoryParentObject.SetActive(true);
         InventoryObject.SetActive(true);
 
+        HideContextMenu();
+
         HelperFunctions.SetCursorActive(true);
 
         isInventoryOpen = true;
@@ -96,7 +107,7 @@ public class PlayerInventoryUIController : MonoBehaviour
         InventoryParentObject.SetActive(false);
         InventoryObject.SetActive(false);
 
-        if(!PlayerInventoryManager.isInContainer && !ItemPickupManager.hasGrabbedItem)
+        if(!PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem)
             HelperFunctions.SetCursorActive(false);
 
         isInventoryOpen = false;
@@ -110,5 +121,23 @@ public class PlayerInventoryUIController : MonoBehaviour
     void OnSyringeCountUpdated(int newSyringeCount)
     {
         syringeAmountText.text = newSyringeCount.ToString();
+    }
+
+    void ShowContextMenu(ISlot slot)
+    {
+        slot.HideTooltip();
+        contextMenu.gameObject.SetActive(true);
+        contextMenu.transform.position = Input.mousePosition;
+        contextMenu.Init(slot);
+        //update context menu buttons depending on item in slot
+    }
+
+    void HideContextMenu(ISlot slot = null)
+    {
+        if(slot != null)
+            if(!slot.IsSlotEmpty())
+                slot.ShowTooltip();
+
+        contextMenu.gameObject.SetActive(false);
     }
 }
