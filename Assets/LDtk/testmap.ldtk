@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 51,
+	"nextUid": 54,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -1245,7 +1245,8 @@
 		{ "identifier": "Interactable_Type", "uid": 18, "values": [
 			{ "id": "Keycard_Reader", "tileRect": null, "color": 12470831 },
 			{ "id": "Lever", "tileRect": null, "color": 14120515 },
-			{ "id": "Pressure_Plate", "tileRect": null, "color": 15389866 }
+			{ "id": "Pressure_Plate", "tileRect": null, "color": 15389866 },
+			{ "id": "Tripwire", "tileRect": null, "color": 14984818 }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Triggerable_Type", "uid": 19, "values": [ { "id": "Door", "tileRect": null, "color": 12470831 }, { "id": "Secret_Door", "tileRect": null, "color": 14120515 } ], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Keycard_Type", "uid": 32, "values": [
@@ -1911,6 +1912,66 @@
 							"px": [200,88],
 							"fieldInstances": [],
 							"__worldX": 200,
+							"__worldY": 88
+						},
+						{
+							"__identifier": "Interactable",
+							"__grid": [13,6],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#E4A672",
+							"iid": "902a4b10-c210-11ef-843c-332b6f96cc28",
+							"width": 16,
+							"height": 16,
+							"defUid": 11,
+							"px": [216,104],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["West"]
+								}] },
+								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Tripwire", "__tile": null, "defUid": 20, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Tripwire"]
+								}] },
+								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
+									"entityIid": "f53519f0-9b00-11ef-b25f-4bad2c91391a",
+									"layerIid": "0e984f60-9b00-11ef-b45e-c9d63f8c41ef",
+									"levelIid": "011d9a80-9b00-11ef-9670-d7c5423fe3e9",
+									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
+								}], "__tile": null, "defUid": 31, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["f53519f0-9b00-11ef-b25f-4bad2c91391a"]
+								}] },
+								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] }
+							],
+							"__worldX": 216,
+							"__worldY": 104
+						},
+						{
+							"__identifier": "NPC_Spawn",
+							"__grid": [13,5],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "dc409100-c210-11ef-843c-ffe9b3d9ee43",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [216,88],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["South"]
+								}] },
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "ceiling_turret", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["ceiling_turret"]
+								}] }
+							],
+							"__worldX": 216,
 							"__worldY": 88
 						}
 					]

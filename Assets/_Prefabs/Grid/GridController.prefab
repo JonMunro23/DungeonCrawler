@@ -47,9 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59d4fd5866e4eac47b556f20202c37b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameTime: 0
   project: {fileID: 7379775869353494814, guid: 336dff78202e9974ca89938e58e74f9c, type: 3}
   newGameOnStart: 1
-  quickSaveSlotIndex: 0
   wallPrefab: {fileID: 5669135901956335995, guid: cdd9a67269e3c764da5a38604871d0f6,
     type: 3}
   walkablePrefab: {fileID: 6649768854037950483, guid: e50f98c0cd5b1cb4c95f1398a78990d0,
@@ -82,7 +82,10 @@ MonoBehaviour:
     type: 3}
   keycardReaderPrefab: {fileID: 6781374973030842455, guid: 70127edbe93986a46bd226d4802bbd26,
     type: 3}
-  pressurePlatePrefab: {fileID: 0}
+  pressurePlatePrefab: {fileID: 2020087134673327132, guid: adbe1b63c800b14489d12825dd0e52c1,
+    type: 3}
+  tripwirePrefab: {fileID: 6332914540875885993, guid: 4f0930f69c0e54c4d90e9c3d7452f39c,
+    type: 3}
   doorPrefab: {fileID: 2992099999898577703, guid: f7a6d8d37daf52d40ae50816b3fc5883,
     type: 3}
   secretDoorPrefab: {fileID: 2900067432425157529, guid: 60823032845347a4ba344a99ee115650,
