@@ -598,8 +598,6 @@ MonoBehaviour:
   playerSkillsManager: {fileID: 0}
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
-  fadeOutDuration: 0.3
-  fadeInDuration: 0.3
 --- !u!114 &3417093745071717000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1095,15 +1093,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingItemStacks:
-  - itemData: {fileID: 11400000, guid: 08bb6ab52fe4a8842980544472333318, type: 2}
-    itemAmount: 1
-    loadedAmmo: 0
   - itemData: {fileID: 11400000, guid: 447d605a20175084e8b6fed12b4d99c6, type: 2}
     itemAmount: 1
     loadedAmmo: 0
   - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
     itemAmount: 1
-    loadedAmmo: 0
+    loadedAmmo: 15
+  - itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
+    itemAmount: 1
+    loadedAmmo: 25
+  - itemData: {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
+    itemAmount: 1
+    loadedAmmo: 5
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []

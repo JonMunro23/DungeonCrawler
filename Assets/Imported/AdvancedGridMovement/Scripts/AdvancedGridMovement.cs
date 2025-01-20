@@ -55,7 +55,7 @@ public class AdvancedGridMovement : MonoBehaviour
     [Header("Event when the player takes a step")]
     [SerializeField] private UnityEvent stepEvent;
 
-    public static event Action<int> turnEvent;
+    public static event Action<int> onPlayerTurned;
     public static Action onPlayerMoved;
 
     // Animation target values.
@@ -305,9 +305,9 @@ public class AdvancedGridMovement : MonoBehaviour
         {
             canRotate = false;
             if (eulerDirectionDelta > 0)
-                turnEvent?.Invoke(0);
+                onPlayerTurned?.Invoke(0);
             else
-                turnEvent?.Invoke(1);
+                onPlayerTurned?.Invoke(1);
 
             rotateFromDirection = transform.rotation;
             rotateTowardsDirection *= Quaternion.Euler(0.0f, eulerDirectionDelta, 0.0f);

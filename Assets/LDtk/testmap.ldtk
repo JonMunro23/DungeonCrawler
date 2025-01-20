@@ -1456,7 +1456,7 @@
 						},
 						{
 							"__identifier": "Interactable",
-							"__grid": [9,3],
+							"__grid": [9,2],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
@@ -1465,15 +1465,15 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [152,56],
+							"px": [152,40],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["West"]
 								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Pressure_Plate", "__tile": null, "defUid": 20, "realEditorValues": [{
+								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Pressure_Plate"]
+									"params": ["Lever"]
 								}] },
 								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
 									"entityIid": "f53519f0-9b00-11ef-b25f-4bad2c91391a",
@@ -1490,7 +1490,7 @@
 								}] }
 							],
 							"__worldX": 152,
-							"__worldY": 56
+							"__worldY": 40
 						},
 						{
 							"__identifier": "Triggerable",

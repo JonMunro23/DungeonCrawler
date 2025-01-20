@@ -22,6 +22,7 @@ public class WorldInteractionManager : MonoBehaviour
 
     [SerializeField] List<WorldItem> groundItems = new List<WorldItem>();
     IContainer nearbyContainer;
+    IInteractable nearbyInteractable;
 
 
     public static Action<ItemStack> onNewItemAttachedToCursor;
@@ -31,6 +32,7 @@ public class WorldInteractionManager : MonoBehaviour
     public static Action onLastGroundItemRemoved;
 
     public static Action<IContainer> onNearbyContainerUpdated;
+    public static Action<IInteractable> onNearbyInteractableUpdated;
 
     private void OnEnable()
     {
@@ -38,7 +40,7 @@ public class WorldInteractionManager : MonoBehaviour
         InventorySlot.onInventorySlotLeftClicked += OnInventorySlotClicked;
         ContainerSlot.onContainerItemGrabbed += OnContainerItemGrabbed;
 
-        AdvancedGridMovement.turnEvent += OnPlayerTurn;
+        AdvancedGridMovement.onPlayerTurned += OnPlayerTurn;
 
         InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
@@ -49,7 +51,7 @@ public class WorldInteractionManager : MonoBehaviour
         InventorySlot.onInventorySlotLeftClicked -= OnInventorySlotClicked;
         ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
 
-        AdvancedGridMovement.turnEvent -= OnPlayerTurn;
+        AdvancedGridMovement.onPlayerTurned -= OnPlayerTurn;
 
         InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
@@ -188,46 +190,35 @@ public class WorldInteractionManager : MonoBehaviour
             HelperFunctions.SetCursorActive(false);
     }
 
-    void ThrowGrabbedItemIntoWorld()
-    {
-        //WorldItem spawnedWorldItem = Instantiate(currentGrabbedItem.itemData.itemWorldModel, thrownItemSpawnLocation.position, Quaternion.identity);
-        //spawnedWorldItem.GetComponent<Rigidbody>().AddForce(thrownItemSpawnLocation.forward * throwVeloctiy * Time.deltaTime, ForceMode.Impulse);
-        //spawnedWorldItem.item.itemData = currentGrabbedItem.itemData;
-        //spawnedWorldItem.item.itemAmount = currentGrabbedItem.itemAmount;
-
-        //DetachItemFromMouseCursor();
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if (hasGrabbedItem)
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            RaycastHit hit;
+            Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
             {
-                RaycastHit hit;
-                Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit))
+                if (hit.distance < maxItemGrabDistance)
                 {
-                    if (hit.transform.CompareTag("Ground") && hit.distance < maxItemGrabDistance)
+                    if (hasGrabbedItem && hit.transform.CompareTag("Ground"))
                     {
                         GridNode node = hit.transform.GetComponentInParent<GridNode>();
-                        if (!node) 
+                        if (!node)
                             return;
 
-                        //if (node != PlayerController.currentOccupiedNode)
-                        //    return;
-
                         PlaceGrabbedItemInWorld(node, hit.point);
+                        return;
                     }
-                    //else if (hit.distance > maxGrabDistance)
-                    //{
-                    //    ThrowGrabbedItemIntoWorld();
-                    //}
+                    else if(hit.transform.TryGetComponent(out IPickup pickup))
+                    {
+                        pickup.Pickup(true);
+                    }
                 }
             }
         }
     }
+
 
     /// <summary>
     /// Called from InputHandler on key press
@@ -245,6 +236,15 @@ public class WorldInteractionManager : MonoBehaviour
             //playerWeaponManager.currentWeapon.HolsterWeapon();
             PlayGrabAnim();
             nearbyContainer.ToggleContainer();
+        }
+
+        if(nearbyInteractable != null)
+        {
+            PlayGrabAnim();
+            if (currentGrabbedItem != null)
+                nearbyInteractable.InteractWithItem(currentGrabbedItem.itemData);
+            else
+                nearbyInteractable.Interact();
         }
     }
 
@@ -300,12 +300,21 @@ public class WorldInteractionManager : MonoBehaviour
             return;
         }
 
-        if(other.TryGetComponent(out IContainer container))
+        if(other.TryGetComponent(out IContainer nearbyContainer))
         {
             if(transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
             {
-                nearbyContainer = container;
+                this.nearbyContainer = nearbyContainer;
                 onNearbyContainerUpdated?.Invoke(nearbyContainer);
+            }
+        }
+
+        if(other.TryGetComponent(out IInteractable nearbyInteractable))
+        {
+            if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
+            {
+                this.nearbyInteractable = nearbyInteractable;
+                onNearbyInteractableUpdated?.Invoke(nearbyInteractable);
             }
         }
     }
@@ -322,6 +331,18 @@ public class WorldInteractionManager : MonoBehaviour
                 nearbyContainer = null;
 
             onNearbyContainerUpdated?.Invoke(nearbyContainer);
+        }
+
+        if (other.TryGetComponent(out IInteractable nearbyInteractable))
+        {
+            if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
+            {
+                this.nearbyInteractable = nearbyInteractable;
+            }
+            else
+                this.nearbyInteractable = null;
+
+            onNearbyInteractableUpdated?.Invoke(this.nearbyInteractable);
         }
     }
 
@@ -347,6 +368,16 @@ public class WorldInteractionManager : MonoBehaviour
                     nearbyContainer.CloseContainer();
                     nearbyContainer = null;
                     onNearbyContainerUpdated?.Invoke(nearbyContainer);
+                }
+        }
+
+        if(nearbyInteractable != null)
+        {
+            if(other.TryGetComponent(out IInteractable interactable))
+                if(interactable == nearbyInteractable)
+                {
+                    nearbyInteractable = null;
+                    onNearbyInteractableUpdated?.Invoke(nearbyInteractable);
                 }
         }
     }

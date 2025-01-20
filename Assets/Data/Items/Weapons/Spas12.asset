@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aeb7a71bee8a1924db3f815c07380154, type: 3}
-  m_Name: Spas
+  m_Name: Spas12
   m_EditorClassIdentifier: 
   itemName: ' Spas 12'
   itemIdentifier: spas_12
@@ -43,6 +43,7 @@ MonoBehaviour:
   isBurst: 0
   perShotInBurstDelay: 0
   burstLength: 0
+  recoilData: {fileID: 11400000, guid: 7c7c1528df6797f4898a475787174cb3, type: 2}
   attackSFX:
   - {fileID: 8300000, guid: 75969f62278ac744d875f460ba9e1bde, type: 3}
   attackSFXVolume: 0.3

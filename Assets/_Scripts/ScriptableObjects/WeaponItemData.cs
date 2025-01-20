@@ -31,6 +31,9 @@ public class WeaponItemData : EquipmentItemData
     public float perShotInBurstDelay;
     public int burstLength;
 
+    [Header("Recoil Data")]
+    public WeaponRecoilData recoilData;
+
     [Header("Weapon SFX")]
     public AudioClip[] attackSFX;
     public float attackSFXVolume = .3f;

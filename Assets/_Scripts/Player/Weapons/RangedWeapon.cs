@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,6 +27,8 @@ public class RangedWeapon : Weapon
     [SerializeField] int maxDroppedMags = 5;
     [SerializeField] int lastDroppedMag;
     List<GameObject> droppedMagList = new List<GameObject>();
+
+    public static Action<WeaponItemData> onRangedWeaponFired;
 
     private void Start()
     {
@@ -60,12 +63,12 @@ public class RangedWeapon : Weapon
     }
     public override void UseWeapon()
     {
-        if (!isWeaponDrawn && !canUse)
+        if (!CanUse())
             return;
 
-        base.UseWeapon();
         if(loadedAmmo > 0 || infinteAmmo)
         {
+            base.UseWeapon();
             if (weaponItemData.isProjectile)
             {
                 GameObject projectile = Instantiate(weaponItemData.projectileData.projModel, projectileSpawnLocation.position, projectileSpawnLocation.rotation);
@@ -102,6 +105,7 @@ public class RangedWeapon : Weapon
         if (!infinteAmmo)
             SetLoadedAmmo(loadedAmmo - 1);
 
+        onRangedWeaponFired?.Invoke(weaponItemData);
         onAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, reserveAmmo);
 
         RaycastHit hit;

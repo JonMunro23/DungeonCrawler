@@ -47,6 +47,7 @@ MonoBehaviour:
   isBurst: 1
   perShotInBurstDelay: 0.08
   burstLength: 7
+  recoilData: {fileID: 11400000, guid: 1dd2f7d44e5a4d04d81b3f408545096a, type: 2}
   attackSFX:
   - {fileID: 8300000, guid: 406e8486c88ba1941aaf35f44f86e570, type: 3}
   - {fileID: 8300000, guid: 03cb07fd4c96c764d87c7dcf9f6f2e9b, type: 3}

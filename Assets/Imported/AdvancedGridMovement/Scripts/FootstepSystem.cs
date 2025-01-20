@@ -33,12 +33,12 @@ public class FootstepSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        AdvancedGridMovement.turnEvent += Turn;
+        AdvancedGridMovement.onPlayerTurned += Turn;
     }
 
     private void OnDisable()
     {
-        AdvancedGridMovement.turnEvent -= Turn;
+        AdvancedGridMovement.onPlayerTurned -= Turn;
     }
 
     public void Step()

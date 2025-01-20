@@ -9,6 +9,21 @@ public class WeaponMotion : MonoBehaviour
     private float breathingProgress;
     private Vector3 breathingRot;
 
+    private void OnEnable()
+    {
+        RangedWeapon.onRangedWeaponFired += OnRangedWeaponFired;
+    }
+
+    private void OnDisable()
+    {
+        RangedWeapon.onRangedWeaponFired -= OnRangedWeaponFired;
+    }
+
+    void OnRangedWeaponFired(WeaponItemData weaponItemData)
+    {
+        WeaponRecoil(weaponItemData.recoilData);
+    }
+
     private void Update()
     {
         if (PauseMenu.isPaused || !PlayerController.isPlayerAlive)
@@ -51,6 +66,11 @@ public class WeaponMotion : MonoBehaviour
         }
     }
 
+    public void WeaponRecoil(WeaponRecoilData recoilData)
+    {
+        Vector3 recoil = recoilData.GetRandomPrimaryFireRecoilValue();
+        transform.localPosition = Vector3.Lerp(transform.localPosition, transform.localPosition + recoil, .2f);
+    }
 
     private void CalculateAngle(ref float angle, float animationSpeed, float overallSpeed)
     {

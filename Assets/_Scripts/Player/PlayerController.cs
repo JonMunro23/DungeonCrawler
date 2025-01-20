@@ -47,8 +47,6 @@ public class PlayerController : MonoBehaviour
     public CharacterData playerCharacterData;
     public static GridNode currentOccupiedNode;
 
-    [SerializeField] float fadeOutDuration, fadeInDuration;
-
     public static bool isPlayerAlive;
 
     Vector3 defaultCamPos;

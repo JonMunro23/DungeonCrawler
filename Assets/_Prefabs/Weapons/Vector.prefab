@@ -308,7 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponItemData: {fileID: 0}
   weaponAnimator: {fileID: 0}
-  occupiedSlotIndex: 0
+  occupyingSlot: {fileID: 0}
   canUse: 0
   isWeaponDrawn: 0
   isDefaultWeapon: 0

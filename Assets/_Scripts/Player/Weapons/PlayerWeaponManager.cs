@@ -217,11 +217,20 @@ public class PlayerWeaponManager : MonoBehaviour
             }
 
             if (!spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon())
+            {
                 spawnedWeaponSlots[slotIndex].RemoveWeapon();
-            else if (!spawnedWeaponSlots[activeSlotIndex].GetWeapon().IsDefaultWeapon())
-                spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(false);
-        }
+                Debug.Log("Yeet1");
 
+            }
+
+            if(slotIndex == activeSlotIndex)
+            {
+                if (spawnedWeaponSlots[activeSlotIndex].GetWeapon().IsDefaultWeapon())
+                {
+                    spawnedWeaponSlots[activeSlotIndex].SetSlotWeaponActive(false);
+                }
+            }
+        }
         InitialiseNewWeapon(spawnedWeaponSlots[slotIndex], newWeaponItemData, startingAmmo);
 
         if (activeSlotIndex == slotIndex)

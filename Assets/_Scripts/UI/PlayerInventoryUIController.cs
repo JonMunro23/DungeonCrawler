@@ -31,7 +31,8 @@ public class PlayerInventoryUIController : MonoBehaviour
 
         WorldInteractionManager.onGroundItemsUpdated += OnNewGroundItemDetected;
         WorldInteractionManager.onLastGroundItemRemoved += OnLastGroundItemRemoved;
-        WorldInteractionManager.onNearbyContainerUpdated += OnContainerDetected;
+        WorldInteractionManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
+        WorldInteractionManager.onNearbyInteractableUpdated += OnNearbyInteractableUpdated;
 
         InventorySlot.onInventorySlotRightClicked += ShowContextMenu;
     }
@@ -45,7 +46,7 @@ public class PlayerInventoryUIController : MonoBehaviour
 
         WorldInteractionManager.onGroundItemsUpdated -= OnNewGroundItemDetected;
         WorldInteractionManager.onLastGroundItemRemoved -= OnLastGroundItemRemoved;
-        WorldInteractionManager.onNearbyContainerUpdated -= OnContainerDetected;
+        WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
 
         InventorySlot.onInventorySlotRightClicked -= ShowContextMenu;
 
@@ -56,7 +57,7 @@ public class PlayerInventoryUIController : MonoBehaviour
         pickupItemText.text = $"Press F to pickup {(detectedItem.itemAmount > 0 ? detectedItem.itemAmount : "")} {detectedItem.itemData.itemName}.";
     }
 
-    void OnContainerDetected(IContainer container)
+    void OnNearbyContainerUpdated(IContainer container)
     {
         if(container == null)
         {
@@ -66,6 +67,18 @@ public class PlayerInventoryUIController : MonoBehaviour
         }
 
         pickupItemText.text = $"Press F to {(container.IsOpen() ? "close" : "open")} container.";
+    }
+
+    void OnNearbyInteractableUpdated(IInteractable interactable)
+    {
+        if (interactable == null)
+        {
+            pickupItemText.text = "";
+
+            return;
+        }
+
+        pickupItemText.text = "Press F to interact.";
     }
 
     void OnLastGroundItemRemoved()

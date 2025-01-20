@@ -39,12 +39,12 @@ public class WeaponSway : MonoBehaviour
     Vector3 bobEulerRotation;
     private void OnEnable()
     {
-        AdvancedGridMovement.turnEvent += DecideSwayDirection;
+        AdvancedGridMovement.onPlayerTurned += DecideSwayDirection;
     }
 
     private void OnDisable()
     {
-        AdvancedGridMovement.turnEvent -= DecideSwayDirection;
+        AdvancedGridMovement.onPlayerTurned -= DecideSwayDirection;
     }
     // Start is called before the first frame update
     void Start()
