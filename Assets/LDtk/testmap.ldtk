@@ -1783,16 +1783,16 @@
 							"defUid": 10,
 							"px": [216,88],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["East"]
+									"params": ["North"]
 								}] },
-								{ "__identifier": "Item_Name", "__type": "String", "__value": "python", "__tile": null, "defUid": 14, "realEditorValues": [{
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "SSh-68", "__tile": null, "defUid": 14, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["python"]
+									"params": ["SSh-68"]
 								}] },
 								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 1, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
-								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 5, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [5] }] }
+								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [null] }
 							],
 							"__worldX": 216,
 							"__worldY": 88
@@ -1948,31 +1948,6 @@
 							],
 							"__worldX": 216,
 							"__worldY": 104
-						},
-						{
-							"__identifier": "NPC_Spawn",
-							"__grid": [13,5],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
-							"__smartColor": "#D77643",
-							"iid": "dc409100-c210-11ef-843c-ffe9b3d9ee43",
-							"width": 16,
-							"height": 16,
-							"defUid": 7,
-							"px": [216,88],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["South"]
-								}] },
-								{ "__identifier": "EnemyName", "__type": "String", "__value": "ceiling_turret", "__tile": null, "defUid": 8, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["ceiling_turret"]
-								}] }
-							],
-							"__worldX": 216,
-							"__worldY": 88
 						}
 					]
 				},

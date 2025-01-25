@@ -1,4 +1,3 @@
-using System.Reflection;
 using UnityEngine;
 
 public class WeaponMotion : MonoBehaviour
@@ -65,7 +64,6 @@ public class WeaponMotion : MonoBehaviour
             breathingRot = Vector3.Lerp(breathingRot, Vector3.zero, Time.deltaTime * 5);
         }
     }
-
     public void WeaponRecoil(WeaponRecoilData recoilData)
     {
         Vector3 recoil = recoilData.GetRandomPrimaryFireRecoilValue();

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42a3887c6770e334fb4deddd675d746c, type: 3}
+  m_Name: SSh68SteelHelm
+  m_EditorClassIdentifier: 
+  itemName: SSh-68 Steel Helmet
+  itemIdentifier: SSh-68
+  itemDescription: A solid steel helment providing decent protection against small
+    calibers
+  itemSprite: {fileID: 21300000, guid: 9d08b42c233a3204eb145dbf80bfeb73, type: 3}
+  itemWorldModel: {fileID: 919132149155446097, guid: ab41134cdc4b0db47a0d3e4e1e4a874f,
+    type: 3}
+  itemWeight: 5
+  isItemStackable: 0
+  maxItemStackSize: 1
+  itemCooldown: 0
+  EquipmentSlotType: 1
+  statModifiers:
+  - statToModify: 1
+    modifyOperation: 0
+    modifyAmount: 5

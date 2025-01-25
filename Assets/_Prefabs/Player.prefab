@@ -1418,6 +1418,10 @@ MonoBehaviour:
   useBreathAnimation: 1
   breathingSpeed: 2
   breathingAmplitude: 0.01
+  m_ScaleFactor: 0.25
+  m_Smoothness: 1
+  m_WalkingMotionData: {fileID: 11400000, guid: 2b4b78518371df74a9946a11089273e0,
+    type: 2}
 --- !u!1001 &1526676580978589587
 PrefabInstance:
   m_ObjectHideFlags: 0

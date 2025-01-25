@@ -47,7 +47,9 @@ public class WorldItem : MonoBehaviour, IPickup
 
     void SpawnMesh()
     {
-        Instantiate(item.itemData.itemWorldModel, transform);
+        GameObject clone = Instantiate(item.itemData.itemWorldModel, transform);
+        clone.transform.localPosition = new Vector3(0, 0, 1.3f);
+
     }
 
     public void Pickup(bool wasGrabbed = false)
