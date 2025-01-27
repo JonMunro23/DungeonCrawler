@@ -18,7 +18,7 @@ public class GridController : MonoBehaviour
     LayerInstance entityLayer;
     LayerInstance intGridLayer;
 
-    [SerializeField] bool newGameOnStart = true;
+    //[SerializeField] bool newGameOnStart = true;
     
     [Header("Grid")]
     [SerializeField] GridNode wallPrefab;
@@ -100,6 +100,9 @@ public class GridController : MonoBehaviour
 
     private void OnEnable()
     {
+        MainMenu.onNewGameStarted += NewGame;
+        PauseMenu.onQuit += OnQuit;
+
         NPCController.onNPCDeath += OnNPCDeath;
 
         PlayerController.onPlayerDeath += OnPlayerDeath;
@@ -111,6 +114,9 @@ public class GridController : MonoBehaviour
 
     private void OnDisable()
     {
+        MainMenu.onNewGameStarted -= NewGame;
+        PauseMenu.onQuit += OnQuit;
+
         NPCController.onNPCDeath -= OnNPCDeath;
 
         PlayerController.onPlayerDeath -= OnPlayerDeath;
@@ -165,8 +171,8 @@ public class GridController : MonoBehaviour
     {
         GetLevels();
 
-        if(newGameOnStart)
-            NewGame();
+        //if(newGameOnStart)
+        //    NewGame();
     }
 
     #region QuickSave/Load
@@ -218,6 +224,29 @@ public class GridController : MonoBehaviour
             SaveLevel(i);
             UnloadCurrentLevel();
         }
+    }
+
+    void OnQuit()
+    {
+        foreach (var level in levelParents)
+        {
+            Destroy(level);
+        }
+        levelParents.Clear();
+        activeNodes.Clear();
+        spawnedContainers.Clear();
+        spawnedInteractables.Clear();
+        spawnedLevelTransitions.Clear();
+        spawnedNPCs.Clear();
+        activeNPCs.Clear();
+        spawnedTriggerables.Clear();
+        spawnedWorldItems.Clear();
+
+        levelDataDictionary.Clear();
+
+        playerController.RemoveAudioSources();
+        Destroy(playerController.gameObject);
+        playerController = null;
     }
 
     void InstantiateLevel(int levelIndex)
@@ -717,7 +746,12 @@ public class GridController : MonoBehaviour
     void SpawnPlayer()
     {
         if (playerController)
+        {
+            if (!playerController.gameObject.activeSelf)
+                playerController.gameObject.SetActive(true);
+
             return;
+        }
 
         playerController = Instantiate(playerPrefab);
         playerController.InitPlayer(playerCharData);

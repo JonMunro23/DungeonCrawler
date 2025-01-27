@@ -37,6 +37,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         WorldInteractionManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
 
         InventoryContextMenu.onInventorySlotWeaponUnloaded += OnInventorySlotWeaponUnloaded;
+
+        PauseMenu.onQuit += RemoveInventorySlots;
     }
 
     void OnDisable()
@@ -47,6 +49,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
 
         InventoryContextMenu.onInventorySlotWeaponUnloaded -= OnInventorySlotWeaponUnloaded;
+
+        PauseMenu.onQuit -= RemoveInventorySlots;
     }
 
     void OnNearbyContainerUpdated(IContainer nearbyContainer)
@@ -112,7 +116,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         playerController = newPlayerController;
 
         SpawnInventorySlots();
-        HelperFunctions.SetCursorActive(false);
+        //HelperFunctions.SetCursorActive(false);
     }
 
     void SpawnInventorySlots()
@@ -129,6 +133,16 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         AddStartingItems();
 
         onInventorySlotsSpawned?.Invoke(spawnedInventorySlots);
+    }
+
+    void RemoveInventorySlots()
+    {
+        foreach (var slot in spawnedInventorySlots)
+        {
+            Destroy(slot.gameObject);
+        }
+
+        Array.Clear(spawnedInventorySlots, 0, totalNumInventorySlots);
     }
 
     private void AddStartingItems()

@@ -69,6 +69,7 @@ public class PlayerWeaponManager : MonoBehaviour
         InventoryContextMenu.onInventorySlotWeaponItemEquipped += OnInventorySlotWeaponItemEquipped;
         InventoryContextMenu.onInventorySlotWeaponItemUnequipped += OnInventorySlotWeaponItemUnequipped;
 
+        PauseMenu.onQuit += RemoveWeaponSlots;
     }
 
     private void OnDisable()
@@ -83,6 +84,8 @@ public class PlayerWeaponManager : MonoBehaviour
 
         InventoryContextMenu.onInventorySlotWeaponItemEquipped -= OnInventorySlotWeaponItemEquipped;
         InventoryContextMenu.onInventorySlotWeaponItemUnequipped -= OnInventorySlotWeaponItemUnequipped;
+
+        PauseMenu.onQuit -= RemoveWeaponSlots;
     }
 
     public virtual void OnStatUpdated(StatData updatedStat)
@@ -173,6 +176,15 @@ public class PlayerWeaponManager : MonoBehaviour
             spawnedSlot.InitWeaponSlot(i, playerController.playerInventoryManager, weaponAudioEmitter);
         }
         onWeaponSlotsSpawned?.Invoke(spawnedWeaponSlots);
+    }
+
+    void RemoveWeaponSlots()
+    {
+        foreach (WeaponSlot weaponSlot in spawnedWeaponSlots)
+        {
+            Destroy(weaponSlot.gameObject);
+        }
+        Array.Clear(spawnedWeaponSlots, 0, numWeaponSlots);
     }
 
     void InitialiseDefaultWeapons()

@@ -1,80 +1,26 @@
-﻿using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-using TMPro;
+﻿using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
+    UIController uiController;
+
     [SerializeField] KeyCode pauseKey = KeyCode.P;
-    [SerializeField] List<SaveSlot> spawnedSaveSlots = new List<SaveSlot>();
-    [SerializeField] List<SaveSlot> spawnedLoadSlots = new List<SaveSlot>();
     public static bool isPaused = false;
 
     [Header("Pause Menu")]
     [SerializeField] GameObject pauseMenu;
-    [SerializeField] List<Button> loadGameButtons = new List<Button>();
 
-    [Header("Save Menu")]
-    [SerializeField] GameObject saveMenu;
-    [SerializeField] SaveSlot saveSlotPrefab;
-    [SerializeField] Transform saveMenuSlotParent;
+    public static Action onQuit;
 
-
-    [Header("Load Menu")]
-    [SerializeField] GameObject loadMenu;
-    [SerializeField] SaveSlot loadSlotPrefab;
-    [SerializeField] Transform loadMenuSlotParent;
-    [SerializeField] GameObject loadGameConfrimPopup;
-    [SerializeField] TMP_Text LoadGameConfirmPopupText;
-    SaveSlot slotToLoad;
-
-    [Header("New Save")]
-    [SerializeField] bool isInputtingName;
-    [SerializeField] GameObject saveNameInputPopup;
-    [SerializeField] TMP_InputField saveNameInputField;
-    [SerializeField] Button saveNameSubmitButton;
-
-    [Header("Save Deletion")]
-    [SerializeField] GameObject deleteSaveConfirmPopup;
-    [SerializeField] TMP_Text deleteSaveConfirmationPopupText;
-    SaveSlot slotToDelete;
-
-    [Header("Save Overwrite")]
-    [SerializeField] GameObject overwriteSaveConfrimPopup;
-    [SerializeField] TMP_Text overwriteSaveConfirmPopupText;
-    SaveSlot slotToOverwrite;
-
-    [Header("Game Over")]
-    [SerializeField] GameObject gameOverScreen;
-    [SerializeField] TMP_Text deathCounterText;
-    public int deathCounter;
-
-
-    private void OnEnable()
+    private void Awake()
     {
-        SaveSlot.onCreateNewSaveButtonPressed += DisplaySaveNamePopup;
-    }
-
-    private void OnDisable()
-    {
-        SaveSlot.onCreateNewSaveButtonPressed -= DisplaySaveNamePopup;
+        uiController = GetComponentInParent<UIController>();
     }
 
     void Start()
     {
-        //Ensure that name of save is only submitted when pressing ENTER or when the button is pressed
-        saveNameInputField.onEndEdit.AddListener(val =>
-        {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-                SubmitName();
-        });
-        gameOverScreen.SetActive(false);
-        deleteSaveConfirmPopup.SetActive(false);
-        overwriteSaveConfrimPopup.SetActive(false);
-        loadGameConfrimPopup.SetActive(false);
         ResumeGame();
-        SaveSystem.GetSavesFromDirectory();
     }
 
     void Update()
@@ -84,88 +30,45 @@ public class PauseMenu : MonoBehaviour
 
         if(Input.GetKeyDown(pauseKey))
         {
-            if(deleteSaveConfirmPopup.activeSelf)
+            if(uiController.deleteSaveConfirmPopup.activeSelf)
             {
-                CloseDeleteSaveConfirmation();
+                uiController.CloseDeleteSaveConfirmation();
                 return;
             }
 
-            if(loadGameConfrimPopup.activeSelf)
+            if(uiController.loadGameConfrimPopup.activeSelf)
             {
-                CloseLoadGameConfirmation();
+                uiController.CloseLoadGameConfirmation();
                 return;
             }
 
-            if(overwriteSaveConfrimPopup.activeSelf)
+            if(uiController.overwriteSaveConfrimPopup.activeSelf)
             {
-                CloseSaveOverwriteConfirmation();
+                uiController.CloseSaveOverwriteConfirmation();
                 return;
             }
 
-            if(isInputtingName)
+            if(uiController.isInputtingName)
             {
-                HideSaveNamePopup();
+                uiController.HideSaveNamePopup();
                 return;
             }
 
-            if(saveMenu.activeSelf)
+            if(uiController.saveMenu.activeSelf)
             {
-                CloseSaveMenu();
+                uiController.CloseSaveMenu();
                 return;
             }
 
-            if(loadMenu.activeSelf)
+            if(uiController.loadMenu.activeSelf)
             {
-                CloseLoadMenu();
+                uiController.CloseLoadMenu();
                 return;
             }
 
             TogglePauseMenu();
         }
     }
-
-    #region Save Deletion
-
-    void DeleteSaveConfirmation(SaveSlot slotToDelete)
-    {
-        this.slotToDelete = slotToDelete;
-
-        deleteSaveConfirmPopup.SetActive(true);
-        deleteSaveConfirmationPopupText.text = $"Delete save {slotToDelete.slotData.saveName}?";
-    }
-
-    void DeleteSave()
-    {
-        SaveSystem.DeleteSaveData(slotToDelete.slotData);
-
-        if (spawnedSaveSlots.Contains(slotToDelete))
-            spawnedSaveSlots.Remove(slotToDelete);
-
-        if (spawnedLoadSlots.Contains(slotToDelete))
-            spawnedLoadSlots.Remove(slotToDelete);
-
-        Destroy(slotToDelete.gameObject);
-
-        if (SaveSystem.GetSaveData().Count == 0)
-        {
-            if (loadMenu.activeSelf)
-                CloseLoadMenu();
-        }
-    }
-
-    public void ConfirmDeleteSave()
-    {
-        DeleteSave();
-        CloseDeleteSaveConfirmation();
-    }
-
-    public void CloseDeleteSaveConfirmation()
-    {
-        deleteSaveConfirmPopup.SetActive(false);
-        slotToDelete = null;
-    }
-
-    #endregion
 
     #region Pause Menu
     void TogglePauseMenu()
@@ -182,13 +85,10 @@ public class PauseMenu : MonoBehaviour
         HelperFunctions.SetCursorActive(isPaused);
     }
 
-    void ClosePauseMenu()
+    public void ClosePauseMenu()
     {
         isPaused = false;
         pauseMenu.SetActive(false);
-        saveMenu.SetActive(false);
-        loadMenu.SetActive(false);
-        HideSaveNamePopup();
         Time.timeScale = 1;
     }
 
@@ -198,204 +98,26 @@ public class PauseMenu : MonoBehaviour
         pauseMenu.SetActive(true);
         Time.timeScale = 0;
 
-        SetLoadGameButtonsInteractable();
+        uiController.SetLoadGameButtonsInteractable();
     }
     public void ResumeGame()
     {
-        if(!WorldInteractionManager.hasGrabbedItem && !PlayerInventoryManager.isInContainer && !PlayerInventoryUIController.isInventoryOpen)
+        if (!WorldInteractionManager.hasGrabbedItem && !PlayerInventoryManager.isInContainer && !PlayerInventoryUIController.isInventoryOpen && !MainMenu.isInMainMenu)
             HelperFunctions.SetCursorActive(false);
 
         ClosePauseMenu();
     }
 
-    #endregion
-
-    #region Loading
-    public void OpenLoadMenu()
+    public void QuitToMainMenu()
     {
-        loadMenu.SetActive(true);
-
-        SpawnLoadSlots();
-    }
-    public void CloseLoadMenu()
-    {
-        loadMenu.SetActive(false);
-        SetLoadGameButtonsInteractable();
-    }
-    void SetLoadGameButtonsInteractable()
-    {
-        foreach (Button button in loadGameButtons)
-        {
-            if (SaveSystem.GetSaveData().Count == 0)
-                button.interactable = false;
-            else
-                button.interactable = true;
-        }
-    }
-    void SpawnLoadSlots()
-    {
-        foreach (SaveSlot item in spawnedLoadSlots)
-        {
-            Destroy(item.gameObject);
-        }
-        spawnedLoadSlots.Clear();
-
-        foreach (SaveSystem.SaveData saveData in SaveSystem.GetSaveData())
-        {
-            //Debug.Log(saveData.saveName);
-            CreateLoadSlot(saveData);
-        }
-    }
-    void CreateLoadSlot(SaveSystem.SaveData saveData)
-    {
-        var clone = Instantiate(loadSlotPrefab, loadMenuSlotParent);
-        clone.Init(saveData);
-        clone.slotButton.onClick.AddListener(delegate { LoadGameConfirmation(clone); });
-        clone.deleteButton.onClick.AddListener(delegate { DeleteSaveConfirmation(clone); });
-        spawnedLoadSlots.Add(clone);
-    }
-
-    void LoadGameConfirmation(SaveSlot slotToLoad)
-    {
-        this.slotToLoad = slotToLoad;
-
-        loadGameConfrimPopup.SetActive(true);
-        LoadGameConfirmPopupText.text = $"Load {slotToLoad.slotData.saveName}?";
-    }
-
-    public void ConfirmLoadGame()
-    {
-        slotToLoad.Load();
-        CloseLoadGameConfirmation();
-        OnSaveLoaded();
-    }
-
-    public void CloseLoadGameConfirmation()
-    {
-        loadGameConfrimPopup.SetActive(false);
-        slotToLoad = null;
-    }
-
-    void OnSaveLoaded()
-    {
-        if (!PlayerController.isPlayerAlive)
-        {
-            gameOverScreen.SetActive(false);
-        }
-
-        ResumeGame();
-    }
-    #endregion
-
-    #region Saving
-
-    void CreateSaveSlot(SaveSystem.SaveData saveData)
-    {
-        SaveSlot clone = Instantiate(saveSlotPrefab, saveMenuSlotParent);
-        clone.Init(saveData);
-        clone.slotButton.onClick.AddListener(delegate { OverwriteSaveConfirmation(clone); });
-        clone.deleteButton.onClick.AddListener(delegate { DeleteSaveConfirmation(clone); });
-        spawnedSaveSlots.Add(clone);
-    }
-
-    
-    public void OpenSaveMenu()
-    {
-        saveMenu.SetActive(true);
-
-        SpawnSaveSlots();
-    }
-
-    void SpawnSaveSlots()
-    {
-        foreach (SaveSlot item in spawnedSaveSlots)
-        {
-            Destroy(item.gameObject);
-        }
-        spawnedSaveSlots.Clear();
-
-        foreach (SaveSystem.SaveData saveData in SaveSystem.GetSaveData())
-        {
-            CreateSaveSlot(saveData);
-        }
-    }
-
-    public void CloseSaveMenu()
-    {
-        saveMenu.SetActive(false);
-
-        SetLoadGameButtonsInteractable();
-    }
-
-    public void CreateNewSave(string saveName)
-    {
-        SaveSystem.SaveData data = SaveSystem.Save(saveName);
-        CreateSaveSlot(data);
-    }
-
-    void DisplaySaveNamePopup()
-    {
-        isInputtingName = true;
-        saveNameInputPopup.SetActive(true);
-        saveNameInputField.ActivateInputField();
-    }
-
-    public void HideSaveNamePopup()
-    {
-        isInputtingName = false;
-        saveNameInputPopup.SetActive(false);
-        saveNameInputField.DeactivateInputField();
-    }
-
-    public void SubmitName()
-    {
-        HideSaveNamePopup();
-        CreateNewSave(saveNameInputField.text);
-        saveNameInputField.text = "";
-    }
-
-    public void ValidateInputField()
-    {
-        if (saveNameInputField.text != "")
-            saveNameSubmitButton.interactable = true;
-        else
-            saveNameSubmitButton.interactable = false;
-    }
-
-    void OverwriteSaveConfirmation(SaveSlot slotToOverwrite)
-    {
-        this.slotToOverwrite = slotToOverwrite;
-
-        overwriteSaveConfrimPopup.SetActive(true);
-        overwriteSaveConfirmPopupText.text = $"Overwrite {slotToOverwrite.slotData.saveName}?";
-    }
-
-    public void ConfirmSaveOverwite()
-    {
-        slotToOverwrite.Save();
-        CloseSaveOverwriteConfirmation();
-    }
-
-    public void CloseSaveOverwriteConfirmation()
-    {
-        overwriteSaveConfrimPopup.SetActive(false);
-        slotToOverwrite = null;
+        //show loading screen
+        //set levels inactive
+        //show main menu
+        ClosePauseMenu();
+        onQuit?.Invoke();
+        uiController.mainMenu.OpenMainMenu();
     }
 
     #endregion
 
-    #region Game Over
-
-    public void ShowGameOverScreen()
-    {
-        gameOverScreen.SetActive(true);
-
-        SetLoadGameButtonsInteractable();
-
-        //deathCounterText.text = deathCounter.ToString();
-        HelperFunctions.SetCursorActive(true);
-        Time.timeScale = 0;
-    }
-
-    #endregion
 }

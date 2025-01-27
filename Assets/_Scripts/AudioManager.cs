@@ -144,6 +144,14 @@ public sealed class AudioManager : MonoBehaviour
         return m_Sources[sourceName];
     }
 
+    public void RemoveSource(string sourceName)
+    {
+        if(ContainsSource(sourceName))
+        {
+            m_Sources.Remove(sourceName);
+        }
+    }
+
     /// <summary>
     /// Returns true if the AudioEmitter exists in the Sources List, otherwise false.
     /// </summary>

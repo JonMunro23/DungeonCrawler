@@ -190,6 +190,12 @@ public class PlayerController : MonoBehaviour
         playerCamera.transform.DOLocalRotate(newRot, overDuration);
     }
 
+    public void RemoveAudioSources()
+    {
+        AudioManager.Instance.RemoveSource("[AudioEmitter] Weapon");
+        AudioManager.Instance.RemoveSource("[AudioEmitter] CharacterBody");
+    }
+
     public void Save(ref PlayerSaveData data)
     {
         data.coords = currentOccupiedNode.Coords.Pos;

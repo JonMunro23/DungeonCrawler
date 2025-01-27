@@ -127,7 +127,7 @@ public class PlayerInventoryUIController : MonoBehaviour
         InventoryParentObject.SetActive(false);
         InventoryObject.SetActive(false);
 
-        if(!PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem)
+        if(!PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem && !MainMenu.isInMainMenu)
             HelperFunctions.SetCursorActive(false);
 
         isInventoryOpen = false;

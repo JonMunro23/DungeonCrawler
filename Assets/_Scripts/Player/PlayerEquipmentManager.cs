@@ -40,6 +40,8 @@ public class PlayerEquipmentManager : MonoBehaviour
 
         InventoryContextMenu.onInventorySlotEquipmentItemEquipped += OnInventorySlotEquipmentItemEquipped;
         InventoryContextMenu.onInventorySlotEquipmentItemUnequipped += OnInventorySlotEquipmentItemUnequipped;
+
+        PauseMenu.onQuit += RemoveEquipmentSlots;
     }
 
     private void OnDisable()
@@ -49,6 +51,8 @@ public class PlayerEquipmentManager : MonoBehaviour
 
         InventoryContextMenu.onInventorySlotEquipmentItemEquipped -= OnInventorySlotEquipmentItemEquipped;
         InventoryContextMenu.onInventorySlotEquipmentItemUnequipped -= OnInventorySlotEquipmentItemUnequipped;
+
+        PauseMenu.onQuit -= RemoveEquipmentSlots;
     }
 
     void OnInventorySlotEquipmentItemEquipped(ISlot slot)
@@ -89,6 +93,15 @@ public class PlayerEquipmentManager : MonoBehaviour
         }
 
         onEquipmentSlotsSpawned.Invoke(spawnedEquipmentSlots);
+    }
+
+    void RemoveEquipmentSlots()
+    {
+        foreach (var slot in spawnedEquipmentSlots)
+        {
+            Destroy(slot.gameObject);
+        }
+        spawnedEquipmentSlots.Clear();
     }
 
     void EquipNewtem(EquipmentSlotType slotType, EquipmentItemData newEquipmentItemData)
