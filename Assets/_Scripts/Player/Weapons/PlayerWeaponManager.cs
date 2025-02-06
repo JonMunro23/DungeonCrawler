@@ -92,19 +92,19 @@ public class PlayerWeaponManager : MonoBehaviour
     {
         switch (updatedStat.stat)
         {
-            case ModifiableStats.Damage:
+            case ModifiableCharacterStats.BonusWeaponDamage:
                 bonusDamage = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
                 break;
-            case ModifiableStats.BurstCount:
+            case ModifiableCharacterStats.BonusBurstCount:
                 bonusBurstCount = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
                 break;
-            case ModifiableStats.CritChance:
+            case ModifiableCharacterStats.CritChance:
                 bonusCritChance = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
                 break;
-            case ModifiableStats.CritMultiplier:
+            case ModifiableCharacterStats.CritMultiplier:
                 bonusCritMultiplier = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
                 break;
-            case ModifiableStats.WeaponAccuracy:
+            case ModifiableCharacterStats.WeaponAccuracy:
                 bonusAccuracy = Mathf.RoundToInt(updatedStat.GetCurrentStatValue());
                 break;
         }

@@ -36,7 +36,7 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         return canUse && isWeaponDrawn;
     }
    
-    public bool IsMeleeWeapon() => GetWeaponData().isMeleeWeapon;
+    public bool IsMeleeWeapon() => GetWeaponData().weaponType == WeaponType.Melee;
     public bool IsDefaultWeapon() => isDefaultWeapon;
     public void SetWeaponActive(bool isActive)
     {

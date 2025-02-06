@@ -40,14 +40,14 @@ public class PlayerStatsUIController : MonoBehaviour
     {
         playerCharData = charData;
 
-        UpdateMaxHealthValue(playerCharData.GetStat(ModifiableStats.MaxHealth).GetCurrentStatValue());
+        UpdateMaxHealthValue(playerCharData.GetStat(ModifiableCharacterStats.MaxHealth).GetBaseStatValue());
         UpdateCurrentHealthValue(maxHealth);
     }
 
     void OnInventoryOpened()
     {
         inventoryPlayerHealthbar.value = currentHealth;
-        inventoryPlayerPortrait.sprite = playerCharData.charPortrait;
+        inventoryPlayerPortrait.sprite = playerCharData.classIcon;
     }
 
     void OnCurrentHealthUpdated(CharacterData charData, float newAmount)

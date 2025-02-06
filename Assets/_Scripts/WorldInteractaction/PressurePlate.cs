@@ -10,14 +10,11 @@ public class PressurePlate : InteractableBase
     [SerializeField] float pressDownPos;
     float defaultPos;
 
+    bool triggerOnExit;
+
     private void Start()
     {
         defaultPos = plateTransform.localPosition.y;
-    }
-
-    public override bool GetIsPressurePlate()
-    {
-        return true;
     }
 
     public override void Interact()
@@ -44,11 +41,17 @@ public class PressurePlate : InteractableBase
     public override void SetIsActivated(bool activatedState)
     {
         if (activatedState)
+        {
             PressPlateAnim();
+            TriggerObjects();
+        }
         else
+        {
             ReleasePlateAnim();
+            if (GetTriggerOnExit())
+                TriggerObjects();
+        }
 
-        TriggerObjects();
     }
 
     public void RemoveGameobjectFromPlate(GameObject objectToRemove)
@@ -78,5 +81,15 @@ public class PressurePlate : InteractableBase
     private void OnTriggerExit(Collider other)
     {
         RemoveGameobjectFromPlate(other.gameObject);
+    }
+
+    public override void SetTriggerOnExit(bool triggerOnExit)
+    {
+        this.triggerOnExit = triggerOnExit;
+    }
+
+    public override bool GetTriggerOnExit()
+    {
+        return triggerOnExit;
     }
 }

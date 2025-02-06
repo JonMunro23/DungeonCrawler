@@ -11,7 +11,7 @@ public abstract class TriggerableBase : MonoBehaviour, ITriggerable
     
     public string entityRef = string.Empty;
 
-    public abstract void Trigger();
+    public abstract void Trigger(IInteractable triggeredInteractable);
 
     public bool GetIsTriggered()
     {

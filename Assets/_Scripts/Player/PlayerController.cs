@@ -1,8 +1,6 @@
 using DG.Tweening;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [System.Serializable]
@@ -30,6 +28,7 @@ public struct PlayerSaveData
     public List<UnlockedSKillData> unlockedSkills;
 }
 
+[SelectionBase]
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
@@ -46,7 +45,7 @@ public class PlayerController : MonoBehaviour
     [Header("Player Data")]
     public CharacterData playerCharacterData;
     public static GridNode currentOccupiedNode;
-
+    public Rigidbody rb;
     public static bool isPlayerAlive;
 
     Vector3 defaultCamPos;
@@ -65,6 +64,8 @@ public class PlayerController : MonoBehaviour
         playerStatsManager = GetComponent<PlayerStatsManager>();
         playerSkillsManager = GetComponent<PlayerSkillsManager>();
         playerCamera = GetComponentInChildren<Camera>();
+
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -84,7 +85,7 @@ public class PlayerController : MonoBehaviour
         playerWeaponManager.Init(this);
         playerStatsManager.Init(playerCharacterData);
         playerHealthManager.Init(this);
-        playerSkillsManager.Init();
+        playerSkillsManager.Init(playerCharacterData);
         advGridMovement.Init(this);
 
         onPlayerInitialised?.Invoke(this);
@@ -220,6 +221,8 @@ public class PlayerController : MonoBehaviour
     public void Load(PlayerSaveData data)
     {
         isPlayerAlive = true;
+        rb.isKinematic = true;
+        advGridMovement.enabled = true;
 
         MoveToCoords(data.coords);
         advGridMovement.SetRotation(Mathf.RoundToInt(data.yRotation));

@@ -29,7 +29,7 @@ public class WeaponMotion : MonoBehaviour
             return;
 
         BreathingAnimation(1);
-
+        transform.localPosition = Vector3.Lerp(transform.localPosition, Vector3.zero, Time.deltaTime * 5);
         transform.localRotation = transform.localRotation * Quaternion.Euler(breathingRot);
     }
 

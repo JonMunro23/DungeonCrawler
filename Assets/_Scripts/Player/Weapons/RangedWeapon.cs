@@ -7,8 +7,7 @@ using Random = UnityEngine.Random;
 
 public class RangedWeapon : Weapon
 {
-    [SerializeField] Transform projectileSpawnLocation;
-    ParticleSystem muzzleFX;
+    Transform projectileSpawnLocation;
     Coroutine burstCoroutine;
     bool isReloading;
     bool canShootBurst = true;
@@ -17,6 +16,7 @@ public class RangedWeapon : Weapon
 
     public bool infinteAmmo = false;
 
+    [SerializeField] ParticleSystem muzzleFX;
     [SerializeField] ParticleSystem shellEjectionParticleEffect;
     [SerializeField] Vector2 ejectionSpeed = new Vector2(1, 3);
     [SerializeField] float ejectionStartDelay;
@@ -32,7 +32,7 @@ public class RangedWeapon : Weapon
 
     private void Start()
     {
-        muzzleFX = projectileSpawnLocation.GetComponent<ParticleSystem>();
+        projectileSpawnLocation = GameObject.FindGameObjectWithTag("ProjectileSpawnLocation").transform;
     }
 
     public override bool CanUse()
@@ -91,7 +91,7 @@ public class RangedWeapon : Weapon
     }
     private Vector3 GetBulletSpread()
     {
-        Vector2 randomPoint = new Vector2(Random.Range(-.05f, .05f), Random.Range(-.05f, .05f));
+        Vector2 randomPoint = new Vector2(Random.Range(-weaponItemData.recoilData.weaponSpread, weaponItemData.recoilData.weaponSpread), Random.Range(-weaponItemData.recoilData.weaponSpread, weaponItemData.recoilData.weaponSpread));
         return new Vector3(randomPoint.x, randomPoint.y, 1);
     }
     private void Shoot()
@@ -117,6 +117,13 @@ public class RangedWeapon : Weapon
             Ray ray = new Ray(origin, direction);
             if (Physics.Raycast(ray, out hit, weaponItemData.itemRange * 3))
             {
+                Debug.DrawRay(ray.origin, ray.direction * Vector3.Distance(ray.origin, hit.point), Color.yellow, 10);
+                if(hit.transform.TryGetComponent(out ShootableTarget target))
+                {
+                    target.Interact();
+                    return;
+                }
+
                 IDamageable damageable = hit.transform.GetComponent<IDamageable>();
                 if (damageable != null)
                 {

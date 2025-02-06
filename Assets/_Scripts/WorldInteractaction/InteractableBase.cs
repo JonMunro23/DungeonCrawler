@@ -1,17 +1,37 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+public enum TriggerOperation
+{
+    Toggle,
+    Open,
+    Close
+}
+
+public enum InteractableType
+{
+    Lever,
+    KeycardReader,
+    PressurePlate,
+    Tripwire,
+    ShootableTarget
+}
 
 public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
     int levelIndex;
     Vector2 coords;
 
+    TriggerOperation triggerOperation = TriggerOperation.Toggle;
+    InteractableType interactableType;
     public bool isSingleUse;
     public bool canUse = true;
     public bool isActivated = false;
 
     public List<ITriggerable> objectsToTrigger = new List<ITriggerable>();
     public List<Dictionary<string, object>> entityRefsToTrigger = new List<Dictionary<string, object>>();
+
 
     public abstract void Interact();
     public abstract void InteractWithItem(ItemData item);
@@ -47,7 +67,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
         isActivated = !isActivated;
         foreach (ITriggerable obj in objectsToTrigger)
         {
-            obj.Trigger();
+            obj.Trigger(this);
         }
 
         if (isSingleUse)
@@ -92,5 +112,37 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
         Destroy(gameObject);
     }
 
-    public abstract bool GetIsPressurePlate();
+    public InteractableType GetInteractableType()
+    {
+        return interactableType;
+    }
+
+    public void SetTriggerOperation(string triggerOperation)
+    {
+        if (Enum.TryParse(triggerOperation, out TriggerOperation type))
+        {
+            this.triggerOperation = type;
+        }
+    }
+
+    public TriggerOperation GetTriggerOperation()
+    {
+        return triggerOperation;
+    }
+
+    public abstract void SetTriggerOnExit(bool triggerOnExit);
+    public abstract bool GetTriggerOnExit();
+
+    public void SetInteractableType(string interactableType)
+    {
+        if (Enum.TryParse(interactableType, out InteractableType type))
+        {
+            this.interactableType = type;
+        }
+    }
+
+    public void SetIsSingleUse(bool isSingleUse)
+    {
+       this.isSingleUse = isSingleUse;
+    }
 }

@@ -1,5 +1,14 @@
 using UnityEngine;
 
+public enum WeaponType
+{
+    Melee,
+    Pistol,
+    SMG,
+    Rifle,
+    Shotgun
+}
+
 public enum AmmoType
 {
     None,
@@ -15,7 +24,7 @@ public class WeaponItemData : EquipmentItemData
     public GameObject itemPrefab;
     public Rigidbody magDropPrefab;
     public bool isTwoHanded;
-    public bool isMeleeWeapon;
+    public WeaponType weaponType;
     //public string itemDamageType;
     public Vector2 itemDamageMinMax;
     public int itemRange;

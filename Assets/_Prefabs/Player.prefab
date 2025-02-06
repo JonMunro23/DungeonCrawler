@@ -129,37 +129,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &2513778809458605017
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1458012736219982796}
-  m_Layer: 0
-  m_Name: ProjectileSpawnLocation
-  m_TagString: ProjectileSpawnLocation
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1458012736219982796
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2513778809458605017}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.000004397556, y: 0.5, z: -0.000057041645}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 854004732151512115}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4019381369253348144
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,7 +164,7 @@ Transform:
   m_Children:
   - {fileID: 6183601309913987406}
   - {fileID: 336671181431311522}
-  - {fileID: 1458012736219982796}
+  - {fileID: 977937383263756040}
   m_Father: {fileID: 3180298802843086112}
   m_LocalEulerAnglesHint: {x: 7.5, y: 0, z: 0}
 --- !u!20 &8221614682444330318
@@ -334,6 +303,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9b2ca48370bcf744abc767f5c305ab7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &4388155825826268218
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 977937383263756040}
+  m_Layer: 0
+  m_Name: ProjectileSpawnLocation
+  m_TagString: ProjectileSpawnLocation
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &977937383263756040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4388155825826268218}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.065403156, y: -0, z: -0, w: 0.99785894}
+  m_LocalPosition: {x: 0, y: 0.07, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 854004732151512115}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4820759779018056699
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,6 +598,7 @@ MonoBehaviour:
   playerSkillsManager: {fileID: 0}
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
+  rb: {fileID: 0}
 --- !u!114 &3417093745071717000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1015,7 +1016,7 @@ MonoBehaviour:
     m_PreInfinity: 1
     m_PostInfinity: 1
     m_RotationOrder: 4
-  maximumStepHeight: 0.1
+  maximumStepHeight: 0
   blockedEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -1186,8 +1187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a53ae2e06412a0c4bb0e4c16ae9c89d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  availablePlayerSkills:
-  - {fileID: 11400000, guid: b3eb0f435df11cf458b3517b1ef9fa8b, type: 2}
+  globalPlayerSkills:
   - {fileID: 11400000, guid: f1e602d3b8eddee4bb5086f13a603056, type: 2}
   - {fileID: 11400000, guid: ed6fae68960acd844bf4e67ac3d33b77, type: 2}
   spawnedPlayerSkills: []
@@ -1370,13 +1370,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9212865591856936170}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.06540306, y: 0, z: 0, w: 0.99785894}
+  m_LocalRotation: {x: -0.043619405, y: 0, z: 0, w: 0.9990483}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 854004732151512115}
-  m_LocalEulerAnglesHint: {x: -7.5, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -5, y: 0, z: 0}
 --- !u!114 &4360512319254851527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1391,7 +1391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sway: 1
   swayRotation: 1
-  bobOffset: 1
+  bobOffset: 0
   bobSway: 0
   step: 0.01
   maxStepDistance: 0.06
@@ -1418,10 +1418,6 @@ MonoBehaviour:
   useBreathAnimation: 1
   breathingSpeed: 2
   breathingAmplitude: 0.01
-  m_ScaleFactor: 0.25
-  m_Smoothness: 1
-  m_WalkingMotionData: {fileID: 11400000, guid: 2b4b78518371df74a9946a11089273e0,
-    type: 2}
 --- !u!1001 &1526676580978589587
 PrefabInstance:
   m_ObjectHideFlags: 0

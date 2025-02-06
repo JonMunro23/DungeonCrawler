@@ -59,7 +59,7 @@ public class WeaponSway : MonoBehaviour
 
         Sway();
         SwayRotation();
-        BobOffset();
+        //BobOffset();
        // BobRotation();
 
         CompositePositionRotation();
@@ -113,7 +113,7 @@ public class WeaponSway : MonoBehaviour
     {
         if(sway == false) { swayPos = Vector3.zero; return; }
 
-        Vector3 invertLook = lookInput * -step;
+        Vector3 invertLook = transform.localPosition * lookInput * -step;
         invertLook.x = Mathf.Clamp(invertLook.x, -maxStepDistance, maxStepDistance);
         invertLook.y = Mathf.Clamp(invertLook.y, -maxStepDistance, maxStepDistance);
 
@@ -132,8 +132,8 @@ public class WeaponSway : MonoBehaviour
 
     void CompositePositionRotation()
     {
-        transform.localPosition = Vector3.Lerp(transform.localPosition, swayPos + bobPosition, Time.deltaTime * smooth);
-        transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(swayEulerRot) * Quaternion.Euler(bobEulerRotation), Time.deltaTime * smoothRot);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, swayPos, Time.deltaTime * smooth);
+        transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(swayEulerRot), Time.deltaTime * smoothRot);
     }
 
     void BobOffset()

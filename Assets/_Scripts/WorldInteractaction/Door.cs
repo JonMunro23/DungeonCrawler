@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
 
+[SelectionBase]
 public class Door : TriggerableBase
 {
     [Header("Animation")]
     [SerializeField] Transform transformToMove;
     [SerializeField] Vector3 openedPos, closedPos;
     [SerializeField] float openDuration, closeDuration;
+
+    List<IInteractable> activeInteractables = new List<IInteractable>();
 
     // Start is called before the first frame update
     void Start()
@@ -18,22 +22,61 @@ public class Door : TriggerableBase
                 occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle));
     }
 
-    public override void Trigger()
+    public override void Trigger(IInteractable triggeredInteractable)
     {
-        if (requiredNumOfTriggers > 1)
+        switch(triggeredInteractable.GetTriggerOperation())
         {
-            currentNumOfTriggers++;
-            if (currentNumOfTriggers == requiredNumOfTriggers)
-            {
-                ToggleDoor();
+            case TriggerOperation.Toggle:
+                if (activeInteractables.Contains(triggeredInteractable))
+                {
+                    if (requiredNumOfTriggers > 1)
+                    {
+                        currentNumOfTriggers--;
+                        if (currentNumOfTriggers == requiredNumOfTriggers)
+                        {
+                            OpenDoor();
+                        }
+                        else if (currentNumOfTriggers < requiredNumOfTriggers)
+                            CloseDoor();
+                    }
+                    else
+                    {
+                        ToggleDoor();
+                    }
 
-                currentNumOfTriggers = 0;
-            }
+                    activeInteractables.Remove(triggeredInteractable);
+                    return;
+                }
+
+
+                activeInteractables.Add(triggeredInteractable);
+
+                if (requiredNumOfTriggers > 1)
+                {
+                    currentNumOfTriggers++;
+                    if (currentNumOfTriggers == requiredNumOfTriggers)
+                    {
+                        OpenDoor();
+                    }
+                    else if (currentNumOfTriggers > requiredNumOfTriggers)
+                    {
+                        CloseDoor();
+                    }
+                }
+                else
+                {
+                    ToggleDoor();
+                }
+                break;
+            case TriggerOperation.Open:
+                OpenDoor();
+                break;
+            case TriggerOperation.Close:
+                CloseDoor();
+                break;
         }
-        else
-        {
-            ToggleDoor();
-        }
+
+        
         
     }
 
@@ -47,7 +90,10 @@ public class Door : TriggerableBase
 
     private void OpenDoor()
     {
+        Debug.Log("Opened");
+
         isTriggered = true;
+
         if(occupyingGridNode)
             occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.None));
 
@@ -57,6 +103,8 @@ public class Door : TriggerableBase
 
     private void CloseDoor()
     {
+        Debug.Log("Closed");
+
         isTriggered = false;
 
         if (occupyingGridNode)

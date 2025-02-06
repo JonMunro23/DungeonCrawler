@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 498f8ec752413f64e9684ebfdb6f9000, type: 3}
+  m_Name: CommandoData
+  m_EditorClassIdentifier: 
+  charName: Cpl. Robertson
+  charPortrait: {fileID: 21300000, guid: b56e798aee9487e46bc518f7b4c81ced, type: 3}
+  className: Commando
+  charDescription: Specialising in short controlled bursts the commando sports bonuses
+    to weapon accuracy and burst counts.
+  baseCharStats:
+  - stat: 0
+    baseStatValue: 150
+    currentStatValue: 0
+  - stat: 4
+    baseStatValue: 8
+    currentStatValue: 0
+  - stat: 7
+    baseStatValue: 25
+    currentStatValue: 0
+  classSpecificSkills:
+  - {fileID: 11400000, guid: b3eb0f435df11cf458b3517b1ef9fa8b, type: 2}

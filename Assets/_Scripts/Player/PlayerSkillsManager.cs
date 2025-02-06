@@ -20,7 +20,7 @@ public class PlayerSkillsManager : MonoBehaviour
     PlayerInventoryManager inventoryManager;
 
     [Header("Player Skill Spawning")]
-    [SerializeField] List<PlayerSkillData> availablePlayerSkills = new List<PlayerSkillData>();
+    [SerializeField] List<PlayerSkillData> globalPlayerSkills = new List<PlayerSkillData>();
     [SerializeField] List<PlayerSkill> spawnedPlayerSkills = new List<PlayerSkill>();
     [SerializeField] List<PlayerSkill> unlockedPlayerSkills = new List<PlayerSkill>();
     [SerializeField] PlayerSkill playerSkillPrefab;
@@ -69,17 +69,24 @@ public class PlayerSkillsManager : MonoBehaviour
         }
     }
 
-    public void Init()
+    public void Init(CharacterData playerCharData)
     {
-        SpawnPlayerSkills();
+        SpawnPlayerSkills(playerCharData);
     }
 
-    void SpawnPlayerSkills()
+    void SpawnPlayerSkills(CharacterData playerCharData)
     {
-        foreach (PlayerSkillData skillData in availablePlayerSkills)
+        foreach (PlayerSkillData globalSkillData in globalPlayerSkills)
         {
             PlayerSkill clone = Instantiate(playerSkillPrefab);
-            clone.InitSkill(skillData);
+            clone.InitSkill(globalSkillData);
+            spawnedPlayerSkills.Add(clone);
+        }
+
+        foreach (PlayerSkillData classSkillData in playerCharData.classSpecificSkills)
+        {
+            PlayerSkill clone = Instantiate(playerSkillPrefab);
+            clone.InitSkill(classSkillData);
             spawnedPlayerSkills.Add(clone);
         }
         onPlayerSkillsSpawned?.Invoke(spawnedPlayerSkills);

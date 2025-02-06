@@ -109,8 +109,12 @@ public class KeycardReader : InteractableBase
         }
     }
 
-    public override bool GetIsPressurePlate()
+    public override void SetTriggerOnExit(bool triggerOnExit)
     {
-        return false;
+    }
+
+    public override bool GetTriggerOnExit()
+    {
+        throw new NotImplementedException();
     }
 }

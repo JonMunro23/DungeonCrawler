@@ -5,13 +5,13 @@ using UnityEngine;
 [System.Serializable]
 public class StatData
 {
-    public ModifiableStats stat;
+    public ModifiableCharacterStats stat;
     [SerializeField] float baseStatValue;
     [SerializeField] float currentStatValue;
 
     public static Action<StatData> onStatUpdated;
 
-    public StatData(ModifiableStats stat, float baseStatValue, float currentStatValue)
+    public StatData(ModifiableCharacterStats stat, float baseStatValue, float currentStatValue)
     {
         this.stat = stat;
         this.baseStatValue = baseStatValue;
@@ -154,7 +154,7 @@ public class PlayerStatsManager : MonoBehaviour
         }
     }
 
-    StatData GetPlayerStat(ModifiableStats statToGet)
+    StatData GetPlayerStat(ModifiableCharacterStats statToGet)
     {
         StatData statToReturn = null;
         foreach (StatData stat in playerStats)
@@ -162,6 +162,15 @@ public class PlayerStatsManager : MonoBehaviour
             if (stat.stat == statToGet)
                 statToReturn = stat;
         }
+
+        //If stat dosent exist, create it
+        if(statToReturn == null)
+        {
+            StatData newStat = new StatData(statToGet, 0, 0);
+            playerStats.Add(newStat);
+            statToReturn = newStat;
+        }
+
         return statToReturn;
     }
 

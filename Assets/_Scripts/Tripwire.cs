@@ -58,8 +58,12 @@ public class Tripwire : InteractableBase
             TriggerObjects();
     }
 
-    public override bool GetIsPressurePlate()
+    public override void SetTriggerOnExit(bool triggerOnExit)
     {
-        return false;
+    }
+
+    public override bool GetTriggerOnExit()
+    {
+        throw new System.NotImplementedException();
     }
 }

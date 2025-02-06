@@ -1914,7 +1914,7 @@ MonoBehaviour:
   canUse: 0
   isWeaponDrawn: 0
   isDefaultWeapon: 0
-  projectileSpawnLocation: {fileID: 4518017862181757071}
+  muzzleFX: {fileID: 4359043827025576991}
   infinteAmmo: 0
   shellEjectionParticleEffect: {fileID: 1682814303764841665}
   ejectionSpeed: {x: 1, y: 3}
@@ -2043,27 +2043,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4443075515776366, guid: 0510538e3b4a448468244a86447ac8a3, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7372773
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4443075515776366, guid: 0510538e3b4a448468244a86447ac8a3, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.6755902
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 4443075515776366, guid: 0510538e3b4a448468244a86447ac8a3, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000029802315
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4443075515776366, guid: 0510538e3b4a448468244a86447ac8a3, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000029802315
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4443075515776366, guid: 0510538e3b4a448468244a86447ac8a3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -5
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 4443075515776366, guid: 0510538e3b4a448468244a86447ac8a3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -90
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4443075515776366, guid: 0510538e3b4a448468244a86447ac8a3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -2109,6 +2109,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0510538e3b4a448468244a86447ac8a3, type: 3}
+--- !u!198 &4359043827025576991 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198896126711912958, guid: 0510538e3b4a448468244a86447ac8a3,
+    type: 3}
+  m_PrefabInstance: {fileID: 4520753910459489761}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4518017862181757071 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4443075515776366, guid: 0510538e3b4a448468244a86447ac8a3,

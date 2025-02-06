@@ -99,7 +99,6 @@ public class UIController : MonoBehaviour
         GridController.onQuickSave += OnQuickSave;
 
         SaveSlot.onCreateNewSaveButtonPressed += DisplaySaveNamePopup;
-
     }
 
     private void OnDisable()
@@ -124,7 +123,6 @@ public class UIController : MonoBehaviour
         GridController.onQuickSave -= OnQuickSave;
 
         SaveSlot.onCreateNewSaveButtonPressed -= DisplaySaveNamePopup;
-
     }
 
     private void Start()
@@ -382,10 +380,7 @@ public class UIController : MonoBehaviour
 
     void OnSaveLoaded()
     {
-        if (!PlayerController.isPlayerAlive)
-        {
-            gameOverScreen.SetActive(false);
-        }
+        gameOverScreen.SetActive(false);
 
         ResumeGame();
     }
@@ -393,9 +388,12 @@ public class UIController : MonoBehaviour
     private void ResumeGame()
     {
         if(MainMenu.isInMainMenu)
+        {
             mainMenu.CloseMainMenu();
+            mainMenu.SetCameraActive(false);
+        }
 
-        if(PauseMenu.isPaused)
+        if (PauseMenu.isPaused)
             pauseMenu.ClosePauseMenu();
 
         saveMenu.SetActive(false);

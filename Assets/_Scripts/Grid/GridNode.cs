@@ -49,6 +49,8 @@ public class GridNode : MonoBehaviour
     public Transform moveToTransform;
     public GridNodeOccupant currentOccupant;
 
+    bool isVoid;
+
     public static Action onNodeOccupancyUpdated;
 
     [Header("Pathfinding")]
@@ -167,6 +169,15 @@ public class GridNode : MonoBehaviour
         _fCostText.text = "";
     }
 
+    public void SetIsVoid(bool isVoid)
+    {
+        this.isVoid = isVoid;
+    }
+
+    public bool GetIsVoid()
+    {
+        return isVoid;
+    }
 
     public void InitNode(ICoords _coords)
     {

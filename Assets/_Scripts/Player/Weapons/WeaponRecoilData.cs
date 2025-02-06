@@ -9,6 +9,8 @@ public class WeaponRecoilData : ScriptableObject
     public Vector3 secondaryFireMinRecoil;
     public Vector3 secondaryFireMaxRecoil;
 
+    public float weaponSpread = .5f;
+
     public Vector3 GetRandomPrimaryFireRecoilValue()
     {
         return new Vector3(

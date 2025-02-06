@@ -1,6 +1,7 @@
 using DG.Tweening;
 using UnityEngine;
 
+[SelectionBase]
 public class Lever : InteractableBase
 {
     [Header("Animation")]
@@ -54,8 +55,12 @@ public class Lever : InteractableBase
         }
     }
 
-    public override bool GetIsPressurePlate()
+    public override void SetTriggerOnExit(bool triggerOnExit)
     {
-        return false;
+    }
+
+    public override bool GetTriggerOnExit()
+    {
+        throw new System.NotImplementedException();
     }
 }

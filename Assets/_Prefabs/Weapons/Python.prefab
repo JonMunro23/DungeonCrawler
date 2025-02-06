@@ -323,7 +323,7 @@ MonoBehaviour:
   canUse: 0
   isWeaponDrawn: 0
   isDefaultWeapon: 0
-  projectileSpawnLocation: {fileID: 4209754180572900585}
+  muzzleFX: {fileID: 4080642872100898937}
   infinteAmmo: 0
   shellEjectionParticleEffect: {fileID: 0}
   ejectionSpeed: {x: 1, y: 3}
@@ -2386,6 +2386,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3269747563da3664a902a83495e1b7ad, type: 3}
+--- !u!198 &4080642872100898937 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198896126711912958, guid: 3269747563da3664a902a83495e1b7ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 4207424091563528583}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4209754180572900585 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4443075515776366, guid: 3269747563da3664a902a83495e1b7ad,

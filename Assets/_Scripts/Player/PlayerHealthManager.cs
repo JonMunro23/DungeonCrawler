@@ -42,7 +42,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     void OnStatUpdated(StatData updatedStat)
     {
-        if(updatedStat.stat == ModifiableStats.MaxHealth)
+        if(updatedStat.stat == ModifiableCharacterStats.MaxHealth)
         {
             UpdateMaxHealth(updatedStat.GetCurrentStatValue());
         }
@@ -59,7 +59,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         playerController = newPlayerController;
         characterData = playerController.playerCharacterData;
 
-        UpdateMaxHealth(Mathf.CeilToInt(characterData.GetStat(ModifiableStats.MaxHealth).GetBaseStatValue()));
+        UpdateMaxHealth(Mathf.CeilToInt(characterData.GetStat(ModifiableCharacterStats.MaxHealth).GetBaseStatValue()));
 
         currentHealth = maxHealth;
         canUseSyringe = true;
@@ -102,6 +102,14 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         {
             playerController.OnDeath();
         }
+    }
+
+    public void KillPlayer()
+    {
+        audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
+        currentHealth -= currentHealth;
+        onCurrentHealthUpdated?.Invoke(characterData, currentHealth);
+        playerController.OnDeath();
     }
 
     AudioClip GetRandomAudioClip()

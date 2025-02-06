@@ -31,6 +31,10 @@ public class AdvancedGridMovement : MonoBehaviour
     [SerializeField] private float walkSpeed = 1.0f;
     [SerializeField] private float turnSpeed = 5.0f;
 
+    [Header("Rotation Settings")]
+    [SerializeField] bool canRotate = true;
+    [SerializeField] float rotationDelay = .5f;
+
     [Header("Walking animation curve")]
     [SerializeField] private AnimationCurve walkSpeedCurve;
 
@@ -78,9 +82,6 @@ public class AdvancedGridMovement : MonoBehaviour
     private AnimationCurve currentHeadBobCurve;
     private float currentSpeed;
 
-    [SerializeField] bool canRotate = true;
-    [SerializeField] float rotationDelay = .5f;
-
     void Start()
     {
         moveTowardsPosition = transform.position;
@@ -111,8 +112,10 @@ public class AdvancedGridMovement : MonoBehaviour
 
     public void Teleport(Vector3 destination)
     {
+        transform.position = Vector3.zero;
         transform.position = destination;
         moveTowardsPosition = transform.position;
+        
     }
 
     public void SetRotation(float rotation)
@@ -199,7 +202,7 @@ public class AdvancedGridMovement : MonoBehaviour
         Ray downRay = new Ray(newPosition, -Vector3.up);
 
         // Cast a ray straight downwards.
-        if (Physics.Raycast(downRay, out hit))
+        if (Physics.Raycast(downRay, out hit, .1f))
         {
             newPosition.y = (maximumStepHeight - hit.distance) + currentHeadBobValue;
         }
@@ -332,6 +335,14 @@ public class AdvancedGridMovement : MonoBehaviour
     {
         var current = HeightInvariantVector(transform.position);
         var target = HeightInvariantVector(moveTowardsPosition);
+        if(current == target)
+        {
+            if (PlayerController.currentOccupiedNode.GetIsVoid())
+            {
+                enabled = false;
+                controller.rb.isKinematic = false;
+            }
+        }
         return current != target;
     }
 

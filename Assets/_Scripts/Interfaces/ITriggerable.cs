@@ -3,9 +3,7 @@ using UnityEngine;
 public interface ITriggerable
 {
     public void LoadData(SaveableLevelData.TriggerableSaveData data);
-    public void Trigger();
-
-
+    public void Trigger(IInteractable triggeredInteractable);
     public string GetEntityRef();
     public Vector2 GetCoords();
     public int GetCurrentNumberOfTriggers();
