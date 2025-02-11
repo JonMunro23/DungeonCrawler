@@ -21,6 +21,9 @@ public class InventoryContextMenu : MonoBehaviour
     public static Action<ISlot> onInventorySlotEquipmentItemUnequipped;
     public static Action<ISlot> onInventorySlotWeaponItemUnequipped;
 
+    public static Action<ISlot> onBoosterUsed;
+    public static Action<ISlot> onHealSyringeUsed;
+
     public void Init(ISlot slot)
     {
         this.slot = slot;
@@ -30,6 +33,7 @@ public class InventoryContextMenu : MonoBehaviour
     private void ToggleButtons()
     {
         UseButton.gameObject.SetActive(false);
+        UseButton.onClick.RemoveAllListeners();
 
         UnloadAmmoButton.gameObject.SetActive(false);
         UnloadAmmoButton.onClick.RemoveAllListeners();
@@ -113,9 +117,36 @@ public class InventoryContextMenu : MonoBehaviour
         ConsumableItemData consumableItemData = slot.GetItemStack().itemData as ConsumableItemData;
         if (consumableItemData)
         {
-            if(consumableItemData.ammoType == AmmoType.None)
-                UseButton.gameObject.SetActive(true);
+            if (consumableItemData.consumableType == ConsumableType.Ammo)
+                return;
+
+            UseButton.gameObject.SetActive(true);
+            switch (consumableItemData.consumableType)
+            {
+                case ConsumableType.Booster:
+                    UseButton.onClick.AddListener(() =>
+                    {
+                        UseBooster();
+                    });
+                    break;
+                case ConsumableType.HealSyringe:
+                    UseButton.onClick.AddListener(() =>
+                    {
+                        UseHealSyringe();
+                    });
+                    break;
+            }
         }
+    }
+    public void UseBooster()
+    {
+        onBoosterUsed?.Invoke(slot);
+        HideContextMenu();
+    }
+    public void UseHealSyringe()
+    {
+        onHealSyringeUsed?.Invoke(slot);
+        HideContextMenu();
     }
 
     public void Equip()

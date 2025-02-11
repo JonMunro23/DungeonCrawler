@@ -139,7 +139,7 @@ public class PlayerEquipmentManager : MonoBehaviour
 
         foreach (var slot in spawnedEquipmentSlots)
         {
-            slot.RemoveItemStack();
+            slot.RemoveItem();
         }
     }
 
@@ -180,7 +180,7 @@ public class PlayerEquipmentManager : MonoBehaviour
         {
             EquipmentSlot slot = GetSlotOfType(item.slotType);
             if (!slot.IsSlotEmpty())
-                slot.RemoveItemStack();
+                slot.RemoveItem();
 
 
             slot.AddItem(new ItemStack(item.equipmentItemData, 1));

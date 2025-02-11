@@ -130,7 +130,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public bool CanUseSyringe() => canUseSyringe && currentHealth != maxHealth;
 
-    public async void UseSyringeInSlot(InventorySlot slot)
+    public async void UseSyringeInSlot(ISlot slot)
     {
         //Debug.Log("Using syringe");
         ConsumableItemData consumableData = slot.GetItemStack().itemData as ConsumableItemData;
@@ -139,8 +139,9 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
         canUseSyringe = false;
         playerController.playerInventoryManager.RemoveHealthSyringe(1);
+        ConsumableItemData syringeItemData = slot.GetItemStack().itemData as ConsumableItemData;
         slot.RemoveFromExistingStack(1);
-        await InjectSyringe(slot.GetItemStack().itemData as ConsumableItemData);
+        await InjectSyringe(syringeItemData);
     }
 
     void EnableSyringeArms()

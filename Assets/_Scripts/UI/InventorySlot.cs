@@ -131,7 +131,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
         if (currentSlotItemStack.itemAmount <= 0)
         {
-            RemoveItemStack();
+            RemoveItem();
         }
 
         UpdateSlotUI();
@@ -147,7 +147,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public virtual ItemStack TakeItem()
     {
         ItemStack itemToTake = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount, currentSlotItemStack.loadedAmmo);
-        RemoveItemStack();
+        RemoveItem();
         return itemToTake;
     }
 
@@ -173,7 +173,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             currentSlotItemStack.itemAmount--;
             UpdateSlotUI();
             if (currentSlotItemStack.itemAmount == 0)
-                RemoveItemStack();
+                RemoveItem();
         }
     }
 
@@ -257,7 +257,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     
 
-    public void RemoveItemStack()
+    public void RemoveItem()
     {
         ConsumableItemData consumableItemData = GetDataAsConsumable(currentSlotItemStack.itemData);
         if (consumableItemData != null)

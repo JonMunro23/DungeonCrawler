@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ConsumableType
 {
     HealSyringe,
-    Throwable,
+    Booster,
     Ammo
 }
 
@@ -17,6 +18,9 @@ public class ConsumableItemData : ItemData
     
     public int totalRegenAmount = 75;
     public float regenDuration = 3f;
+
+    [Header("Injector Properties")]
+    public List<StatModifier> statModifiers = new List<StatModifier>();
 
     [Header("Animation Lengths")]
     public float useAnimationLength;

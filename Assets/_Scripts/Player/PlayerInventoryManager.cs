@@ -471,7 +471,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         {
             if(!slot.IsSlotEmpty())
             {
-                slot.RemoveItemStack();
+                slot.RemoveItem();
             }
         }
 

@@ -53,6 +53,16 @@ public class PlayerController : MonoBehaviour
     public static Action<PlayerController> onPlayerInitialised;
     public static Action onPlayerDeath;
 
+    private void OnEnable()
+    {
+        InventoryContextMenu.onHealSyringeUsed += OnHealSyringeUsed;
+    }
+
+    private void OnDisable()
+    {
+        InventoryContextMenu.onHealSyringeUsed -= OnHealSyringeUsed;
+    }
+
     private void Awake()
     {
         advGridMovement = GetComponent<AdvancedGridMovement>();
@@ -71,6 +81,11 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         defaultCamPos = playerCamera.transform.localPosition;
+    }
+
+    void OnHealSyringeUsed(ISlot slot)
+    {
+        TryUseHealthSyringe(slot);
     }
 
     public void InitPlayer(CharacterData playerCharData/*, GridNode spawnGridNode*/)
@@ -113,13 +128,17 @@ public class PlayerController : MonoBehaviour
         SetCurrentOccupiedNode(nodeToMoveTo);
     }
 
-    public async void TryUseHealthSyringe()
+    public async void TryUseHealthSyringe(ISlot slotToUse = null)
     {
         if (playerHealthManager.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
-            Debug.Log(playerHealthManager.CanUseSyringe());
-            InventorySlot slotWithSyringe = playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe);
-            if (!slotWithSyringe)
+            ISlot slotWithSyringe;
+            if (slotToUse == null)
+                slotWithSyringe = playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe);
+            else
+                slotWithSyringe = slotToUse;
+
+            if (slotWithSyringe == null)
                 return;
 
             if(playerWeaponManager.currentWeapon == null)

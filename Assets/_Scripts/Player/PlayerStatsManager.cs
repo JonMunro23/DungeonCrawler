@@ -61,6 +61,8 @@ public class PlayerStatsManager : MonoBehaviour
         PlayerEquipmentManager.onEquippedItemRemoved += OnEquippedItemRemoved;
 
         PlayerSkillsManager.onSkillUpdated += OnSkillUpdated;
+
+        InventoryContextMenu.onBoosterUsed += OnBoosterUsed;
     }
 
     private void OnDisable()
@@ -69,6 +71,8 @@ public class PlayerStatsManager : MonoBehaviour
         PlayerEquipmentManager.onEquippedItemRemoved -= OnEquippedItemRemoved;
 
         PlayerSkillsManager.onSkillUpdated -= OnSkillUpdated;
+
+        InventoryContextMenu.onBoosterUsed -= OnBoosterUsed;
     }
 
     public void Init(CharacterData newPlayerCharData)
@@ -111,6 +115,20 @@ public class PlayerStatsManager : MonoBehaviour
         {
             ApplyStatModifier(statModifier);
         }
+    }
+
+    void OnBoosterUsed(ISlot slot)
+    {
+        ConsumableItemData consumableItemData = slot.GetItemStack().itemData as ConsumableItemData;
+        if (consumableItemData)
+        {
+            foreach(StatModifier statModifier in consumableItemData.statModifiers)
+            {
+                ApplyStatModifier(statModifier);
+            }
+        }
+
+        slot.RemoveItem();
     }
 
     void ApplyStatModifier(StatModifier statModifier)

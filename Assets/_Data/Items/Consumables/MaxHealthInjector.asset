@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8fde78e917f40b4a839fcc0bedfc72e, type: 3}
+  m_Name: MaxHealthInjector
+  m_EditorClassIdentifier: 
+  itemName: Max Health Booster
+  itemIdentifier: max_health_booster
+  itemDescription: Increases max health by 10%.
+  itemSprite: {fileID: 21300000, guid: 1a0124a64349148c9868b93e5065b5cd, type: 3}
+  itemWorldModel: {fileID: 0}
+  itemWeight: 0
+  isItemStackable: 0
+  maxItemStackSize: 3
+  consumableType: 1
+  ammoType: 0
+  cooldownBetweenUses: 0
+  totalRegenAmount: 75
+  regenDuration: 3
+  statModifiers:
+  - statToModify: 0
+    modifyOperation: 2
+    modifyAmount: 10
+  useAnimationLength: 0

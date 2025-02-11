@@ -901,6 +901,8 @@ MonoBehaviour:
   gridSize: 3
   walkSpeed: 3.35
   turnSpeed: 6
+  canRotate: 1
+  rotationDelay: 0.35
   walkSpeedCurve:
     serializedVersion: 2
     m_Curve:
@@ -1035,8 +1037,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  canRotate: 1
-  rotationDelay: 0.35
 --- !u!114 &4620442606277676960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1106,6 +1106,12 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
     itemAmount: 1
     loadedAmmo: 5
+  - itemData: {fileID: 11400000, guid: e06847091251c5141896a30305911b8d, type: 2}
+    itemAmount: 1
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: a7b9b17bcb65e79499ddd4bde54d02d7, type: 2}
+    itemAmount: 1
+    loadedAmmo: 0
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
