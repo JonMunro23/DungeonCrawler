@@ -117,17 +117,17 @@ public class HUDWeaponDisplay : MonoBehaviour
         ammoText.text = $"{loadedAmmo}/{reserve}";
     }
 
-    void UpdateAmmoType(AmmoType newAmmoType)
+    void UpdateAmmoType(AmmoWeaponType newAmmoType)
     {
         switch (newAmmoType)
         {
-            case AmmoType.Pistol:
+            case AmmoWeaponType.Pistol:
                 ammoTypeImage.sprite = pistolAmmoSprite;
                 break;
-            case AmmoType.Rifle:
+            case AmmoWeaponType.Rifle:
                 ammoTypeImage.sprite = rifleAmmoSprite;
                 break;
-            case AmmoType.Shells:
+            case AmmoWeaponType.Shells:
                 ammoTypeImage.sprite = shellsAmmoSprite;
                 break;
         }

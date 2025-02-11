@@ -110,7 +110,7 @@ public class PlayerWeaponManager : MonoBehaviour
         }
     }
 
-    void OnInventoryAmmoUpdated(AmmoType typeAdded)
+    void OnInventoryAmmoUpdated(AmmoWeaponType typeAdded)
     {
         if (currentWeapon == null)
             return;

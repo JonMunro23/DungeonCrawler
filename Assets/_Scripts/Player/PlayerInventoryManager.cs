@@ -27,7 +27,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
     public static Action<int> onSyringeCountUpdated;
 
-    public static Action<AmmoType> onAmmoAddedToInventory;
+    public static Action<AmmoWeaponType> onAmmoAddedToInventory;
 
     void OnEnable()
     {
@@ -94,13 +94,13 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         ItemData ammoItemData = null;
         switch (weaponItemData.ammoType)
         { 
-            case AmmoType.Pistol:
+            case AmmoWeaponType.Pistol:
                 ammoItemData = pistolAmmo;
                 break;
-            case AmmoType.Rifle:
+            case AmmoWeaponType.Rifle:
                 ammoItemData = rifleAmmo;
                 break;
-            case AmmoType.Shells:
+            case AmmoWeaponType.Shells:
                 ammoItemData = shotgunAmmo;
                 break;
         }
@@ -188,34 +188,34 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         heldHealthSyringes += amountToAdd;
         onSyringeCountUpdated?.Invoke(heldHealthSyringes);
     }
-    public void AddAmmo(AmmoType typeToAdd, int amountToAdd)
+    public void AddAmmo(AmmoWeaponType typeToAdd, int amountToAdd)
     {
         switch (typeToAdd)
         {
-            case AmmoType.Pistol:
+            case AmmoWeaponType.Pistol:
                 heldPistolAmmo += amountToAdd;
                 break;
-            case AmmoType.Rifle:
+            case AmmoWeaponType.Rifle:
                 heldRifleAmmo += amountToAdd;
                 break;
-            case AmmoType.Shells:
+            case AmmoWeaponType.Shells:
                 heldShells += amountToAdd;
                 break;
         }
 
         onAmmoAddedToInventory?.Invoke(typeToAdd);
     }
-    public void RemoveAmmo(AmmoType typeToAdd, int amountToRemove)
+    public void RemoveAmmo(AmmoWeaponType typeToAdd, int amountToRemove)
     {
         switch (typeToAdd)
         {
-            case AmmoType.Pistol:
+            case AmmoWeaponType.Pistol:
                 heldPistolAmmo -= amountToRemove;
                 break;
-            case AmmoType.Rifle:
+            case AmmoWeaponType.Rifle:
                 heldRifleAmmo -= amountToRemove;
                 break;
-            case AmmoType.Shells:
+            case AmmoWeaponType.Shells:
                 heldShells -= amountToRemove;
                 break;
         }
@@ -224,9 +224,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     }
     private void RemoveAllAmmo()
     {
-        RemoveAmmo(AmmoType.Pistol, heldPistolAmmo);
-        RemoveAmmo(AmmoType.Rifle, heldRifleAmmo);
-        RemoveAmmo(AmmoType.Shells, heldShells);
+        RemoveAmmo(AmmoWeaponType.Pistol, heldPistolAmmo);
+        RemoveAmmo(AmmoWeaponType.Rifle, heldRifleAmmo);
+        RemoveAmmo(AmmoWeaponType.Shells, heldShells);
     }
 
     private void RemoveAllSyringes()
@@ -342,25 +342,25 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
-    public int GetRemainingAmmoOfType(AmmoType ammoTypeToGet)
+    public int GetRemainingAmmoOfType(AmmoWeaponType ammoTypeToGet)
     {
         int ammoToReturn = 0;
         switch (ammoTypeToGet)
         {
-            case AmmoType.Pistol:
+            case AmmoWeaponType.Pistol:
                 ammoToReturn += heldPistolAmmo;
                 break;
-            case AmmoType.Rifle:
+            case AmmoWeaponType.Rifle:
                 ammoToReturn += heldRifleAmmo;
                 break;
-            case AmmoType.Shells:
+            case AmmoWeaponType.Shells:
                 ammoToReturn += heldShells;
                 break;
         }
         return ammoToReturn;
     }
 
-    public void DecreaseAmmoOfType(AmmoType ammoTypeToRemove, int amountToRemove)
+    public void DecreaseAmmoOfType(AmmoWeaponType ammoTypeToRemove, int amountToRemove)
     {
         //reverse list so it takes from the last slot first 
         List<InventorySlot> slotsReversed = new List<InventorySlot>(spawnedInventorySlots.Reverse());
@@ -389,7 +389,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
-    public void IncreaseAmmoOfType(AmmoType ammoTypeToAdd, int amountToAdd)
+    public void IncreaseAmmoOfType(AmmoWeaponType ammoTypeToAdd, int amountToAdd)
     {
         foreach (ISlot slot in spawnedInventorySlots)
         {
@@ -422,7 +422,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
-    public void LockSlotsWithAmmoOfType(AmmoType ammoTypeToLock)
+    public void LockSlotsWithAmmoOfType(AmmoWeaponType ammoTypeToLock)
     {
         foreach(ISlot slot in spawnedInventorySlots)
         {

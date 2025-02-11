@@ -11,6 +11,21 @@ public enum WeaponType
 
 public enum AmmoType
 {
+    Standard,
+    ArmourPiercing,
+    HollowPoint,
+    Incendiary,
+    Acid
+}
+
+public enum StatusEffectType
+{
+    Fire,
+    Acid
+}
+
+public enum AmmoWeaponType
+{
     None,
     Pistol,
     Rifle,
@@ -31,7 +46,7 @@ public class WeaponItemData : EquipmentItemData
     public int accuracy;
     public float critChance;
     public float critDamageMultiplier;
-    public AmmoType ammoType;
+    public AmmoWeaponType ammoType;
     public int magSize;
     public int projectileCount;
     public bool isProjectile;

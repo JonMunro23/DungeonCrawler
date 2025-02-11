@@ -1,8 +1,8 @@
 public interface IInventory
 {
-    public int GetRemainingAmmoOfType(AmmoType ammoTypeToGet);
-    public void DecreaseAmmoOfType(AmmoType ammoTypeToRemove, int amountToRemove);
-    public void IncreaseAmmoOfType(AmmoType ammoTypeToAdd, int amountToAdd);
-    public void LockSlotsWithAmmoOfType(AmmoType ammoTypeToLock);
+    public int GetRemainingAmmoOfType(AmmoWeaponType ammoTypeToGet);
+    public void DecreaseAmmoOfType(AmmoWeaponType ammoTypeToRemove, int amountToRemove);
+    public void IncreaseAmmoOfType(AmmoWeaponType ammoTypeToAdd, int amountToAdd);
+    public void LockSlotsWithAmmoOfType(AmmoWeaponType ammoTypeToLock);
     public void UnlockSlots();
 }

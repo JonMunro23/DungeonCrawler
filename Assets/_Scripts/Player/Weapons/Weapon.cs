@@ -113,10 +113,13 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         yield return new WaitForSeconds(weaponItemData.itemCooldown);
         canUse = true;
     }
-    public int CalculateDamage()
+    public int CalculateDamage(int targetArmourRating)
     {
-        float damage = Random.Range(weaponItemData.itemDamageMinMax.x, weaponItemData.itemDamageMinMax.y);
-        return Mathf.CeilToInt(damage) + PlayerWeaponManager.bonusDamage;
+        float damage = 
+            Random.Range(weaponItemData.itemDamageMinMax.x, weaponItemData.itemDamageMinMax.y)
+            + PlayerWeaponManager.bonusDamage
+            - targetArmourRating;
+        return Mathf.CeilToInt(damage);
     }
     public bool RollForCrit()
     {

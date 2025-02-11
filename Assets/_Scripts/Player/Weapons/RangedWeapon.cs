@@ -12,7 +12,6 @@ public class RangedWeapon : Weapon
     bool isReloading;
     bool canShootBurst = true;
     bool canShootBurstShot = true;
-    int loadedAmmo, reserveAmmo;
 
     public bool infinteAmmo = false;
 
@@ -21,6 +20,11 @@ public class RangedWeapon : Weapon
     [SerializeField] Vector2 ejectionSpeed = new Vector2(1, 3);
     [SerializeField] float ejectionStartDelay;
     ParticleSystem[] cachedParticleEffect;
+
+    [Header("Ammo")]
+    [SerializeField] AmmoType currentLoadedAmmoType = AmmoType.Standard;
+    [SerializeField] int loadedAmmo, reserveAmmo;
+
 
     [Header("Magazine Dropping")]
     [SerializeField] Transform magDropTransform;
@@ -71,9 +75,9 @@ public class RangedWeapon : Weapon
             base.UseWeapon();
             if (weaponItemData.isProjectile)
             {
-                GameObject projectile = Instantiate(weaponItemData.projectileData.projModel, projectileSpawnLocation.position, projectileSpawnLocation.rotation);
-                //projectile.GetComponentInChildren<Projectile>().projectile = handItemData.itemProjectile;
-                projectile.GetComponentInChildren<Projectile>().damage = CalculateDamage();
+                //GameObject projectile = Instantiate(weaponItemData.projectileData.projModel, projectileSpawnLocation.position, projectileSpawnLocation.rotation);
+                ////projectile.GetComponentInChildren<Projectile>().projectile = handItemData.itemProjectile;
+                //projectile.GetComponentInChildren<Projectile>().damage = CalculateDamage();
             }
             else
             {
@@ -129,7 +133,33 @@ public class RangedWeapon : Weapon
                 {
                     if(RollForHit())
                     {
-                        int damage = CalculateDamage();
+                        int damage = 0;
+                        int AR = damageable.GetDamageData().currentArmourRating;
+
+                        switch (currentLoadedAmmoType)
+                        {
+                            case AmmoType.Standard:
+                                damage = CalculateDamage(AR);
+                                break;
+                            case AmmoType.ArmourPiercing:
+                                int reducedAR = Mathf.RoundToInt(AR * .5f);
+                                damage = CalculateDamage(reducedAR);
+                                break;
+                            case AmmoType.HollowPoint:
+                                //more damage to unarmoured targets but reduced against armour
+                                break;
+                            case AmmoType.Incendiary:
+                                damage = CalculateDamage(AR);
+                                damageable.AddStatusEffect(StatusEffectType.Fire);
+                                break;
+                            case AmmoType.Acid:
+                                damage = CalculateDamage(AR);
+                                damageable.AddStatusEffect(StatusEffectType.Acid);
+                                //small DoT, reduces armour rating on enemy
+                                break;
+
+                        }
+
                         bool isCrit = RollForCrit();
                         if (isCrit)
                             damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);

@@ -3565,6 +3565,28 @@
 							],
 							"__worldX": 136,
 							"__worldY": 312
+						},
+						{
+							"__identifier": "NPC_Spawn",
+							"__grid": [10,2],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
+							"__smartColor": "#D77643",
+							"iid": "e4b565d0-c210-11ef-a7de-d35186fea0a6",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [168,40],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [null] },
+								{ "__identifier": "EnemyName", "__type": "String", "__value": "zombie", "__tile": null, "defUid": 8, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["zombie"]
+								}] }
+							],
+							"__worldX": 168,
+							"__worldY": 296
 						}
 					]
 				},

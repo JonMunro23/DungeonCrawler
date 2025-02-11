@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using Random = UnityEngine.Random;
+using System.Collections;
 
 public class NPCController : MonoBehaviour, IDamageable
 {
@@ -193,5 +194,49 @@ public class NPCController : MonoBehaviour, IDamageable
         Vector3 newPos = floatingTextSpawnLocation.position + new Vector3(xVariation, yVariation, floatingTextSpawnLocation.localPosition.z);
         return newPos;
 
+    }
+
+    public DamageData GetDamageData()
+    {
+        return new DamageData(Mathf.RoundToInt(currentGroupHealth), 10, 5);
+    }
+
+    public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5)
+    {
+        switch (statusEffectTypeToAdd)
+        {
+            case StatusEffectType.Fire:
+                TakeDamageOverTime(duration, 20, 60, .45f);
+                break;
+            case StatusEffectType.Acid:
+                //Reduce armour rating
+                TakeDamageOverTime(duration, 15, 40, .6f);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Deals damage to the entity at a set interval over a period of time
+    /// </summary>
+    /// <param name="duration">Duration of the damage over time effect.</param>
+    /// <param name="minDamage">The minimum possible damage to take.</param>
+    /// <param name="maxDamage">The maximum possible damage to take.</param>
+    /// <param name="damageIntervals">The time between damage ticks.</param>
+    IEnumerator TakeDamageOverTime(float duration, int minDamage, int maxDamage, float damageIntervals)
+    {
+        float timeElapsed = 0;
+        float interval = 0;
+
+        while (timeElapsed < duration)
+        {
+            if (timeElapsed >= interval)
+            {
+                TryDamage(Random.Range(minDamage, maxDamage));
+                interval += damageIntervals;
+            }
+
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
     }
 }
