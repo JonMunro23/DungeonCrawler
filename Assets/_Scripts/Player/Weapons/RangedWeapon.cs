@@ -135,36 +135,44 @@ public class RangedWeapon : Weapon
                     {
                         int damage = 0;
                         int AR = damageable.GetDamageData().currentArmourRating;
+                        bool isCrit = RollForCrit();
 
                         switch (currentLoadedAmmoType)
                         {
                             case AmmoType.Standard:
                                 damage = CalculateDamage(AR);
+                                if (isCrit)
+                                    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                                damageable.TryDamage(damage, DamageType.Standard, isCrit);
                                 break;
                             case AmmoType.ArmourPiercing:
                                 int reducedAR = Mathf.RoundToInt(AR * .5f);
                                 damage = CalculateDamage(reducedAR);
+                                if (isCrit)
+                                    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                                damageable.TryDamage(damage, DamageType.Standard, isCrit);
                                 break;
                             case AmmoType.HollowPoint:
                                 //more damage to unarmoured targets but reduced against armour
                                 break;
                             case AmmoType.Incendiary:
                                 damage = CalculateDamage(AR);
+                                damageable.TryDamage(damage, DamageType.Fire, isCrit);
+                                if (isCrit)
+                                    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
                                 damageable.AddStatusEffect(StatusEffectType.Fire);
                                 break;
                             case AmmoType.Acid:
                                 damage = CalculateDamage(AR);
+                                damageable.TryDamage(damage, DamageType.Acid, isCrit);
+                                if (isCrit)
+                                    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
                                 damageable.AddStatusEffect(StatusEffectType.Acid);
-                                //small DoT, reduces armour rating on enemy
                                 break;
 
                         }
 
-                        bool isCrit = RollForCrit();
-                        if (isCrit)
-                            damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
 
-                        damageable.TryDamage(damage, isCrit);
                     }
                 }
 

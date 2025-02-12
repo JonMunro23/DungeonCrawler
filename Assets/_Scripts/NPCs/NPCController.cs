@@ -5,6 +5,7 @@ using System;
 using Random = UnityEngine.Random;
 using System.Collections;
 
+[SelectionBase]
 public class NPCController : MonoBehaviour, IDamageable
 {
     public int levelIndex;
@@ -32,6 +33,8 @@ public class NPCController : MonoBehaviour, IDamageable
     [Header("Group Stats")]
     public float currentGroupHealth;
     public float maxGroupHealth;
+    [SerializeField] int currentArmourRating;
+    [SerializeField] int currentEvasionRating;
     bool isDead => currentGroupHealth <= 0;
 
     [Header("Item Dropping")]
@@ -39,6 +42,7 @@ public class NPCController : MonoBehaviour, IDamageable
     public List<ItemData> randomDrops = new List<ItemData>();
 
     public static Action<NPCController> onNPCDeath;
+    Coroutine fireDamageCoroutine, acidDamageCoroutine, armourReductionCoroutine;
 
     private void Awake()
     {
@@ -61,6 +65,14 @@ public class NPCController : MonoBehaviour, IDamageable
 
         SpawnNPCModels();
         InitControllers();
+        InitStats();
+    }
+
+    private void InitStats()
+    {
+        currentGroupHealth = maxGroupHealth;
+        currentArmourRating = NPCData.baseArmourRating;
+        currentEvasionRating = NPCData.baseEvasionRating;
     }
 
     public void SetNPCHealth(int newHealthValue)
@@ -84,9 +96,8 @@ public class NPCController : MonoBehaviour, IDamageable
 
     }
 
-    private void SpawnNPCModels()
+    void SpawnNPCModels()
     {
-        currentGroupHealth = maxGroupHealth;
         if (amountToSpawnInStack > 1)
         {
             for (int i = 0; i < amountToSpawnInStack; i++)
@@ -98,7 +109,6 @@ public class NPCController : MonoBehaviour, IDamageable
         {
             SpawnNPCs(NPCData, centerSpawnPoint);
         }
-        currentGroupHealth = maxGroupHealth;
     }
 
     void InitControllers()
@@ -120,7 +130,7 @@ public class NPCController : MonoBehaviour, IDamageable
         
     }
 
-    public void TryDamage(int damage, bool wasCrit = false)
+    public void TryDamage(int damage, DamageType damageType = DamageType.Standard, bool wasCrit = false)
     {
         if(!isDead)
         {
@@ -130,8 +140,17 @@ public class NPCController : MonoBehaviour, IDamageable
                 if(rand <= hitReactionChance)
                     animController.PlayAnimation("HitReaction", 0, Random.Range(0, spawnedNPCs.Count));
             }
-            currentGroupHealth -= damage;
-            SpawnFloatingText(damage, wasCrit);
+
+            int finalDamage = damage;
+            if(damageType == DamageType.Standard)
+            {
+                finalDamage = (damage - currentArmourRating);
+                if (finalDamage < 0)
+                    finalDamage = 0;
+            }
+            currentGroupHealth -= finalDamage;
+
+            SpawnFloatingText(finalDamage, damageType, wasCrit);
             float remainingEnemies = currentGroupHealth / maxGroupHealth * amountToSpawnInStack;
             int roundedEnemyCount = Mathf.CeilToInt(remainingEnemies);
 
@@ -174,9 +193,20 @@ public class NPCController : MonoBehaviour, IDamageable
             movementController.FindNewPathToPlayer();
     }
 
-    void SpawnFloatingText(int damage, bool wasCrit = false)
+    void SpawnFloatingText(int damage, DamageType damageType = DamageType.Standard, bool wasCrit = false)
     {
         GameObject textClone = Instantiate(damageTakenFloatingText, RandomiseFloatingTextSpawnLocation(), transform.rotation);
+
+        switch (damageType)
+        {
+            case DamageType.Fire:
+                textClone.GetComponentInChildren<TMP_Text>().color = new Color(1, 0.4369752f, 0);
+                break;
+            case DamageType.Acid:
+                textClone.GetComponentInChildren<TMP_Text>().color = new Color(0.04023647f, 1, 0);
+                break;
+        }
+
         if (wasCrit)
         {
             textClone.GetComponentInChildren<TMP_Text>().color = Color.red;
@@ -198,7 +228,7 @@ public class NPCController : MonoBehaviour, IDamageable
 
     public DamageData GetDamageData()
     {
-        return new DamageData(Mathf.RoundToInt(currentGroupHealth), 10, 5);
+        return new DamageData(Mathf.RoundToInt(currentGroupHealth), currentArmourRating, currentEvasionRating);
     }
 
     public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5)
@@ -206,11 +236,25 @@ public class NPCController : MonoBehaviour, IDamageable
         switch (statusEffectTypeToAdd)
         {
             case StatusEffectType.Fire:
-                TakeDamageOverTime(duration, 20, 60, .45f);
+                if(fireDamageCoroutine != null)
+                    StopCoroutine(fireDamageCoroutine);
+
+                fireDamageCoroutine = StartCoroutine(TakeDamageOverTime(duration, 20, 60, .45f, DamageType.Fire));
                 break;
             case StatusEffectType.Acid:
-                //Reduce armour rating
-                TakeDamageOverTime(duration, 15, 40, .6f);
+                int acidArmourReduction = 20;
+                if (armourReductionCoroutine != null)
+                {
+                    StopCoroutine(armourReductionCoroutine);
+                    currentArmourRating += acidArmourReduction;
+                }
+
+                armourReductionCoroutine = StartCoroutine(ReduceArmourRating(duration, acidArmourReduction));
+
+                if(acidDamageCoroutine != null)
+                    StopCoroutine(acidDamageCoroutine);
+
+                acidDamageCoroutine = StartCoroutine(TakeDamageOverTime(duration, 15, 40, .6f, DamageType.Acid));
                 break;
         }
     }
@@ -222,7 +266,7 @@ public class NPCController : MonoBehaviour, IDamageable
     /// <param name="minDamage">The minimum possible damage to take.</param>
     /// <param name="maxDamage">The maximum possible damage to take.</param>
     /// <param name="damageIntervals">The time between damage ticks.</param>
-    IEnumerator TakeDamageOverTime(float duration, int minDamage, int maxDamage, float damageIntervals)
+    IEnumerator TakeDamageOverTime(float duration, int minDamage, int maxDamage, float damageIntervals, DamageType damageType)
     {
         float timeElapsed = 0;
         float interval = 0;
@@ -231,12 +275,24 @@ public class NPCController : MonoBehaviour, IDamageable
         {
             if (timeElapsed >= interval)
             {
-                TryDamage(Random.Range(minDamage, maxDamage));
+                TryDamage(Random.Range(minDamage, maxDamage), damageType);
                 interval += damageIntervals;
             }
 
             timeElapsed += Time.deltaTime;
             yield return null;
         }
+    }
+
+    IEnumerator ReduceArmourRating(float duration, int reductionAmount)
+    {
+        currentArmourRating -= reductionAmount;
+        if (currentArmourRating < 0)
+            currentArmourRating = 0;
+
+        yield return new WaitForSeconds(duration);
+
+        currentArmourRating += reductionAmount;
+
     }
 }

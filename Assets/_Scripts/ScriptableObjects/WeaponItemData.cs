@@ -24,6 +24,13 @@ public enum StatusEffectType
     Acid
 }
 
+public enum DamageType
+{
+    Standard,
+    Fire,
+    Acid
+}
+
 public enum AmmoWeaponType
 {
     None,

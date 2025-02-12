@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identifier: zombie
   prefab: {fileID: 4493914613880827488, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
-  health: 200
-  experienceValue: 75
   minMaxGroupSize: {x: 1, y: 4}
+  experienceValue: 75
+  health: 2000
+  baseArmourRating: 25
+  baseEvasionRating: 0
   minMaxDamage: {x: 15, y: 40}
   attackCooldown: 3
   delayBetweenAttacks: 1
