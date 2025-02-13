@@ -1770,9 +1770,9 @@
 									"params": ["West"]
 								}] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
-								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "pistol_bullets", "health_syringe", "health_syringe" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "pistol_ammo", "health_syringe", "health_syringe" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
 									"id": "V_String",
-									"params": ["pistol_bullets"]
+									"params": ["pistol_ammo"]
 								}, {
 									"id": "V_String",
 									"params": ["health_syringe"]
@@ -2005,9 +2005,9 @@
 							"px": [24,104],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [] },
-								{ "__identifier": "Item_Name", "__type": "String", "__value": "rifle_bullets", "__tile": null, "defUid": 14, "realEditorValues": [{
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "rifle_ammo", "__tile": null, "defUid": 14, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["rifle_bullets"]
+									"params": ["rifle_ammo"]
 								}] },
 								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 45, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [45] }] },
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
@@ -2444,12 +2444,12 @@
 									"params": ["West"]
 								}] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
-								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "health_syringe", "shells" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "health_syringe", "shotgun_ammo" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["health_syringe"]
 								}, {
 									"id": "V_String",
-									"params": ["shells"]
+									"params": ["shotgun_ammo"]
 								} ] },
 								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [3,24], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [3] }, { "id": "V_Int", "params": [24] } ] }
 							],
@@ -2926,9 +2926,9 @@
 									"params": ["North"]
 								}] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
-								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "pistol_bullets", "health_syringe" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
+								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "pistol_ammo", "health_syringe" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
 									"id": "V_String",
-									"params": ["pistol_bullets"]
+									"params": ["pistol_ammo"]
 								}, {
 									"id": "V_String",
 									"params": ["health_syringe"]
@@ -3468,9 +3468,9 @@
 									"id": "V_String",
 									"params": ["West"]
 								}] },
-								{ "__identifier": "Item_Name", "__type": "String", "__value": "pistol_bullets", "__tile": null, "defUid": 14, "realEditorValues": [{
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "pistol_ammo", "__tile": null, "defUid": 14, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["pistol_bullets"]
+									"params": ["pistol_ammo"]
 								}] },
 								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 43, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [43] }] },
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
@@ -3586,6 +3586,30 @@
 								}] }
 							],
 							"__worldX": 168,
+							"__worldY": 296
+						},
+						{
+							"__identifier": "WorldItem",
+							"__grid": [13,2],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "72962830-e920-11ef-bc0a-4fc30b0e72a4",
+							"width": 16,
+							"height": 16,
+							"defUid": 10,
+							"px": [216,40],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [] },
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "shotgun_ammo", "__tile": null, "defUid": 14, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["shotgun_ammo"]
+								}] },
+								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 24, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [24] }] },
+								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
+							],
+							"__worldX": 216,
 							"__worldY": 296
 						}
 					]

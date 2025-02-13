@@ -17,7 +17,7 @@ MonoBehaviour:
   minMaxGroupSize: {x: 1, y: 4}
   experienceValue: 75
   health: 2000
-  baseArmourRating: 25
+  baseArmourRating: 0
   baseEvasionRating: 0
   minMaxDamage: {x: 15, y: 40}
   attackCooldown: 3

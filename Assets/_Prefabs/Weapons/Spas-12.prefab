@@ -1914,11 +1914,14 @@ MonoBehaviour:
   canUse: 0
   isWeaponDrawn: 0
   isDefaultWeapon: 0
-  muzzleFX: {fileID: 4359043827025576991}
   infinteAmmo: 0
+  muzzleFX: {fileID: 4359043827025576991}
   shellEjectionParticleEffect: {fileID: 1682814303764841665}
   ejectionSpeed: {x: 1, y: 3}
   ejectionStartDelay: 0.65
+  currentLoadedAmmoType: 0
+  loadedAmmo: 0
+  reserveAmmo: 0
   magDropTransform: {fileID: 0}
   maxDroppedMags: 5
   lastDroppedMag: 0

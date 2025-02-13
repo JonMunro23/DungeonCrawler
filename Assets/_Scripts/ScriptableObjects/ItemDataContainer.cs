@@ -15,7 +15,7 @@ public class ItemDataContainer : ScriptableObject
                 return item;
             }
         }
-
+        Debug.Log($"Cant find {identifier}");
         return null;
     }
 }

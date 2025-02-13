@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -110,7 +111,7 @@ public class PlayerWeaponManager : MonoBehaviour
         }
     }
 
-    void OnInventoryAmmoUpdated(AmmoWeaponType typeAdded)
+    void OnInventoryAmmoUpdated(AmmoItemData typeAdded)
     {
         if (currentWeapon == null)
             return;
@@ -121,7 +122,7 @@ public class PlayerWeaponManager : MonoBehaviour
         if(currentWeapon.GetRangedWeapon() == null)
             return;
 
-        if (typeAdded == currentWeapon.GetWeaponData().ammoType)
+        if (typeAdded.weaponTypes.Contains(currentWeapon.GetWeaponData().weaponType))
         {
             currentWeapon.GetRangedWeapon().UpdateReserveAmmo();
         }
@@ -215,8 +216,9 @@ public class PlayerWeaponManager : MonoBehaviour
     /// <summary>
     /// Called when player clicks on a weapon slot. Handles the initialisation of new weapons.
     /// </summary>
-    /// <param name="weaponSlot">The slot to put the new weapon in.</param>
+    /// <param name="slotIndex">The index of the slot to put the new weapon in.</param>
     /// <param name="newWeaponItemData">The weapon data to initialise the new weapon with. </param>
+    /// <param name="startingAmmo">The amount of loaded ammo the new weapon will start with</param>
     async void OnWeaponAddedToSlot(int slotIndex, WeaponItemData newWeaponItemData, int startingAmmo)
     {
         spawnedWeaponSlots[slotIndex].SetInteractable(false);
@@ -322,7 +324,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
                 if(weapon.GetRangedWeapon() != null)
                 {
-                    weapon.GetRangedWeapon().SetLoadedAmmo(startingAmmo);
+                    weapon.GetRangedWeapon().UpdateLoadedAmmo(startingAmmo);
                 }
 
                 occupyingSlot.SetWeapon(weapon);

@@ -141,16 +141,9 @@ public class NPCController : MonoBehaviour, IDamageable
                     animController.PlayAnimation("HitReaction", 0, Random.Range(0, spawnedNPCs.Count));
             }
 
-            int finalDamage = damage;
-            if(damageType == DamageType.Standard)
-            {
-                finalDamage = (damage - currentArmourRating);
-                if (finalDamage < 0)
-                    finalDamage = 0;
-            }
-            currentGroupHealth -= finalDamage;
+            currentGroupHealth -= damage;
 
-            SpawnFloatingText(finalDamage, damageType, wasCrit);
+            SpawnFloatingText(damage, damageType, wasCrit);
             float remainingEnemies = currentGroupHealth / maxGroupHealth * amountToSpawnInStack;
             int roundedEnemyCount = Mathf.CeilToInt(remainingEnemies);
 

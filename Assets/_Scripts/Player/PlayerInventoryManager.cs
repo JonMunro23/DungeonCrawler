@@ -14,8 +14,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
     public static bool isInContainer { get; private set; }
-    [SerializeField] ItemData pistolAmmo, rifleAmmo, shotgunAmmo;
-    [SerializeField] int heldHealthSyringes, heldPistolAmmo, heldRifleAmmo, heldShells;
+    [SerializeField] int heldHealthSyringes;
     [Space]
     [Header("Camera Anim On Container Interaction")]
     [SerializeField] Vector3 openContainerCamPos, defaultCamPos;
@@ -27,7 +26,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
     public static Action<int> onSyringeCountUpdated;
 
-    public static Action<AmmoWeaponType> onAmmoAddedToInventory;
+    public static Action<AmmoItemData> onAmmoAddedToInventory;
 
     void OnEnable()
     {
@@ -87,25 +86,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     void OnInventorySlotWeaponUnloaded(ISlot slot)
     {
-        WeaponItemData weaponItemData = slot.GetItemStack().itemData as WeaponItemData;
-        if (!weaponItemData)
+        WeaponSlot weaponSlot = slot as WeaponSlot;
+        if (!weaponSlot)
             return;
 
-        ItemData ammoItemData = null;
-        switch (weaponItemData.ammoType)
-        { 
-            case AmmoWeaponType.Pistol:
-                ammoItemData = pistolAmmo;
-                break;
-            case AmmoWeaponType.Rifle:
-                ammoItemData = rifleAmmo;
-                break;
-            case AmmoWeaponType.Shells:
-                ammoItemData = shotgunAmmo;
-                break;
-        }
-
-        ItemStack slotAmmo = new ItemStack(ammoItemData, slot.UnloadAmmo());
+        ItemStack slotAmmo = new ItemStack(weaponSlot.GetWeapon().GetRangedWeapon().GetLoadedAmmoData(), slot.UnloadAmmo());
         TryAddItemToInventory(slotAmmo);
 
         
@@ -187,46 +172,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         heldHealthSyringes += amountToAdd;
         onSyringeCountUpdated?.Invoke(heldHealthSyringes);
-    }
-    public void AddAmmo(AmmoWeaponType typeToAdd, int amountToAdd)
-    {
-        switch (typeToAdd)
-        {
-            case AmmoWeaponType.Pistol:
-                heldPistolAmmo += amountToAdd;
-                break;
-            case AmmoWeaponType.Rifle:
-                heldRifleAmmo += amountToAdd;
-                break;
-            case AmmoWeaponType.Shells:
-                heldShells += amountToAdd;
-                break;
-        }
-
-        onAmmoAddedToInventory?.Invoke(typeToAdd);
-    }
-    public void RemoveAmmo(AmmoWeaponType typeToAdd, int amountToRemove)
-    {
-        switch (typeToAdd)
-        {
-            case AmmoWeaponType.Pistol:
-                heldPistolAmmo -= amountToRemove;
-                break;
-            case AmmoWeaponType.Rifle:
-                heldRifleAmmo -= amountToRemove;
-                break;
-            case AmmoWeaponType.Shells:
-                heldShells -= amountToRemove;
-                break;
-        }
-
-        onAmmoAddedToInventory?.Invoke(typeToAdd);
-    }
-    private void RemoveAllAmmo()
-    {
-        RemoveAmmo(AmmoWeaponType.Pistol, heldPistolAmmo);
-        RemoveAmmo(AmmoWeaponType.Rifle, heldRifleAmmo);
-        RemoveAmmo(AmmoWeaponType.Shells, heldShells);
     }
 
     private void RemoveAllSyringes()
@@ -342,25 +287,33 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
-    public int GetRemainingAmmoOfType(AmmoWeaponType ammoTypeToGet)
+    public int TryGetRemainingAmmoOfType(AmmoItemData ammoTypeToGet)
     {
         int ammoToReturn = 0;
-        switch (ammoTypeToGet)
+        //reverse list so it takes from the last slot first 
+        List<InventorySlot> slotsReversed = new List<InventorySlot>(spawnedInventorySlots.Reverse());
+
+        foreach (ISlot slot in slotsReversed)
         {
-            case AmmoWeaponType.Pistol:
-                ammoToReturn += heldPistolAmmo;
-                break;
-            case AmmoWeaponType.Rifle:
-                ammoToReturn += heldRifleAmmo;
-                break;
-            case AmmoWeaponType.Shells:
-                ammoToReturn += heldShells;
-                break;
+            if (slot.IsSlotEmpty())
+                continue;
+
+            ItemStack slotItemStack = slot.GetItemStack();
+
+            AmmoItemData ammoItemData = slotItemStack.itemData as AmmoItemData;
+            if (!ammoItemData)
+                continue;
+
+            if (ammoItemData != ammoTypeToGet)
+                continue;
+
+            ammoToReturn += slotItemStack.itemAmount;
+            //Debug.Log(ammoToReturn);
         }
         return ammoToReturn;
     }
 
-    public void DecreaseAmmoOfType(AmmoWeaponType ammoTypeToRemove, int amountToRemove)
+    public void DecreaseAmmoOfType(AmmoItemData ammoTypeToRemove, int amountToRemove)
     {
         //reverse list so it takes from the last slot first 
         List<InventorySlot> slotsReversed = new List<InventorySlot>(spawnedInventorySlots.Reverse());
@@ -372,24 +325,23 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
             ItemStack slotItemStack = slot.GetItemStack();
 
-            ConsumableItemData consumableItemData = slotItemStack.itemData as ConsumableItemData;
-            if (!consumableItemData)
+            AmmoItemData ammoItemData = slotItemStack.itemData as AmmoItemData;
+            if (!ammoItemData)
                 continue;
 
-            if (consumableItemData.ammoType != ammoTypeToRemove)
+            if (ammoItemData != ammoTypeToRemove)
                 continue;
 
             int remainingAmountToRemove = slot.RemoveFromExistingStack(amountToRemove);
-            RemoveAmmo(ammoTypeToRemove, amountToRemove);
+
             if (remainingAmountToRemove == 0)
                 return;
 
             amountToRemove = remainingAmountToRemove;
-
         }
     }
 
-    public void IncreaseAmmoOfType(AmmoWeaponType ammoTypeToAdd, int amountToAdd)
+    public void IncreaseAmmoOfType(AmmoItemData ammoTypeToAdd, int amountToAdd)
     {
         foreach (ISlot slot in spawnedInventorySlots)
         {
@@ -398,42 +350,38 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
             ItemStack slotItemStack = slot.GetItemStack();
 
-            if (slotItemStack.GetRemainingSpaceInStack() == 0)
+            AmmoItemData ammoItemData = slotItemStack.itemData as AmmoItemData;
+            if (!ammoItemData)
                 continue;
 
-            ConsumableItemData consumableItemData = slotItemStack.itemData as ConsumableItemData;
-            if (!consumableItemData)
+            if (ammoItemData != ammoTypeToAdd)
                 continue;
-
-            if (consumableItemData.ammoType != ammoTypeToAdd)
-                continue;
-
 
             int remainingAmountToAdd = slot.AddToCurrentItemStack(amountToAdd);
             if (remainingAmountToAdd > 0)
             {
-                Debug.Log(remainingAmountToAdd);
                 InventorySlot freeSlot = GetNextFreeSlot();
                 if (freeSlot)
                 {
-                    freeSlot.AddItem(new ItemStack(consumableItemData, remainingAmountToAdd, 0));
+                    freeSlot.AddItem(new ItemStack(ammoItemData, remainingAmountToAdd, 0));
                 }
             }
+            return;
         }
     }
 
-    public void LockSlotsWithAmmoOfType(AmmoWeaponType ammoTypeToLock)
+    public void LockSlotsWithAmmoOfType(AmmoItemData ammoTypeToLock)
     {
         foreach(ISlot slot in spawnedInventorySlots)
         {
             if (slot.IsSlotEmpty())
                 continue;
 
-            ConsumableItemData consumableItemData = slot.GetItemStack().itemData as ConsumableItemData;
-            if (!consumableItemData)
+            AmmoItemData ammoItemData = slot.GetItemStack().itemData as AmmoItemData;
+            if (!ammoItemData)
                 continue;
 
-            if(consumableItemData.ammoType == ammoTypeToLock)
+            if(ammoItemData == ammoTypeToLock)
                 slot.SetInteractable(false);
         }
     }
@@ -465,7 +413,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public void LoadItems(List<ItemStack> items)
     {
         RemoveAllSyringes();
-        RemoveAllAmmo();
+        //RemoveAllAmmo();
 
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
