@@ -885,7 +885,39 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  eventMappingsKeyUp: []
+  - key: 106
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4808936625142989322}
+          m_TargetAssemblyTypeName: PlayerWeaponManager, Assembly-CSharp
+          m_MethodName: OpenWeaponAmmoSelectionMenu
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 50
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  eventMappingsKeyUp:
+  - key: 106
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4808936625142989322}
+          m_TargetAssemblyTypeName: PlayerWeaponManager, Assembly-CSharp
+          m_MethodName: CloseWeaponAmmoSelectionMenu
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &162635141120244599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1112,17 +1144,17 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: a7b9b17bcb65e79499ddd4bde54d02d7, type: 2}
     itemAmount: 1
     loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1, type: 2}
+    itemAmount: 150
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 9b4387b63c26100479530fe8b8e80114, type: 2}
+    itemAmount: 60
+    loadedAmmo: 0
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
   totalNumInventorySlots: 30
-  pistolAmmo: {fileID: 11400000, guid: 13678138784503d4d9aced3d3d412924, type: 2}
-  rifleAmmo: {fileID: 11400000, guid: bc054ada91f0705468e8177d904162be, type: 2}
-  shotgunAmmo: {fileID: 11400000, guid: 5c8800c3adf420744a7aae4de3b6b1a0, type: 2}
   heldHealthSyringes: 0
-  heldPistolAmmo: 0
-  heldRifleAmmo: 0
-  heldShells: 0
   openContainerCamPos: {x: 0, y: 1.75, z: -0.04}
   defaultCamPos: {x: 0, y: 1.75, z: -0.5}
   openContainerCamRot: {x: 45, y: 0, z: 0}
@@ -1216,8 +1248,8 @@ MonoBehaviour:
   syringeArms: {fileID: 4879892857341237695}
   maxHealth: 0
   currentHealth: 0
-  evasion: 0
-  armour: 0
+  currentEvasion: 0
+  currentArmour: 0
   delayBeforeRegen: 1.1
   syringeCooldown: 8
   isRegenActive: 0

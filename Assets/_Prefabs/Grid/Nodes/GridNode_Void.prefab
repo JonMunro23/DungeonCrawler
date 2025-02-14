@@ -1143,7 +1143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showDebugInfo: 0
-  nodeData: {fileID: 11400000, guid: 97dcdecf8ceecac4e9f063bc08e937a6, type: 2}
+  nodeData: {fileID: 11400000, guid: ba49ae637fd0b65479631e3f655c4466, type: 2}
   highlightPathMat: {fileID: 2100000, guid: 3fab29c2075438c439a412da4df1679b, type: 2}
   highlightOpenMat: {fileID: 2100000, guid: bc708901ea0e0da48a926d2904637248, type: 2}
   highlightClosedMat: {fileID: 2100000, guid: a9abcc7c22fb4ec4cb4b005edc06ac26, type: 2}

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 public class RangedWeapon : Weapon
@@ -267,13 +268,20 @@ public class RangedWeapon : Weapon
             droppedMagList.Add(magazine.gameObject);
         }
     }
-    public async Task TryReload()
+    public async Task TryReload(AmmoItemData newAmmoTypeToLoad)
     {
         if (isReloading || !isWeaponDrawn)
             return;
 
-        if (loadedAmmo == weaponItemData.magSize)
+        if (loadedAmmo == weaponItemData.magSize && (newAmmoTypeToLoad == null || newAmmoTypeToLoad == currentLoadedAmmoData))
             return;
+
+        AmmoItemData oldAmmoType = null;
+        if (newAmmoTypeToLoad != null)
+        {
+            oldAmmoType = currentLoadedAmmoData;
+            currentLoadedAmmoData = newAmmoTypeToLoad;
+        }
 
         int heldAmmo = playerInventory.TryGetRemainingAmmoOfType(currentLoadedAmmoData);
         if (heldAmmo == 0)
@@ -282,11 +290,20 @@ public class RangedWeapon : Weapon
         playerInventory.LockSlotsWithAmmoOfType(currentLoadedAmmoData);
         if (!weaponItemData.bulletByBulletReload)
         {
-            playerInventory.IncreaseAmmoOfType(currentLoadedAmmoData, loadedAmmo);
+            if(oldAmmoType != null)
+                playerInventory.IncreaseAmmoOfType(oldAmmoType, loadedAmmo);
+            else
+                playerInventory.IncreaseAmmoOfType(currentLoadedAmmoData, loadedAmmo);
             UpdateLoadedAmmo(0);
             UpdateReserveAmmo();
 
             DropMagazine(transform.root.GetComponent<Collider>());
+        }
+        else if(weaponItemData.bulletByBulletReload && (newAmmoTypeToLoad != null && newAmmoTypeToLoad != currentLoadedAmmoData))
+        {
+            //eject remaining shells and add to loaded ammo
+            //switch ammo types
+            //reload weapon
         }
 
         int amountToReload = 0;
@@ -366,6 +383,12 @@ public class RangedWeapon : Weapon
     {
         return currentLoadedAmmoData;
     }
+
+    public List<AmmoItemData> GetAllUseableHeldAmmo()
+    {
+        return playerInventory.GetAllUseableAmmoForWeapon(this);
+    }
+
     public void UpdateLoadedAmmo(int loadedAmmo)
     {
         this.loadedAmmo = loadedAmmo;

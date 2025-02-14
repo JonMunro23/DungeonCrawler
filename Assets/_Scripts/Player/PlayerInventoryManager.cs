@@ -386,6 +386,27 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
+    public List<AmmoItemData> GetAllUseableAmmoForWeapon(IWeapon weapon)
+    {
+        List<AmmoItemData> heldAmmo = new List<AmmoItemData>();
+        foreach (ISlot slot in spawnedInventorySlots)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            AmmoItemData ammoItemData = slot.GetItemStack().itemData as AmmoItemData;
+            if (!ammoItemData)
+                continue;
+
+            if (ammoItemData.weaponTypes.Contains(weapon.GetWeaponData().weaponType))
+            {
+                if(!heldAmmo.Contains(ammoItemData))
+                    heldAmmo.Add(ammoItemData);
+            }
+        }
+        return heldAmmo;
+    }
+
     public void UnlockSlots()
     {
         foreach (ISlot slot in spawnedInventorySlots)
@@ -394,6 +415,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
                 slot.SetInteractable(true);
         }
     }
+
+
 
     #region Save/Load
 
