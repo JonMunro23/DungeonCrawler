@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class AmmoSelectionManager : MonoBehaviour
 {
@@ -7,27 +8,49 @@ public class AmmoSelectionManager : MonoBehaviour
     [SerializeField] AmmoSelectionButton ammoSelectionButtonPrefab;
     List<AmmoSelectionButton> spawnedAmmoSelectionButtons = new List<AmmoSelectionButton>();
 
+    IWeapon currentHeldWeapon;
+
     private void OnEnable()
     {
         PlayerWeaponManager.onWeaponAmmoSelectionMenuOpened += OpenAmmoSelectionMenu;
         PlayerWeaponManager.onWeaponAmmoSelectionMenuClosed += CloseAmmoSelectionMenu;
+
+        AmmoSelectionButton.OnAmmoSelected += OnAmmoSelected;
     }
 
     private void OnDisable()
     {
         PlayerWeaponManager.onWeaponAmmoSelectionMenuOpened -= OpenAmmoSelectionMenu;
         PlayerWeaponManager.onWeaponAmmoSelectionMenuClosed -= CloseAmmoSelectionMenu;
+
+        AmmoSelectionButton.OnAmmoSelected -= OnAmmoSelected;
+    }
+
+    public void OnAmmoSelected(AmmoItemData ammoTypeSelected)
+    {
+        foreach (AmmoSelectionButton button in spawnedAmmoSelectionButtons)
+        {
+            button.button.interactable = true;
+            if (button.ammoItemData == ammoTypeSelected)
+            {
+                button.button.interactable = false;
+            }
+        }
     }
 
     public void OpenAmmoSelectionMenu(IWeapon currentHeldWeapon)
     {
+        this.currentHeldWeapon = currentHeldWeapon;
+
         HelperFunctions.SetCursorActive(true);
-        GetHeldAmmoTypesForWeapon(currentHeldWeapon);
+        if(!currentHeldWeapon.IsMeleeWeapon())
+            GetHeldAmmoTypesForWeapon(currentHeldWeapon);
     }
 
     public void CloseAmmoSelectionMenu()
     {
-        HelperFunctions.SetCursorActive(false);
+        if(!PlayerInventoryUIController.isInventoryOpen)
+            HelperFunctions.SetCursorActive(false);
         RemovedAmmoSelectionButtons();
     }
 
@@ -38,12 +61,20 @@ public class AmmoSelectionManager : MonoBehaviour
         {
             SpawnAmmoSelectionButton(ammoData);
         }
+
+        foreach (AmmoSelectionButton button in spawnedAmmoSelectionButtons)
+        {
+            if(button.ammoItemData == weaponToCheck.GetRangedWeapon().GetCurrentLoadedAmmoData())
+            {
+                button.button.interactable = false;
+            }
+        }
     }
 
     void SpawnAmmoSelectionButton(AmmoItemData ammoItemDataToInitialise)
     {
         AmmoSelectionButton ammoSelectionButton = Instantiate(ammoSelectionButtonPrefab, ammoSelectionButtonSpawnParent);
-        ammoSelectionButton.Init(ammoItemDataToInitialise);
+        ammoSelectionButton.Init(ammoItemDataToInitialise, currentHeldWeapon);
         spawnedAmmoSelectionButtons.Add(ammoSelectionButton);
     }
 

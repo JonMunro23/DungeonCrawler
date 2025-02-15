@@ -316,9 +316,7 @@ MonoBehaviour:
   muzzleFX: {fileID: 2874476896465302616}
   shellEjectionParticleEffect: {fileID: 6889221604562446684}
   ejectionSpeed: {x: 1.5, y: 3}
-  ejectionStartDelay: 0
-  currentLoadedAmmoData: {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1,
-    type: 2}
+  currentLoadedAmmoData: {fileID: 0}
   loadedAmmo: 0
   reserveAmmo: 0
   magDropTransform: {fileID: 4742245573466163060}

@@ -96,5 +96,9 @@ public class WeaponItemData : EquipmentItemData
     public float reloadEndAnimDuration;
     public AudioClip reloadStopSFX;
     public float reloadStopVolume = .3f;
+    [Space]
+    public float ejectShellAnimDuration;
+    public AudioClip ejectShellSFX;
+    public float ejectShellVolume = .3f;
 }
 

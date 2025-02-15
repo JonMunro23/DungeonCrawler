@@ -90,7 +90,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         if (!weaponSlot)
             return;
 
-        ItemStack slotAmmo = new ItemStack(weaponSlot.GetWeapon().GetRangedWeapon().GetLoadedAmmoData(), slot.UnloadAmmo());
+        ItemStack slotAmmo = new ItemStack(weaponSlot.GetWeapon().GetRangedWeapon().GetCurrentLoadedAmmoData(), slot.UnloadAmmo());
         TryAddItemToInventory(slotAmmo);
 
         

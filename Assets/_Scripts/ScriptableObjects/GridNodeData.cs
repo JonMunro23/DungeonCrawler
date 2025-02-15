@@ -5,4 +5,5 @@ public class GridNodeData : ScriptableObject
 {
     public GridNode gridNodePrefab;
     public bool isWalkable;
+    public bool isPlayerWalkable;
 }

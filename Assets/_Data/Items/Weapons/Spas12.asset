@@ -73,3 +73,6 @@ MonoBehaviour:
   reloadEndAnimDuration: 1.45
   reloadStopSFX: {fileID: 8300000, guid: ff4ea9956d3d5fb4a87312266b33f7c3, type: 3}
   reloadStopVolume: 0.3
+  ejectShellAnimDuration: 0.65
+  ejectShellSFX: {fileID: 8300000, guid: 21765f1f4cca9204c9ab47f349953b8c, type: 3}
+  ejectShellVolume: 0.3

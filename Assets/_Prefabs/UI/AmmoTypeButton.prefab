@@ -108,6 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ammoItemData: {fileID: 0}
   ammoImage: {fileID: 7155263603142652886}
+  button: {fileID: 4218445438989321178}
 --- !u!1 &6037633964899102598
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,9 +250,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8e659af244308488a96fbda09440cd4c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1c5d26d2e4222344183ae19052943b3b, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

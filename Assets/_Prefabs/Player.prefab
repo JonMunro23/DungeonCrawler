@@ -853,22 +853,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - key: 114
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4750780804372824305}
-          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: TryReloadCurrentWeapon
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
   - key: 107
     callback:
       m_PersistentCalls:
@@ -885,7 +869,25 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - key: 106
+  eventMappingsKeyUp:
+  - key: 114
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4750780804372824305}
+          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+          m_MethodName: TryReloadCurrentWeapon
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 50
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  eventMappingsHold:
+  - key: 114
     callback:
       m_PersistentCalls:
         m_Calls:
@@ -901,9 +903,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  eventMappingsKeyUp:
-  - key: 106
-    callback:
+    minHoldDuration: 0.375
+    keyReleaseCallback:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 4808936625142989322}
@@ -1148,6 +1149,15 @@ MonoBehaviour:
     itemAmount: 150
     loadedAmmo: 0
   - itemData: {fileID: 11400000, guid: 9b4387b63c26100479530fe8b8e80114, type: 2}
+    itemAmount: 60
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: c38aca0848b687440981d6016d8fdeae, type: 2}
+    itemAmount: 60
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 7fe1bceb4ffb0234da2bd4fdd98e2829, type: 2}
+    itemAmount: 60
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 6684da6b5e8fecc44a3685ac0da4a1fd, type: 2}
     itemAmount: 60
     loadedAmmo: 0
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,

@@ -289,7 +289,7 @@ public class AdvancedGridMovement : MonoBehaviour
     private bool FreeSpace(Vector3 targetPosition)
     {
         var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
-        return (targetNode.nodeData.isWalkable && targetNode.currentOccupant.occupantType == GridNodeOccupantType.None);
+        return (targetNode.nodeData.isPlayerWalkable && targetNode.currentOccupant.occupantType == GridNodeOccupantType.None);
     }
 
     public void TurnRight()

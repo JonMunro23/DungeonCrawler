@@ -161,7 +161,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     void OnNewAmmoTypeSelected(AmmoItemData newAmmoData)
     {
-        Debug.Log($"Switching to {newAmmoData.ammoType} ammo.");
+        //Debug.Log($"Switching to {newAmmoData.ammoType} ammo.");
         ReloadCurrentWeapon(newAmmoData);
     }
 

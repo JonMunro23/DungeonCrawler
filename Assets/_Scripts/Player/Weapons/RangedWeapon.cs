@@ -19,7 +19,6 @@ public class RangedWeapon : Weapon
     [SerializeField] ParticleSystem muzzleFX;
     [SerializeField] ParticleSystem shellEjectionParticleEffect;
     [SerializeField] Vector2 ejectionSpeed = new Vector2(1, 3);
-    [SerializeField] float ejectionStartDelay;
     ParticleSystem[] cachedParticleEffect;
 
     [Header("Ammo")]
@@ -103,7 +102,7 @@ public class RangedWeapon : Weapon
     {
         weaponAnimator.CrossFadeInFixedTime("Fire", .025f);
         muzzleFX.Play();
-        EjectCartridge();
+        EjectCartridge(.65f);
 
         weaponAudioEmitter.ForcePlay(GetRandomClipFromArray(weaponItemData.attackSFX), weaponItemData.attackSFXVolume);
 
@@ -224,21 +223,21 @@ public class RangedWeapon : Weapon
         }
         return hasHit;
     }
-    public void EjectCartridge()
+    public void EjectCartridge(float delayBeforeEjection)
     {
         if (!shellEjectionParticleEffect)
             return;
 
         ParticleSystem.MainModule mainModule = shellEjectionParticleEffect.main;
         mainModule.startSpeed = Random.Range(ejectionSpeed.x, ejectionSpeed.y);
-        mainModule.startDelay = ejectionStartDelay;
+        mainModule.startDelay = delayBeforeEjection;
 
         if (cachedParticleEffect.Length > 0)
         {
             for (int i = 0, l = cachedParticleEffect.Length; i < l; i++)
             {
                 ParticleSystem.MainModule childrenModule = cachedParticleEffect[i].main;
-                childrenModule.startDelay = ejectionStartDelay;
+                childrenModule.startDelay = delayBeforeEjection;
             }
         }
 
@@ -299,8 +298,10 @@ public class RangedWeapon : Weapon
 
             DropMagazine(transform.root.GetComponent<Collider>());
         }
-        else if(weaponItemData.bulletByBulletReload && (newAmmoTypeToLoad != null && newAmmoTypeToLoad != currentLoadedAmmoData))
+        else if(weaponItemData.bulletByBulletReload)
         {
+            if(loadedAmmo > 0)
+                await EjectLoadedShells(oldAmmoType);
             //eject remaining shells and add to loaded ammo
             //switch ammo types
             //reload weapon
@@ -374,12 +375,26 @@ public class RangedWeapon : Weapon
         isReloading = false;
         return;
     }
+
+    async Task EjectLoadedShells(AmmoItemData ammoToEject)
+    {
+        while(loadedAmmo != 0)
+        {
+            weaponAnimator.Play("Pump");
+            weaponAudioEmitter.ForcePlay(weaponItemData.ejectShellSFX, weaponItemData.ejectShellVolume);
+            await Task.Delay((int)(weaponItemData.ejectShellAnimDuration * 1000));
+            EjectCartridge(0);
+            UpdateLoadedAmmo(loadedAmmo - 1);
+            playerInventory.IncreaseAmmoOfType(ammoToEject, 1);
+        }
+    }
+
     public virtual int GetLoadedAmmo()
     {
         return loadedAmmo;
     }
 
-    public AmmoItemData GetLoadedAmmoData()
+    public AmmoItemData GetCurrentLoadedAmmoData()
     {
         return currentLoadedAmmoData;
     }

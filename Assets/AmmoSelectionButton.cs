@@ -4,13 +4,18 @@ using UnityEngine.UI;
 
 public class AmmoSelectionButton : MonoBehaviour
 {
-    [SerializeField] AmmoItemData ammoItemData;
+    public AmmoItemData ammoItemData;
     [SerializeField] Image ammoImage;
+
+    public Button button;
+
+    IWeapon weapon;
 
     public static Action<AmmoItemData> OnAmmoSelected;
 
-    public void Init(AmmoItemData ammoItemData)
+    public void Init(AmmoItemData ammoItemData, IWeapon currentHeldWeapon)
     {
+        this.weapon = currentHeldWeapon;
         this.ammoItemData = ammoItemData;
         ammoImage.sprite = this.ammoItemData.itemSprite;
     }
@@ -20,6 +25,7 @@ public class AmmoSelectionButton : MonoBehaviour
     /// </summary>
     public void SelectAmmo()
     {
-        OnAmmoSelected?.Invoke(ammoItemData);
+        if (!weapon.GetRangedWeapon().IsReloading())
+            OnAmmoSelected?.Invoke(ammoItemData);
     }
 }

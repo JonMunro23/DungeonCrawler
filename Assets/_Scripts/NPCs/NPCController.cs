@@ -239,7 +239,7 @@ public class NPCController : MonoBehaviour, IDamageable
                 if (armourReductionCoroutine != null)
                 {
                     StopCoroutine(armourReductionCoroutine);
-                    currentArmourRating += acidArmourReduction;
+                    currentArmourRating = NPCData.baseArmourRating;
                 }
 
                 armourReductionCoroutine = StartCoroutine(ReduceArmourRating(duration, acidArmourReduction));
@@ -285,7 +285,7 @@ public class NPCController : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(duration);
 
-        currentArmourRating += reductionAmount;
+        currentArmourRating = NPCData.baseArmourRating;
 
     }
 }
