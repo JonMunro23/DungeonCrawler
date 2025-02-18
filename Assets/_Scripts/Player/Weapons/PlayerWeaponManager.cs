@@ -18,13 +18,15 @@ public class WeaponSlotData
     public int slotIndex;
 
     public WeaponItemData heldWeaponData;
+    public AmmoItemData currentWeaponLoadedAmmoData;
     public int heldWeaponLoadedAmmo;
 
-    public WeaponSlotData(int slotIndex, WeaponItemData heldWeaponData, int heldWeaponLoadedAmmo)
+    public WeaponSlotData(int slotIndex, WeaponItemData heldWeaponData,  int heldWeaponLoadedAmmo, AmmoItemData currentWeaponLoadedAmmoDate)
     {
         this.slotIndex = slotIndex;
         this.heldWeaponData = heldWeaponData;
         this.heldWeaponLoadedAmmo = heldWeaponLoadedAmmo;
+        this.currentWeaponLoadedAmmoData = currentWeaponLoadedAmmoDate;
     }
 }
 
@@ -468,7 +470,7 @@ public class PlayerWeaponManager : MonoBehaviour
                 loadedAmmo = rangedWeapon.GetLoadedAmmo();
             }
 
-            slotData.Add(new WeaponSlotData(slot.GetSlotIndex(), slotWeapon.GetWeaponData(), loadedAmmo));
+            slotData.Add(new WeaponSlotData(slot.GetSlotIndex(), slotWeapon.GetWeaponData(), loadedAmmo, slotWeapon.GetRangedWeapon().GetCurrentLoadedAmmoData()));
         }
         return slotData;
     }
@@ -489,7 +491,8 @@ public class PlayerWeaponManager : MonoBehaviour
 
         for (int i = 0; i < data.weaponSlotData.Count; i++)
         {
-            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(data.weaponSlotData[i].heldWeaponData, 1, data.weaponSlotData[i].heldWeaponLoadedAmmo)); 
+            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(data.weaponSlotData[i].heldWeaponData, 1, data.weaponSlotData[i].heldWeaponLoadedAmmo));
+            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].GetWeapon().GetRangedWeapon().SetCurrentLoadedAmmoData(data.weaponSlotData[i].currentWeaponLoadedAmmoData);
         }
 
 

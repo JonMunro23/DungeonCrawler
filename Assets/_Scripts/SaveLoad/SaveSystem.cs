@@ -82,11 +82,11 @@ public class SaveSystem
     {
         SaveData data = new SaveData();
 
-        foreach (SaveData data1 in saveDatas)
+        foreach (SaveData saveData in saveDatas)
         {
-            if(data1.saveName == saveName)
+            if(saveData.saveName == saveName)
             {
-                data = data1;
+                data = saveData;
                 break;
             }
         }

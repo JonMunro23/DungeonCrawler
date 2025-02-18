@@ -436,7 +436,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public void LoadItems(List<ItemStack> items)
     {
         RemoveAllSyringes();
-        //RemoveAllAmmo();
 
         foreach (InventorySlot slot in spawnedInventorySlots)
         {

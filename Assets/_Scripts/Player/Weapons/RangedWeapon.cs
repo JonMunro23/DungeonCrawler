@@ -394,6 +394,10 @@ public class RangedWeapon : Weapon
         return loadedAmmo;
     }
 
+    public void SetCurrentLoadedAmmoData(AmmoItemData newAmmoItemData)
+    {
+        currentLoadedAmmoData = newAmmoItemData;
+    }
     public AmmoItemData GetCurrentLoadedAmmoData()
     {
         return currentLoadedAmmoData;
