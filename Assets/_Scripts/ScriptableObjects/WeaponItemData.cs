@@ -6,16 +6,32 @@ public enum WeaponType
     Pistol,
     SMG,
     Rifle,
-    Shotgun
+    Shotgun,
+    Magnum
 }
 
 public enum AmmoType
 {
-    None,
-    Pistol,
-    Rifle,
-    Shells
-};
+    Standard,
+    ArmourPiercing,
+    HollowPoint,
+    Incendiary,
+    Acid
+}
+
+public enum StatusEffectType
+{
+    Fire,
+    Acid
+}
+
+public enum DamageType
+{
+    Standard,
+    Fire,
+    Acid
+}
+
 
 [CreateAssetMenu(fileName = "WeaponItemData", menuName = "Items/New Weapon Item")]
 public class WeaponItemData : EquipmentItemData
@@ -25,13 +41,11 @@ public class WeaponItemData : EquipmentItemData
     public Rigidbody magDropPrefab;
     public bool isTwoHanded;
     public WeaponType weaponType;
-    //public string itemDamageType;
     public Vector2 itemDamageMinMax;
     public int itemRange;
     public int accuracy;
     public float critChance;
     public float critDamageMultiplier;
-    public AmmoType ammoType;
     public int magSize;
     public int projectileCount;
     public bool isProjectile;
@@ -39,6 +53,9 @@ public class WeaponItemData : EquipmentItemData
     public bool isBurst;
     public float perShotInBurstDelay;
     public int burstLength;
+
+    [Header("Ammo")]
+    public AmmoItemData defaultLoadedAmmoData;
 
     [Header("Recoil Data")]
     public WeaponRecoilData recoilData;
@@ -79,5 +96,9 @@ public class WeaponItemData : EquipmentItemData
     public float reloadEndAnimDuration;
     public AudioClip reloadStopSFX;
     public float reloadStopVolume = .3f;
+    [Space]
+    public float ejectShellAnimDuration;
+    public AudioClip ejectShellSFX;
+    public float ejectShellVolume = .3f;
 }
 

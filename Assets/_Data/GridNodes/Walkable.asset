@@ -15,3 +15,4 @@ MonoBehaviour:
   gridNodePrefab: {fileID: 6649768854037950483, guid: e50f98c0cd5b1cb4c95f1398a78990d0,
     type: 3}
   isWalkable: 1
+  isPlayerWalkable: 1

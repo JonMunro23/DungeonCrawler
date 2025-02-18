@@ -61,8 +61,12 @@ public class PlayerWeaponUIManager : MonoBehaviour
         if(weaponData)
             weaponDisplays[slotIndex].UpdateWeaponData(weaponData);
     }
-    public void UpdateWeaponDisplayAmmoCount(int slotIndex, int loadedAmmo, int reserveAmmo)
+    public void UpdateWeaponDisplayLoadedAmmoCount(int slotIndex, int loadedAmmo)
     {
-        weaponDisplays[slotIndex].UpdateAmmoText(loadedAmmo, reserveAmmo);
+        weaponDisplays[slotIndex].UpdateLoadedAmmoText(loadedAmmo);
+    }
+    public void UpdateWeaponDisplayReserveAmmoCount(int slotIndex, int reserveAmmo)
+    {
+        weaponDisplays[slotIndex].UpdateReserveAmmoText(reserveAmmo);
     }
 }

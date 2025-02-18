@@ -4,8 +4,7 @@ using UnityEngine;
 public enum ConsumableType
 {
     HealSyringe,
-    Booster,
-    Ammo
+    Booster
 }
 
 [CreateAssetMenu(fileName = "ConsumableItem", menuName = "Items/New Consumable Item")]
@@ -13,7 +12,8 @@ public class ConsumableItemData : ItemData
 {
     [Header("Consumable Item Properties")]
     public ConsumableType consumableType;
-    public AmmoType ammoType;
+    //public AmmoWeaponType ammoWeaponType;
+    //public AmmoType ammoType;
     public float cooldownBetweenUses;
     
     public int totalRegenAmount = 75;

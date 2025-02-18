@@ -24,7 +24,8 @@ public abstract class Weapon : MonoBehaviour, IWeapon
     /// int = loadedAmmo
     /// int = reserveAmmo
     /// </summary>
-    public static Action<int, int, int> onAmmoUpdated;
+    public static Action<int, int> onLoadedAmmoUpdated;
+    public static Action<int, int> onReserveAmmoUpdated;
     /// <summary>
     /// float = cooldownLength
     /// </summary>
@@ -113,10 +114,17 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         yield return new WaitForSeconds(weaponItemData.itemCooldown);
         canUse = true;
     }
-    public int CalculateDamage()
+    public int CalculateDamage(int targetArmourRating)
     {
-        float damage = Random.Range(weaponItemData.itemDamageMinMax.x, weaponItemData.itemDamageMinMax.y);
-        return Mathf.CeilToInt(damage) + PlayerWeaponManager.bonusDamage;
+        float damage = 
+            Random.Range(weaponItemData.itemDamageMinMax.x, weaponItemData.itemDamageMinMax.y)
+            + PlayerWeaponManager.bonusDamage
+            - targetArmourRating;
+
+        if (damage < 0)
+            damage = 0;
+
+        return Mathf.CeilToInt(damage);
     }
     public bool RollForCrit()
     {
@@ -146,7 +154,7 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         if(rangedWeapon)
         {
             int ammoToReturn = rangedWeapon.GetLoadedAmmo();
-            rangedWeapon.SetLoadedAmmo(0);
+            rangedWeapon.UpdateLoadedAmmo(0);
             return ammoToReturn;
         }
 

@@ -22,19 +22,18 @@ MonoBehaviour:
   isItemStackable: 0
   maxItemStackSize: 1
   itemCooldown: 1.2
-  EquipmentSlotType: 0
+  EquipmentSlotType: 7
   statModifiers: []
   itemPrefab: {fileID: 3989916110711570160, guid: 8803bbfc949a33844949614700e63b5b,
     type: 3}
   magDropPrefab: {fileID: 0}
   isTwoHanded: 0
-  isMeleeWeapon: 0
+  weaponType: 5
   itemDamageMinMax: {x: 45, y: 80}
   itemRange: 5
   accuracy: 70
   critChance: 8
   critDamageMultiplier: 2
-  ammoType: 1
   magSize: 6
   projectileCount: 1
   isProjectile: 0
@@ -42,6 +41,7 @@ MonoBehaviour:
   isBurst: 0
   perShotInBurstDelay: 0
   burstLength: 0
+  defaultLoadedAmmoData: {fileID: 0}
   recoilData: {fileID: 11400000, guid: 3afd667deccd372408bf52a4c221db98, type: 2}
   attackSFX:
   - {fileID: 8300000, guid: 19d35041f281bd242ac163aa8a6abcf5, type: 3}
@@ -70,3 +70,6 @@ MonoBehaviour:
   reloadEndAnimDuration: 0
   reloadStopSFX: {fileID: 0}
   reloadStopVolume: 0.3
+  ejectShellAnimDuration: 0
+  ejectShellSFX: {fileID: 0}
+  ejectShellVolume: 0.3

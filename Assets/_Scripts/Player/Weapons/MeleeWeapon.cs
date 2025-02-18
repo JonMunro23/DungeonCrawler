@@ -34,12 +34,12 @@ public class MeleeWeapon : Weapon
         {
             //if (RollForHit())
             //{
-                int damage = CalculateDamage();
+                int damage = CalculateDamage(damageable.GetDamageData().currentArmourRating);
                 bool isCrit = RollForCrit();
                 if (isCrit)
                     damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier + PlayerWeaponManager.bonusCritMultiplier);
 
-                damageable.TryDamage(damage, isCrit);
+                damageable.TryDamage(damage, DamageType.Standard, isCrit);
            // }
         }
     }

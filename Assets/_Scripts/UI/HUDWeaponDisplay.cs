@@ -90,7 +90,7 @@ public class HUDWeaponDisplay : MonoBehaviour
             displayedData = newWeaponData;
 
         UpdateWeaponSprite(displayedData.itemSprite);
-        UpdateAmmoType(displayedData.ammoType);
+        //UpdateAmmoType(displayedData.ammoWeaponType);
     }
 
     void UpdateWeaponSprite(Sprite newSprite)
@@ -98,12 +98,12 @@ public class HUDWeaponDisplay : MonoBehaviour
         weaponImage.sprite = newSprite;
     }
 
-    public void UpdateAmmoText(int loaded, int reserve)
-    {
-        reserveAmmo = reserve;
-        loadedAmmo = loaded;
-        ammoText.text = $"{loaded}/{reserve}";
-    }
+    //public void UpdateAmmoText(int loaded, int reserve)
+    //{
+    //    reserveAmmo = reserve;
+    //    loadedAmmo = loaded;
+    //    ammoText.text = $"{loaded}/{reserve}";
+    //}
 
     public void UpdateLoadedAmmoText(int loaded)
     {
@@ -117,21 +117,21 @@ public class HUDWeaponDisplay : MonoBehaviour
         ammoText.text = $"{loadedAmmo}/{reserve}";
     }
 
-    void UpdateAmmoType(AmmoType newAmmoType)
-    {
-        switch (newAmmoType)
-        {
-            case AmmoType.Pistol:
-                ammoTypeImage.sprite = pistolAmmoSprite;
-                break;
-            case AmmoType.Rifle:
-                ammoTypeImage.sprite = rifleAmmoSprite;
-                break;
-            case AmmoType.Shells:
-                ammoTypeImage.sprite = shellsAmmoSprite;
-                break;
-        }
-    }
+    //void UpdateAmmoType(AmmoWeaponType newAmmoType)
+    //{
+    //    switch (newAmmoType)
+    //    {
+    //        case AmmoWeaponType.Pistol:
+    //            ammoTypeImage.sprite = pistolAmmoSprite;
+    //            break;
+    //        case AmmoWeaponType.Rifle:
+    //            ammoTypeImage.sprite = rifleAmmoSprite;
+    //            break;
+    //        case AmmoWeaponType.Shells:
+    //            ammoTypeImage.sprite = shellsAmmoSprite;
+    //            break;
+    //    }
+    //}
 
     void SetDisplayOnCooldown(float cooldownLength)
     {

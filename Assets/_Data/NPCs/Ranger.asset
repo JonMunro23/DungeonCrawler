@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identifier: ranger
   prefab: {fileID: 2088299440551931648, guid: aeb86d88bcb3e174497c699d34d1d505, type: 3}
-  health: 300
+  health: 350
   experienceValue: 240
   minMaxGroupSize: {x: 1, y: 2}
   minMaxDamage: {x: 25, y: 75}

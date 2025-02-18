@@ -89,7 +89,8 @@ public class UIController : MonoBehaviour
         WeaponSlot.onWeaponSwappedInSlot += OnWeaponSwappedInSlot;
         WeaponSlot.onWeaponSetToDefault += OnWeaponSetToDefault;
 
-        Weapon.onAmmoUpdated += OnWeaponAmmoUpdated;
+        Weapon.onLoadedAmmoUpdated += OnWeaponLoadedAmmoUpdated;
+        Weapon.onReserveAmmoUpdated += OnWeaponReserveAmmoUpdated;
 
         PlayerWeaponManager.onWeaponSlotSetActive += OnWeaponSlotSetActive;
         PlayerWeaponManager.onNewWeaponInitialised += OnNewWeaponInitialised;
@@ -113,7 +114,8 @@ public class UIController : MonoBehaviour
         WeaponSlot.onWeaponSwappedInSlot -= OnWeaponSwappedInSlot;
         WeaponSlot.onWeaponSetToDefault -= OnWeaponSetToDefault;
 
-        Weapon.onAmmoUpdated -= OnWeaponAmmoUpdated;
+        Weapon.onLoadedAmmoUpdated -= OnWeaponLoadedAmmoUpdated;
+        Weapon.onReserveAmmoUpdated -= OnWeaponReserveAmmoUpdated;
 
         PlayerWeaponManager.onNewWeaponInitialised -= OnNewWeaponInitialised;
         PlayerWeaponManager.onWeaponSlotSetActive -= OnWeaponSlotSetActive;
@@ -206,9 +208,13 @@ public class UIController : MonoBehaviour
         playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, _defaultWeaponData);
     }
 
-    void OnWeaponAmmoUpdated(int slotIndex, int loaded, int reserve)
+    void OnWeaponReserveAmmoUpdated(int slotIndex, int reserve)
     {
-        playerWeaponUIManager.UpdateWeaponDisplayAmmoCount(slotIndex, loaded, reserve);
+        playerWeaponUIManager.UpdateWeaponDisplayReserveAmmoCount(slotIndex, reserve);
+    }
+    void OnWeaponLoadedAmmoUpdated(int slotIndex, int loaded)
+    {
+        playerWeaponUIManager.UpdateWeaponDisplayLoadedAmmoCount(slotIndex, loaded);
     }
 
     void OnWeaponSlotSetActive(int slotIndex)

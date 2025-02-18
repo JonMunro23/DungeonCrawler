@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -18,13 +18,15 @@ public class WeaponSlotData
     public int slotIndex;
 
     public WeaponItemData heldWeaponData;
+    public AmmoItemData currentWeaponLoadedAmmoData;
     public int heldWeaponLoadedAmmo;
 
-    public WeaponSlotData(int slotIndex, WeaponItemData heldWeaponData, int heldWeaponLoadedAmmo)
+    public WeaponSlotData(int slotIndex, WeaponItemData heldWeaponData,  int heldWeaponLoadedAmmo, AmmoItemData currentWeaponLoadedAmmoDate)
     {
         this.slotIndex = slotIndex;
         this.heldWeaponData = heldWeaponData;
         this.heldWeaponLoadedAmmo = heldWeaponLoadedAmmo;
+        this.currentWeaponLoadedAmmoData = currentWeaponLoadedAmmoDate;
     }
 }
 
@@ -41,6 +43,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     [SerializeField] WeaponSlot[] spawnedWeaponSlots;
     [SerializeField] int activeSlotIndex = 0;
+    bool isAmmoSelectionMenuOpen;
 
     [Header("Bonus Weapon Stats")]
     public static int bonusDamage;
@@ -50,11 +53,13 @@ public class PlayerWeaponManager : MonoBehaviour
     public static int bonusAccuracy;
 
     public IWeapon currentWeapon;
-    //IWeapon defaultWeapon;
 
     public static Action<WeaponSlot[]> onWeaponSlotsSpawned;
     public static Action<int> onWeaponSlotSetActive;
     public static Action<int, WeaponItemData> onNewWeaponInitialised;
+
+    public static Action<IWeapon> onWeaponAmmoSelectionMenuOpened;
+    public static Action onWeaponAmmoSelectionMenuClosed;
 
     private void OnEnable()
     {
@@ -70,6 +75,8 @@ public class PlayerWeaponManager : MonoBehaviour
         InventoryContextMenu.onInventorySlotWeaponItemUnequipped += OnInventorySlotWeaponItemUnequipped;
 
         PauseMenu.onQuit += RemoveWeaponSlots;
+
+        AmmoSelectionButton.OnAmmoSelected += OnNewAmmoTypeSelected;
     }
 
     private void OnDisable()
@@ -86,6 +93,8 @@ public class PlayerWeaponManager : MonoBehaviour
         InventoryContextMenu.onInventorySlotWeaponItemUnequipped -= OnInventorySlotWeaponItemUnequipped;
 
         PauseMenu.onQuit -= RemoveWeaponSlots;
+
+        AmmoSelectionButton.OnAmmoSelected -= OnNewAmmoTypeSelected;
     }
 
     public virtual void OnStatUpdated(StatData updatedStat)
@@ -110,7 +119,7 @@ public class PlayerWeaponManager : MonoBehaviour
         }
     }
 
-    void OnInventoryAmmoUpdated(AmmoType typeAdded)
+    void OnInventoryAmmoUpdated(AmmoItemData typeAdded)
     {
         if (currentWeapon == null)
             return;
@@ -121,7 +130,7 @@ public class PlayerWeaponManager : MonoBehaviour
         if(currentWeapon.GetRangedWeapon() == null)
             return;
 
-        if (typeAdded == currentWeapon.GetWeaponData().ammoType)
+        if (typeAdded.weaponTypes.Contains(currentWeapon.GetWeaponData().weaponType))
         {
             currentWeapon.GetRangedWeapon().UpdateReserveAmmo();
         }
@@ -152,6 +161,12 @@ public class PlayerWeaponManager : MonoBehaviour
         playerController.playerInventoryManager.TryAddItemToInventory(slot.TakeItem());
     }
 
+    void OnNewAmmoTypeSelected(AmmoItemData newAmmoData)
+    {
+        //Debug.Log($"Switching to {newAmmoData.ammoType} ammo.");
+        ReloadCurrentWeapon(newAmmoData);
+    }
+
     public async void Init(PlayerController controller)
     {
         playerController = controller;
@@ -163,6 +178,18 @@ public class PlayerWeaponManager : MonoBehaviour
         InitialiseDefaultWeapons();
 
         await SetSlotActive(activeSlotIndex);
+    }
+
+    public void OpenWeaponAmmoSelectionMenu()
+    {
+        isAmmoSelectionMenuOpen = true;
+        onWeaponAmmoSelectionMenuOpened?.Invoke(currentWeapon);
+    }
+
+    public void CloseWeaponAmmoSelectionMenu()
+    {
+        isAmmoSelectionMenuOpen = false;
+        onWeaponAmmoSelectionMenuClosed?.Invoke();
     }
 
     void SpawnWeaponSlots()
@@ -194,7 +221,6 @@ public class PlayerWeaponManager : MonoBehaviour
             GameObject spawnedWeapon = Instantiate(defaultWeaponData.itemPrefab, weaponSpawnParent);
             if (spawnedWeapon.TryGetComponent(out IWeapon weapon))
             {
-                //defaultWeapon = weapon;
                 for (int i = 0; i < spawnedWeaponSlots.Length; i++)
                 {
                     weapon.InitWeapon(spawnedWeaponSlots[i], defaultWeaponData, weaponAudioEmitter, playerController.playerInventoryManager);
@@ -215,8 +241,9 @@ public class PlayerWeaponManager : MonoBehaviour
     /// <summary>
     /// Called when player clicks on a weapon slot. Handles the initialisation of new weapons.
     /// </summary>
-    /// <param name="weaponSlot">The slot to put the new weapon in.</param>
+    /// <param name="slotIndex">The index of the slot to put the new weapon in.</param>
     /// <param name="newWeaponItemData">The weapon data to initialise the new weapon with. </param>
+    /// <param name="startingAmmo">The amount of loaded ammo the new weapon will start with</param>
     async void OnWeaponAddedToSlot(int slotIndex, WeaponItemData newWeaponItemData, int startingAmmo)
     {
         spawnedWeaponSlots[slotIndex].SetInteractable(false);
@@ -231,8 +258,6 @@ public class PlayerWeaponManager : MonoBehaviour
             if (!spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon())
             {
                 spawnedWeaponSlots[slotIndex].RemoveWeapon();
-                Debug.Log("Yeet1");
-
             }
 
             if(slotIndex == activeSlotIndex)
@@ -316,13 +341,10 @@ public class PlayerWeaponManager : MonoBehaviour
             {
                 weapon.InitWeapon(occupyingSlot, weaponItemData, weaponAudioEmitter, playerController.playerInventoryManager);
                 weapon.SetWeaponActive(false);
-                //if (spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon() && !spawnedWeaponSlots[activeSlotIndex].GetWeapon().IsDefaultWeapon())
-                //    spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(false);
-
 
                 if(weapon.GetRangedWeapon() != null)
                 {
-                    weapon.GetRangedWeapon().SetLoadedAmmo(startingAmmo);
+                    weapon.GetRangedWeapon().UpdateLoadedAmmo(startingAmmo);
                 }
 
                 occupyingSlot.SetWeapon(weapon);
@@ -337,7 +359,10 @@ public class PlayerWeaponManager : MonoBehaviour
     {
         if (!currentWeapon.CanUse())
             return;
-        
+
+        if (isAmmoSelectionMenuOpen)
+            return;
+
         if (activeSlotIndex == 0)
         {
             if (currentWeapon.IsDefaultWeapon() && spawnedWeaponSlots[1].GetWeapon().IsDefaultWeapon())
@@ -391,6 +416,9 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void UseCurrentWeapon()
     {
+        if (isAmmoSelectionMenuOpen)
+            return;
+
         if (currentWeapon == null)
             return;
 
@@ -399,13 +427,16 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void UseCurrentWeaponSpecial()
     {
+        if (isAmmoSelectionMenuOpen)
+            return;
+
         if (currentWeapon == null)
             return;
 
         currentWeapon.TryUseSpecial();
     }
 
-    public async void ReloadCurrentWeapon()
+    public async void ReloadCurrentWeapon(AmmoItemData ammoTypeToLoad = null)
     {
         if (currentWeapon == null)
             return;
@@ -417,7 +448,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
         if (currentWeapon.GetRangedWeapon() != null)
         {
-            await currentWeapon.GetRangedWeapon().TryReload();
+            await currentWeapon.GetRangedWeapon().TryReload(ammoTypeToLoad);
         }
 
         spawnedWeaponSlots[activeSlotIndex].SetInteractable(true);
@@ -439,7 +470,7 @@ public class PlayerWeaponManager : MonoBehaviour
                 loadedAmmo = rangedWeapon.GetLoadedAmmo();
             }
 
-            slotData.Add(new WeaponSlotData(slot.GetSlotIndex(), slotWeapon.GetWeaponData(), loadedAmmo));
+            slotData.Add(new WeaponSlotData(slot.GetSlotIndex(), slotWeapon.GetWeaponData(), loadedAmmo, slotWeapon.GetRangedWeapon().GetCurrentLoadedAmmoData()));
         }
         return slotData;
     }
@@ -460,7 +491,8 @@ public class PlayerWeaponManager : MonoBehaviour
 
         for (int i = 0; i < data.weaponSlotData.Count; i++)
         {
-            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(data.weaponSlotData[i].heldWeaponData, 1, data.weaponSlotData[i].heldWeaponLoadedAmmo)); 
+            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(data.weaponSlotData[i].heldWeaponData, 1, data.weaponSlotData[i].heldWeaponLoadedAmmo));
+            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].GetWeapon().GetRangedWeapon().SetCurrentLoadedAmmoData(data.weaponSlotData[i].currentWeaponLoadedAmmoData);
         }
 
 

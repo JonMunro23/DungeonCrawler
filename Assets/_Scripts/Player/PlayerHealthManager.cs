@@ -13,8 +13,8 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     [SerializeField] int currentHealth;
 
     [Header("Stats")]
-    [SerializeField] int evasion;
-    [SerializeField] int armour;
+    [SerializeField] int currentEvasion;
+    [SerializeField] int currentArmour;
 
     [Header("Syringe")]
     [SerializeField] float delayBeforeRegen;
@@ -69,10 +69,10 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public void TakeDamageCheat(int damageToTake)
     {
-        TryDamage(damageToTake, false);
+        TryDamage(damageToTake, DamageType.Standard, false);
     }
 
-    public void TryDamage(int damageTaken, bool wasCrit = false)
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard, bool wasCrit = false)
     {
         if (!PlayerController.isPlayerAlive)
             return;
@@ -89,7 +89,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     private void TakeDamage(int damageTaken, bool wasCrit)
     {
         int damageToTake = wasCrit ? damageTaken * 2 : damageTaken;
-        damageTaken -= armour;
+        damageTaken -= currentArmour;
         audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
         playerController.ShakeScreen();
         currentHealth -= damageToTake;
@@ -202,10 +202,10 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     bool RollForDodge()
     {
         bool dodged = false;
-        if (evasion > 0)
+        if (currentEvasion > 0)
         {
             float rand = Random.Range(0, 101);
-            if (rand <= evasion)
+            if (rand <= currentEvasion)
             {
                 dodged = true;
             }
@@ -222,5 +222,15 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     {
         currentHealth = data.currentHealth;
         onCurrentHealthUpdated?.Invoke(characterData, currentHealth);
+    }
+
+    public DamageData GetDamageData()
+    {
+        return new DamageData(currentHealth, currentArmour, currentEvasion);
+    }
+
+    public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5)
+    {
+        throw new NotImplementedException();
     }
 }

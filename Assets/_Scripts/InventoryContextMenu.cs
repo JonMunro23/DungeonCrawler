@@ -117,9 +117,6 @@ public class InventoryContextMenu : MonoBehaviour
         ConsumableItemData consumableItemData = slot.GetItemStack().itemData as ConsumableItemData;
         if (consumableItemData)
         {
-            if (consumableItemData.consumableType == ConsumableType.Ammo)
-                return;
-
             UseButton.gameObject.SetActive(true);
             switch (consumableItemData.consumableType)
             {

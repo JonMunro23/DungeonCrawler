@@ -9,21 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c8fde78e917f40b4a839fcc0bedfc72e, type: 3}
-  m_Name: Shells
+  m_Script: {fileID: 11500000, guid: 8a76bc522cb3b1b458122c0c05150f6a, type: 3}
+  m_Name: ShotgunShells
   m_EditorClassIdentifier: 
-  itemName: Shells
-  itemIdentifier: shells
-  itemDescription: A box of shotgun shells.
+  itemName: Shotgun Shells
+  itemIdentifier: shotgun_ammo
+  itemDescription: A box of 12 gauge shotgun shells.
   itemSprite: {fileID: 21300000, guid: 98eb5a80971617946bd4e111a3d80b38, type: 3}
   itemWorldModel: {fileID: 5385805578922096503, guid: ecc68ae4aaae2d444b47f8a4b2b437a5,
     type: 3}
-  itemWeight: 0.012
+  itemWeight: 0.016
   isItemStackable: 1
-  maxItemStackSize: 60
-  consumableType: 2
-  ammoType: 3
-  cooldownBetweenUses: 0
-  totalRegenAmount: 75
-  regenDuration: 3
-  useAnimationLength: 0
+  maxItemStackSize: 80
+  weaponTypes: 04000000
+  ammoType: 0

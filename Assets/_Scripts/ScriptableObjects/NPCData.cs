@@ -5,9 +5,13 @@ public class NPCData : ScriptableObject
 {
     public string identifier;
     public GameObject prefab;
-    public int health = 100;
-    public int experienceValue;
     public Vector2 minMaxGroupSize = new Vector2(1,1);
+
+    [Header("Stats")]
+    public int experienceValue;
+    public int health = 100;
+    public int baseArmourRating;
+    public int baseEvasionRating;
 
     [Header("Attacking")]
     public Vector2 minMaxDamage = new Vector2(25, 50);
