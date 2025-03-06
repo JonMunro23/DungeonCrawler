@@ -300,11 +300,8 @@ public class RangedWeapon : Weapon
         }
         else if(weaponItemData.bulletByBulletReload)
         {
-            if(loadedAmmo > 0)
+            if(oldAmmoType != newAmmoTypeToLoad && loadedAmmo > 0)
                 await EjectLoadedShells(oldAmmoType);
-            //eject remaining shells and add to loaded ammo
-            //switch ammo types
-            //reload weapon
         }
 
         int amountToReload = 0;

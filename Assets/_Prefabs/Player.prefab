@@ -811,7 +811,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 4750780804372824305}
           m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: TryUseHealthSyringe
+          m_MethodName: HealthSyringeHotkey
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1126,40 +1126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b540e6fc33d904b41aba33e18efb0788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingItemStacks:
-  - itemData: {fileID: 11400000, guid: 447d605a20175084e8b6fed12b4d99c6, type: 2}
-    itemAmount: 1
-    loadedAmmo: 0
-  - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
-    itemAmount: 1
-    loadedAmmo: 15
-  - itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
-    itemAmount: 1
-    loadedAmmo: 25
-  - itemData: {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
-    itemAmount: 1
-    loadedAmmo: 5
-  - itemData: {fileID: 11400000, guid: e06847091251c5141896a30305911b8d, type: 2}
-    itemAmount: 1
-    loadedAmmo: 0
-  - itemData: {fileID: 11400000, guid: a7b9b17bcb65e79499ddd4bde54d02d7, type: 2}
-    itemAmount: 1
-    loadedAmmo: 0
-  - itemData: {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1, type: 2}
-    itemAmount: 150
-    loadedAmmo: 0
-  - itemData: {fileID: 11400000, guid: 9b4387b63c26100479530fe8b8e80114, type: 2}
-    itemAmount: 60
-    loadedAmmo: 0
-  - itemData: {fileID: 11400000, guid: c38aca0848b687440981d6016d8fdeae, type: 2}
-    itemAmount: 60
-    loadedAmmo: 0
-  - itemData: {fileID: 11400000, guid: 7fe1bceb4ffb0234da2bd4fdd98e2829, type: 2}
-    itemAmount: 60
-    loadedAmmo: 0
-  - itemData: {fileID: 11400000, guid: 6684da6b5e8fecc44a3685ac0da4a1fd, type: 2}
-    itemAmount: 60
-    loadedAmmo: 0
+  startingItemStacks: []
   slotToSpawn: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []

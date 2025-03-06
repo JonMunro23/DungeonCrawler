@@ -128,17 +128,16 @@ public class PlayerController : MonoBehaviour
         SetCurrentOccupiedNode(nodeToMoveTo);
     }
 
-    public async void TryUseHealthSyringe(ISlot slotToUse = null)
+    public void HealthSyringeHotkey()
+    {
+        TryUseHealthSyringe(playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe));
+    }
+
+    public async void TryUseHealthSyringe(ISlot slotToUse)
     {
         if (playerHealthManager.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
-            ISlot slotWithSyringe;
             if (slotToUse == null)
-                slotWithSyringe = playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe);
-            else
-                slotWithSyringe = slotToUse;
-
-            if (slotWithSyringe == null)
                 return;
 
             if(playerWeaponManager.currentWeapon == null)
@@ -148,7 +147,7 @@ public class PlayerController : MonoBehaviour
 
             await playerWeaponManager.currentWeapon.HolsterWeapon();
 
-            playerHealthManager.UseSyringeInSlot(slotWithSyringe);
+            playerHealthManager.UseSyringeInSlot(slotToUse);
         }
     }
 

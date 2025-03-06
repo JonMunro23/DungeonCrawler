@@ -214,6 +214,10 @@ public class WorldInteractionManager : MonoBehaviour
                     {
                         pickup.Pickup(true);
                     }
+                    else if(hit.transform.TryGetComponent(out IInteractable interactable))
+                    {
+                        interactable.InteractWithItem(currentGrabbedItem.itemData);
+                    }
                 }
             }
         }

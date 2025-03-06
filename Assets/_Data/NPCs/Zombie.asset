@@ -16,7 +16,7 @@ MonoBehaviour:
   prefab: {fileID: 4493914613880827488, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
   minMaxGroupSize: {x: 1, y: 4}
   experienceValue: 75
-  health: 2000
+  health: 200
   baseArmourRating: 0
   baseEvasionRating: 0
   minMaxDamage: {x: 15, y: 40}

@@ -2068,6 +2068,22 @@
 							],
 							"__worldX": 216,
 							"__worldY": 104
+						},
+						{
+							"__identifier": "Player_Start",
+							"__grid": [13,8],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 144, "w": 16, "h": 16 },
+							"__smartColor": "#BE4A2F",
+							"iid": "24adce70-e920-11ef-96d1-c71942c6a9e6",
+							"width": 16,
+							"height": 16,
+							"defUid": 2,
+							"px": [216,136],
+							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 5, "realEditorValues": [] }],
+							"__worldX": 216,
+							"__worldY": 136
 						}
 					]
 				},
@@ -2203,7 +2219,10 @@
 								}] },
 								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [] },
 								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
+								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": true, "__tile": null, "defUid": 59, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] }
 							],
 							"__worldX": 88,
 							"__worldY": -72
@@ -3111,25 +3130,6 @@
 							],
 							"__worldX": 88,
 							"__worldY": 456
-						},
-						{
-							"__identifier": "Player_Start",
-							"__grid": [11,4],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 256, "y": 144, "w": 16, "h": 16 },
-							"__smartColor": "#BE4A2F",
-							"iid": "27b959b0-c210-11ef-a539-81b580f6d218",
-							"width": 16,
-							"height": 16,
-							"defUid": 2,
-							"px": [184,72],
-							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 5, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["West"]
-							}] }],
-							"__worldX": 184,
-							"__worldY": 328
 						},
 						{
 							"__identifier": "Interactable",
