@@ -41,7 +41,7 @@ public class PlayerWeaponManager : MonoBehaviour
     [SerializeField] Transform weaponSpawnParent;
     AudioEmitter weaponAudioEmitter;
 
-    [SerializeField] WeaponSlot[] spawnedWeaponSlots;
+    public WeaponSlot[] spawnedWeaponSlots;
     [SerializeField] int activeSlotIndex = 0;
     bool isAmmoSelectionMenuOpen;
 

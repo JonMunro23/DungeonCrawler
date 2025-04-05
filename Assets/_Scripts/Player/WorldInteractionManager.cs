@@ -186,7 +186,7 @@ public class WorldInteractionManager : MonoBehaviour
         worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
         DetachItemFromMouseCursor();
 
-        if (!PlayerInventoryManager.isInContainer && !PlayerInventoryUIController.isInventoryOpen)
+        if (!PlayerInventoryManager.isInContainer && !CharacterMenuUIController.isCharacterMenuOpen)
             HelperFunctions.SetCursorActive(false);
     }
 

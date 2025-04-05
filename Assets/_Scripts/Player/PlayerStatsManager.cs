@@ -52,7 +52,7 @@ public class StatData
 
 public class PlayerStatsManager : MonoBehaviour
 {
-    [SerializeField] CharacterData playerCharData;
+    public CharacterData playerCharData;
     public List<StatData> playerStats = new List<StatData>();
 
     private void OnEnable()
@@ -172,7 +172,7 @@ public class PlayerStatsManager : MonoBehaviour
         }
     }
 
-    StatData GetPlayerStat(ModifiableCharacterStats statToGet)
+    public StatData GetPlayerStat(ModifiableCharacterStats statToGet)
     {
         StatData statToReturn = null;
         foreach (StatData stat in playerStats)
