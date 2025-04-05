@@ -10,22 +10,21 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     [SerializeField]
     List<ItemStack> startingItemStacks = new List<ItemStack>(); 
 
-    [SerializeField] InventorySlot slotToSpawn;
+    [SerializeField] InventorySlot inventorySlotPrefab;
     public InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
-    public static bool isInContainer { get; private set; }
     [SerializeField] int heldHealthSyringes;
     [Space]
     [Header("Camera Anim On Container Interaction")]
     [SerializeField] Vector3 openContainerCamPos, defaultCamPos;
     [SerializeField] Vector3 openContainerCamRot, defaultCamRot;
     [SerializeField] float openContainerCamMovementDuration, closeContainerCamMovementDuration;
+    public static bool isInContainer { get; private set; }
 
     public static Action onInventoryOpened;
     public static Action onInventoryClosed;
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
     public static Action<int> onSyringeCountUpdated;
-
     public static Action<AmmoItemData> onAmmoAddedToInventory;
 
     void OnEnable()
@@ -69,7 +68,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
         await Task.Delay((int)((openContainerCamMovementDuration / 2) * 1000));
 
-        if (!PlayerInventoryUIController.isInventoryOpen)
+        if (!CharacterMenuUIController.isCharacterMenuOpen)
             OpenInventory();
     }
 
@@ -80,7 +79,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
         isInContainer = false;
 
-        if(!PlayerInventoryUIController.isInventoryOpen)
+        if(!CharacterMenuUIController.isCharacterMenuOpen)
             HelperFunctions.SetCursorActive(false);
     }
 
@@ -110,7 +109,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
         for (int i = 0; i < totalNumInventorySlots; i++)
         {
-            InventorySlot spawnedSlot = Instantiate(slotToSpawn);
+            InventorySlot spawnedSlot = Instantiate(inventorySlotPrefab);
             spawnedInventorySlots[i] = spawnedSlot;
             spawnedSlot.InitSlot(this, i);
         }
@@ -140,11 +139,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void ToggleInventory()
     {
-        if (PlayerInventoryUIController.isInventoryOpen == true)
+        if (CharacterMenuUIController.isCharacterMenuOpen == true)
         {
             CloseInventory();
         }
-        else if (PlayerInventoryUIController.isInventoryOpen == false)
+        else if (CharacterMenuUIController.isCharacterMenuOpen == false)
         {
             OpenInventory();
         }

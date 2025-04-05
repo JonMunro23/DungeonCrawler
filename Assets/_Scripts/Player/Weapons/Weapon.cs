@@ -160,4 +160,13 @@ public abstract class Weapon : MonoBehaviour, IWeapon
 
         return 0;
     }
+
+    /// <summary>
+    /// Return min and max damage ranges after any additional modifiers
+    /// </summary>
+    /// <returns>Damage range</returns>
+    public Vector2 GetWeaponDamageRange()
+    {
+        return new Vector2(weaponItemData.itemDamageMinMax.x + PlayerWeaponManager.bonusDamage, weaponItemData.itemDamageMinMax.y + PlayerWeaponManager.bonusDamage);
+    }
 }

@@ -9,11 +9,11 @@ using UnityEngine.UI;
 public class UIController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] PlayerStatsUIController playerStatsUIController;
-    [SerializeField] PlayerInventoryUIController playerInventoryUIController;
+    public PlayerStatsUIController playerStatsUIController;
+    public PlayerInventoryUIController playerInventoryUIController;
     [SerializeField] PlayerEquipmentUIManager PlayerEquipmentUIManager;
     [SerializeField] PlayerWeaponUIManager playerWeaponUIManager;
-    [SerializeField] PlayerSkillsUIManager playerSkillsUIManager;
+    public PlayerSkillsUIManager playerSkillsUIManager;
 
     [Header("Pause Menu")]
     [SerializeField] PauseMenu pauseMenu;
@@ -150,7 +150,7 @@ public class UIController : MonoBehaviour
     {
         initialisedPlayer = playerInitialised;
 
-        playerStatsUIController.InitStatsUI(initialisedPlayer.playerCharacterData);
+        playerStatsUIController.InitStatsUI(initialisedPlayer);
 
         _ = FadeInScreen();
     }

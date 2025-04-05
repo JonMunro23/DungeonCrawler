@@ -7,7 +7,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] GameObject mainCamera;
     [SerializeField] GameObject hudCanvas;
 
-    public static bool isInMainMenu = true;
+    public static bool isInMainMenu = false;
 
     public static Action onNewGameStarted;
 

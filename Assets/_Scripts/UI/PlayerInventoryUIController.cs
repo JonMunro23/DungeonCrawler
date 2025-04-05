@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerInventoryUIController : MonoBehaviour
 {
-    [SerializeField] GameObject InventoryParentObject;
+    //[SerializeField] GameObject InventoryParentObject;
     [SerializeField] GameObject InventoryObject;
     [SerializeField] InventorySlot inventorySlot;
     [SerializeField] InventorySlot[] spawnedInventorySlots;
@@ -20,12 +20,12 @@ public class PlayerInventoryUIController : MonoBehaviour
     [Header("Context Menu")]
     [SerializeField] InventoryContextMenu contextMenu;
 
-    public static bool isInventoryOpen, isContextMenuOpen;
+    public static bool isContextMenuOpen;
 
     private void OnEnable()
     {
-        PlayerInventoryManager.onInventoryOpened += OnInventoryOpened;
-        PlayerInventoryManager.onInventoryClosed += OnInventoryClosed;
+        //PlayerInventoryManager.onInventoryOpened += OpenInventory;
+        //PlayerInventoryManager.onInventoryClosed += CloseInventory;
         PlayerInventoryManager.onInventorySlotsSpawned += OnInventorySlotsSpawned;
         PlayerInventoryManager.onSyringeCountUpdated += OnSyringeCountUpdated;
 
@@ -39,8 +39,8 @@ public class PlayerInventoryUIController : MonoBehaviour
 
     private void OnDisable()
     {
-        PlayerInventoryManager.onInventoryOpened -= OnInventoryOpened;
-        PlayerInventoryManager.onInventoryClosed -= OnInventoryClosed;
+        //PlayerInventoryManager.onInventoryOpened -= OpenInventory;
+        //PlayerInventoryManager.onInventoryClosed -= CloseInventory;
         PlayerInventoryManager.onInventorySlotsSpawned -= OnInventorySlotsSpawned;
         PlayerInventoryManager.onSyringeCountUpdated -= OnSyringeCountUpdated;
 
@@ -98,7 +98,7 @@ public class PlayerInventoryUIController : MonoBehaviour
 
     private void Start()
     {
-        OnInventoryClosed();
+        CloseInventory();
     }
 
     private void Update()
@@ -110,33 +110,29 @@ public class PlayerInventoryUIController : MonoBehaviour
         }
     }
 
-    void OnInventoryOpened()
+    public void OpenInventory()
     {
-        InventoryParentObject.SetActive(true);
+        //InventoryParentObject.SetActive(true);
         InventoryObject.SetActive(true);
 
         HideContextMenu();
 
         HelperFunctions.SetCursorActive(true);
-
-        isInventoryOpen = true;
-    }
-
-    void OnInventoryClosed()
-    {
-        InventoryParentObject.SetActive(false);
-        InventoryObject.SetActive(false);
-
-        if(!PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem && !MainMenu.isInMainMenu)
-            HelperFunctions.SetCursorActive(false);
-
-        isInventoryOpen = false;
     }
 
     public void CloseInventory()
     {
-        OnInventoryClosed();
+        //InventoryParentObject.SetActive(false);
+        InventoryObject.SetActive(false);
+
+        //if(!PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem && !MainMenu.isInMainMenu && !MainInventoryUIController.isCharacterMenuOpen)
+        //    HelperFunctions.SetCursorActive(false);
     }
+
+    //public void CloseInventory()
+    //{
+    //    CloseInventory();
+    //}
 
     void OnSyringeCountUpdated(int newSyringeCount)
     {

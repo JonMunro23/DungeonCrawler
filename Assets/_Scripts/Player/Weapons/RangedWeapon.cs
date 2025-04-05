@@ -199,7 +199,7 @@ public class RangedWeapon : Weapon
     }
     IEnumerator ShootBurst()
     {
-        for (int i = 0; i < weaponItemData.burstLength + PlayerWeaponManager.bonusBurstCount; i++)
+        for (int i = 0; i < GetBurstCount(); i++)
         {
             if (canShootBurstShot && loadedAmmo > 0)
             {
@@ -432,5 +432,9 @@ public class RangedWeapon : Weapon
     {
         canShootBurst = true;
         return base.UseCooldown();
+    }
+    public int GetBurstCount()
+    {
+        return weaponItemData.burstLength + PlayerWeaponManager.bonusBurstCount;
     }
 }

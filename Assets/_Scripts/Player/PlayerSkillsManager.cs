@@ -17,8 +17,6 @@ public class UnlockedSKillData
 
 public class PlayerSkillsManager : MonoBehaviour
 {
-    PlayerInventoryManager inventoryManager;
-
     [Header("Player Skill Spawning")]
     [SerializeField] List<PlayerSkillData> globalPlayerSkills = new List<PlayerSkillData>();
     [SerializeField] List<PlayerSkill> spawnedPlayerSkills = new List<PlayerSkill>();
@@ -44,20 +42,15 @@ public class PlayerSkillsManager : MonoBehaviour
         AddSkillPoints(startingSkillPoints);
     }
 
-    private void Awake()
-    {
-        inventoryManager = GetComponent<PlayerInventoryManager>();
-    }
-
     private void OnEnable()
     {
-        PlayerLevelController.onPlayerLevelUp += OnPlayerLevelUp;
+        PlayerLevelManager.onPlayerLevelUp += OnPlayerLevelUp;
         PlayerSkill.onPlayerSkillClicked += OnPlayerSkillClicked;
     }
 
     private void OnDisable()
     {
-        PlayerLevelController.onPlayerLevelUp -= OnPlayerLevelUp;
+        PlayerLevelManager.onPlayerLevelUp -= OnPlayerLevelUp;
         PlayerSkill.onPlayerSkillClicked -= OnPlayerSkillClicked;
     }
 

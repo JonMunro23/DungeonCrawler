@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerLevelController : MonoBehaviour
+public class PlayerLevelManager : MonoBehaviour
 {
     public int currentPlayerLevel = 0;
     [SerializeField] int currentExperiencePoints; 

@@ -6,7 +6,7 @@ public class PlayerSkillsUIManager : MonoBehaviour
 {
 
     [SerializeField] Transform playerSkillsTransform;
-    [SerializeField] GameObject skillsMenuParent;
+    //[SerializeField] GameObject skillsMenuParent;
     [SerializeField] GameObject skillsMenu;
 
     [SerializeField] TMP_Text availableSkillPointsText;
@@ -15,16 +15,16 @@ public class PlayerSkillsUIManager : MonoBehaviour
     {
         PlayerSkillsManager.onPlayerSkillsSpawned += OnPlayerSkillsSpawned;
         PlayerSkillsManager.onSkillPointsUpdated += OnSkillPointsUpdated;
-        PlayerSkillsManager.onSkillMenuOpened += OpenSkillMenu;
-        PlayerSkillsManager.onSkillMenuClosed += CloseSkillMenu;
+        //PlayerSkillsManager.onSkillMenuOpened += OpenSkillMenu;
+        //PlayerSkillsManager.onSkillMenuClosed += CloseSkillMenu;
     }
 
     private void OnDisable()
     {
         PlayerSkillsManager.onPlayerSkillsSpawned -= OnPlayerSkillsSpawned;
         PlayerSkillsManager.onSkillPointsUpdated -= OnSkillPointsUpdated;
-        PlayerSkillsManager.onSkillMenuOpened -= OpenSkillMenu;
-        PlayerSkillsManager.onSkillMenuClosed -= CloseSkillMenu;
+        //PlayerSkillsManager.onSkillMenuOpened -= OpenSkillMenu;
+        //PlayerSkillsManager.onSkillMenuClosed -= CloseSkillMenu;
     }
 
     void OnSkillPointsUpdated(int newSkillPointsValue)
@@ -40,15 +40,16 @@ public class PlayerSkillsUIManager : MonoBehaviour
         }
     }
 
-    void OpenSkillMenu()
+    public void OpenSkillsMenu()
     {
-        skillsMenuParent.SetActive(true);
+        //skillsMenuParent.SetActive(true);
         skillsMenu.SetActive(true);
+        HelperFunctions.SetCursorActive(true);
     }
 
-    void CloseSkillMenu()
+    public void CloseSkillsMenu()
     {
-        skillsMenuParent.SetActive(false);
+        //skillsMenuParent.SetActive(false);
         skillsMenu.SetActive(false);
     }
 }

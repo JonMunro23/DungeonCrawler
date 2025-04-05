@@ -49,7 +49,7 @@ public class AmmoSelectionManager : MonoBehaviour
 
     public void CloseAmmoSelectionMenu()
     {
-        if(!PlayerInventoryUIController.isInventoryOpen)
+        if(!CharacterMenuUIController.isCharacterMenuOpen)
             HelperFunctions.SetCursorActive(false);
         RemovedAmmoSelectionButtons();
     }
