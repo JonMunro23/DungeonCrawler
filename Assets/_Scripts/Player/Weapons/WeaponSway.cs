@@ -91,7 +91,7 @@ public class WeaponSway : MonoBehaviour
 
     void DecideSwayDirection(int direction)
     {
-        if (direction == 0)
+        if (direction == -1)
         {
             SwayRight();
         }

@@ -65,7 +65,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 20
+  m_text: '20
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6642a572efa14ae4780174bb3494b90f, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 6642a572efa14ae4780174bb3494b90f, type: 2}
@@ -174,7 +176,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -15.929993, y: 2.5899658}
-  m_SizeDelta: {x: 5, y: 5}
+  m_SizeDelta: {x: 0.5, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &3945366020432652619
 Canvas:
@@ -221,7 +223,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &5187618384472650858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,4 +253,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f9c92e98dc307548a0b6fbeac28b6b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 0.25

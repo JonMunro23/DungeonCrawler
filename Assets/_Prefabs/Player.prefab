@@ -884,7 +884,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridSize: 3
-  walkSpeed: 3.35
+  weaponMotion: {fileID: 4193440486000460429}
+  walkSpeed: 3.5
   turnSpeed: 6
   canRotate: 1
   rotationDelay: 0.35
@@ -894,20 +895,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0.41261172
-      outSlope: 0.41261172
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.102888085
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0.054159872
-      outSlope: 0.054159872
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.17418772
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -945,7 +946,8 @@ MonoBehaviour:
     m_PreInfinity: 1
     m_PostInfinity: 1
     m_RotationOrder: 4
-  runningSpeed: 2
+  bobFrequencyMultiplier: 0.3
+  runningSpeed: 1
   runningSpeedCurve:
     serializedVersion: 2
     m_Curve:
@@ -1022,6 +1024,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  stepFrequencyMultiplier: 0.35
 --- !u!114 &4620442606277676960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1320,7 +1323,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6183601309913987406}
-  - component: {fileID: 4360512319254851527}
   - component: {fileID: 4193440486000460429}
   m_Layer: 0
   m_Name: WeaponHolder
@@ -1344,32 +1346,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 854004732151512115}
   m_LocalEulerAnglesHint: {x: -5, y: 0, z: 0}
---- !u!114 &4360512319254851527
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9212865591856936170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03a1648342f7a104aa6c4eb3d58e2675, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sway: 1
-  swayRotation: 1
-  bobOffset: 0
-  bobSway: 0
-  step: 0.01
-  maxStepDistance: 0.06
-  rotationStep: 2
-  maxRotationStep: 4
-  smooth: 10
-  speedCurve: 0
-  travelLimit: {x: 0, y: 0, z: 0}
-  bobLimit: {x: 0.0005, y: 0.0005, z: 0.0005}
-  bobExaggeration: 0
-  multiplier: {x: 0, y: 0, z: 0}
 --- !u!114 &4193440486000460429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1382,9 +1358,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b0b4a2eb1dc1fb4b9a730a0a645030b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useBreathAnimation: 1
-  breathingSpeed: 2
-  breathingAmplitude: 0.01
+  breathingSpeed: 3
+  breathingAmplitudeX: 0.001
+  breathingAmplitudeY: 0.0015
+  breathingSmoothing: 5
+  weaponBobMultiplier: 0.25
+  turnLagAngle: 12
+  turnLagInSpeed: 8
+  turnLagOutSpeed: 12
 --- !u!1001 &1526676580978589587
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d59fc165fbab3ef48912ea7c347ca9cf, type: 3}
   m_Name: VectorRecoilData
   m_EditorClassIdentifier: 
-  primaryFireMinRecoil: {x: -0.015, y: -0.01, z: -0.01}
-  primaryFireMaxRecoil: {x: 0.015, y: 0.01, z: 0.01}
+  primaryFireMinRecoil: {x: -0.0015, y: -0.001, z: -0.001}
+  primaryFireMaxRecoil: {x: 0.0015, y: 0.001, z: 0.001}
   secondaryFireMinRecoil: {x: 0, y: 0, z: 0}
   secondaryFireMaxRecoil: {x: 0, y: 0, z: 0}
   weaponSpread: 0.05

@@ -39,7 +39,7 @@ public class MeleeWeapon : Weapon
                 if (isCrit)
                     damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier + PlayerWeaponManager.bonusCritMultiplier);
 
-                damageable.TryDamage(damage, DamageType.Standard, isCrit);
+                damageable.TryDamage(true, damage, DamageType.Standard, isCrit);
            // }
         }
     }

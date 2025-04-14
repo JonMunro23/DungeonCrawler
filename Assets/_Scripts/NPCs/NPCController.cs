@@ -13,10 +13,9 @@ public class NPCController : MonoBehaviour, IDamageable
     [HideInInspector] public NPCAnimationController animController;
     [HideInInspector] public NPCMovementController movementController;
     [HideInInspector] public NPCAttackController attackController;
+    [HideInInspector] public NPCFloatingTextController floatingTextController;
 
     [Header("References")]
-    [SerializeField] GameObject damageTakenFloatingText;
-    [SerializeField] Transform floatingTextSpawnLocation;
     [SerializeField] Transform centerSpawnPoint;
     [SerializeField] Transform[] spawnPoints;
     public AudioSource audioSource;
@@ -49,6 +48,7 @@ public class NPCController : MonoBehaviour, IDamageable
         movementController = GetComponent<NPCMovementController>();
         animController = GetComponent<NPCAnimationController>();
         attackController = GetComponent<NPCAttackController>();
+        floatingTextController = GetComponent<NPCFloatingTextController>();
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -130,11 +130,17 @@ public class NPCController : MonoBehaviour, IDamageable
         
     }
 
-    public void TryDamage(int damage, DamageType damageType = DamageType.Standard, bool wasCrit = false)
+    public void TryDamage(bool wasHit, int damage, DamageType damageType = DamageType.Standard, bool wasCrit = false)
     {
         if(!isDead)
         {
-            if(!movementController.isTurning && !movementController.isMoving)
+            if(!wasHit)
+            {
+                floatingTextController.SpawnDamageText(wasHit, damage, damageType, wasCrit);
+                return;
+            }
+
+            if (!movementController.isTurning && !movementController.isMoving)
             {
                 int rand = Random.Range(0, 100);
                 if(rand <= hitReactionChance)
@@ -143,7 +149,7 @@ public class NPCController : MonoBehaviour, IDamageable
 
             currentGroupHealth -= damage;
 
-            SpawnFloatingText(damage, damageType, wasCrit);
+            floatingTextController.SpawnDamageText(wasHit, damage, damageType, wasCrit);
             float remainingEnemies = currentGroupHealth / maxGroupHealth * amountToSpawnInStack;
             int roundedEnemyCount = Mathf.CeilToInt(remainingEnemies);
 
@@ -186,38 +192,7 @@ public class NPCController : MonoBehaviour, IDamageable
             movementController.FindNewPathToPlayer();
     }
 
-    void SpawnFloatingText(int damage, DamageType damageType = DamageType.Standard, bool wasCrit = false)
-    {
-        GameObject textClone = Instantiate(damageTakenFloatingText, RandomiseFloatingTextSpawnLocation(), transform.rotation);
-
-        switch (damageType)
-        {
-            case DamageType.Fire:
-                textClone.GetComponentInChildren<TMP_Text>().color = new Color(1, 0.4369752f, 0);
-                break;
-            case DamageType.Acid:
-                textClone.GetComponentInChildren<TMP_Text>().color = new Color(0.04023647f, 1, 0);
-                break;
-        }
-
-        if (wasCrit)
-        {
-            textClone.GetComponentInChildren<TMP_Text>().color = Color.red;
-            textClone.GetComponentInChildren<TMP_Text>().fontSize += .10f;
-        }
-        textClone.GetComponentInChildren<TMP_Text>().text = damage.ToString();
-        Destroy(textClone, Random.Range(.9f, 1f));
-    }
-
-    Vector3 RandomiseFloatingTextSpawnLocation()
-    {
-        float xVariation = Random.Range(-.7f, .7f);
-        float yVariation = Random.Range(-.7f, .7f);
-
-        Vector3 newPos = floatingTextSpawnLocation.position + new Vector3(xVariation, yVariation, floatingTextSpawnLocation.localPosition.z);
-        return newPos;
-
-    }
+    
 
     public DamageData GetDamageData()
     {
@@ -268,7 +243,7 @@ public class NPCController : MonoBehaviour, IDamageable
         {
             if (timeElapsed >= interval)
             {
-                TryDamage(Random.Range(minDamage, maxDamage), damageType);
+                TryDamage(true, Random.Range(minDamage, maxDamage), damageType);
                 interval += damageIntervals;
             }
 

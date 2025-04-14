@@ -48,7 +48,7 @@ public class NPCAttackController : MonoBehaviour
             {
                 if(player.TryGetComponent(out IDamageable damageable))
                 {
-                    damageable.TryDamage(GetRandomDamageValue());
+                    damageable.TryDamage(true, GetRandomDamageValue());
                 }
             }
         }

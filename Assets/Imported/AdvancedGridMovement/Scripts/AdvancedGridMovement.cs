@@ -25,6 +25,7 @@ public class AdvancedGridMovement : MonoBehaviour
     private const float approximationThreshold = 0.025f;
 
     [SerializeField] private float gridSize = 3.0f;
+    [SerializeField] private WeaponMotion weaponMotion; // Assign in Inspector
 
 
     [Header("Walk speed settings")]
@@ -40,6 +41,7 @@ public class AdvancedGridMovement : MonoBehaviour
 
     [Header("Walking head bob curve")]
     [SerializeField] private AnimationCurve walkHeadBobCurve;
+    [SerializeField] private float bobFrequencyMultiplier = 0.5f; // lower = slower bobbing
 
     [Header("Run speed settings")]
     [SerializeField] private float runningSpeed = 1.5f;
@@ -58,6 +60,7 @@ public class AdvancedGridMovement : MonoBehaviour
 
     [Header("Event when the player takes a step")]
     [SerializeField] private UnityEvent stepEvent;
+    [SerializeField] private float stepFrequencyMultiplier = 0.5f; // lower = slower bobbing
 
     public static event Action<int> onPlayerTurned;
     public static Action onPlayerMoved;
@@ -181,9 +184,8 @@ public class AdvancedGridMovement : MonoBehaviour
 
     private void AnimateMovement()
     {
-        curveTime += Time.deltaTime * (currentSpeed / 2);
-
-        stepTimeCounter += Time.deltaTime * (currentSpeed / 2);
+        curveTime += Time.deltaTime * (currentSpeed * bobFrequencyMultiplier);
+        stepTimeCounter += Time.deltaTime * (currentSpeed * stepFrequencyMultiplier);
 
         if (stepTimeCounter > stepTime)
         {
@@ -193,7 +195,12 @@ public class AdvancedGridMovement : MonoBehaviour
 
         var currentPositionValue = currentAnimationCurve.Evaluate(curveTime);
         var currentHeadBobValue = currentHeadBobCurve.Evaluate(curveTime * gridSize);
-       
+
+        if (weaponMotion != null)
+        {
+            weaponMotion.SetWeaponBobOffset(currentHeadBobValue);
+        }
+
         var targetHeading = Vector3.Normalize(HeightInvariantVector(moveTowardsPosition) - HeightInvariantVector(moveFromPosition));
         var newPosition = moveFromPosition + (targetHeading * (currentPositionValue * gridSize));
         newPosition.y = maximumStepHeight;
@@ -307,10 +314,18 @@ public class AdvancedGridMovement : MonoBehaviour
         if (!IsRotating() && canRotate)
         {
             canRotate = false;
+
             if (eulerDirectionDelta > 0)
-                onPlayerTurned?.Invoke(0);
+                onPlayerTurned?.Invoke(-1);
             else
                 onPlayerTurned?.Invoke(1);
+
+            // Trigger weapon turn lag
+            if (weaponMotion != null)
+            {
+                float direction = eulerDirectionDelta > 0 ? 1f : -1f;
+                weaponMotion.ApplyTurnLag(direction);
+            }
 
             rotateFromDirection = transform.rotation;
             rotateTowardsDirection *= Quaternion.Euler(0.0f, eulerDirectionDelta, 0.0f);

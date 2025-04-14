@@ -69,10 +69,10 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public void TakeDamageCheat(int damageToTake)
     {
-        TryDamage(damageToTake, DamageType.Standard, false);
+        TryDamage(true, damageToTake, DamageType.Standard, false);
     }
 
-    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard, bool wasCrit = false)
+    public void TryDamage(bool wasHit, int damageTaken, DamageType damageType = DamageType.Standard, bool wasCrit = false)
     {
         if (!PlayerController.isPlayerAlive)
             return;
