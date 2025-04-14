@@ -946,7 +946,8 @@ MonoBehaviour:
     m_PreInfinity: 1
     m_PostInfinity: 1
     m_RotationOrder: 4
-  bobFrequencyMultiplier: 0.3
+  bobFrequency: 1
+  bobAmplitude: 3
   runningSpeed: 1
   runningSpeedCurve:
     serializedVersion: 2
@@ -1362,7 +1363,7 @@ MonoBehaviour:
   breathingAmplitudeX: 0.001
   breathingAmplitudeY: 0.0015
   breathingSmoothing: 5
-  weaponBobMultiplier: 0.25
+  weaponBobMultiplier: 0.12
   turnLagAngle: 12
   turnLagInSpeed: 8
   turnLagOutSpeed: 12

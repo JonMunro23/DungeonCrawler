@@ -27,7 +27,6 @@ public class AdvancedGridMovement : MonoBehaviour
     [SerializeField] private float gridSize = 3.0f;
     [SerializeField] private WeaponMotion weaponMotion; // Assign in Inspector
 
-
     [Header("Walk speed settings")]
     [SerializeField] private float walkSpeed = 1.0f;
     [SerializeField] private float turnSpeed = 5.0f;
@@ -41,16 +40,8 @@ public class AdvancedGridMovement : MonoBehaviour
 
     [Header("Walking head bob curve")]
     [SerializeField] private AnimationCurve walkHeadBobCurve;
-    [SerializeField] private float bobFrequencyMultiplier = 0.5f; // lower = slower bobbing
-
-    [Header("Run speed settings")]
-    [SerializeField] private float runningSpeed = 1.5f;
-
-    [Header("Running animation curve")]
-    [SerializeField] private AnimationCurve runningSpeedCurve;
-
-    [Header("Running head bob curve")]
-    [SerializeField] private AnimationCurve runningHeadBobCurve;
+    [SerializeField] private float bobFrequency = 1.0f;
+    [SerializeField] private float bobAmplitude = 1.0f;
 
     [Header("Maximum step height")]
     [SerializeField] private float maximumStepHeight = 2.0f;
@@ -76,6 +67,7 @@ public class AdvancedGridMovement : MonoBehaviour
     // Animation progress
     private float rotationTime = 0.0f;
     private float curveTime = 0.0f;
+    private float bobTime = 0.0f;
 
     private float stepTime = 0.0f;
     private float stepTimeCounter = 0.0f;
@@ -148,21 +140,6 @@ public class AdvancedGridMovement : MonoBehaviour
         currentHeadBobCurve = walkHeadBobCurve;
     }
 
-    public void SwitchToRunning()
-    {
-        var currentPosition = currentAnimationCurve.Evaluate(curveTime);
-        var newPosition = runningSpeedCurve.Evaluate(curveTime);
-
-        if (newPosition < currentPosition)
-        {
-            curveTime = FindTimeForValue(currentPosition, runningSpeedCurve);
-        }
-
-        currentSpeed = runningSpeed;
-        currentAnimationCurve = runningSpeedCurve;
-        currentHeadBobCurve = runningHeadBobCurve;
-    }
-
     private float FindTimeForValue(float position, AnimationCurve curve)
     {
         float result = 1.0f;
@@ -184,17 +161,19 @@ public class AdvancedGridMovement : MonoBehaviour
 
     private void AnimateMovement()
     {
-        curveTime += Time.deltaTime * (currentSpeed * bobFrequencyMultiplier);
+        curveTime += Time.deltaTime * (currentSpeed / 2f); // Used only for movement animation
+        bobTime += Time.deltaTime * bobFrequency;          // Bobbing grows at a fixed rate
         stepTimeCounter += Time.deltaTime * (currentSpeed * stepFrequencyMultiplier);
 
         if (stepTimeCounter > stepTime)
         {
             stepTimeCounter = 0.0f;
+            bobTime = 0.0f; //Resets bob sync with each step
             stepEvent?.Invoke();
         }
 
         var currentPositionValue = currentAnimationCurve.Evaluate(curveTime);
-        var currentHeadBobValue = currentHeadBobCurve.Evaluate(curveTime * gridSize);
+        var currentHeadBobValue = currentHeadBobCurve.Evaluate(bobTime * gridSize) * bobAmplitude;
 
         if (weaponMotion != null)
         {
