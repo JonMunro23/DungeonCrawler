@@ -42,9 +42,10 @@ public class AmmoSelectionManager : MonoBehaviour
     {
         this.currentHeldWeapon = currentHeldWeapon;
 
-        HelperFunctions.SetCursorActive(true);
         if(!currentHeldWeapon.IsMeleeWeapon())
+        {
             GetHeldAmmoTypesForWeapon(currentHeldWeapon);
+        }
     }
 
     public void CloseAmmoSelectionMenu()
@@ -61,6 +62,8 @@ public class AmmoSelectionManager : MonoBehaviour
         {
             SpawnAmmoSelectionButton(ammoData);
         }
+        if(availableAmmoTypes.Count > 0)
+            HelperFunctions.SetCursorActive(true);
 
         foreach (AmmoSelectionButton button in spawnedAmmoSelectionButtons)
         {
