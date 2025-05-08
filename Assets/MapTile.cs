@@ -14,6 +14,9 @@ public class MapTile : MonoBehaviour
 
     public void InitTile(GridNode nodeToInit)
     {
+        if (!nodeToInit.GetIsExplored())
+            return;
+
         if(nodeToInit.nodeData.isWalkable)
         {
             floorImage.enabled = true;

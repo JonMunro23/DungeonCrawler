@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
         TryUseHealthSyringe(slot);
     }
 
-    public void InitPlayer(CharacterData playerCharData/*, GridNode spawnGridNode*/)
+    public void InitPlayer(CharacterData playerCharData)
     {
         isPlayerAlive = true;
 
@@ -190,6 +190,7 @@ public class PlayerController : MonoBehaviour
     public void SetCurrentOccupiedNode(GridNode newGridNode)
     {
         currentOccupiedNode = newGridNode;
+        currentOccupiedNode.SetSelfAndSurroundingNodesExplored();
     }
 
     public void ShakeScreen()

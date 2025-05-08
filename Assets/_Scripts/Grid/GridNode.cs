@@ -174,6 +174,22 @@ public class GridNode : MonoBehaviour
 
     public void SetIsExplored(bool isExplored) => this.isExplored = isExplored;
 
+    public void SetSelfAndSurroundingNodesExplored()
+    {
+        SetIsExplored(true);
+
+        foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+        {
+            neighbouringNode.SetIsExplored(true);
+        }
+
+        //Check diagonals
+        GridController.Instance.GetNodeAtCoords(Coords.Pos + new Vector2(1, 1)).SetIsExplored(true);
+        GridController.Instance.GetNodeAtCoords(Coords.Pos + new Vector2(1, -1)).SetIsExplored(true);
+        GridController.Instance.GetNodeAtCoords(Coords.Pos + new Vector2(-1, -1)).SetIsExplored(true);
+        GridController.Instance.GetNodeAtCoords(Coords.Pos + new Vector2(-1, 1)).SetIsExplored(true);
+    }
+
     public bool GetIsExplored() => isExplored;
 
     public void InitNode(ICoords _coords)

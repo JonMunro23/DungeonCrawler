@@ -588,6 +588,10 @@ public class GridController : MonoBehaviour
     private void MovePlayer(Vector2 coordsToMoveTo)
     {
         playerController.MoveToCoords(coordsToMoveTo);
+        if(activeNodes.TryGetValue(coordsToMoveTo, out GridNode node))
+        {
+            playerController.SetCurrentOccupiedNode(node);
+        }
     }
 
     void SaveLevel(int indexOfLevelToSave)
