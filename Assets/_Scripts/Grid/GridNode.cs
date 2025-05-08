@@ -38,8 +38,6 @@ public class GridNode : MonoBehaviour
 
     public GridNodeData nodeData;
     public ICoords Coords;
-    PlayerSpawnPoint playerSpawnPoint;
-    NPCSpawnPoint enemySpawnPoint;
     MeshRenderer meshRenderer;
     [SerializeField]
     Material highlightPathMat, highlightOpenMat, highlightClosedMat, defaultMat;
@@ -49,6 +47,7 @@ public class GridNode : MonoBehaviour
     public Transform moveToTransform;
     public GridNodeOccupant currentOccupant;
 
+    bool isExplored;
     bool isVoid;
 
     public static Action onNodeOccupancyUpdated;
@@ -169,15 +168,13 @@ public class GridNode : MonoBehaviour
         _fCostText.text = "";
     }
 
-    public void SetIsVoid(bool isVoid)
-    {
-        this.isVoid = isVoid;
-    }
+    public void SetIsVoid(bool isVoid) => this.isVoid = isVoid;
 
-    public bool GetIsVoid()
-    {
-        return isVoid;
-    }
+    public bool GetIsVoid() => isVoid;
+
+    public void SetIsExplored(bool isExplored) => this.isExplored = isExplored;
+
+    public bool GetIsExplored() => isExplored;
 
     public void InitNode(ICoords _coords)
     {

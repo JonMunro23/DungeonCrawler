@@ -170,6 +170,8 @@ public class GridController : MonoBehaviour
 
     public int GetCurrentLevelIndex() => currentLevelIndex;
 
+    public Dictionary<Vector2, GridNode> GetCurrentActiveNodes() => activeNodes;
+
     // Start is called before the first frame update
     void Start()
     {

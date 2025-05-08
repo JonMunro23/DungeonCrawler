@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     public static GridNode currentOccupiedNode;
     public Rigidbody rb;
     public static bool isPlayerAlive;
+    public
 
     Vector3 defaultCamPos;
 
