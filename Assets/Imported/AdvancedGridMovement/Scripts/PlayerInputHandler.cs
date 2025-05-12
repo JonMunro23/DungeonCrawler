@@ -30,7 +30,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     void Update()
     {
-        if(PauseMenu.isPaused || !PlayerController.isPlayerAlive) return;
+        if(PauseMenu.isPaused || !PlayerController.isPlayerAlive || MapController.isMapOpen) return;
 
         Action<EventMapping> actionKeyDown = new Action<EventMapping>(InputMappingKeyDown);
         Array.ForEach(eventMappingsKeyDown, actionKeyDown);

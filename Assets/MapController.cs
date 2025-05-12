@@ -1,8 +1,7 @@
-﻿using LDtkUnity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MapController : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class MapController : MonoBehaviour
     [SerializeField] GameObject mapBackground;
     [SerializeField] MapTile mapTile;
     [SerializeField] Transform mapContainerTransform;
+    [SerializeField] TMP_Text currentLevelText;
 
     //[Header("Drag & Zoom")]
     //[SerializeField] RectTransform mapRootTransform;
@@ -20,7 +20,7 @@ public class MapController : MonoBehaviour
     //Vector3 lastMousePos;
     //bool isDragging = false;
 
-    bool isMapOpen;
+    public static bool isMapOpen;
 
     //void Update()
     //{
@@ -116,7 +116,9 @@ public class MapController : MonoBehaviour
 
     public void ToggleMap()
     {
-        if(isMapOpen)
+        if (PauseMenu.isPaused) return;
+
+        if (isMapOpen)
             CloseMap();
         else
             OpenMap();
@@ -142,6 +144,8 @@ public class MapController : MonoBehaviour
 
     void GenerateMap()
     {
+        currentLevelText.text = GridController.Instance.GetCurrentLevelName().ToUpper();
+
         Dictionary<Vector2, GridNode> activeNodes = GridController.Instance.GetCurrentActiveNodes();
         GridNode[] nodes = activeNodes.Values.ToArray();
         Vector2[] coords = activeNodes.Keys.ToArray();
@@ -149,7 +153,6 @@ public class MapController : MonoBehaviour
         if (activeNodes.Count == 0)
             return;
 
-        // Flip axis logic correctly
         float minX = coords.Min(c => c.y);
         float maxX = coords.Max(c => c.y);
         float minY = coords.Min(c => c.x);

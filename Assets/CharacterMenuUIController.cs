@@ -17,6 +17,16 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public static bool isCharacterMenuOpen = false;
 
+    private void OnEnable()
+    {
+        PlayerInventoryManager.onInventoryOpened += OpenCharacterMenu;
+    }
+
+    private void OnDisable()
+    {
+        PlayerInventoryManager.onInventoryClosed -= CloseCharacterMenu;
+    }
+
     private void Awake()
     {
         uiController = GetComponentInParent<UIController>();
@@ -29,7 +39,9 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleCharacterMenu()
     {
-        if(!isCharacterMenuOpen)
+        if (PauseMenu.isPaused) return;
+
+        if (!isCharacterMenuOpen)
             OpenCharacterMenu();
         else
             CloseCharacterMenu();
@@ -59,6 +71,8 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleInventoryPanel()
     {
+        if (PauseMenu.isPaused) return;
+
         if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Inventory)
             CloseCharacterMenu();
         else
@@ -73,6 +87,8 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleSkillsPanel()
     {
+        if (PauseMenu.isPaused) return;
+
         if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Skills)
             CloseCharacterMenu();
         else
@@ -87,7 +103,9 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleStatsPanel()
     {
-        if(isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Stats)
+        if (PauseMenu.isPaused) return;
+
+        if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Stats)
             CloseCharacterMenu();
         else
             ShowStatsMenu();

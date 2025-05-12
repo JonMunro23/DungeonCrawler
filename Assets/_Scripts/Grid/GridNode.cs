@@ -8,7 +8,10 @@ public enum GridNodeOccupantType
     None,
     NPC,
     Obstacle,
-    Player
+    Player,
+    LevelTransition,
+    Door,
+    PressurePlate
 }
 
 [System.Serializable]
@@ -62,6 +65,10 @@ public class GridNode : MonoBehaviour
 
     private static readonly List<Vector2> Dirs = new List<Vector2>() {
         new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(1, 0),
+    };
+
+    private static readonly List<Vector2> DiagDirs = new List<Vector2>() {
+        new Vector2(1, 1), new Vector2(-1, 1), new Vector2(-1, -1), new Vector2(1, -1),
     };
 
     private void Start()
@@ -184,10 +191,10 @@ public class GridNode : MonoBehaviour
         }
 
         //Check diagonals
-        GridController.Instance.GetNodeAtCoords(Coords.Pos + new Vector2(1, 1)).SetIsExplored(true);
-        GridController.Instance.GetNodeAtCoords(Coords.Pos + new Vector2(1, -1)).SetIsExplored(true);
-        GridController.Instance.GetNodeAtCoords(Coords.Pos + new Vector2(-1, -1)).SetIsExplored(true);
-        GridController.Instance.GetNodeAtCoords(Coords.Pos + new Vector2(-1, 1)).SetIsExplored(true);
+        foreach (GridNode neighbouringNode in DiagDirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+        {
+            neighbouringNode.SetIsExplored(true);
+        }
     }
 
     public bool GetIsExplored() => isExplored;

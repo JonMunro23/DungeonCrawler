@@ -76,7 +76,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
         playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
-
         isInContainer = false;
 
         if(!CharacterMenuUIController.isCharacterMenuOpen)

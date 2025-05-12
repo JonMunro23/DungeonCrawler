@@ -140,9 +140,10 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
             this.interactableType = type;
         }
     }
-
     public void SetIsSingleUse(bool isSingleUse)
     {
        this.isSingleUse = isSingleUse;
     }
+
+    public GameObject GetGameObject() => gameObject;
 }

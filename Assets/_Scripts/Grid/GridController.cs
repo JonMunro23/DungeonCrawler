@@ -347,6 +347,7 @@ public class GridController : MonoBehaviour
                                     List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
                                     spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
                                     spawnedLevelTransitions.Add(spawnedLevelTransition);
+                                    spawnNode.SetOccupant(new GridNodeOccupant(spawnedLevelTransition.gameObject, GridNodeOccupantType.LevelTransition));
                                     break;
                                 case "Container":
                                     IContainer spawnedContainer = null;
@@ -382,6 +383,7 @@ public class GridController : MonoBehaviour
                                             break;
                                         case "Pressure_Plate":
                                             interactable = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                            spawnNode.SetOccupant(new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate));
                                             break;
                                         case "Tripwire":
                                             Tripwire tripwire = Instantiate(tripwirePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()) + 180, 0)), spawnNode.transform);
@@ -417,6 +419,7 @@ public class GridController : MonoBehaviour
                                             spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                             break;
                                     }
+                                    spawnNode.SetOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Door));
                                     spawnedDoor.SetOccupyingNode(spawnNode);
                                     spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
                                     spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
@@ -735,6 +738,11 @@ public class GridController : MonoBehaviour
     public string GetLevelNameFromIndex(int levelIndex)
     {
         return project.Json.FromJson.Levels[levelIndex].FieldInstances[0].Value.ToString();
+    }
+
+    public string GetCurrentLevelName()
+    {
+        return project.Json.FromJson.Levels[currentLevelIndex].FieldInstances[0].Value.ToString();
     }
 
     private List<SaveableLevelData> GetSaveableLevelData()

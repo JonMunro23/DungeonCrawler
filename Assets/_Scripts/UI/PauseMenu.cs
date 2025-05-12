@@ -23,44 +23,41 @@ public class PauseMenu : MonoBehaviour
         ResumeGame();
     }
 
-    void Update()
+    public void HandleEscapePressed()
     {
-        if (!PlayerController.isPlayerAlive)
-            return;
-
-        if(Input.GetKeyDown(pauseKey))
+        if (Input.GetKeyDown(pauseKey))
         {
-            if(uiController.deleteSaveConfirmPopup.activeSelf)
+            if (uiController.deleteSaveConfirmPopup.activeSelf)
             {
                 uiController.CloseDeleteSaveConfirmation();
                 return;
             }
 
-            if(uiController.loadGameConfrimPopup.activeSelf)
+            if (uiController.loadGameConfrimPopup.activeSelf)
             {
                 uiController.CloseLoadGameConfirmation();
                 return;
             }
 
-            if(uiController.overwriteSaveConfrimPopup.activeSelf)
+            if (uiController.overwriteSaveConfrimPopup.activeSelf)
             {
                 uiController.CloseSaveOverwriteConfirmation();
                 return;
             }
 
-            if(uiController.isInputtingName)
+            if (uiController.isInputtingName)
             {
                 uiController.HideSaveNamePopup();
                 return;
             }
 
-            if(uiController.saveMenu.activeSelf)
+            if (uiController.saveMenu.activeSelf)
             {
                 uiController.CloseSaveMenu();
                 return;
             }
 
-            if(uiController.loadMenu.activeSelf)
+            if (uiController.loadMenu.activeSelf)
             {
                 uiController.CloseLoadMenu();
                 return;

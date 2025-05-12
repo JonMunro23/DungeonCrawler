@@ -34,5 +34,6 @@ public interface IInteractable
     public void SetIsSingleUse(bool isSingleUse);
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData);
     public void Destroy();
+    public GameObject GetGameObject();
 
 }
