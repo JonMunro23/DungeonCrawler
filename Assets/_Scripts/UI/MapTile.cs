@@ -66,6 +66,9 @@ public class MapTile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
                     LevelTransitionIcon.enabled = true;
                     UpdateIconFacingDirection(LevelTransitionIcon, nodeToInit.GetOccupyingGameobject().transform.rotation.eulerAngles.y);
                     break;
+                case GridNodeOccupantType.PressurePlate:
+                    PressurePlateIcon.enabled = true;
+                    break;
             }
         }
     }

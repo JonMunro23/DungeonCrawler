@@ -90,12 +90,16 @@ public class Door : TriggerableBase
 
     private void OpenDoor()
     {
-        //Debug.Log("Opened");
+        Debug.Log("Opened");
 
         isTriggered = true;
 
         if(occupyingGridNode)
-            occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.None));
+        {
+            GridNodeOccupant newOccupant = new GridNodeOccupant(gameObject, GridNodeOccupantType.None);
+            occupyingGridNode.SetBaseOccupant(newOccupant);
+            occupyingGridNode.SetOccupant(newOccupant);
+        }
 
         transformToMove.DOKill();
         transformToMove.DOLocalMove(openedPos, openDuration);
@@ -103,12 +107,16 @@ public class Door : TriggerableBase
 
     private void CloseDoor()
     {
-        //Debug.Log("Closed");
+        Debug.Log("Closed");
 
         isTriggered = false;
 
         if (occupyingGridNode)
-            occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle));
+        {
+            GridNodeOccupant newOccupant = new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle);
+            occupyingGridNode.SetBaseOccupant(newOccupant);
+            occupyingGridNode.SetOccupant(newOccupant);
+        }
 
         transformToMove.DOKill();
         transformToMove.DOLocalMove(closedPos, closeDuration);
@@ -117,7 +125,7 @@ public class Door : TriggerableBase
     public override void SetIsTriggered(bool _isTriggered)
     {
         isTriggered = _isTriggered;
-
+        Debug.Log(isTriggered);
         if(isTriggered)
         {
             transformToMove.localPosition = openedPos;

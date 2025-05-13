@@ -242,6 +242,8 @@ public class UIController : MonoBehaviour
         saveStatusText.DOFade(0, saveStatusTextFadeDuration).SetDelay(3);
     }
 
+
+    #region Level Transition
     void ShowLevelName(int levelIndex)
     {
         levelTransitionParent.SetActive(true);
@@ -280,6 +282,8 @@ public class UIController : MonoBehaviour
         yield return new WaitForSeconds(levelTextLifetimeDuration);
         HideLevelName();
     }
+
+    #endregion
 
     #region Save Deletion
 

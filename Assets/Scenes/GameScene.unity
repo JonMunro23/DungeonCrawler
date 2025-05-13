@@ -693,6 +693,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2342286666150839676, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.00018310547
+      objectReference: {fileID: 0}
     - target: {fileID: 2842516669240827519, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1281,6 +1286,11 @@ PrefabInstance:
     - target: {fileID: 5647351941011637647, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647351941011637647, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5650330615740544662, guid: e6ee789cac96f2946b95ebffdd9b2643,
@@ -2790,16 +2800,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Grid
-      objectReference: {fileID: 0}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: skipMainMenu
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: startingLevelIndex
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7918361601237953702, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}

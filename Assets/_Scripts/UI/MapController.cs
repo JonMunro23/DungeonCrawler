@@ -184,5 +184,6 @@ public class MapController : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+
     }
 }
