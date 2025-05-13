@@ -175,7 +175,7 @@ public class NPCController : MonoBehaviour, IDamageable
                     }
 
                 }
-                currentlyOccupiedGridnode.ClearOccupant();
+                currentlyOccupiedGridnode.ResetOccupant();
                 onNPCDeath?.Invoke(this);
                 Destroy(gameObject);
             }

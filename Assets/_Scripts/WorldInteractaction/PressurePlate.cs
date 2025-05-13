@@ -61,12 +61,15 @@ public class PressurePlate : InteractableBase
 
         if (presentObjects.Count == 0)
         {
-            SetIsActivated(false);
+            if(canUse)
+                SetIsActivated(false);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if(!canUse) return;
+
         if(presentObjects.Count == 0)
             SetIsActivated(true);
 

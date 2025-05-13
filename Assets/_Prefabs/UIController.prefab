@@ -665,6 +665,7 @@ MonoBehaviour:
   PlayerEquipmentUIManager: {fileID: 9182268220768627911}
   playerWeaponUIManager: {fileID: 4991282280067760860}
   playerSkillsUIManager: {fileID: 1022970140535042899}
+  mapController: {fileID: 2525237427438918035}
   pauseMenu: {fileID: 1558153070388510056}
   mainMenu: {fileID: 9144507638588851619}
   saveMenu: {fileID: 3762061363982297104}

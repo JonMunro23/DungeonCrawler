@@ -231,21 +231,29 @@ public class AdvancedGridMovement : MonoBehaviour
 
     public void MoveForward()
     {
+        if (UIController.isTransitioningLevel) return;
+
         CollisonCheckedMovement(CalculateForwardPosition());
     }
 
     public void MoveBackward()
     {
+        if (UIController.isTransitioningLevel) return;
+
         CollisonCheckedMovement(-CalculateForwardPosition());
     }
 
     public void StrafeRight()
     {
+        if (UIController.isTransitioningLevel) return;
+
         CollisonCheckedMovement(CalculateStrafePosition());
     }
 
     public void StrafeLeft()
     {
+        if (UIController.isTransitioningLevel) return;
+
         CollisonCheckedMovement(-CalculateStrafePosition());
     }
 
@@ -259,9 +267,8 @@ public class AdvancedGridMovement : MonoBehaviour
                 moveFromPosition = transform.position;
                 moveTowardsPosition = targetPosition;
 
-                GridController.Instance.GetNodeFromWorldPos(moveFromPosition).ClearOccupant();
+                GridController.Instance.GetNodeFromWorldPos(moveFromPosition).ResetOccupant();
                 var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
-                targetNode.SetOccupant(new GridNodeOccupant(controller.gameObject, GridNodeOccupantType.Player));
                 controller.SetCurrentOccupiedNode(targetNode);
                 onPlayerMoved?.Invoke();
             }
@@ -275,16 +282,24 @@ public class AdvancedGridMovement : MonoBehaviour
     private bool FreeSpace(Vector3 targetPosition)
     {
         var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
-        return (targetNode.nodeData.isPlayerWalkable && targetNode.currentOccupant.occupantType == GridNodeOccupantType.None);
+        return (targetNode.nodeData.isPlayerWalkable && 
+            (targetNode.currentOccupant.occupantType == GridNodeOccupantType.None || 
+            targetNode.currentOccupant.occupantType == GridNodeOccupantType.LevelTransition || 
+            targetNode.currentOccupant.occupantType == GridNodeOccupantType.PressurePlate ||
+            targetNode.currentOccupant.occupantType == GridNodeOccupantType.NPCInaccessible));
     }
 
     public void TurnRight()
     {
+        if (UIController.isTransitioningLevel) return;
+
         TurnEulerDegrees(RightHand);
     }
 
     public void TurnLeft()
     {
+        if (UIController.isTransitioningLevel) return;
+
         TurnEulerDegrees(LeftHand);
     }
 

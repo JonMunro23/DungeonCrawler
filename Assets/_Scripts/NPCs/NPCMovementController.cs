@@ -90,6 +90,10 @@ public class NPCMovementController : MonoBehaviour
         {
             MoveToTargetNode();
         }
+        else if(targetNode.currentOccupant.occupantType == GridNodeOccupantType.Player && Mathf.RoundToInt(frontOrBackDot) == -1)
+        {
+            NPCController.TryAttack();
+        }
         else
         {
             if (Mathf.RoundToInt(leftOrRightDot) == -1 || Mathf.RoundToInt(leftOrRightDot) == 0 && Mathf.RoundToInt(frontOrBackDot) == 1)
@@ -136,7 +140,7 @@ public class NPCMovementController : MonoBehaviour
         if (isMoving)
             return;
 
-        NPCController.currentlyOccupiedGridnode.ClearOccupant();
+        NPCController.currentlyOccupiedGridnode.ResetOccupant();
         AnimateMovement();
         if(NPCController.NPCData.walkSFX.Length > 0)
             NPCController.audioSource.PlayOneShot(GetRandomAudioClip());

@@ -50,8 +50,7 @@ public class AmmoSelectionManager : MonoBehaviour
 
     public void CloseAmmoSelectionMenu()
     {
-        if(!CharacterMenuUIController.isCharacterMenuOpen)
-            HelperFunctions.SetCursorActive(false);
+        HelperFunctions.SetCursorActive(false);
         RemovedAmmoSelectionButtons();
     }
 

@@ -10,8 +10,8 @@ public enum GridNodeOccupantType
     Obstacle,
     Player,
     LevelTransition,
-    Door,
-    PressurePlate
+    PressurePlate,
+    NPCInaccessible
 }
 
 [System.Serializable]
@@ -49,6 +49,7 @@ public class GridNode : MonoBehaviour
 
     public Transform moveToTransform;
     public GridNodeOccupant currentOccupant;
+    public GridNodeOccupant baseOccupant;
 
     bool isExplored;
     bool isVoid;
@@ -87,14 +88,26 @@ public class GridNode : MonoBehaviour
     {
         gameObject.SetActive(isActive);
     }
+
+    public void SetBaseOccupant(GridNodeOccupant newOccupant)
+    {
+        baseOccupant = newOccupant;
+    }
+
     public void SetOccupant(GridNodeOccupant newOccupant)
     {
         currentOccupant = newOccupant;
         onNodeOccupancyUpdated?.Invoke();
     }
 
-    public void ClearOccupant()
+    public void ResetOccupant()
     {
+        if (baseOccupant != null)
+        {
+            currentOccupant = baseOccupant;
+            return;
+        }
+
         currentOccupant.occupantType = GridNodeOccupantType.None;
         currentOccupant.occupyingGameobject = null;
     }

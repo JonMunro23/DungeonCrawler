@@ -347,6 +347,7 @@ public class GridController : MonoBehaviour
                                     List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
                                     spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
                                     spawnedLevelTransitions.Add(spawnedLevelTransition);
+                                    spawnNode.SetBaseOccupant(new GridNodeOccupant(spawnedLevelTransition.gameObject, GridNodeOccupantType.LevelTransition));
                                     spawnNode.SetOccupant(new GridNodeOccupant(spawnedLevelTransition.gameObject, GridNodeOccupantType.LevelTransition));
                                     break;
                                 case "Container":
@@ -383,6 +384,7 @@ public class GridController : MonoBehaviour
                                             break;
                                         case "Pressure_Plate":
                                             interactable = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                            spawnNode.SetBaseOccupant(new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate));
                                             spawnNode.SetOccupant(new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate));
                                             break;
                                         case "Tripwire":
@@ -405,7 +407,7 @@ public class GridController : MonoBehaviour
                                     interactable.SetTriggerOnExit((bool)entityLayer.EntityInstances[k].FieldInstances[5].Value);
                                     interactable.SetIsSingleUse((bool)entityLayer.EntityInstances[k].FieldInstances[6].Value);
                                     interactable.SetLevelIndex(levelIndex);
-                                    interactable.SetCoords(spawnCoords);
+                                    interactable.SetNode(spawnNode);
                                     spawnedInteractables.Add(interactable);
                                     break;
                                 case "Triggerable":
@@ -419,13 +421,17 @@ public class GridController : MonoBehaviour
                                             spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                             break;
                                     }
-                                    spawnNode.SetOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Door));
                                     spawnedDoor.SetOccupyingNode(spawnNode);
                                     spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
                                     spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
                                     spawnedDoor.SetLevelIndex(levelIndex);
+                                    spawnNode.SetBaseOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle));
                                     spawnNode.SetOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle));
                                     spawnedTriggerables.Add(spawnedDoor);
+                                    break;
+                                case "NPC_Invis_Wall":
+                                    spawnNode.SetBaseOccupant(new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible));
+                                    spawnNode.SetOccupant(new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible));
                                     break;
                             }
                         }

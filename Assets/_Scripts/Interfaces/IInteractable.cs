@@ -15,7 +15,7 @@ public interface IInteractable
     public InteractableType GetInteractableType();
     public void SetIsActivated(bool activatedState);
     public void SetLevelIndex(int _levelIndex);
-    public void SetCoords(Vector2 _coords);
+    public void SetNode(GridNode spawnNode);
     public void SetRequiredKeycardType(string keycardType);
     public void SetTriggerOperation(string triggerOperation);
 

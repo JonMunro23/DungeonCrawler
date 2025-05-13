@@ -116,7 +116,7 @@ public class MapController : MonoBehaviour
 
     public void ToggleMap()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || UIController.isTransitioningLevel) return;
 
         if (isMapOpen)
             CloseMap();
@@ -124,7 +124,7 @@ public class MapController : MonoBehaviour
             OpenMap();
     }
 
-    void CloseMap()
+    public void CloseMap()
     {
         isMapOpen = false;
         mapBackground.SetActive(false);

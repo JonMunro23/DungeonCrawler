@@ -99,8 +99,7 @@ public class PauseMenu : MonoBehaviour
     }
     public void ResumeGame()
     {
-        if (!WorldInteractionManager.hasGrabbedItem && !PlayerInventoryManager.isInContainer && !CharacterMenuUIController.isCharacterMenuOpen && !MainMenu.isInMainMenu)
-            HelperFunctions.SetCursorActive(false);
+        HelperFunctions.SetCursorActive(false);
 
         ClosePauseMenu();
     }

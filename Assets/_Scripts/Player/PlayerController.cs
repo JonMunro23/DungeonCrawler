@@ -122,10 +122,9 @@ public class PlayerController : MonoBehaviour
             return;
 
         if(currentOccupiedNode)
-            currentOccupiedNode.ClearOccupant();
+            currentOccupiedNode.ResetOccupant();
 
         advGridMovement.Teleport(nodeToMoveTo.moveToTransform.position);
-        nodeToMoveTo.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
         SetCurrentOccupiedNode(nodeToMoveTo);
     }
 
@@ -191,6 +190,7 @@ public class PlayerController : MonoBehaviour
     {
         currentOccupiedNode = newGridNode;
         currentOccupiedNode.SetSelfAndSurroundingNodesExplored();
+        currentOccupiedNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
     }
 
     public void ShakeScreen()
