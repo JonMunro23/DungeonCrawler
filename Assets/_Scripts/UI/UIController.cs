@@ -14,6 +14,7 @@ public class UIController : MonoBehaviour
     [SerializeField] PlayerEquipmentUIManager PlayerEquipmentUIManager;
     [SerializeField] PlayerWeaponUIManager playerWeaponUIManager;
     public PlayerSkillsUIManager playerSkillsUIManager;
+    [SerializeField] MapController mapController;
 
     [Header("Pause Menu")]
     [SerializeField] PauseMenu pauseMenu;
@@ -76,6 +77,8 @@ public class UIController : MonoBehaviour
     Coroutine levelTextLifetime;
 
     WeaponItemData defaultWeaponData;
+
+    public static bool isTransitioningLevel;
 
     private void OnEnable()
     {
@@ -224,10 +227,13 @@ public class UIController : MonoBehaviour
 
     async void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)
     {
+        isTransitioningLevel = true;
+        mapController.CloseMap();
         await FadeOutScreen();
         await GridController.Instance.BeginLevelTransition(levelIndex, playerMoveToCoords);
         await FadeInScreen();
         ShowLevelName(levelIndex);
+        isTransitioningLevel = false;
     }
 
     void OnQuickSave()
@@ -236,6 +242,8 @@ public class UIController : MonoBehaviour
         saveStatusText.DOFade(0, saveStatusTextFadeDuration).SetDelay(3);
     }
 
+
+    #region Level Transition
     void ShowLevelName(int levelIndex)
     {
         levelTransitionParent.SetActive(true);
@@ -274,6 +282,8 @@ public class UIController : MonoBehaviour
         yield return new WaitForSeconds(levelTextLifetimeDuration);
         HideLevelName();
     }
+
+    #endregion
 
     #region Save Deletion
 

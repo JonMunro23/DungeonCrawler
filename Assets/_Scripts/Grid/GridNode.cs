@@ -8,7 +8,10 @@ public enum GridNodeOccupantType
     None,
     NPC,
     Obstacle,
-    Player
+    Player,
+    LevelTransition,
+    PressurePlate,
+    NPCInaccessible
 }
 
 [System.Serializable]
@@ -38,8 +41,6 @@ public class GridNode : MonoBehaviour
 
     public GridNodeData nodeData;
     public ICoords Coords;
-    PlayerSpawnPoint playerSpawnPoint;
-    NPCSpawnPoint enemySpawnPoint;
     MeshRenderer meshRenderer;
     [SerializeField]
     Material highlightPathMat, highlightOpenMat, highlightClosedMat, defaultMat;
@@ -48,7 +49,9 @@ public class GridNode : MonoBehaviour
 
     public Transform moveToTransform;
     public GridNodeOccupant currentOccupant;
+    public GridNodeOccupant baseOccupant;
 
+    bool isExplored;
     bool isVoid;
 
     public static Action onNodeOccupancyUpdated;
@@ -63,6 +66,10 @@ public class GridNode : MonoBehaviour
 
     private static readonly List<Vector2> Dirs = new List<Vector2>() {
         new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(1, 0),
+    };
+
+    private static readonly List<Vector2> DiagDirs = new List<Vector2>() {
+        new Vector2(1, 1), new Vector2(-1, 1), new Vector2(-1, -1), new Vector2(1, -1),
     };
 
     private void Start()
@@ -81,14 +88,26 @@ public class GridNode : MonoBehaviour
     {
         gameObject.SetActive(isActive);
     }
+
+    public void SetBaseOccupant(GridNodeOccupant newOccupant)
+    {
+        baseOccupant = newOccupant;
+    }
+
     public void SetOccupant(GridNodeOccupant newOccupant)
     {
         currentOccupant = newOccupant;
         onNodeOccupancyUpdated?.Invoke();
     }
 
-    public void ClearOccupant()
+    public void ResetOccupant()
     {
+        if (baseOccupant != null)
+        {
+            currentOccupant = baseOccupant;
+            return;
+        }
+
         currentOccupant.occupantType = GridNodeOccupantType.None;
         currentOccupant.occupyingGameobject = null;
     }
@@ -169,15 +188,29 @@ public class GridNode : MonoBehaviour
         _fCostText.text = "";
     }
 
-    public void SetIsVoid(bool isVoid)
+    public void SetIsVoid(bool isVoid) => this.isVoid = isVoid;
+
+    public bool GetIsVoid() => isVoid;
+
+    public void SetIsExplored(bool isExplored) => this.isExplored = isExplored;
+
+    public void SetSelfAndSurroundingNodesExplored()
     {
-        this.isVoid = isVoid;
+        SetIsExplored(true);
+
+        foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+        {
+            neighbouringNode.SetIsExplored(true);
+        }
+
+        //Check diagonals
+        foreach (GridNode neighbouringNode in DiagDirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+        {
+            neighbouringNode.SetIsExplored(true);
+        }
     }
 
-    public bool GetIsVoid()
-    {
-        return isVoid;
-    }
+    public bool GetIsExplored() => isExplored;
 
     public void InitNode(ICoords _coords)
     {

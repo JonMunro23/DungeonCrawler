@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     public static GridNode currentOccupiedNode;
     public Rigidbody rb;
     public static bool isPlayerAlive;
+    public
 
     Vector3 defaultCamPos;
 
@@ -88,7 +89,7 @@ public class PlayerController : MonoBehaviour
         TryUseHealthSyringe(slot);
     }
 
-    public void InitPlayer(CharacterData playerCharData/*, GridNode spawnGridNode*/)
+    public void InitPlayer(CharacterData playerCharData)
     {
         isPlayerAlive = true;
 
@@ -121,10 +122,9 @@ public class PlayerController : MonoBehaviour
             return;
 
         if(currentOccupiedNode)
-            currentOccupiedNode.ClearOccupant();
+            currentOccupiedNode.ResetOccupant();
 
         advGridMovement.Teleport(nodeToMoveTo.moveToTransform.position);
-        nodeToMoveTo.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
         SetCurrentOccupiedNode(nodeToMoveTo);
     }
 
@@ -189,6 +189,8 @@ public class PlayerController : MonoBehaviour
     public void SetCurrentOccupiedNode(GridNode newGridNode)
     {
         currentOccupiedNode = newGridNode;
+        currentOccupiedNode.SetSelfAndSurroundingNodesExplored();
+        currentOccupiedNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
     }
 
     public void ShakeScreen()

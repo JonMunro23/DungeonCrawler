@@ -9,7 +9,7 @@ public class HelperFunctions
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
-        else
+        else if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem && !MainMenu.isInMainMenu && !MapController.isMapOpen)
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

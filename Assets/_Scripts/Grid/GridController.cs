@@ -170,6 +170,8 @@ public class GridController : MonoBehaviour
 
     public int GetCurrentLevelIndex() => currentLevelIndex;
 
+    public Dictionary<Vector2, GridNode> GetCurrentActiveNodes() => activeNodes;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -282,6 +284,7 @@ public class GridController : MonoBehaviour
         levelParents.Add(levelParent);
         Transform levelParentTransform = levelParent.transform;
         levelParentTransform.SetParent(transform);
+        GridNodeOccupant newOccupant;
         for (int i = 0; i < intGridLayer.CWid; i++)
         {
             for (int j = 0; j < intGridLayer.CHei; j++)
@@ -345,6 +348,9 @@ public class GridController : MonoBehaviour
                                     List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
                                     spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
                                     spawnedLevelTransitions.Add(spawnedLevelTransition);
+                                    newOccupant = new GridNodeOccupant(spawnedLevelTransition.gameObject, GridNodeOccupantType.LevelTransition);
+                                    spawnNode.SetBaseOccupant(newOccupant);
+                                    spawnNode.SetOccupant(newOccupant);
                                     break;
                                 case "Container":
                                     IContainer spawnedContainer = null;
@@ -380,6 +386,9 @@ public class GridController : MonoBehaviour
                                             break;
                                         case "Pressure_Plate":
                                             interactable = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                            newOccupant = new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate);
+                                            spawnNode.SetBaseOccupant(newOccupant);
+                                            spawnNode.SetOccupant(newOccupant);
                                             break;
                                         case "Tripwire":
                                             Tripwire tripwire = Instantiate(tripwirePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()) + 180, 0)), spawnNode.transform);
@@ -401,7 +410,7 @@ public class GridController : MonoBehaviour
                                     interactable.SetTriggerOnExit((bool)entityLayer.EntityInstances[k].FieldInstances[5].Value);
                                     interactable.SetIsSingleUse((bool)entityLayer.EntityInstances[k].FieldInstances[6].Value);
                                     interactable.SetLevelIndex(levelIndex);
-                                    interactable.SetCoords(spawnCoords);
+                                    interactable.SetNode(spawnNode);
                                     spawnedInteractables.Add(interactable);
                                     break;
                                 case "Triggerable":
@@ -419,8 +428,15 @@ public class GridController : MonoBehaviour
                                     spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
                                     spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
                                     spawnedDoor.SetLevelIndex(levelIndex);
-                                    spawnNode.SetOccupant(new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle));
+                                    newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
+                                    spawnNode.SetBaseOccupant(newOccupant);
+                                    spawnNode.SetOccupant(newOccupant);
                                     spawnedTriggerables.Add(spawnedDoor);
+                                    break;
+                                case "NPC_Invis_Wall":
+                                    newOccupant = new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible);
+                                    spawnNode.SetBaseOccupant(newOccupant);
+                                    spawnNode.SetOccupant(newOccupant);
                                     break;
                             }
                         }
@@ -586,6 +602,10 @@ public class GridController : MonoBehaviour
     private void MovePlayer(Vector2 coordsToMoveTo)
     {
         playerController.MoveToCoords(coordsToMoveTo);
+        if(activeNodes.TryGetValue(coordsToMoveTo, out GridNode node))
+        {
+            playerController.SetCurrentOccupiedNode(node);
+        }
     }
 
     void SaveLevel(int indexOfLevelToSave)
@@ -729,6 +749,11 @@ public class GridController : MonoBehaviour
     public string GetLevelNameFromIndex(int levelIndex)
     {
         return project.Json.FromJson.Levels[levelIndex].FieldInstances[0].Value.ToString();
+    }
+
+    public string GetCurrentLevelName()
+    {
+        return project.Json.FromJson.Levels[currentLevelIndex].FieldInstances[0].Value.ToString();
     }
 
     private List<SaveableLevelData> GetSaveableLevelData()

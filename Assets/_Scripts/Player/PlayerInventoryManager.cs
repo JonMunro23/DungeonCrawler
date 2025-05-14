@@ -76,11 +76,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
         playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
-
         isInContainer = false;
 
-        if(!CharacterMenuUIController.isCharacterMenuOpen)
-            HelperFunctions.SetCursorActive(false);
+        HelperFunctions.SetCursorActive(false);
     }
 
     void OnInventorySlotWeaponUnloaded(ISlot slot)

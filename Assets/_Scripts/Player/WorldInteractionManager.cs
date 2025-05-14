@@ -186,8 +186,7 @@ public class WorldInteractionManager : MonoBehaviour
         worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
         DetachItemFromMouseCursor();
 
-        if (!PlayerInventoryManager.isInContainer && !CharacterMenuUIController.isCharacterMenuOpen)
-            HelperFunctions.SetCursorActive(false);
+        HelperFunctions.SetCursorActive(false);
     }
 
     // Update is called once per frame
@@ -315,6 +314,8 @@ public class WorldInteractionManager : MonoBehaviour
 
         if(other.TryGetComponent(out IInteractable nearbyInteractable))
         {
+            if (nearbyInteractable.GetInteractableType() == InteractableType.Pressure_Plate) return;
+
             if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
             {
                 this.nearbyInteractable = nearbyInteractable;
@@ -339,6 +340,8 @@ public class WorldInteractionManager : MonoBehaviour
 
         if (other.TryGetComponent(out IInteractable nearbyInteractable))
         {
+            if (nearbyInteractable.GetInteractableType() == InteractableType.Pressure_Plate) return;
+
             if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
             {
                 this.nearbyInteractable = nearbyInteractable;
@@ -378,11 +381,16 @@ public class WorldInteractionManager : MonoBehaviour
         if(nearbyInteractable != null)
         {
             if(other.TryGetComponent(out IInteractable interactable))
-                if(interactable == nearbyInteractable)
+            {
+                Debug.Log(nearbyInteractable.GetInteractableType());
+                if (nearbyInteractable.GetInteractableType() == InteractableType.Pressure_Plate) return;
+
+                if (interactable == nearbyInteractable)
                 {
                     nearbyInteractable = null;
                     onNearbyInteractableUpdated?.Invoke(nearbyInteractable);
                 }
+            }
         }
     }
 }

@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 60,
+	"nextUid": 61,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -1329,6 +1329,41 @@
 			"pivotX": 0.5,
 			"pivotY": 0.5,
 			"fieldDefs": []
+		},
+		{
+			"identifier": "NPC_Invis_Wall",
+			"uid": 60,
+			"tags": [],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#63C74D",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 3,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -1562,7 +1597,7 @@
 						},
 						{
 							"__identifier": "Interactable",
-							"__grid": [9,2],
+							"__grid": [10,4],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
@@ -1571,15 +1606,15 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [152,40],
+							"px": [168,72],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["West"]
 								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
+								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Pressure_Plate", "__tile": null, "defUid": 20, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Lever"]
+									"params": ["Pressure_Plate"]
 								}] },
 								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
 									"entityIid": "f53519f0-9b00-11ef-b25f-4bad2c91391a",
@@ -1595,11 +1630,17 @@
 									"params": ["None"]
 								}] },
 								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
+								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ false ]
+								}] },
+								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": true, "__tile": null, "defUid": 59, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] }
 							],
-							"__worldX": 152,
-							"__worldY": 40
+							"__worldX": 168,
+							"__worldY": 72
 						},
 						{
 							"__identifier": "Triggerable",
@@ -1787,7 +1828,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [1,7],
+							"__grid": [2,14],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -1796,7 +1837,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [24,120],
+							"px": [40,232],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
@@ -1809,8 +1850,8 @@
 								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 1, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 25, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [25] }] }
 							],
-							"__worldX": 24,
-							"__worldY": 120
+							"__worldX": 40,
+							"__worldY": 232
 						},
 						{
 							"__identifier": "Level_Transition",
@@ -1825,7 +1866,10 @@
 							"defUid": 23,
 							"px": [248,184],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 24, "realEditorValues": [] },
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 24, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["East"]
+								}] },
 								{ "__identifier": "GoTo_Level_Index", "__type": "Int", "__value": 3, "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
 								{ "__identifier": "GoTo_Grid_Coords", "__type": "Array<Int>", "__value": [1,11], "__tile": null, "defUid": 28, "realEditorValues": [ { "id": "V_Int", "params": [1] }, { "id": "V_Int", "params": [11] } ] }
 							],
@@ -1916,7 +1960,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [11,1],
+							"__grid": [11,2],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -1925,7 +1969,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [184,24],
+							"px": [184,40],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
@@ -1939,7 +1983,7 @@
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 24, "__tile": null, "defUid": 29, "realEditorValues": [{ "id": "V_Int", "params": [24] }] }
 							],
 							"__worldX": 184,
-							"__worldY": 24
+							"__worldY": 40
 						},
 						{
 							"__identifier": "NPC_Spawn",
@@ -1993,7 +2037,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [1,6],
+							"__grid": [3,14],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -2002,7 +2046,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [24,104],
+							"px": [56,232],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [] },
 								{ "__identifier": "Item_Name", "__type": "String", "__value": "rifle_ammo", "__tile": null, "defUid": 14, "realEditorValues": [{
@@ -2012,8 +2056,8 @@
 								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 45, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [45] }] },
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
 							],
-							"__worldX": 24,
-							"__worldY": 104
+							"__worldX": 56,
+							"__worldY": 232
 						},
 						{
 							"__identifier": "LightSource",
@@ -2086,17 +2130,49 @@
 							"__worldY": 136
 						},
 						{
+							"__identifier": "NPC_Invis_Wall",
+							"__grid": [14,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#63C74D",
+							"iid": "01c3c8e0-1030-11f0-8e4f-b13dae9598e3",
+							"width": 16,
+							"height": 16,
+							"defUid": 60,
+							"px": [232,184],
+							"fieldInstances": [],
+							"__worldX": 232,
+							"__worldY": 184
+						},
+						{
+							"__identifier": "NPC_Invis_Wall",
+							"__grid": [10,1],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#63C74D",
+							"iid": "05ca35f0-1030-11f0-8e4f-d3115f0997cf",
+							"width": 16,
+							"height": 16,
+							"defUid": 60,
+							"px": [168,24],
+							"fieldInstances": [],
+							"__worldX": 168,
+							"__worldY": 24
+						},
+						{
 							"__identifier": "NPC_Spawn",
-							"__grid": [9,3],
+							"__grid": [1,13],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
 							"__smartColor": "#D77643",
-							"iid": "0f466130-1030-11f0-b922-b38f57c79f7b",
+							"iid": "7a8d9c00-1030-11f0-8e4f-81fe656baefc",
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [152,56],
+							"px": [24,216],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
@@ -2107,8 +2183,8 @@
 									"params": ["zombie"]
 								}] }
 							],
-							"__worldX": 152,
-							"__worldY": 56
+							"__worldX": 24,
+							"__worldY": 216
 						}
 					]
 				},
@@ -2131,13 +2207,13 @@
 					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [
-						1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,2,1,1,
 						1,1,1,2,2,2,1,1,1,1,1,1,2,2,2,1,1,1,1,2,2,2,2,2,1,1,1,2,2,2,2,1,1,1,1,
-						1,1,1,1,2,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,2,1,1,1,2,2,2,2,1,1,1,2,1,1,1,
-						1,2,1,1,1,1,2,2,2,1,1,1,2,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,2,1,
-						1,1,1,1,1,1,2,2,2,2,2,2,2,1,2,2,2,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,
-						1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,
+						1,2,2,1,2,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,2,1,1,1,2,2,2,2,1,1,1,2,1,1,1,
+						1,2,1,1,1,1,2,2,2,1,1,1,2,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1,
+						1,1,1,2,1,1,2,2,2,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,2,
+						2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,2,2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1
 					],
 					"autoLayerTiles": [],
@@ -2382,7 +2458,10 @@
 							"defUid": 23,
 							"px": [168,248],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 24, "realEditorValues": [] },
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 24, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["South"]
+								}] },
 								{ "__identifier": "GoTo_Level_Index", "__type": "Int", "__value": 0, "__tile": null, "defUid": 26, "realEditorValues": [] },
 								{ "__identifier": "GoTo_Grid_Coords", "__type": "Array<Int>", "__value": [10,1], "__tile": null, "defUid": 28, "realEditorValues": [ { "id": "V_Int", "params": [10] }, { "id": "V_Int", "params": [1] } ] }
 							],
@@ -2402,7 +2481,10 @@
 							"defUid": 23,
 							"px": [248,88],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 24, "realEditorValues": [] },
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 24, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["East"]
+								}] },
 								{ "__identifier": "GoTo_Level_Index", "__type": "Int", "__value": 2, "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [2] }] },
 								{ "__identifier": "GoTo_Grid_Coords", "__type": "Array<Int>", "__value": [1,5], "__tile": null, "defUid": 28, "realEditorValues": [ { "id": "V_Int", "params": [1] }, { "id": "V_Int", "params": [5] } ] }
 							],
@@ -2526,6 +2608,38 @@
 							],
 							"__worldX": 104,
 							"__worldY": -216
+						},
+						{
+							"__identifier": "NPC_Invis_Wall",
+							"__grid": [10,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#63C74D",
+							"iid": "0d0fef80-1030-11f0-8e4f-21d530402dcc",
+							"width": 16,
+							"height": 16,
+							"defUid": 60,
+							"px": [168,232],
+							"fieldInstances": [],
+							"__worldX": 168,
+							"__worldY": -24
+						},
+						{
+							"__identifier": "NPC_Invis_Wall",
+							"__grid": [14,5],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#63C74D",
+							"iid": "0da21d60-1030-11f0-8e4f-b3bd41143ecc",
+							"width": 16,
+							"height": 16,
+							"defUid": 60,
+							"px": [232,88],
+							"fieldInstances": [],
+							"__worldX": 232,
+							"__worldY": -168
 						}
 					]
 				},
@@ -2633,7 +2747,10 @@
 							"defUid": 23,
 							"px": [8,88],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 24, "realEditorValues": [] },
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 24, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["West"]
+								}] },
 								{ "__identifier": "GoTo_Level_Index", "__type": "Int", "__value": 1, "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [1] }] },
 								{ "__identifier": "GoTo_Grid_Coords", "__type": "Array<Int>", "__value": [14,5], "__tile": null, "defUid": 28, "realEditorValues": [ { "id": "V_Int", "params": [14] }, { "id": "V_Int", "params": [5] } ] }
 							],
@@ -2653,7 +2770,10 @@
 							"defUid": 23,
 							"px": [168,248],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 24, "realEditorValues": [] },
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 24, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["South"]
+								}] },
 								{ "__identifier": "GoTo_Level_Index", "__type": "Int", "__value": 3, "__tile": null, "defUid": 26, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
 								{ "__identifier": "GoTo_Grid_Coords", "__type": "Array<Int>", "__value": [10,1], "__tile": null, "defUid": 28, "realEditorValues": [ { "id": "V_Int", "params": [10] }, { "id": "V_Int", "params": [1] } ] }
 							],
@@ -2730,6 +2850,38 @@
 							],
 							"__worldX": 376,
 							"__worldY": -200
+						},
+						{
+							"__identifier": "NPC_Invis_Wall",
+							"__grid": [10,14],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#63C74D",
+							"iid": "0a0b6210-1030-11f0-8e4f-4d521160ae39",
+							"width": 16,
+							"height": 16,
+							"defUid": 60,
+							"px": [168,232],
+							"fieldInstances": [],
+							"__worldX": 424,
+							"__worldY": -24
+						},
+						{
+							"__identifier": "NPC_Invis_Wall",
+							"__grid": [1,5],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#63C74D",
+							"iid": "0b61a340-1030-11f0-8e4f-452745a93133",
+							"width": 16,
+							"height": 16,
+							"defUid": 60,
+							"px": [24,88],
+							"fieldInstances": [],
+							"__worldX": 280,
+							"__worldY": -168
 						}
 					]
 				},
@@ -2837,7 +2989,10 @@
 							"defUid": 23,
 							"px": [8,184],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 24, "realEditorValues": [] },
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 24, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["West"]
+								}] },
 								{ "__identifier": "GoTo_Level_Index", "__type": "Int", "__value": 0, "__tile": null, "defUid": 26, "realEditorValues": [] },
 								{ "__identifier": "GoTo_Grid_Coords", "__type": "Array<Int>", "__value": [14,11], "__tile": null, "defUid": 28, "realEditorValues": [ { "id": "V_Int", "params": [14] }, { "id": "V_Int", "params": [11] } ] }
 							],
@@ -2981,6 +3136,38 @@
 							],
 							"__worldX": 472,
 							"__worldY": 152
+						},
+						{
+							"__identifier": "NPC_Invis_Wall",
+							"__grid": [1,11],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#63C74D",
+							"iid": "076a9f80-1030-11f0-8e4f-1d3d534cb39a",
+							"width": 16,
+							"height": 16,
+							"defUid": 60,
+							"px": [24,184],
+							"fieldInstances": [],
+							"__worldX": 280,
+							"__worldY": 184
+						},
+						{
+							"__identifier": "NPC_Invis_Wall",
+							"__grid": [10,1],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#63C74D",
+							"iid": "0887a840-1030-11f0-8e4f-3b4009b093b4",
+							"width": 16,
+							"height": 16,
+							"defUid": 60,
+							"px": [168,24],
+							"fieldInstances": [],
+							"__worldX": 424,
+							"__worldY": 24
 						}
 					]
 				},

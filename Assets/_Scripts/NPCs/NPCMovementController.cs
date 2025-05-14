@@ -86,9 +86,14 @@ public class NPCMovementController : MonoBehaviour
         //Debug.Log("Left/Right: " + Mathf.RoundToInt(leftOrRight));
         //Debug.Log("Front/Back: " + Mathf.RoundToInt(dot));
 
-        if (targetNode.currentOccupant.occupantType == GridNodeOccupantType.None && Mathf.RoundToInt(frontOrBackDot) == -1)
+        if ((targetNode.currentOccupant.occupantType == GridNodeOccupantType.None || 
+            targetNode.currentOccupant.occupantType == GridNodeOccupantType.PressurePlate ) && Mathf.RoundToInt(frontOrBackDot) == -1)
         {
             MoveToTargetNode();
+        }
+        else if(targetNode.currentOccupant.occupantType == GridNodeOccupantType.Player && Mathf.RoundToInt(frontOrBackDot) == -1)
+        {
+            NPCController.TryAttack();
         }
         else
         {
@@ -136,7 +141,7 @@ public class NPCMovementController : MonoBehaviour
         if (isMoving)
             return;
 
-        NPCController.currentlyOccupiedGridnode.ClearOccupant();
+        NPCController.currentlyOccupiedGridnode.ResetOccupant();
         AnimateMovement();
         if(NPCController.NPCData.walkSFX.Length > 0)
             NPCController.audioSource.PlayOneShot(GetRandomAudioClip());

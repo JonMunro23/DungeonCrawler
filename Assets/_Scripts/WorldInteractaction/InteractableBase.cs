@@ -12,15 +12,16 @@ public enum TriggerOperation
 public enum InteractableType
 {
     Lever,
-    KeycardReader,
-    PressurePlate,
+    Keycard_Reader,
+    Pressure_Plate,
     Tripwire,
-    ShootableTarget
+    Shootable_Target
 }
 
 public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
     int levelIndex;
+    GridNode node;
     Vector2 coords;
 
     TriggerOperation triggerOperation = TriggerOperation.Toggle;
@@ -92,9 +93,10 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
         return coords;
     }
 
-    public void SetCoords(Vector2 _coords)
+    public void SetNode(GridNode spawnNode)
     {
-        coords = _coords;
+        node = spawnNode;
+        coords = spawnNode.Coords.Pos;
     }
 
     public virtual void SetRequiredKeycardType(string keycardType)
@@ -105,6 +107,10 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData)
     {
         SetIsActivated(interactableSaveData.isActivated);
+        if(interactableType == InteractableType.Pressure_Plate)
+        {
+            node.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.PressurePlate));
+        }
     }
 
     public void Destroy()
@@ -140,9 +146,10 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
             this.interactableType = type;
         }
     }
-
     public void SetIsSingleUse(bool isSingleUse)
     {
        this.isSingleUse = isSingleUse;
     }
+
+    public GameObject GetGameObject() => gameObject;
 }
