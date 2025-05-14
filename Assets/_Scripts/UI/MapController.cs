@@ -20,6 +20,10 @@ public class MapController : MonoBehaviour
     //Vector3 lastMousePos;
     //bool isDragging = false;
 
+    Dictionary<int, List<MapTile>> generatedMaps = new Dictionary<int, List<MapTile>>();
+    List<MapTile> currentActiveMap = new List<MapTile>();
+    int currentLevelIndex;
+
     public static bool isMapOpen;
 
     //void Update()
@@ -130,7 +134,8 @@ public class MapController : MonoBehaviour
         mapBackground.SetActive(false);
         HelperFunctions.SetCursorActive(false);
 
-        DestroyMap();
+        HideMap();
+        //DestroyMap();
     }
 
     void OpenMap()
@@ -138,8 +143,16 @@ public class MapController : MonoBehaviour
         isMapOpen = true;
         mapBackground.SetActive(true);
         HelperFunctions.SetCursorActive(true);
+        currentLevelIndex = GridController.Instance.GetCurrentLevelIndex();
+        if(generatedMaps.TryGetValue(currentLevelIndex, out List<MapTile> map))
+        {
+            ShowMap(map);
+        }
+        else
+        {
+            GenerateMap();
+        }
 
-        GenerateMap();
     }
 
     void GenerateMap()
@@ -164,25 +177,59 @@ public class MapController : MonoBehaviour
 
         Vector2 centerOffset = new Vector2(totalWidth / 2f, -totalHeight / 2f);
 
+        List<MapTile> map = new List<MapTile>();
         for (int i = 0; i < activeNodes.Count; i++)
         {
             GridNode node = nodes[i];
             Vector2 coord = coords[i];
-
             MapTile clone = Instantiate(mapTile, Vector2.zero, Quaternion.identity, mapContainerTransform);
             clone.InitTile(node);
+            map.Add(clone);
 
             Vector2 localPos = new Vector2(coord.y * tileSize, coord.x * tileSize);
             localPos -= centerOffset;
             clone.transform.localPosition = localPos;
         }
+
+        generatedMaps.Add(currentLevelIndex, map);
+        currentActiveMap = map;
     }
 
-    void DestroyMap()
+    void ShowMap(List<MapTile> mapToShow)
     {
-        foreach (Transform child in mapContainerTransform)
+        foreach (MapTile tile in mapToShow)
         {
-            Destroy(child.gameObject);
+            tile.gameObject.SetActive(true);
+            tile.RefreshTile();
+        }
+        currentActiveMap = mapToShow;
+    }
+
+    void HideMap()
+    {
+        foreach (MapTile tile in currentActiveMap)
+        {
+            tile.gameObject.SetActive(false);
+        }   
+    }
+
+    void DestroyAllMaps()
+    {
+        for (int i = 0; i < generatedMaps.Count; i++)
+        {
+            DestroyMap(i);
+        }
+    }
+
+    void DestroyMap(int mapIndexToDestroy)
+    {
+        if(generatedMaps.TryGetValue(mapIndexToDestroy, out List<MapTile> mapToDestroy))
+        {
+            foreach(MapTile tile in mapToDestroy)
+            {
+                Destroy(tile.gameObject);
+            }
+            generatedMaps.Remove(mapIndexToDestroy);
         }
 
     }

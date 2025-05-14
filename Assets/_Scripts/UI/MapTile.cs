@@ -30,41 +30,47 @@ public class MapTile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     [Header("Map Pin")]
     [SerializeField] TMP_InputField pinTextInputField;
     bool hasPinPlaced;
-
+    GridNode tileNode;
     Vector2 tileCoords;
 
 
     public void InitTile(GridNode nodeToInit)
     {
+        tileNode = nodeToInit;
+        tileCoords = new Vector2(tileNode.Coords.Pos.y, -tileNode.Coords.Pos.x);
 
-        tileCoords = new Vector2(nodeToInit.Coords.Pos.y, -nodeToInit.Coords.Pos.x);
+        RefreshTile();
+    }
 
-        if (!nodeToInit.GetIsExplored())
+    public void RefreshTile()
+    {
+        if (!tileNode.GetIsExplored())
             return;
 
-        if(nodeToInit.nodeData.isWalkable)
+        if (tileNode.nodeData.isWalkable)
         {
             floorImage.enabled = true;
 
-            CheckForSurroundingWalls(nodeToInit);
+            CheckForSurroundingWalls(tileNode);
 
-            if (nodeToInit.GetIsVoid())
+            if (tileNode.GetIsVoid())
             {
                 floorImage.sprite = voidSprite;
                 return;
             }
 
             floorImage.sprite = floorSprite;
-            Debug.Log(nodeToInit.GetOccupantType());
-            switch (nodeToInit.GetOccupantType())
+
+            PlayerIcon.enabled = false;
+            switch (tileNode.GetOccupantType())
             {
                 case GridNodeOccupantType.Player:
                     PlayerIcon.enabled = true;
-                    UpdateIconFacingDirection(PlayerIcon, nodeToInit.GetOccupyingGameobject().GetComponent<PlayerController>().advGridMovement.GetTargetRot());
+                    UpdateIconFacingDirection(PlayerIcon, tileNode.GetOccupyingGameobject().GetComponent<PlayerController>().advGridMovement.GetTargetRot());
                     break;
                 case GridNodeOccupantType.LevelTransition:
                     LevelTransitionIcon.enabled = true;
-                    UpdateIconFacingDirection(LevelTransitionIcon, nodeToInit.GetOccupyingGameobject().transform.rotation.eulerAngles.y);
+                    UpdateIconFacingDirection(LevelTransitionIcon, tileNode.GetOccupyingGameobject().transform.rotation.eulerAngles.y);
                     break;
                 case GridNodeOccupantType.PressurePlate:
                     PressurePlateIcon.enabled = true;
