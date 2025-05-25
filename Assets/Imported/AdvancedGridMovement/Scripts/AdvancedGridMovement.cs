@@ -99,10 +99,10 @@ public class AdvancedGridMovement : MonoBehaviour
             AnimateMovement();
         }
 
-        if (IsRotating())
-        {
-            AnimateRotation();
-        }
+        //if (IsRotating())
+        //{
+        //    AnimateRotation();
+        //}
     }
 
     public void Teleport(Vector3 destination)
@@ -233,42 +233,41 @@ public class AdvancedGridMovement : MonoBehaviour
     {
         if (UIController.isTransitioningLevel) return;
 
-        CollisonCheckedMovement(CalculateForwardPosition());
+        CollisonCheckedMovement(transform.forward);
     }
 
     public void MoveBackward()
     {
         if (UIController.isTransitioningLevel) return;
 
-        CollisonCheckedMovement(-CalculateForwardPosition());
+        CollisonCheckedMovement(-transform.forward);
     }
 
     public void StrafeRight()
     {
         if (UIController.isTransitioningLevel) return;
 
-        CollisonCheckedMovement(CalculateStrafePosition());
+        CollisonCheckedMovement(transform.right);
     }
 
     public void StrafeLeft()
     {
         if (UIController.isTransitioningLevel) return;
 
-        CollisonCheckedMovement(-CalculateStrafePosition());
+        CollisonCheckedMovement(-transform.right);
     }
 
     private void CollisonCheckedMovement(Vector3 movementDirection)
     {
         if (IsStationary())
         {
-            Vector3 targetPosition = moveTowardsPosition + movementDirection;
-            if (FreeSpace(targetPosition))
+            GridNode targetNode = PlayerController.currentOccupiedNode.GetNodeInDirection(movementDirection);
+            if (IsNodeFree(targetNode))
             {
                 moveFromPosition = transform.position;
-                moveTowardsPosition = targetPosition;
+                moveTowardsPosition = targetNode.moveToTransform.position;
 
                 GridController.Instance.GetNodeFromWorldPos(moveFromPosition).ResetOccupant();
-                var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
                 controller.SetCurrentOccupiedNode(targetNode);
                 onPlayerMoved?.Invoke();
             }
@@ -279,9 +278,8 @@ public class AdvancedGridMovement : MonoBehaviour
         }
     }
 
-    private bool FreeSpace(Vector3 targetPosition)
+    private bool IsNodeFree(GridNode targetNode)
     {
-        var targetNode = GridController.Instance.GetNodeFromWorldPos(targetPosition);
         return (targetNode.nodeData.isPlayerWalkable && 
             (targetNode.currentOccupant.occupantType == GridNodeOccupantType.None || 
             targetNode.currentOccupant.occupantType == GridNodeOccupantType.LevelTransition || 
@@ -337,7 +335,7 @@ public class AdvancedGridMovement : MonoBehaviour
 
     public bool IsStationary()
     {
-        return !(IsMoving() || IsRotating());
+        return !(IsMoving() /*|| IsRotating()*/);
     }
 
     private bool IsMoving()
@@ -365,13 +363,13 @@ public class AdvancedGridMovement : MonoBehaviour
         return new Vector3(inVector.x, 0.0f, inVector.z);
     }
 
-    private Vector3 CalculateForwardPosition()
-    {
-        return transform.forward * gridSize;
-    }
+    //private Vector3 CalculateForwardPosition()
+    //{
+    //    return PlayerController.currentOccupiedNode.GetNodeInDirection(transform.forward); ;
+    //}
 
-    private Vector3 CalculateStrafePosition()
-    {
-        return transform.right * gridSize;
-    }
+    //private Vector3 CalculateStrafePosition()
+    //{
+    //    return transform.right * gridSize;
+    //}
 }

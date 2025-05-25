@@ -538,6 +538,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvases
       objectReference: {fileID: 0}
+    - target: {fileID: 1061984433129457774, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: eventMappingsKeyDown.Array.data[1].key
+      value: 49
+      objectReference: {fileID: 0}
+    - target: {fileID: 1061984433129457774, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: eventMappingsKeyDown.Array.data[2].key
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 1061984433129457774, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: eventMappingsKeyDown.Array.data[3].key
+      value: 51
+      objectReference: {fileID: 0}
     - target: {fileID: 1271230174974079899, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.y

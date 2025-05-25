@@ -231,19 +231,55 @@ public class GridNode : MonoBehaviour
 
     public GridNode GetNodeInDirection(Vector3 direction)
     {
-        // Convert the direction into a grid offset
+        //Debug.Log($"Input Direction: {direction}");
+
+        // Round the input direction to nearest integers
+        Vector3 roundedMoveDir = new Vector3(
+            Mathf.RoundToInt(direction.x),
+            Mathf.RoundToInt(direction.y),
+            Mathf.RoundToInt(direction.z));
+
+        //Debug.Log($"Rounded Move Direction: {roundedMoveDir}");
+
+        // Initialize the offset to zero
         Vector2 offset = Vector2.zero;
 
-        if (direction == Vector3.forward)
-            offset = new Vector2(1, 0);  // Up
-        else if (direction == Vector3.back)
-            offset = new Vector2(-1, 0); // Down
-        else if (direction == Vector3.left)
+        // Handle cardinal directions
+        if (roundedMoveDir == Vector3.forward)
+        {
+            offset = new Vector2(1, 0);  // Forward
+        }
+        else if (roundedMoveDir == Vector3.back)
+        {
+            offset = new Vector2(-1, 0); // Backward
+        }
+        else if (roundedMoveDir == Vector3.left)
+        {
             offset = new Vector2(0, -1); // Left
-        else if (direction == Vector3.right)
+        }
+        else if (roundedMoveDir == Vector3.right)
+        {
             offset = new Vector2(0, 1);  // Right
+        }
+        else
+        {
+            // Handle diagonals (or other edge cases)
+            float absX = Mathf.Abs(direction.x);
+            float absZ = Mathf.Abs(direction.z);
 
-        // Calculate the target position by adding the offset to the start node position
+            if (absX > absZ)
+            {
+                // Horizontal dominance: use X for horizontal offset (left/right)
+                offset = new Vector2(0, Mathf.RoundToInt(roundedMoveDir.x));
+            }
+            else
+            {
+                // Vertical dominance: use Z for vertical offset (forward/backward)
+                offset = new Vector2(Mathf.RoundToInt(roundedMoveDir.z), 0);
+            }
+        }
+
+        // Calculate the target position
         Vector2 targetPosition = Coords.Pos + offset;
 
         // Retrieve and return the node at the target position
