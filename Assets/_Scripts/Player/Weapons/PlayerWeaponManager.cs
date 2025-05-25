@@ -158,7 +158,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     void OnInventorySlotWeaponItemUnequipped(ISlot slot)
     {
-        playerController.playerInventoryManager.TryAddItemToInventory(slot.TakeItem());
+        playerController.playerInventoryManager.TryAddItem(slot.TakeItem());
     }
 
     void OnNewAmmoTypeSelected(AmmoItemData newAmmoData)
@@ -416,6 +416,9 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void UseCurrentWeapon()
     {
+        if (WorldInteractionManager.isLookingAtInteractable)
+            return;
+
         if (isAmmoSelectionMenuOpen)
             return;
 
@@ -427,6 +430,9 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void UseCurrentWeaponSpecial()
     {
+        if (WorldInteractionManager.isLookingAtInteractable)
+            return;
+
         if (isAmmoSelectionMenuOpen)
             return;
 

@@ -97,4 +97,18 @@ public class WorldItem : MonoBehaviour, IPickup
         if(highlightEffect != null)
             highlightEffect.highlighted = isHighlighted;
     }
+
+    public void AddToInventory(IInventory inventoryToAddTo)
+    {
+        int remainingItems = inventoryToAddTo.TryAddItem(item);
+        if(remainingItems == 0)
+        {
+            if (occupiedPressurePlate != null)
+            {
+                occupiedPressurePlate.RemoveGameobjectFromPlate(gameObject);
+            }
+
+            Destroy(gameObject);
+        }
+    }
 }

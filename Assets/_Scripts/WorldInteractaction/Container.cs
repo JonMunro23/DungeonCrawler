@@ -49,7 +49,7 @@ public class Container : MonoBehaviour, IContainer
         levelIndex = _levelIndex;
         coords = _coords;
 
-        GenerateSlots();
+        //GenerateSlots();
     }
 
     void GenerateSlots()

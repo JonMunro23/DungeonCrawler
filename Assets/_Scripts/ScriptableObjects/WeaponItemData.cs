@@ -67,6 +67,10 @@ public class WeaponItemData : EquipmentItemData
     public float specialSFXVolume = .3f;
 
     [Header("Animations")]
+    public float grabAnimDuration;
+    public AudioClip grabSFX;
+    public float grabVolume;
+    [Space]
     public float drawAnimDuration;
     public AudioClip drawSFX;
     public float drawVolume = .3f;

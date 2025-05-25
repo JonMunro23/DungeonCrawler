@@ -81,9 +81,12 @@ public abstract class Weapon : MonoBehaviour, IWeapon
                 weaponAnimator.enabled = false;
         }
     }
-    public void Grab()
+    public async Task Grab()
     {
+        canUse = false;
         weaponAnimator.Play("Interact");
+        await Task.Delay((int)(weaponItemData.grabAnimDuration * 1000));
+        canUse = true;
     }
     public virtual void RemoveWeapon()
     {

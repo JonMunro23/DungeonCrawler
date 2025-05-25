@@ -60,13 +60,13 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
-    async void OnContainerOpened()
+    void OnContainerOpened()
     {
-        playerController.MoveCameraPos(openContainerCamPos, openContainerCamMovementDuration);
-        playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
+        //playerController.MoveCameraPos(openContainerCamPos, openContainerCamMovementDuration);
+        //playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
         isInContainer = true;
 
-        await Task.Delay((int)((openContainerCamMovementDuration / 2) * 1000));
+        //await Task.Delay((int)((openContainerCamMovementDuration / 2) * 1000));
 
         if (!CharacterMenuUIController.isCharacterMenuOpen)
             OpenInventory();
@@ -74,8 +74,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     void OnContainerClosed()
     {
-        playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
-        playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
+        //playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
+        //playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
         isInContainer = false;
 
         HelperFunctions.SetCursorActive(false);
@@ -88,7 +88,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             return;
 
         ItemStack slotAmmo = new ItemStack(weaponSlot.GetWeapon().GetRangedWeapon().GetCurrentLoadedAmmoData(), slot.UnloadAmmo());
-        TryAddItemToInventory(slotAmmo);
+        TryAddItem(slotAmmo);
 
         
     }
@@ -236,7 +236,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         return null;
     }
 
-    public int TryAddItemToInventory(ItemStack itemToAdd)
+    public int TryAddItem(ItemStack itemToAdd)
     {
         InventorySlot[] slotsWithSpace = GetSlotOfTypeWithSpace(itemToAdd.itemData);
         if(slotsWithSpace != null && slotsWithSpace.Length > 0)

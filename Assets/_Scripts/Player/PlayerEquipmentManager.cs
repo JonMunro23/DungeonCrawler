@@ -75,7 +75,7 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     void OnInventorySlotEquipmentItemUnequipped(ISlot slot)
     {
-        playerController.playerInventoryManager.TryAddItemToInventory(slot.TakeItem());
+        playerController.playerInventoryManager.TryAddItem(slot.TakeItem());
     }
 
     public void Init(PlayerController controller)

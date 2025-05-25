@@ -1795,7 +1795,7 @@
 						},
 						{
 							"__identifier": "Container",
-							"__grid": [9,5],
+							"__grid": [13,7],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 192, "y": 256, "w": 16, "h": 16 },
@@ -1804,11 +1804,11 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 35,
-							"px": [152,88],
+							"px": [216,120],
 							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 39, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 39, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["West"]
+									"params": ["North"]
 								}] },
 								{ "__identifier": "Container_Type", "__type": "LocalEnum.Container_Type", "__value": "Large", "__tile": null, "defUid": 41, "realEditorValues": [] },
 								{ "__identifier": "Item_Names", "__type": "Array<String>", "__value": [ "pistol_ammo", "health_syringe", "health_syringe" ], "__tile": null, "defUid": 37, "realEditorValues": [ {
@@ -1823,8 +1823,8 @@
 								} ] },
 								{ "__identifier": "Item_Amounts", "__type": "Array<Int>", "__value": [60,3,3], "__tile": null, "defUid": 38, "realEditorValues": [ { "id": "V_Int", "params": [60] }, { "id": "V_Int", "params": [3] }, { "id": "V_Int", "params": [3] } ] }
 							],
-							"__worldX": 152,
-							"__worldY": 88
+							"__worldX": 216,
+							"__worldY": 120
 						},
 						{
 							"__identifier": "WorldItem",

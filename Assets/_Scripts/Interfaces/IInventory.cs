@@ -8,4 +8,5 @@ public interface IInventory
     public void LockSlotsWithAmmoOfType(AmmoItemData ammoTypeToLock);
     public List<AmmoItemData> GetAllUseableAmmoForWeapon(IWeapon weapon);
     public void UnlockSlots();
+    public int TryAddItem(ItemStack itemToAdd);
 }

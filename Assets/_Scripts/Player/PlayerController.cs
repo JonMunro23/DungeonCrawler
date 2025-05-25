@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
 
     void RemoveGrabbedItem()
     {
-        playerInventoryManager.TryAddItemToInventory(itemPickupManager.currentGrabbedItem);
+        playerInventoryManager.TryAddItem(itemPickupManager.currentGrabbedItem);
         itemPickupManager.DetachItemFromMouseCursor();
         HelperFunctions.SetCursorActive(false);
     }
