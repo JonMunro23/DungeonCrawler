@@ -30,8 +30,7 @@ MonoBehaviour:
     modifyAmount: 15
   itemPrefab: {fileID: 5015189803522481237, guid: 99acbf84f17962845a02eb098b57f53b,
     type: 3}
-  magDropPrefab: {fileID: 54144127183699200, guid: eb0d0272b48705a46a29a19b0a7aec1f,
-    type: 3}
+  magDropPrefab: {fileID: 0}
   isTwoHanded: 1
   weaponType: 2
   itemDamageMinMax: {x: 12, y: 25}
@@ -79,3 +78,6 @@ MonoBehaviour:
   reloadEndAnimDuration: 0
   reloadStopSFX: {fileID: 0}
   reloadStopVolume: 0.3
+  ejectShellAnimDuration: 0
+  ejectShellSFX: {fileID: 0}
+  ejectShellVolume: 0.3

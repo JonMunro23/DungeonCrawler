@@ -24,6 +24,7 @@ public class WorldInteractionManager : MonoBehaviour
     IContainer nearbyContainer;
     IInteractable nearbyInteractable;
 
+    IPickup highlightedPickup;
 
     public static Action<ItemStack> onNewItemAttachedToCursor;
     public static Action onCurrentItemDettachedFromCursor;
@@ -95,7 +96,7 @@ public class WorldInteractionManager : MonoBehaviour
         PlayGrabAnim();
         ItemStack slotItem = slotGrabbedFrom.storedStack;
         AttachItemToMouseCursor(slotItem);
-        slotGrabbedFrom.RemoveItemStack();
+        slotGrabbedFrom.ClearSlot();
 
     }
 
@@ -192,6 +193,33 @@ public class WorldInteractionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (PlayerInventoryManager.isInContainer)
+        {
+            RaycastHit hit;
+            Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform.TryGetComponent(out IPickup pickup))
+                {
+                    if (highlightedPickup != null)
+                        if (pickup != highlightedPickup)
+                            highlightedPickup.SetHighlighted(false);
+
+                    pickup.SetHighlighted(true);
+                    highlightedPickup = pickup;
+                }
+                else
+                {
+                    if (highlightedPickup != null)
+                    {
+                        highlightedPickup.SetHighlighted(false);
+                        highlightedPickup = null;
+                    }
+                }
+            }
+
+        }
+
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             RaycastHit hit;
@@ -298,7 +326,10 @@ public class WorldInteractionManager : MonoBehaviour
     {
         if(other.TryGetComponent(out WorldItem worldItem))
         {
+            if (worldItem.isInContainer) return;
+
             groundItems.Add(worldItem);
+            worldItem.SetHighlighted(true);
             onGroundItemsUpdated?.Invoke(groundItems[0].item);
             return;
         }
@@ -308,6 +339,7 @@ public class WorldInteractionManager : MonoBehaviour
             if(transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
             {
                 this.nearbyContainer = nearbyContainer;
+                nearbyContainer.SetHighlighted(true);
                 onNearbyContainerUpdated?.Invoke(nearbyContainer);
             }
         }
@@ -319,6 +351,8 @@ public class WorldInteractionManager : MonoBehaviour
             if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
             {
                 this.nearbyInteractable = nearbyInteractable;
+                if(nearbyInteractable.GetInteractableType() == InteractableType.Lever || nearbyInteractable.GetInteractableType() == InteractableType.Keycard_Reader)
+                    nearbyInteractable.SetHighlighted(true);
                 onNearbyInteractableUpdated?.Invoke(nearbyInteractable);
             }
         }
@@ -331,9 +365,16 @@ public class WorldInteractionManager : MonoBehaviour
             if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
             {
                 nearbyContainer = container;
+                if(!nearbyContainer.IsOpen())
+                    nearbyContainer.SetHighlighted(true);
             }
             else
+            {
+                if(nearbyContainer != null)
+                    nearbyContainer.SetHighlighted(false);
+
                 nearbyContainer = null;
+            }
 
             onNearbyContainerUpdated?.Invoke(nearbyContainer);
         }
@@ -345,9 +386,16 @@ public class WorldInteractionManager : MonoBehaviour
             if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
             {
                 this.nearbyInteractable = nearbyInteractable;
+                if (nearbyInteractable.GetInteractableType() == InteractableType.Lever || nearbyInteractable.GetInteractableType() == InteractableType.Keycard_Reader)
+                    nearbyInteractable.SetHighlighted(true);
             }
             else
+            {
+                if (nearbyInteractable != null && (nearbyInteractable.GetInteractableType() == InteractableType.Lever || nearbyInteractable.GetInteractableType() == InteractableType.Keycard_Reader))
+                    nearbyInteractable.SetHighlighted(false);
+
                 this.nearbyInteractable = null;
+            }
 
             onNearbyInteractableUpdated?.Invoke(this.nearbyInteractable);
         }
@@ -360,7 +408,10 @@ public class WorldInteractionManager : MonoBehaviour
             if (other.TryGetComponent(out WorldItem worldItem))
             {
                 if(groundItems.Contains(worldItem))
+                {
+                    worldItem.SetHighlighted(false);
                     groundItems.Remove(worldItem);
+                }
             }
 
             if (groundItems.Count == 0)
@@ -373,6 +424,7 @@ public class WorldInteractionManager : MonoBehaviour
                 if (container == nearbyContainer)
                 {
                     nearbyContainer.CloseContainer();
+                    nearbyContainer.SetHighlighted(false);
                     nearbyContainer = null;
                     onNearbyContainerUpdated?.Invoke(nearbyContainer);
                 }
@@ -387,6 +439,9 @@ public class WorldInteractionManager : MonoBehaviour
 
                 if (interactable == nearbyInteractable)
                 {
+                    if (nearbyInteractable.GetInteractableType() == InteractableType.Lever || nearbyInteractable.GetInteractableType() == InteractableType.Keycard_Reader)
+                        nearbyInteractable.SetHighlighted(false);
+
                     nearbyInteractable = null;
                     onNearbyInteractableUpdated?.Invoke(nearbyInteractable);
                 }

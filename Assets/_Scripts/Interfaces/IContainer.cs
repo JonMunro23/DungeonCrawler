@@ -14,4 +14,5 @@ public interface IContainer
     public void CloseContainer();
     public bool IsOpen();
     public void Destroy();
+    public void SetHighlighted(bool isHighlighted);
 }

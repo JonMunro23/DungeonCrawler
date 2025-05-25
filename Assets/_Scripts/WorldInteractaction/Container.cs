@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using HighlightPlus;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,8 +34,15 @@ public class Container : MonoBehaviour, IContainer
     [SerializeField] Vector3 openRot, closedRot;
     [SerializeField] float openDuration;
 
+    HighlightEffect highlightEffect;
+
     public static Action onContainerOpened;
     public static Action onContainerClosed;
+
+    private void Awake()
+    {
+        highlightEffect = GetComponent<HighlightEffect>();
+    }
 
     public void InitContainer(int _levelIndex, Vector2 _coords)
     {
@@ -78,15 +86,11 @@ public class Container : MonoBehaviour, IContainer
         storedItemStacks.Remove(slotIndex);
     }
 
-    //public void RemoveStoredItem(ContainerItemStack itemToRemove)
-    //{
-    //    storedItemStacks.Remove(itemToRemove);
-    //}
-
     void OpenContainer()
     {
         lidTransform.DOLocalRotate(openRot, openDuration);
         onContainerOpened?.Invoke();
+        SetHighlighted(false);
     }
 
     public void CloseContainer()
@@ -155,5 +159,10 @@ public class Container : MonoBehaviour, IContainer
     public void Destroy()
     {
         Destroy(gameObject);
+    }
+
+    public void SetHighlighted(bool isHighlighted)
+    {
+        highlightEffect.highlighted = isHighlighted;
     }
 }

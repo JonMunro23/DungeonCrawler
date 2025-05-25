@@ -26,8 +26,7 @@ MonoBehaviour:
   statModifiers: []
   itemPrefab: {fileID: 3657685001478897229, guid: 86bfbcd86be44d140a6eefcd8256adc6,
     type: 3}
-  magDropPrefab: {fileID: 54520008700056926, guid: 7e912de18c77c804e99ba1ea011e98d9,
-    type: 3}
+  magDropPrefab: {fileID: 0}
   isTwoHanded: 1
   weaponType: 3
   itemDamageMinMax: {x: 20, y: 40}
@@ -74,3 +73,6 @@ MonoBehaviour:
   reloadEndAnimDuration: 0
   reloadStopSFX: {fileID: 0}
   reloadStopVolume: 0.3
+  ejectShellAnimDuration: 0
+  ejectShellSFX: {fileID: 0}
+  ejectShellVolume: 0.3

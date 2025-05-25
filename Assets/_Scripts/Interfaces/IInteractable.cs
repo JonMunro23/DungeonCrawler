@@ -35,5 +35,6 @@ public interface IInteractable
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData);
     public void Destroy();
     public GameObject GetGameObject();
+    public void SetHighlighted(bool isHighlighted);
 
 }

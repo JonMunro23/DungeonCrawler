@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 public class RangedWeapon : Weapon
@@ -156,16 +155,16 @@ public class RangedWeapon : Weapon
                             break;
                         case AmmoType.Incendiary:
                             damage = CalculateDamage(AR);
-                            damageable.TryDamage(wasHit, damage, DamageType.Fire, isCrit);
                             if (isCrit)
                                 damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                            damageable.TryDamage(wasHit, damage, DamageType.Fire, isCrit);
                             damageable.AddStatusEffect(StatusEffectType.Fire);
                             break;
                         case AmmoType.Acid:
                             damage = CalculateDamage(AR);
-                            damageable.TryDamage(wasHit, damage, DamageType.Acid, isCrit);
                             if (isCrit)
                                 damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                            damageable.TryDamage(wasHit, damage, DamageType.Acid, isCrit);
                             damageable.AddStatusEffect(StatusEffectType.Acid);
                             break;
 

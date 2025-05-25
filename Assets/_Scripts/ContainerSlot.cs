@@ -1,14 +1,15 @@
 using System;
 using UnityEngine;
 
-public class ContainerSlot : MonoBehaviour, IPickup
+public class ContainerSlot : MonoBehaviour
 {
     Container parentContainer;
     int slotIndex;
 
     public ItemStack storedStack;
 
-    [SerializeField] GameObject spawnedWorldItem;
+    [SerializeField] WorldItem WorldItemPrefab;
+    [SerializeField] WorldItem spawnedWorldItem;
 
     public static Action<ContainerSlot> onContainerItemGrabbed;
 
@@ -24,27 +25,18 @@ public class ContainerSlot : MonoBehaviour, IPickup
 
     public void SpawnWorldItem()
     {
-        spawnedWorldItem = Instantiate(storedStack.itemData.itemWorldModel, transform);
+        spawnedWorldItem = Instantiate(WorldItemPrefab, transform);
+        spawnedWorldItem.InitContainerWorldItem(storedStack, this);
     }
 
-    public void RemoveItemStack()
+    public void ClearSlot()
     {
-        if(spawnedWorldItem)
-            Destroy(spawnedWorldItem);
+        spawnedWorldItem = null;
 
         storedStack.itemData = null;
         storedStack.itemAmount = 0;
         storedStack.loadedAmmo = 0;
 
         parentContainer.RemoveStoredItemFromSlot(slotIndex);
-        //parentContainer.RemoveStoredItem(new ContainerItemStack(slotIndex, storedStack));
-    }
-
-    public void Pickup(bool wasGrabbed = false)
-    {
-        if (storedStack.itemData == null)
-            return;
-
-        onContainerItemGrabbed?.Invoke(this);
     }
 }

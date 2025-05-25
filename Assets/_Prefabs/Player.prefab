@@ -599,6 +599,7 @@ MonoBehaviour:
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
   rb: {fileID: 0}
+  defaultCamPos: {x: 0, y: 0, z: 0}
 --- !u!114 &3417093745071717000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -948,64 +949,6 @@ MonoBehaviour:
     m_RotationOrder: 4
   bobFrequency: 1
   bobAmplitude: 3
-  runningSpeed: 1
-  runningSpeedCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  runningHeadBobCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: Infinity
-      outSlope: 0.0057177115
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.14674135
-    - serializedVersion: 3
-      time: 0.4714064
-      value: 0.031363398
-      inSlope: 0.027701227
-      outSlope: 0.027701227
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.6425993
-      outWeight: 0.3405974
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -0.0000000470608
-      outSlope: -0.0000000470608
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.30423006
-      outWeight: 0
-    m_PreInfinity: 1
-    m_PostInfinity: 1
-    m_RotationOrder: 4
   maximumStepHeight: 0
   blockedEvent:
     m_PersistentCalls:
@@ -1165,7 +1108,7 @@ MonoBehaviour:
   unlockedPlayerSkills: []
   playerSkillPrefab: {fileID: 3251469895491198469, guid: 8a5126f7779dd844fa310863cecf55fc,
     type: 3}
-  startingSkillPoints: 20
+  startingSkillPoints: 0
 --- !u!114 &5689203347496627508
 MonoBehaviour:
   m_ObjectHideFlags: 0

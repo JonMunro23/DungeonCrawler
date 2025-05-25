@@ -46,7 +46,7 @@ public class PlayerLevelManager : MonoBehaviour
     {
         currentPlayerLevel++;
         requiredExperiencePoints = currentExperiencePoints * 2;
-
+        //play level up sound
         onPlayerRequiredExperienceUpdated?.Invoke(requiredExperiencePoints);
         onPlayerLevelUp?.Invoke(currentPlayerLevel);
     }

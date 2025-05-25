@@ -1,3 +1,4 @@
+using HighlightPlus;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,6 +34,12 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     public List<ITriggerable> objectsToTrigger = new List<ITriggerable>();
     public List<Dictionary<string, object>> entityRefsToTrigger = new List<Dictionary<string, object>>();
 
+    HighlightEffect highlightEffect;
+
+    private void Awake()
+    {
+        highlightEffect = GetComponent<HighlightEffect>();
+    }
 
     public abstract void Interact();
     public abstract void InteractWithItem(ItemData item);
@@ -152,4 +159,9 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     }
 
     public GameObject GetGameObject() => gameObject;
+
+    public void SetHighlighted(bool isHighlighted)
+    {
+        highlightEffect.highlighted = isHighlighted;
+    }
 }
