@@ -24,9 +24,9 @@ public class WorldInteractionManager : MonoBehaviour
     IContainer nearbyContainer;
     IInteractable nearbyInteractable;
 
-    IPickup highlightedPickup;
-    IContainer highlighterContainer;
-    public static bool isLookingAtInteractable;
+    IHighlightable highlightedTarget;
+    public static IContainer currentOpenContainer;
+    bool isLookingAtPickup, isLookingAtInteractable, isLookingAtContainer;
 
     public static Action<ItemStack> onNewItemAttachedToCursor;
     public static Action onCurrentItemDettachedFromCursor;
@@ -36,6 +36,8 @@ public class WorldInteractionManager : MonoBehaviour
 
     public static Action<IContainer> onNearbyContainerUpdated;
     public static Action<IInteractable> onNearbyInteractableUpdated;
+
+    public static Action<LookAtTarget> onLookAtTargetChanged;
 
     private void OnEnable()
     {
@@ -195,89 +197,94 @@ public class WorldInteractionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         RaycastHit hit;
         Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, maxItemGrabDistance))
         {
-            Debug.DrawLine(ray.origin, hit.point, Color.yellow);
+            //Debug.DrawLine(ray.origin, hit.point, Color.yellow);
             if (hit.transform.TryGetComponent(out IPickup pickup))
             {
-                if (highlightedPickup != null)
-                    if (pickup != highlightedPickup)
-                        highlightedPickup.SetHighlighted(false);
+                if (highlightedTarget != null)
+                    if (pickup != highlightedTarget)
+                        highlightedTarget.SetHighlighted(false);
 
                 pickup.SetHighlighted(true);
-                highlightedPickup = pickup;
-                isLookingAtInteractable = true;
+                highlightedTarget = pickup;
+                onLookAtTargetChanged?.Invoke(LookAtTarget.Pickup);
             }
-            else
+            else if (hit.transform.TryGetComponent(out IContainer container))
             {
-                if (highlightedPickup != null)
+                if (!container.IsOpen())
                 {
-                    highlightedPickup.SetHighlighted(false);
-                    highlightedPickup = null;
-                    isLookingAtInteractable = false;
-                }
-            }
-
-            if (hit.transform.TryGetComponent(out IContainer container))
-            {
-                if(!container.IsOpen())
-                {
-                    if (highlighterContainer != null)
-                        if (container != highlighterContainer)
-                            highlighterContainer.SetHighlighted(false);
+                    if (highlightedTarget != null)
+                        if (container != highlightedTarget)
+                            highlightedTarget.SetHighlighted(false);
 
                     container.SetHighlighted(true);
-                    highlighterContainer = container;
-                    isLookingAtInteractable = true;
+                    highlightedTarget = container;
+                    onLookAtTargetChanged?.Invoke(LookAtTarget.Container);
                 }
+            }
+            else if (hit.transform.TryGetComponent(out IInteractable interactable))
+            {
+                if (highlightedTarget != null)
+                    if (interactable != highlightedTarget)
+                        highlightedTarget.SetHighlighted(false);
+
+                interactable.SetHighlighted(true);
+                highlightedTarget = interactable;
+                onLookAtTargetChanged?.Invoke(LookAtTarget.Interactable);
             }
             else
             {
-                if (highlighterContainer != null)
-                {
-                    highlighterContainer.SetHighlighted(false);
-                    highlighterContainer = null;
-                    isLookingAtInteractable = false;
-                }
+                ResetLookAtTarget();
             }
+        }
+        else
+        {
+            ResetLookAtTarget();
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            //RaycastHit hit;
-            //Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, maxItemGrabDistance))
             {
-                //if (hit.distance < maxItemGrabDistance)
-                //{
-                    if (hasGrabbedItem && hit.transform.CompareTag("Ground"))
-                    {
-                        GridNode node = hit.transform.GetComponentInParent<GridNode>();
-                        if (!node)
-                            return;
-
-                        PlaceGrabbedItemInWorld(node, hit.point);
+                if (hasGrabbedItem && hit.transform.CompareTag("Ground"))
+                {
+                    GridNode node = hit.transform.GetComponentInParent<GridNode>();
+                    if (!node)
                         return;
-                    }
-                    else if(hit.transform.TryGetComponent(out IPickup pickup))
-                    {
-                        //pickup.Pickup(true);
-                        pickup.AddToInventory(playerController.playerInventoryManager);
-                        PlayGrabAnim(grabSFX);
-                    }
-                    else if (hit.transform.TryGetComponent(out IContainer container))
-                    {
-                        container.ToggleContainer();
-                    }
-                    else if(hit.transform.TryGetComponent(out IInteractable interactable))
-                    {
-                        interactable.InteractWithItem(currentGrabbedItem.itemData);
-                    }
-                //}
+
+                    PlaceGrabbedItemInWorld(node, hit.point);
+                    return;
+                }
+                else if(hit.transform.TryGetComponent(out IPickup pickup))
+                {
+                    pickup.AddToInventory(playerController.playerInventoryManager);
+                    PlayGrabAnim();
+                }
+                else if (hit.transform.TryGetComponent(out IContainer container))
+                {
+                    container.ToggleContainer();
+                    currentOpenContainer = container;
+                    PlayGrabAnim();
+                }
+                else if(hit.transform.TryGetComponent(out IInteractable interactable))
+                {
+                    interactable.InteractWithItem(currentGrabbedItem.itemData);
+                    PlayGrabAnim();
+                }
             }
+        }
+    }
+
+    private void ResetLookAtTarget()
+    {
+        if (highlightedTarget != null)
+        {
+            highlightedTarget.SetHighlighted(false);
+            highlightedTarget = null;
+            onLookAtTargetChanged?.Invoke(LookAtTarget.None);
         }
     }
 
@@ -315,7 +322,7 @@ public class WorldInteractionManager : MonoBehaviour
         int remainingItems = playerController.playerInventoryManager.TryAddItem(itemToPickup.item);
         if(remainingItems != itemToPickup.item.itemAmount)
         {
-            PlayGrabAnim(grabSFX);
+            PlayGrabAnim();
 
             if (remainingItems == 0)
             {
@@ -335,7 +342,7 @@ public class WorldInteractionManager : MonoBehaviour
 
     }
 
-    private void PlayGrabAnim(AudioClip grabSFX = null)
+    private void PlayGrabAnim()
     {
         if (playerController.playerWeaponManager.currentWeapon != null && playerController.playerWeaponManager.currentWeapon.CanUse())
         {
@@ -343,6 +350,12 @@ public class WorldInteractionManager : MonoBehaviour
             if(grabSFX != null)
                 itemPickupAudioEmitter.ForcePlay(grabSFX, grabSFXVolume);
         }
+    }
+
+    public static void CloseCurrentOpenContainer()
+    {
+        currentOpenContainer.CloseContainer();
+        currentOpenContainer = null;
     }
 
     private void UpdatePickupItemUI()

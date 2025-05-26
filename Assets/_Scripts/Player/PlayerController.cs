@@ -169,7 +169,7 @@ public class PlayerController : MonoBehaviour
 
         if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer)
         {
-            playerWeaponManager.UseCurrentWeaponSpecial();
+            playerWeaponManager.ReadyWeapon();
         }
     }
 

@@ -117,7 +117,8 @@ public class PlayerInventoryUIController : MonoBehaviour
 
         HideContextMenu();
 
-        HelperFunctions.SetCursorActive(true);
+        //HelperFunctions.SetCursorActive(true);
+        CrosshairController.SetCrosshairLocked(false);
     }
 
     public void CloseInventory()

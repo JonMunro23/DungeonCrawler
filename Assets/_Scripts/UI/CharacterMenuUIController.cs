@@ -21,12 +21,21 @@ public class CharacterMenuUIController : MonoBehaviour
     {
         PlayerInventoryManager.onInventoryOpened += OpenCharacterMenu;
         PlayerInventoryManager.onInventoryClosed += CloseCharacterMenu;
+
+        Container.onContainerClosed += OnContainerClosed;
     }
 
     private void OnDisable()
     {
-        PlayerInventoryManager.onInventoryClosed -= OpenCharacterMenu;
+        PlayerInventoryManager.onInventoryOpened -= OpenCharacterMenu;
         PlayerInventoryManager.onInventoryClosed -= CloseCharacterMenu;
+
+        Container.onContainerClosed -= OnContainerClosed;
+    }
+
+    void OnContainerClosed()
+    {
+        CloseCharacterMenu();
     }
 
     private void Awake()
@@ -60,8 +69,10 @@ public class CharacterMenuUIController : MonoBehaviour
         isCharacterMenuOpen = false;
         SetPanelsInactive();
         characterMenuPanelsParent.SetActive(false);
-
-        HelperFunctions.SetCursorActive(false);
+        if(PlayerInventoryManager.isInContainer)
+            WorldInteractionManager.CloseCurrentOpenContainer();
+        //HelperFunctions.SetCursorActive(false);
+        CrosshairController.SetCrosshairLocked(true);
     }
 
     void ShowCurrentOpenPanel()

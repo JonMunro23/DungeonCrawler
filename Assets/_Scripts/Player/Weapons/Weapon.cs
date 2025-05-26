@@ -69,6 +69,13 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         isWeaponDrawn = true;
         canUse = true;
     }
+    public async Task ReadyWeapon()
+    {
+        if (!CanUse())
+            return;
+
+        Debug.Log("Used special");
+    }
     public async Task HolsterWeapon()
     {
         isWeaponDrawn = false;
@@ -104,13 +111,7 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         canUse = false;
         StartCoroutine(UseCooldown());
     }
-    public void TryUseSpecial()
-    {
-        if(!CanUse()) 
-            return;
 
-        Debug.Log("Used special");
-    }
     public virtual IEnumerator UseCooldown()
     {
         onWeaponCooldownActive?.Invoke(weaponItemData.itemCooldown);
@@ -172,4 +173,5 @@ public abstract class Weapon : MonoBehaviour, IWeapon
     {
         return new Vector2(weaponItemData.itemDamageMinMax.x + PlayerWeaponManager.bonusDamage, weaponItemData.itemDamageMinMax.y + PlayerWeaponManager.bonusDamage);
     }
+
 }

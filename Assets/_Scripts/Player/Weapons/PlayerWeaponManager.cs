@@ -43,7 +43,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public WeaponSlot[] spawnedWeaponSlots;
     [SerializeField] int activeSlotIndex = 0;
-    bool isAmmoSelectionMenuOpen;
+    bool isAmmoSelectionMenuOpen, isLookingAtTarget;
 
     [Header("Bonus Weapon Stats")]
     public static int bonusDamage;
@@ -69,6 +69,8 @@ public class PlayerWeaponManager : MonoBehaviour
 
         PlayerInventoryManager.onAmmoAddedToInventory += OnInventoryAmmoUpdated;
 
+        WorldInteractionManager.onLookAtTargetChanged += OnLookAtTargetChanged;
+
         StatData.onStatUpdated += OnStatUpdated;
 
         InventoryContextMenu.onInventorySlotWeaponItemEquipped += OnInventorySlotWeaponItemEquipped;
@@ -79,6 +81,8 @@ public class PlayerWeaponManager : MonoBehaviour
         AmmoSelectionButton.OnAmmoSelected += OnNewAmmoTypeSelected;
     }
 
+
+
     private void OnDisable()
     {
         WeaponSlot.onWeaponAddedToSlot -= OnWeaponAddedToSlot;
@@ -86,6 +90,8 @@ public class PlayerWeaponManager : MonoBehaviour
         WeaponSlot.onWeaponSwappedInSlot -= OnWeaponSwappedInSlot;
 
         PlayerInventoryManager.onAmmoAddedToInventory -= OnInventoryAmmoUpdated;
+
+        WorldInteractionManager.onLookAtTargetChanged -= OnLookAtTargetChanged;
 
         StatData.onStatUpdated -= OnStatUpdated;
 
@@ -97,6 +103,13 @@ public class PlayerWeaponManager : MonoBehaviour
         AmmoSelectionButton.OnAmmoSelected -= OnNewAmmoTypeSelected;
     }
 
+    private void OnLookAtTargetChanged(LookAtTarget currentLookAtTarget)
+    {
+        if (currentLookAtTarget == LookAtTarget.None)
+            isLookingAtTarget = false;
+        else
+            isLookingAtTarget = true;
+    }
     public virtual void OnStatUpdated(StatData updatedStat)
     {
         switch (updatedStat.stat)
@@ -416,7 +429,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void UseCurrentWeapon()
     {
-        if (WorldInteractionManager.isLookingAtInteractable)
+        if (isLookingAtTarget)
             return;
 
         if (isAmmoSelectionMenuOpen)
@@ -428,9 +441,9 @@ public class PlayerWeaponManager : MonoBehaviour
         currentWeapon.TryUse();
     }
 
-    public void UseCurrentWeaponSpecial()
+    public void ReadyWeapon()
     {
-        if (WorldInteractionManager.isLookingAtInteractable)
+        if (isLookingAtTarget)
             return;
 
         if (isAmmoSelectionMenuOpen)
@@ -439,7 +452,7 @@ public class PlayerWeaponManager : MonoBehaviour
         if (currentWeapon == null)
             return;
 
-        currentWeapon.TryUseSpecial();
+        currentWeapon.ReadyWeapon();
     }
 
     public async void ReloadCurrentWeapon(AmmoItemData ammoTypeToLoad = null)

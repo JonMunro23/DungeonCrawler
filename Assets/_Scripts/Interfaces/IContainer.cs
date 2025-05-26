@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IContainer
+public interface IContainer : IHighlightable
 {
     public void InitContainer(int levelIndex, Vector2 coords);
     public void AddNewStoredItemStack(ContainerItemStack itemToAdd);
@@ -14,5 +14,4 @@ public interface IContainer
     public void CloseContainer();
     public bool IsOpen();
     public void Destroy();
-    public void SetHighlighted(bool isHighlighted);
 }

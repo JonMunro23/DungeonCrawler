@@ -261,6 +261,11 @@ public class AdvancedGridMovement : MonoBehaviour
     {
         if (IsStationary())
         {
+            if (PlayerInventoryManager.isInContainer)
+            {
+                WorldInteractionManager.CloseCurrentOpenContainer();
+            }
+
             GridNode targetNode = PlayerController.currentOccupiedNode.GetNodeInDirection(movementDirection);
             if (IsNodeFree(targetNode))
             {

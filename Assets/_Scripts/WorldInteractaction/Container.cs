@@ -35,6 +35,7 @@ public class Container : MonoBehaviour, IContainer
     [SerializeField] float openDuration;
 
     HighlightEffect highlightEffect;
+    BoxCollider boxCollider;
 
     public static Action onContainerOpened;
     public static Action onContainerClosed;
@@ -42,6 +43,7 @@ public class Container : MonoBehaviour, IContainer
     private void Awake()
     {
         highlightEffect = GetComponent<HighlightEffect>();
+        boxCollider = GetComponent<BoxCollider>();
     }
 
     public void InitContainer(int _levelIndex, Vector2 _coords)
@@ -49,7 +51,7 @@ public class Container : MonoBehaviour, IContainer
         levelIndex = _levelIndex;
         coords = _coords;
 
-        //GenerateSlots();
+        GenerateSlots();
     }
 
     void GenerateSlots()
@@ -90,6 +92,7 @@ public class Container : MonoBehaviour, IContainer
     {
         lidTransform.DOLocalRotate(openRot, openDuration);
         onContainerOpened?.Invoke();
+        boxCollider.enabled = false;
         SetHighlighted(false);
     }
 
@@ -100,6 +103,7 @@ public class Container : MonoBehaviour, IContainer
 
         isOpen = false;
         lidTransform.DOLocalRotate(closedRot, openDuration);
+        boxCollider.enabled = true;
         onContainerClosed?.Invoke();
     }
 

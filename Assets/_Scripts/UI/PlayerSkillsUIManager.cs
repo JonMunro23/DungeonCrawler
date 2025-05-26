@@ -44,7 +44,8 @@ public class PlayerSkillsUIManager : MonoBehaviour
     {
         //skillsMenuParent.SetActive(true);
         skillsMenu.SetActive(true);
-        HelperFunctions.SetCursorActive(true);
+        //HelperFunctions.SetCursorActive(true);
+        CrosshairController.SetCrosshairLocked(false);
     }
 
     public void CloseSkillsMenu()

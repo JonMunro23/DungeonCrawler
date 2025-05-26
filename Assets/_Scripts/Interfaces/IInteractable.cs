@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInteractable
+public interface IInteractable : IHighlightable
 {
     public void Interact();  
     public void InteractWithItem(ItemData item);
@@ -35,6 +35,4 @@ public interface IInteractable
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData);
     public void Destroy();
     public GameObject GetGameObject();
-    public void SetHighlighted(bool isHighlighted);
-
 }

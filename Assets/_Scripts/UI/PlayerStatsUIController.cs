@@ -124,7 +124,8 @@ public class PlayerStatsUIController : MonoBehaviour
         statsMenu.SetActive(true);
         InitStatsMenu();
 
-        HelperFunctions.SetCursorActive(true);
+        //HelperFunctions.SetCursorActive(true);
+        CrosshairController.SetCrosshairLocked(false);
     }
 
     public void CloseStatsMenu()
