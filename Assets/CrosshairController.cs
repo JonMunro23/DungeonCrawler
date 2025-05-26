@@ -11,7 +11,6 @@ public enum LookAtTarget
 
 public class CrosshairController : MonoBehaviour
 {
-    static Image crosshairImage;
 
     [Header("Sprites")]
     [SerializeField] Sprite defaultSprite;
@@ -19,18 +18,25 @@ public class CrosshairController : MonoBehaviour
     [SerializeField] Sprite interactSprite;
     [SerializeField] Sprite containerSprite;
 
+    [Header("Crosshair Arms")]
+    [SerializeField] Image[] crosshairArms;
+
+    [Header("Colors")]
     [SerializeField] Color defaultColor;
 
+    static Image crosshairImage;
     static bool isCrosshairLocked = true;
 
     private void OnEnable()
     {
         WorldInteractionManager.onLookAtTargetChanged += CurrentLookAtTargetChanged;
+        RangedWeapon.onRangedWeaponReadied += OnRangedWeaponReadied;
     }
 
     private void OnDisable()
     {
         WorldInteractionManager.onLookAtTargetChanged -= CurrentLookAtTargetChanged;
+        RangedWeapon.onRangedWeaponReadied -= OnRangedWeaponReadied;
     }
 
     private void Awake()
@@ -41,6 +47,36 @@ public class CrosshairController : MonoBehaviour
     private void Start()
     {
         crosshairImage.color = defaultColor;
+    }
+
+    private void Update()
+    {
+        if (isCrosshairLocked)
+            return;
+
+        crosshairImage.rectTransform.position = Input.mousePosition;
+    }
+
+    void OnRangedWeaponReadied(bool isReadied)
+    {
+        if(isReadied)
+        {
+            SetArmsEnabled(true);
+        }
+        else
+        {
+            SetArmsEnabled(false);
+        }
+    }
+
+    private void SetArmsEnabled(bool enabled)
+    {
+        foreach (Image arm in crosshairArms)
+        {
+            arm.enabled = enabled;
+        }
+
+        crosshairImage.enabled = !enabled;
     }
 
     void CurrentLookAtTargetChanged(LookAtTarget newLookAtTarget)
@@ -75,15 +111,6 @@ public class CrosshairController : MonoBehaviour
         crosshairImage.color = defaultColor;
         crosshairImage.rectTransform.sizeDelta = new Vector2(10, 10);
     }
-
-    private void Update()
-    {
-        if (isCrosshairLocked)
-            return;
-
-        crosshairImage.rectTransform.position = Input.mousePosition;
-    }
-
     public static void SetCrosshairLocked(bool isLocked)
     {
         if(isLocked)

@@ -75,6 +75,10 @@ public class WeaponItemData : EquipmentItemData
     public AudioClip drawSFX;
     public float drawVolume = .3f;
     [Space]
+    public float readyAnimDuration;
+    public AudioClip readySFX;
+    public float readyVolume = .3f;
+    [Space]
     public float hideAnimDuration;
     public AudioClip hideSFX;
     public float hideVolume = .3f;

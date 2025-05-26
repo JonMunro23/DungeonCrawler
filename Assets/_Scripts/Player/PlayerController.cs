@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void TryUseCurrentWeaponSpecial()
+    public void TryReadyCurrentWeapon()
     {
         if(WorldInteractionManager.hasGrabbedItem)
         {

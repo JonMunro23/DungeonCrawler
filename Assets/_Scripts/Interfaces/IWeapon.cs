@@ -15,7 +15,9 @@ public interface IWeapon : IUseable
     public void InitWeapon(WeaponSlot occupyingSlot, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory);
     public Task DrawWeapon();
     public Task HolsterWeapon();
-    public Task ReadyWeapon();
+    //public Task ReadyWeapon();
+    //public Task UnreadyWeapon();
+
     public Task Grab();
     public void RemoveWeapon();
     public int UnloadAmmo();

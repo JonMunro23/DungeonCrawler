@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,8 +13,11 @@ public class RangedWeapon : Weapon
     bool isReloading;
     bool canShootBurst = true;
     bool canShootBurstShot = true;
+    bool isReadyingWeapon;
 
     public bool infinteAmmo = false;
+    public bool isWeaponReady;
+
 
     [SerializeField] ParticleSystem muzzleFX;
     [SerializeField] ParticleSystem shellEjectionParticleEffect;
@@ -32,10 +36,11 @@ public class RangedWeapon : Weapon
     List<GameObject> droppedMagList = new List<GameObject>();
 
     public static Action<WeaponItemData> onRangedWeaponFired;
+    public static Action<bool> onRangedWeaponReadied;
 
     private void Start()
     {
-        projectileSpawnLocation = GameObject.FindGameObjectWithTag("ProjectileSpawnLocation").transform;
+        projectileSpawnLocation = Camera.main.transform;
     }
 
     public override bool CanUse()
@@ -262,6 +267,32 @@ public class RangedWeapon : Weapon
             droppedMagList.Add(magazine.gameObject);
         }
     }
+
+    public void ReadyWeapon()
+    {
+        if (isReadyingWeapon || isWeaponReady || IsMeleeWeapon())
+            return;
+
+        isReadyingWeapon = true;
+        transform.DOLocalRotate(new Vector3(0, 90, 0), weaponItemData.readyAnimDuration).OnComplete(() =>
+        {
+            isReadyingWeapon = false;
+            isWeaponReady = true;
+            onRangedWeaponReadied?.Invoke(isWeaponReady);
+        });
+        //await Task.Delay((int)(weaponItemData.readyAnimDuration * 1000));
+    }
+    public void UnreadyWeapon()
+    {
+        if (IsMeleeWeapon())
+            return;
+
+        isWeaponReady = false;
+        onRangedWeaponReadied?.Invoke(isWeaponReady);
+        transform.DOLocalRotate(new Vector3(0, 90, 15), weaponItemData.readyAnimDuration);
+        //await Task.Delay((int)(weaponItemData.readyAnimDuration * 1000));
+    }
+
     public async Task TryReload(AmmoItemData newAmmoTypeToLoad)
     {
         if (isReloading || !isWeaponDrawn)

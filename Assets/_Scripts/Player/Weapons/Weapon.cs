@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
@@ -66,16 +67,12 @@ public abstract class Weapon : MonoBehaviour, IWeapon
         weaponAnimator.Play("Draw");
         weaponAudioEmitter.ForcePlay(weaponItemData.drawSFX, weaponItemData.drawVolume);
         await Task.Delay((int)(weaponItemData.drawAnimDuration * 1000));
+        if (!IsMeleeWeapon())
+            GetRangedWeapon().UnreadyWeapon();
         isWeaponDrawn = true;
         canUse = true;
     }
-    public async Task ReadyWeapon()
-    {
-        if (!CanUse())
-            return;
-
-        Debug.Log("Used special");
-    }
+    
     public async Task HolsterWeapon()
     {
         isWeaponDrawn = false;
@@ -101,6 +98,10 @@ public abstract class Weapon : MonoBehaviour, IWeapon
     }
     public void TryUse()
     {
+        if (!IsMeleeWeapon())
+            if (!GetRangedWeapon().isWeaponReady)
+                return;
+
         if (!CanUse())
             return;
 

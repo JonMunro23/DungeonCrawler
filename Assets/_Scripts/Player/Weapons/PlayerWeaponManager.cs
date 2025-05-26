@@ -443,16 +443,37 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void ReadyWeapon()
     {
-        if (isLookingAtTarget)
-            return;
+        //if (isLookingAtTarget)
+        //    return;
 
-        if (isAmmoSelectionMenuOpen)
-            return;
+        //if (isAmmoSelectionMenuOpen)
+        //    return;
 
         if (currentWeapon == null)
             return;
 
-        currentWeapon.ReadyWeapon();
+        if (currentWeapon.IsMeleeWeapon())
+            return;
+
+         currentWeapon.GetRangedWeapon().ReadyWeapon();
+    }
+
+    public void UnreadyWeapon()
+    {
+        //if (isLookingAtTarget)
+        //    return;
+
+        //if (isAmmoSelectionMenuOpen)
+        //    return;
+
+        if (currentWeapon == null)
+            return;
+
+        if (currentWeapon.IsMeleeWeapon())
+            return;
+
+        //cancel meme task here
+        currentWeapon.GetRangedWeapon().UnreadyWeapon();
     }
 
     public async void ReloadCurrentWeapon(AmmoItemData ammoTypeToLoad = null)

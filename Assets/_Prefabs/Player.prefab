@@ -650,7 +650,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 4750780804372824305}
           m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: TryUseCurrentWeaponSpecial
+          m_MethodName: TryReadyCurrentWeapon
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -854,6 +854,22 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - key: 324
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4808936625142989322}
+          m_TargetAssemblyTypeName: PlayerWeaponManager, Assembly-CSharp
+          m_MethodName: UnreadyWeapon
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 50
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   eventMappingsHold:
   - key: 114
     callback:
@@ -1047,9 +1063,9 @@ MonoBehaviour:
   totalNumInventorySlots: 30
   heldHealthSyringes: 0
   openContainerCamPos: {x: 0, y: 1.75, z: -0.04}
-  defaultCamPos: {x: 0, y: 1.75, z: -0.5}
+  returnCamPos: {x: 0, y: 0, z: 0}
   openContainerCamRot: {x: 45, y: 0, z: 0}
-  defaultCamRot: {x: 7.5, y: 0, z: 0}
+  returnCamRot: {x: 0, y: 0, z: 0}
   openContainerCamMovementDuration: 0.5
   closeContainerCamMovementDuration: 0.2
 --- !u!114 &6917960533262647579
