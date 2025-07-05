@@ -48,6 +48,9 @@ MonoBehaviour:
   defaultLoadedAmmoData: {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1,
     type: 2}
   recoilData: {fileID: 11400000, guid: 1dd2f7d44e5a4d04d81b3f408545096a, type: 2}
+  spreadReductionSpeed: 1.4
+  perShotSpreadIncrease: 0.2
+  onWeaponReadiedSpreadAmount: 1.6
   attackSFX:
   - {fileID: 8300000, guid: 406e8486c88ba1941aaf35f44f86e570, type: 3}
   - {fileID: 8300000, guid: 03cb07fd4c96c764d87c7dcf9f6f2e9b, type: 3}

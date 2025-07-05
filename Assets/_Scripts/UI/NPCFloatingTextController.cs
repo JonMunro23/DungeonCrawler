@@ -22,36 +22,29 @@ public class NPCFloatingTextController : MonoBehaviour
     [SerializeField] Color fireDamageTextColour;
     [SerializeField] Color acidDamageTextColour;
 
-    public void SpawnDamageText(bool wasHit, int damage, DamageType damageType = DamageType.Standard, bool wasCrit = false)
+    public void SpawnDamageText(int damage, DamageType damageType = DamageType.Standard)
     {
         GameObject textClone = Instantiate(damageTakenFloatingText, RandomiseFloatingTextSpawnLocation(), transform.rotation);
         textClone.GetComponent<FloatingDamageText>().SetUpwardsSpeed(textSpeed);
 
         TMP_Text cloneTextComponent = textClone.GetComponentInChildren<TMP_Text>();
 
-        if (!wasHit)
+        switch (damageType)
         {
-            cloneTextComponent.text = "Miss";
+            case DamageType.Fire:
+                cloneTextComponent.color = fireDamageTextColour;
+                break;
+            case DamageType.Acid:
+                cloneTextComponent.color = acidDamageTextColour;
+                break;
         }
-        else
-        {
-            switch (damageType)
-            {
-                case DamageType.Fire:
-                    cloneTextComponent.color = fireDamageTextColour;
-                    break;
-                case DamageType.Acid:
-                    cloneTextComponent.color = acidDamageTextColour;
-                    break;
-            }
 
-            if (wasCrit)
-            {
-                cloneTextComponent.color = critDamageTextColour;
-                cloneTextComponent.fontSize += .10f;
-            }
-            cloneTextComponent.text = damage.ToString();
-        }
+        //if (wasCrit)
+        //{
+        //    cloneTextComponent.color = critDamageTextColour;
+        //    cloneTextComponent.fontSize += .10f;
+        //}
+        cloneTextComponent.text = damage.ToString();
 
         StartTextRemoval(textClone, cloneTextComponent);
     }

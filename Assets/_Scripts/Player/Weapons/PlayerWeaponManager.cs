@@ -55,7 +55,7 @@ public class PlayerWeaponManager : MonoBehaviour
     public IWeapon currentWeapon;
 
     public static Action<WeaponSlot[]> onWeaponSlotsSpawned;
-    public static Action<int> onWeaponSlotSetActive;
+    public static Action<WeaponSlot> onWeaponSlotSetActive;
     public static Action<int, WeaponItemData> onNewWeaponInitialised;
 
     public static Action<IWeapon> onWeaponAmmoSelectionMenuOpened;
@@ -420,7 +420,7 @@ public class PlayerWeaponManager : MonoBehaviour
             }
         }
 
-        onWeaponSlotSetActive?.Invoke(slotIndex);
+        onWeaponSlotSetActive?.Invoke(spawnedWeaponSlots[slotIndex]);
 
         await SetSlotActive(slotIndex);
 

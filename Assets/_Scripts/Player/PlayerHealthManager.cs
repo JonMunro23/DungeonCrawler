@@ -69,10 +69,10 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public void TakeDamageCheat(int damageToTake)
     {
-        TryDamage(true, damageToTake, DamageType.Standard, false);
+        TryDamage(damageToTake, DamageType.Standard);
     }
 
-    public void TryDamage(bool wasHit, int damageTaken, DamageType damageType = DamageType.Standard, bool wasCrit = false)
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard)
     {
         if (!PlayerController.isPlayerAlive)
             return;
@@ -83,13 +83,12 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
             return;
         }
 
-        TakeDamage(damageTaken, wasCrit);
+        TakeDamage(damageTaken);
     }
 
-    private void TakeDamage(int damageTaken, bool wasCrit)
+    private void TakeDamage(int damageTaken)
     {
-        int damageToTake = wasCrit ? damageTaken * 2 : damageTaken;
-        damageTaken -= currentArmour;
+        int damageToTake = damageTaken - currentArmour;
         audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
         playerController.ShakeScreen();
         currentHealth -= damageToTake;

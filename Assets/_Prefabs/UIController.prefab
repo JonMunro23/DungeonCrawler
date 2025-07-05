@@ -666,6 +666,7 @@ MonoBehaviour:
   playerWeaponUIManager: {fileID: 4991282280067760860}
   playerSkillsUIManager: {fileID: 1022970140535042899}
   mapController: {fileID: 2525237427438918035}
+  crosshairController: {fileID: 0}
   pauseMenu: {fileID: 1558153070388510056}
   mainMenu: {fileID: 9144507638588851619}
   saveMenu: {fileID: 3762061363982297104}
@@ -1657,10 +1658,11 @@ MonoBehaviour:
   interactSprite: {fileID: 21300000, guid: 0ddde6c3506b14cf5bbb76c15933798a, type: 3}
   containerSprite: {fileID: 21300000, guid: 85f92583aa84e44d593cc7b4830aa037, type: 3}
   crosshairArms:
-  - {fileID: 6476998245452992591}
-  - {fileID: 9139894366894178810}
   - {fileID: 1282275913732842185}
   - {fileID: 1858685013088631960}
+  - {fileID: 6476998245452992591}
+  - {fileID: 9139894366894178810}
+  minSpreadDistance: 35
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &580521755611980995
 GameObject:
@@ -1696,8 +1698,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 45, y: 0}
+  m_SizeDelta: {x: 50, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4018088308752965952
 CanvasRenderer:
@@ -13270,8 +13272,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -50}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: -45}
+  m_SizeDelta: {x: 25, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3227483457823847241
 CanvasRenderer:
@@ -15602,8 +15604,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -45, y: 0}
+  m_SizeDelta: {x: 50, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7367946766686252682
 CanvasRenderer:
@@ -17821,8 +17823,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8290068847890103970}
   m_HandleRect: {fileID: 5647351941011637647}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.999997
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -27208,7 +27210,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -30.000008, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &7031557616593267904
@@ -27285,8 +27287,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 50}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: 45}
+  m_SizeDelta: {x: 25, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2493184754405362869
 CanvasRenderer:

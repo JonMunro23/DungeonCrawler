@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -18,6 +19,7 @@ public class RangedWeapon : Weapon
     public bool infinteAmmo = false;
     public bool isWeaponReady;
 
+    [SerializeField] float bulletSpreadMultiplier;
 
     [SerializeField] ParticleSystem muzzleFX;
     [SerializeField] ParticleSystem shellEjectionParticleEffect;
@@ -97,11 +99,28 @@ public class RangedWeapon : Weapon
             }
         }
     }
+
     private Vector3 GetBulletSpread()
     {
-        Vector2 randomPoint = new Vector2(Random.Range(-weaponItemData.recoilData.weaponSpread, weaponItemData.recoilData.weaponSpread), Random.Range(-weaponItemData.recoilData.weaponSpread, weaponItemData.recoilData.weaponSpread));
+        //// Clamp the spreadMultiplier to be between 0 and 1
+        //bulletSpreadMultiplier = Mathf.Clamp01(bulletSpreadMultiplier);
+
+        // Calculate the random spread offset
+        Vector2 randomPoint = new Vector2(
+            Random.Range(-weaponItemData.recoilData.weaponSpread, weaponItemData.recoilData.weaponSpread),
+            Random.Range(-weaponItemData.recoilData.weaponSpread, weaponItemData.recoilData.weaponSpread)
+        );
+
+        // Apply the multiplier to the random spread
+        randomPoint *= bulletSpreadMultiplier;
+
         return new Vector3(randomPoint.x, randomPoint.y, 1);
     }
+    public float GetBulletSpreadMultiplier()
+    {
+        return bulletSpreadMultiplier;
+    }
+
     private void Shoot()
     {
         weaponAnimator.CrossFadeInFixedTime("Fire", .025f);
@@ -114,7 +133,7 @@ public class RangedWeapon : Weapon
             UpdateLoadedAmmo(loadedAmmo - 1);
 
         onRangedWeaponFired?.Invoke(weaponItemData);
-        //onReserveAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), loadedAmmo, GetReserveAmmo());
+        IncreaseBulletSpreadMultiplier(weaponItemData.perShotSpreadIncrease);
 
         RaycastHit hit;
         for (int i = 0; i < weaponItemData.projectileCount; i++)
@@ -125,7 +144,7 @@ public class RangedWeapon : Weapon
             Ray ray = new Ray(origin, direction);
             if (Physics.Raycast(ray, out hit, weaponItemData.itemRange * 3))
             {
-                Debug.DrawRay(ray.origin, ray.direction * Vector3.Distance(ray.origin, hit.point), Color.yellow, 10);
+                //Debug.DrawRay(ray.origin, ray.direction * Vector3.Distance(ray.origin, hit.point), Color.yellow, 10);
                 if(hit.transform.TryGetComponent(out ShootableTarget target))
                 {
                     target.Interact();
@@ -137,39 +156,39 @@ public class RangedWeapon : Weapon
                 {
                     int damage = 0;
                     int AR = damageable.GetDamageData().currentArmourRating;
-                    bool isCrit = RollForCrit();
-                    bool wasHit = RollForHit();
+                    //bool isCrit = RollForCrit();
+                    //bool wasHit = RollForHit();
 
                     switch (currentLoadedAmmoData.ammoType)
                     {
                         case AmmoType.Standard:
                             damage = CalculateDamage(AR);
-                            if (isCrit)
-                                damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
-                            damageable.TryDamage(wasHit, damage, DamageType.Standard, isCrit);
+                            //if (isCrit)
+                            //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                            damageable.TryDamage(damage, DamageType.Standard);
                             break;
                         case AmmoType.ArmourPiercing:
                             int reducedAR = Mathf.RoundToInt(AR * .5f);
                             damage = CalculateDamage(reducedAR);
-                            if (isCrit)
-                                damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
-                            damageable.TryDamage(wasHit, damage, DamageType.Standard, isCrit);
+                            //if (isCrit)
+                            //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                            damageable.TryDamage(damage, DamageType.Standard);
                             break;
                         case AmmoType.HollowPoint:
                             //more damage to unarmoured targets but reduced against armour
                             break;
                         case AmmoType.Incendiary:
                             damage = CalculateDamage(AR);
-                            if (isCrit)
-                                damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
-                            damageable.TryDamage(wasHit, damage, DamageType.Fire, isCrit);
+                            //if (isCrit)
+                            //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                            damageable.TryDamage(damage, DamageType.Fire);
                             damageable.AddStatusEffect(StatusEffectType.Fire);
                             break;
                         case AmmoType.Acid:
                             damage = CalculateDamage(AR);
-                            if (isCrit)
-                                damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
-                            damageable.TryDamage(wasHit, damage, DamageType.Acid, isCrit);
+                            //if (isCrit)
+                            //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
+                            damageable.TryDamage(damage, DamageType.Acid);
                             damageable.AddStatusEffect(StatusEffectType.Acid);
                             break;
 
@@ -279,9 +298,27 @@ public class RangedWeapon : Weapon
             isReadyingWeapon = false;
             isWeaponReady = true;
             onRangedWeaponReadied?.Invoke(isWeaponReady);
+            IncreaseBulletSpreadMultiplier(weaponItemData.onWeaponReadiedSpreadAmount);
         });
         //await Task.Delay((int)(weaponItemData.readyAnimDuration * 1000));
     }
+
+
+    private Tween bulletSpreadTween;
+    private void IncreaseBulletSpreadMultiplier(float increaseAmount)
+    {
+        bulletSpreadMultiplier += increaseAmount;
+
+        bulletSpreadTween?.Kill();
+
+        bulletSpreadTween = DOTween.To(() => bulletSpreadMultiplier, x => bulletSpreadMultiplier = x, 0f, weaponItemData.spreadReductionSpeed)
+            .SetEase(Ease.OutQuad)
+            .OnComplete(() =>
+            {
+                bulletSpreadMultiplier = 0;
+            });
+    }
+
     public void UnreadyWeapon()
     {
         if (IsMeleeWeapon())

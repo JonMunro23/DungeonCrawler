@@ -130,16 +130,10 @@ public class NPCController : MonoBehaviour, IDamageable
         
     }
 
-    public void TryDamage(bool wasHit, int damage, DamageType damageType = DamageType.Standard, bool wasCrit = false)
+    public void TryDamage(int damage, DamageType damageType = DamageType.Standard)
     {
         if(!isDead)
         {
-            if(!wasHit)
-            {
-                floatingTextController.SpawnDamageText(wasHit, damage, damageType, wasCrit);
-                return;
-            }
-
             if (!movementController.isTurning && !movementController.isMoving)
             {
                 int rand = Random.Range(0, 100);
@@ -149,7 +143,7 @@ public class NPCController : MonoBehaviour, IDamageable
 
             currentGroupHealth -= damage;
 
-            floatingTextController.SpawnDamageText(wasHit, damage, damageType, wasCrit);
+            floatingTextController.SpawnDamageText(damage, damageType);
             float remainingEnemies = currentGroupHealth / maxGroupHealth * amountToSpawnInStack;
             int roundedEnemyCount = Mathf.CeilToInt(remainingEnemies);
 
@@ -243,7 +237,7 @@ public class NPCController : MonoBehaviour, IDamageable
         {
             if (timeElapsed >= interval)
             {
-                TryDamage(true, Random.Range(minDamage, maxDamage), damageType);
+                TryDamage(Random.Range(minDamage, maxDamage), damageType);
                 interval += damageIntervals;
             }
 

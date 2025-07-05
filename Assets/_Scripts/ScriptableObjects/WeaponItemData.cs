@@ -59,6 +59,9 @@ public class WeaponItemData : EquipmentItemData
 
     [Header("Recoil Data")]
     public WeaponRecoilData recoilData;
+    public float spreadReductionSpeed = 1.2f;
+    public float perShotSpreadIncrease = .2f;
+    public float onWeaponReadiedSpreadAmount = 2f;
 
     [Header("Weapon SFX")]
     public AudioClip[] attackSFX;

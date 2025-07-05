@@ -20,6 +20,8 @@ public class CrosshairController : MonoBehaviour
 
     [Header("Crosshair Arms")]
     [SerializeField] Image[] crosshairArms;
+    [SerializeField] float minSpreadDistance = 25f;
+    RangedWeapon currentActiveRangedWeapon;
 
     [Header("Colors")]
     [SerializeField] Color defaultColor;
@@ -27,16 +29,31 @@ public class CrosshairController : MonoBehaviour
     static Image crosshairImage;
     static bool isCrosshairLocked = true;
 
+
     private void OnEnable()
     {
         WorldInteractionManager.onLookAtTargetChanged += CurrentLookAtTargetChanged;
+
         RangedWeapon.onRangedWeaponReadied += OnRangedWeaponReadied;
+
+        WeaponSlot.onWeaponDrawn += OnWeaponDrawn;
     }
 
     private void OnDisable()
     {
         WorldInteractionManager.onLookAtTargetChanged -= CurrentLookAtTargetChanged;
+
         RangedWeapon.onRangedWeaponReadied -= OnRangedWeaponReadied;
+
+        WeaponSlot.onWeaponDrawn -= OnWeaponDrawn;
+    }
+
+    void OnWeaponDrawn(IWeapon drawnWeapon)
+    {
+        if(drawnWeapon.GetRangedWeapon() != null)
+        {
+            currentActiveRangedWeapon = drawnWeapon.GetRangedWeapon();
+        }
     }
 
     private void Awake()
@@ -46,11 +63,19 @@ public class CrosshairController : MonoBehaviour
 
     private void Start()
     {
-        crosshairImage.color = defaultColor;
+        SetCrosshairToDefault();
     }
 
     private void Update()
     {
+        // Only spread if we have a weapon
+        if (currentActiveRangedWeapon != null && currentActiveRangedWeapon.isWeaponReady)
+        {
+            float spreadMultipler = currentActiveRangedWeapon.GetBulletSpreadMultiplier();
+            if (spreadMultipler > 0)
+                SetArmsSpreadAmount(spreadMultipler);
+        }
+
         if (isCrosshairLocked)
             return;
 
@@ -77,6 +102,20 @@ public class CrosshairController : MonoBehaviour
         }
 
         crosshairImage.enabled = !enabled;
+    }
+
+    private void SetArmsSpreadAmount(float spreadMultiplier)
+    {
+        // Spread is always at least minSpreadDistance
+        float finalSpread = minSpreadDistance + (spreadMultiplier * minSpreadDistance);
+
+        // upper and lower arms move in Y
+        crosshairArms[0].rectTransform.anchoredPosition = new Vector2(0, finalSpread); // upper
+        crosshairArms[1].rectTransform.anchoredPosition = new Vector2(0, -finalSpread); // lower
+
+        // left and right arms move in X
+        crosshairArms[2].rectTransform.anchoredPosition = new Vector2(-finalSpread, 0); // left
+        crosshairArms[3].rectTransform.anchoredPosition = new Vector2(finalSpread, 0); // right
     }
 
     void CurrentLookAtTargetChanged(LookAtTarget newLookAtTarget)

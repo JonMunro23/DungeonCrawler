@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 61,
+	"nextUid": 62,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -1520,11 +1520,11 @@
 			"identifier": "Level_0",
 			"iid": "011d9a80-9b00-11ef-9670-d7c5423fe3e9",
 			"uid": 0,
-			"worldX": 0,
+			"worldX": -256,
 			"worldY": 0,
 			"worldDepth": 0,
-			"pxWid": 256,
-			"pxHei": 256,
+			"pxWid": 512,
+			"pxHei": 512,
 			"__bgColor": "#696A79",
 			"bgColor": null,
 			"useAutoIdentifier": true,
@@ -1549,8 +1549,8 @@
 				{
 					"__identifier": "Entities",
 					"__type": "Entities",
-					"__cWid": 16,
-					"__cHei": 16,
+					"__cWid": 32,
+					"__cHei": 32,
 					"__gridSize": 16,
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
@@ -1572,7 +1572,7 @@
 					"entityInstances": [
 						{
 							"__identifier": "NPC_Spawn",
-							"__grid": [2,7],
+							"__grid": [18,7],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
@@ -1581,7 +1581,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [40,120],
+							"px": [296,120],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
@@ -1597,7 +1597,7 @@
 						},
 						{
 							"__identifier": "Interactable",
-							"__grid": [10,4],
+							"__grid": [26,4],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
@@ -1606,7 +1606,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [168,72],
+							"px": [424,72],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
 									"id": "V_String",
@@ -1644,7 +1644,7 @@
 						},
 						{
 							"__identifier": "Triggerable",
-							"__grid": [8,3],
+							"__grid": [24,3],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 432, "y": 0, "w": 16, "h": 16 },
@@ -1653,7 +1653,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 12,
-							"px": [136,56],
+							"px": [392,56],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 17, "realEditorValues": [{
 									"id": "V_String",
@@ -1667,7 +1667,7 @@
 						},
 						{
 							"__identifier": "Level_Transition",
-							"__grid": [10,0],
+							"__grid": [26,0],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 32, "w": 16, "h": 16 },
@@ -1676,7 +1676,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 23,
-							"px": [168,8],
+							"px": [424,8],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 24, "realEditorValues": [{
 									"id": "V_String",
@@ -1690,7 +1690,7 @@
 						},
 						{
 							"__identifier": "Triggerable",
-							"__grid": [5,7],
+							"__grid": [21,7],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 432, "y": 0, "w": 16, "h": 16 },
@@ -1699,7 +1699,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 12,
-							"px": [88,120],
+							"px": [344,120],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 17, "realEditorValues": [{
 									"id": "V_String",
@@ -1713,7 +1713,7 @@
 						},
 						{
 							"__identifier": "Interactable",
-							"__grid": [4,6],
+							"__grid": [20,6],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
@@ -1722,7 +1722,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [72,104],
+							"px": [328,104],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 16, "realEditorValues": [{
 									"id": "V_String",
@@ -1754,7 +1754,7 @@
 						},
 						{
 							"__identifier": "Interactable",
-							"__grid": [4,8],
+							"__grid": [20,8],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
@@ -1763,7 +1763,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [72,136],
+							"px": [328,136],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 16, "realEditorValues": [{
 									"id": "V_String",
@@ -1795,7 +1795,7 @@
 						},
 						{
 							"__identifier": "Container",
-							"__grid": [9,6],
+							"__grid": [25,6],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 192, "y": 256, "w": 16, "h": 16 },
@@ -1804,7 +1804,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 35,
-							"px": [152,104],
+							"px": [408,104],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 39, "realEditorValues": [{
 									"id": "V_String",
@@ -1828,7 +1828,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [2,14],
+							"__grid": [18,14],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -1837,7 +1837,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [40,232],
+							"px": [296,232],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
@@ -1855,7 +1855,7 @@
 						},
 						{
 							"__identifier": "Level_Transition",
-							"__grid": [15,11],
+							"__grid": [31,11],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 32, "w": 16, "h": 16 },
@@ -1864,7 +1864,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 23,
-							"px": [248,184],
+							"px": [504,184],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 24, "realEditorValues": [{
 									"id": "V_String",
@@ -1878,7 +1878,7 @@
 						},
 						{
 							"__identifier": "Triggerable",
-							"__grid": [13,9],
+							"__grid": [29,9],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 432, "y": 0, "w": 16, "h": 16 },
@@ -1887,7 +1887,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 12,
-							"px": [216,152],
+							"px": [472,152],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 17, "realEditorValues": [] },
 								{ "__identifier": "Triggerable_Type", "__type": "LocalEnum.Triggerable_Type", "__value": "Door", "__tile": null, "defUid": 21, "realEditorValues": [] },
@@ -1898,7 +1898,7 @@
 						},
 						{
 							"__identifier": "Interactable",
-							"__grid": [13,10],
+							"__grid": [29,10],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
@@ -1907,7 +1907,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [216,168],
+							"px": [472,168],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
 									"id": "V_String",
@@ -1933,7 +1933,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [13,4],
+							"__grid": [29,4],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -1942,7 +1942,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [216,72],
+							"px": [472,72],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
@@ -1960,7 +1960,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [11,2],
+							"__grid": [27,2],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -1969,7 +1969,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [184,40],
+							"px": [440,40],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [{
 									"id": "V_String",
@@ -1987,7 +1987,7 @@
 						},
 						{
 							"__identifier": "NPC_Spawn",
-							"__grid": [10,13],
+							"__grid": [26,13],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
@@ -1996,7 +1996,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [168,216],
+							"px": [424,216],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
@@ -2012,7 +2012,7 @@
 						},
 						{
 							"__identifier": "NPC_Spawn",
-							"__grid": [6,13],
+							"__grid": [22,13],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
@@ -2021,7 +2021,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [104,216],
+							"px": [360,216],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
@@ -2037,7 +2037,7 @@
 						},
 						{
 							"__identifier": "WorldItem",
-							"__grid": [3,14],
+							"__grid": [19,14],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
@@ -2046,7 +2046,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 10,
-							"px": [56,232],
+							"px": [312,232],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 13, "realEditorValues": [] },
 								{ "__identifier": "Item_Name", "__type": "String", "__value": "rifle_ammo", "__tile": null, "defUid": 14, "realEditorValues": [{
@@ -2061,7 +2061,7 @@
 						},
 						{
 							"__identifier": "LightSource",
-							"__grid": [13,5],
+							"__grid": [29,5],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 0, "w": 16, "h": 16 },
@@ -2070,14 +2070,14 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 50,
-							"px": [216,88],
+							"px": [472,88],
 							"fieldInstances": [],
 							"__worldX": 216,
 							"__worldY": 88
 						},
 						{
 							"__identifier": "Player_Start",
-							"__grid": [13,8],
+							"__grid": [29,8],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 256, "y": 144, "w": 16, "h": 16 },
@@ -2086,14 +2086,14 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 2,
-							"px": [216,136],
+							"px": [472,136],
 							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 5, "realEditorValues": [] }],
 							"__worldX": 216,
 							"__worldY": 136
 						},
 						{
 							"__identifier": "NPC_Invis_Wall",
-							"__grid": [14,11],
+							"__grid": [30,11],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
@@ -2102,14 +2102,14 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 60,
-							"px": [232,184],
+							"px": [488,184],
 							"fieldInstances": [],
 							"__worldX": 232,
 							"__worldY": 184
 						},
 						{
 							"__identifier": "NPC_Invis_Wall",
-							"__grid": [10,1],
+							"__grid": [26,1],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 256, "y": 16, "w": 16, "h": 16 },
@@ -2118,14 +2118,14 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 60,
-							"px": [168,24],
+							"px": [424,24],
 							"fieldInstances": [],
 							"__worldX": 168,
 							"__worldY": 24
 						},
 						{
 							"__identifier": "NPC_Spawn",
-							"__grid": [1,13],
+							"__grid": [17,13],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 272, "y": 144, "w": 16, "h": 16 },
@@ -2134,7 +2134,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [24,216],
+							"px": [280,216],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 9, "realEditorValues": [{
 									"id": "V_String",
@@ -2150,7 +2150,7 @@
 						},
 						{
 							"__identifier": "Interactable",
-							"__grid": [11,6],
+							"__grid": [27,6],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
@@ -2159,7 +2159,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 11,
-							"px": [184,104],
+							"px": [440,104],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "South", "__tile": null, "defUid": 16, "realEditorValues": [{
 									"id": "V_String",
@@ -2188,8 +2188,8 @@
 				{
 					"__identifier": "Tiles",
 					"__type": "IntGrid",
-					"__cWid": 16,
-					"__cHei": 16,
+					"__cWid": 32,
+					"__cHei": 32,
 					"__gridSize": 16,
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
@@ -2204,14 +2204,36 @@
 					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [
-						1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,
-						1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,2,1,1,
-						1,1,1,2,2,2,2,2,2,1,1,1,2,2,2,1,1,1,1,2,2,2,2,2,2,1,1,2,2,2,2,1,1,1,1,
-						2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,1,1,1,2,2,2,1,1,2,2,2,2,1,1,1,2,1,1,1,
-						2,2,2,1,1,1,2,2,2,1,1,1,2,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1,
-						1,1,1,2,1,1,2,2,2,2,2,2,2,1,2,2,2,1,2,2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,2,
-						2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,2,2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,
-						1,1,1,1,1,1,1,1,1,1,1
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,
+						2,2,2,2,1,1,1,2,1,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,
+						2,1,1,2,2,2,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,2,
+						2,2,2,1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,2,2,2,2,
+						2,2,2,2,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,2,2,2,2,1,1,1,
+						2,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,2,2,2,1,1,1,2,1,1,
+						1,1,2,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,
+						1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,2,1,1,2,1,1,2,2,2,2,2,2,2,1,2,2,2,1,
+						1,1,1,1,1,1,1,2,2,2,2,2,2,1,2,1,2,2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,
+						1,1,1,1,2,2,2,1,2,2,1,2,1,2,2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,
+						1,2,2,2,1,2,2,1,2,1,2,2,2,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,
+						2,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,1,
+						2,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,1,2,1,2,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,2,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,1,2,1,1,2,2,2,2,
+						2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,2,1,1,2,2,2,2,2,2,2,
+						2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,2,1,1,2,2,2,2,2,2,2,2,2,2,
+						2,1,1,1,1,1,1,1,1,1,1,1,2,2,1,2,2,2,1,2,1,1,1,2,2,2,2,2,2,2,2,2,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,2,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1
 					],
 					"autoLayerTiles": [],
 					"seed": 6349456,
@@ -2926,8 +2948,8 @@
 			"worldX": 256,
 			"worldY": 0,
 			"worldDepth": 0,
-			"pxWid": 256,
-			"pxHei": 256,
+			"pxWid": 512,
+			"pxHei": 512,
 			"__bgColor": "#696A79",
 			"bgColor": null,
 			"useAutoIdentifier": true,
@@ -2952,8 +2974,8 @@
 				{
 					"__identifier": "Entities",
 					"__type": "Entities",
-					"__cWid": 16,
-					"__cHei": 16,
+					"__cWid": 32,
+					"__cHei": 32,
 					"__gridSize": 16,
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
@@ -3171,8 +3193,8 @@
 				{
 					"__identifier": "Tiles",
 					"__type": "IntGrid",
-					"__cWid": 16,
-					"__cHei": 16,
+					"__cWid": 32,
+					"__cHei": 32,
 					"__gridSize": 16,
 					"__opacity": 1,
 					"__pxTotalOffsetX": 0,
@@ -3187,14 +3209,36 @@
 					"visible": true,
 					"optionalRules": [],
 					"intGridCsv": [
-						1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,
-						1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,2,2,2,
-						1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,
-						2,1,1,1,1,1,1,1,1,1,2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,2,2,1,1,1,2,2,2,1,
-						1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,1,2,2,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,1,
-						1,2,2,2,2,1,2,2,2,1,2,2,2,2,2,1,1,1,1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,
+						2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,2,2,2,2,1,2,2,2,1,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-						1,1,1,1,1,1,1,1,1,1,1
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+						1,1,1,1,1,1,1,1,1
 					],
 					"autoLayerTiles": [],
 					"seed": 1150007,
@@ -3210,7 +3254,7 @@
 			"iid": "01c59f20-c210-11ef-a539-c5dac7648aab",
 			"uid": 54,
 			"worldX": 0,
-			"worldY": 256,
+			"worldY": 512,
 			"worldDepth": 0,
 			"pxWid": 256,
 			"pxHei": 256,
@@ -3274,7 +3318,7 @@
 								{ "__identifier": "Num_Required_Triggers", "__type": "Int", "__value": 2, "__tile": null, "defUid": 34, "realEditorValues": [{ "id": "V_Int", "params": [2] }] }
 							],
 							"__worldX": 72,
-							"__worldY": 440
+							"__worldY": 696
 						},
 						{
 							"__identifier": "Interactable",
@@ -3306,7 +3350,7 @@
 								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
 							],
 							"__worldX": 56,
-							"__worldY": 456
+							"__worldY": 712
 						},
 						{
 							"__identifier": "Interactable",
@@ -3338,7 +3382,7 @@
 								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
 							],
 							"__worldX": 88,
-							"__worldY": 456
+							"__worldY": 712
 						},
 						{
 							"__identifier": "Interactable",
@@ -3379,7 +3423,7 @@
 								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
 							],
 							"__worldX": 24,
-							"__worldY": 408
+							"__worldY": 664
 						},
 						{
 							"__identifier": "Interactable",
@@ -3420,7 +3464,7 @@
 								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
 							],
 							"__worldX": 40,
-							"__worldY": 408
+							"__worldY": 664
 						},
 						{
 							"__identifier": "Triggerable",
@@ -3443,7 +3487,7 @@
 								{ "__identifier": "Num_Required_Triggers", "__type": "Int", "__value": 1, "__tile": null, "defUid": 34, "realEditorValues": [] }
 							],
 							"__worldX": 104,
-							"__worldY": 408
+							"__worldY": 664
 						},
 						{
 							"__identifier": "Interactable",
@@ -3498,7 +3542,7 @@
 								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
 							],
 							"__worldX": 120,
-							"__worldY": 424
+							"__worldY": 680
 						},
 						{
 							"__identifier": "Triggerable",
@@ -3524,7 +3568,7 @@
 								{ "__identifier": "Num_Required_Triggers", "__type": "Int", "__value": 1, "__tile": null, "defUid": 34, "realEditorValues": [] }
 							],
 							"__worldX": 168,
-							"__worldY": 408
+							"__worldY": 664
 						},
 						{
 							"__identifier": "Triggerable",
@@ -3550,7 +3594,7 @@
 								{ "__identifier": "Num_Required_Triggers", "__type": "Int", "__value": 1, "__tile": null, "defUid": 34, "realEditorValues": [] }
 							],
 							"__worldX": 136,
-							"__worldY": 360
+							"__worldY": 616
 						},
 						{
 							"__identifier": "NPC_Spawn",
@@ -3572,7 +3616,7 @@
 								}] }
 							],
 							"__worldX": 136,
-							"__worldY": 344
+							"__worldY": 600
 						},
 						{
 							"__identifier": "NPC_Spawn",
@@ -3594,7 +3638,7 @@
 								}] }
 							],
 							"__worldX": 184,
-							"__worldY": 408
+							"__worldY": 664
 						},
 						{
 							"__identifier": "Interactable",
@@ -3632,7 +3676,7 @@
 								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
 							],
 							"__worldX": 184,
-							"__worldY": 408
+							"__worldY": 664
 						},
 						{
 							"__identifier": "Triggerable",
@@ -3658,7 +3702,7 @@
 								{ "__identifier": "Num_Required_Triggers", "__type": "Int", "__value": 1, "__tile": null, "defUid": 34, "realEditorValues": [null] }
 							],
 							"__worldX": 168,
-							"__worldY": 376
+							"__worldY": 632
 						},
 						{
 							"__identifier": "WorldItem",
@@ -3685,7 +3729,7 @@
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
 							],
 							"__worldX": 136,
-							"__worldY": 344
+							"__worldY": 600
 						},
 						{
 							"__identifier": "WorldItem",
@@ -3709,7 +3753,7 @@
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
 							],
 							"__worldX": 136,
-							"__worldY": 344
+							"__worldY": 600
 						},
 						{
 							"__identifier": "Interactable",
@@ -3750,7 +3794,7 @@
 								}] }
 							],
 							"__worldX": 184,
-							"__worldY": 280
+							"__worldY": 536
 						},
 						{
 							"__identifier": "Triggerable",
@@ -3773,7 +3817,7 @@
 								{ "__identifier": "Num_Required_Triggers", "__type": "Int", "__value": 1, "__tile": null, "defUid": 34, "realEditorValues": [] }
 							],
 							"__worldX": 136,
-							"__worldY": 312
+							"__worldY": 568
 						},
 						{
 							"__identifier": "NPC_Spawn",
@@ -3795,7 +3839,7 @@
 								}] }
 							],
 							"__worldX": 168,
-							"__worldY": 296
+							"__worldY": 552
 						},
 						{
 							"__identifier": "WorldItem",
@@ -3819,7 +3863,7 @@
 								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
 							],
 							"__worldX": 216,
-							"__worldY": 296
+							"__worldY": 552
 						}
 					]
 				},

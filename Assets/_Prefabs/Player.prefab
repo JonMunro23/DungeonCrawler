@@ -1056,7 +1056,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b540e6fc33d904b41aba33e18efb0788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingItemStacks: []
+  startingItemStacks:
+  - itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
+    itemAmount: 1
+    loadedAmmo: 30
+  - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
+    itemAmount: 1
+    loadedAmmo: 30
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
