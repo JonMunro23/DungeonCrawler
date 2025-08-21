@@ -45,6 +45,8 @@ ScriptedImporter:
     _asset: {instanceID: 0}
   - _key: NPC_Invis_Wall
     _asset: {instanceID: 0}
+  - _key: Destructable_Wall
+    _asset: {instanceID: 0}
   _enumGenerate: 0
   _enumPath: 
   _enumNamespace: 

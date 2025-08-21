@@ -29,7 +29,8 @@ public enum DamageType
 {
     Standard,
     Fire,
-    Acid
+    Acid,
+    Explosive
 }
 
 

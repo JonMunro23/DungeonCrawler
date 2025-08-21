@@ -1,0 +1,51 @@
+using UnityEngine;
+
+public class Destructable : MonoBehaviour, IDamageable, IGridNode
+{
+    [Header("Stats")]
+    [SerializeField] int health;
+    [SerializeField] int armourRating;
+
+
+    GridNode occupyingNode;
+    int levelIndex;
+
+    public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5)
+    {
+        //Cannot have status effects applied
+    }
+
+    public Vector2 GetCoords()
+    {
+        return occupyingNode.Coords.Pos;
+    }
+
+    public DamageData GetDamageData()
+    {
+        return new DamageData(health, armourRating);
+    }
+
+    public int GetLevelIndex()
+    {
+        return levelIndex;
+    }
+
+    public void SetLevelIndex(int _levelIndex)
+    {
+        levelIndex = _levelIndex;
+    }
+
+    public void SetOccupyingNode(GridNode occupyingNode)
+    {
+        this.occupyingNode = occupyingNode;
+    }
+
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard)
+    {
+        if (damageType != DamageType.Explosive)
+            return;
+
+        occupyingNode.ResetOccupant();
+        Destroy(gameObject);
+    }
+}

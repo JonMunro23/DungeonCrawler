@@ -5,7 +5,7 @@ public class DamageData
     public int currentArmourRating;
     public int currentEvasionRating;
 
-    public DamageData(int currentHealth, int currentArmourRating, int currentEvasionRating)
+    public DamageData(int currentHealth, int currentArmourRating = 0, int currentEvasionRating = 0)
     {
         this.currentHealth = currentHealth;
         this.currentArmourRating = currentArmourRating;

@@ -23,7 +23,6 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
     int levelIndex;
     GridNode node;
-    Vector2 coords;
 
     TriggerOperation triggerOperation = TriggerOperation.Toggle;
     InteractableType interactableType;
@@ -97,13 +96,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 
     public Vector2 GetCoords()
     {
-        return coords;
-    }
-
-    public void SetNode(GridNode spawnNode)
-    {
-        node = spawnNode;
-        coords = spawnNode.Coords.Pos;
+        return node.Coords.Pos;
     }
 
     public virtual void SetRequiredKeycardType(string keycardType)
@@ -163,5 +156,10 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     public void SetHighlighted(bool isHighlighted)
     {
         highlightEffect.highlighted = isHighlighted;
+    }
+
+    public void SetOccupyingNode(GridNode occupyingNode)
+    {
+        node = occupyingNode;
     }
 }
