@@ -13,17 +13,28 @@ MonoBehaviour:
   m_Name: ItemDataContainer
   m_EditorClassIdentifier: 
   itemData:
-  - {fileID: 11400000, guid: 6db1391fd6b91d84996e4464914a9cee, type: 2}
-  - {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
-  - {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
-  - {fileID: 11400000, guid: 08bb6ab52fe4a8842980544472333318, type: 2}
-  - {fileID: 11400000, guid: a7b9b17bcb65e79499ddd4bde54d02d7, type: 2}
-  - {fileID: 11400000, guid: 6684da6b5e8fecc44a3685ac0da4a1fd, type: 2}
   - {fileID: 11400000, guid: 1fa9d84123439c04488523ce042f0b2d, type: 2}
   - {fileID: 11400000, guid: f65187d1c2445de4db2565953f1906c4, type: 2}
+  weaponItemData:
   - {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
-  - {fileID: 11400000, guid: e7ca3b9d2beb1094eb773977c5389d53, type: 2}
+  - {fileID: 11400000, guid: 6db1391fd6b91d84996e4464914a9cee, type: 2}
   - {fileID: 11400000, guid: e1092f13c4b221646abba55603558649, type: 2}
-  - {fileID: 11400000, guid: a9a9d4f6cadceef40b231026bd874165, type: 2}
-  - {fileID: 11400000, guid: 9b4387b63c26100479530fe8b8e80114, type: 2}
+  - {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
+  - {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
+  ammoItemData:
+  - {fileID: 11400000, guid: d3475db692ba1f344838119acd690b14, type: 2}
   - {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1, type: 2}
+  - {fileID: 11400000, guid: c38aca0848b687440981d6016d8fdeae, type: 2}
+  - {fileID: 11400000, guid: 9b4387b63c26100479530fe8b8e80114, type: 2}
+  - {fileID: 11400000, guid: e7ca3b9d2beb1094eb773977c5389d53, type: 2}
+  - {fileID: 11400000, guid: 6684da6b5e8fecc44a3685ac0da4a1fd, type: 2}
+  - {fileID: 11400000, guid: 7fe1bceb4ffb0234da2bd4fdd98e2829, type: 2}
+  equipmentItemData:
+  - {fileID: 11400000, guid: 447d605a20175084e8b6fed12b4d99c6, type: 2}
+  - {fileID: 11400000, guid: 08bb6ab52fe4a8842980544472333318, type: 2}
+  - {fileID: 11400000, guid: a9a9d4f6cadceef40b231026bd874165, type: 2}
+  consumableItemData:
+  - {fileID: 11400000, guid: a7b9b17bcb65e79499ddd4bde54d02d7, type: 2}
+  - {fileID: 11400000, guid: e06847091251c5141896a30305911b8d, type: 2}
+  throwableItemData:
+  - {fileID: 11400000, guid: fe62d0e8903935a4295444afeb22411f, type: 2}

@@ -2277,6 +2277,33 @@
 							}] }],
 							"__worldX": 184,
 							"__worldY": 136
+						},
+						{
+							"__identifier": "WorldItem",
+							"__grid": [30,6],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 144, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#EAD4AA",
+							"iid": "b0465120-5e50-11f0-ba6f-ed535e4943e1",
+							"width": 16,
+							"height": 16,
+							"defUid": 10,
+							"px": [488,104],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 13, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["East"]
+								}] },
+								{ "__identifier": "Item_Name", "__type": "String", "__value": "grenade", "__tile": null, "defUid": 14, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["grenade"]
+								}] },
+								{ "__identifier": "Item_Amount", "__type": "Int", "__value": 3, "__tile": null, "defUid": 15, "realEditorValues": [{ "id": "V_Int", "params": [3] }] },
+								{ "__identifier": "Loaded_Ammo", "__type": "Int", "__value": 0, "__tile": null, "defUid": 29, "realEditorValues": [] }
+							],
+							"__worldX": 232,
+							"__worldY": 104
 						}
 					]
 				},

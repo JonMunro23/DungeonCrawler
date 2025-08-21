@@ -2811,6 +2811,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grid
       objectReference: {fileID: 0}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
+      propertyPath: destructableWall
+      value: 
+      objectReference: {fileID: 5856851048016783610, guid: 1d44805cad6884a478a689a34a8a57e0,
+        type: 3}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
+      propertyPath: destructableWallPrefab
+      value: 
+      objectReference: {fileID: 5856851048016783610, guid: 1d44805cad6884a478a689a34a8a57e0,
+        type: 3}
     - target: {fileID: 7918361601237953702, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
       propertyPath: m_LocalPosition.x

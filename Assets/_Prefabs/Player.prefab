@@ -1063,6 +1063,9 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
     itemAmount: 1
     loadedAmmo: 30
+  - itemData: {fileID: 11400000, guid: fe62d0e8903935a4295444afeb22411f, type: 2}
+    itemAmount: 5
+    loadedAmmo: 0
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
