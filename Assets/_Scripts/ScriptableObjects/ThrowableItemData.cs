@@ -12,10 +12,15 @@ public class ThrowableItemData : ItemData
     [Header("Throwable Item Properties")]
     public ThrowableArms throwableArmsPrefab;
     public Throwable throwablePrefab;
+    public float fuseLength = 3f;
     public float blastRadius = 1f;
-    public float throwVelocity;
+    public int damage;
+    public float minThrowVelocity;
+    public float maxThrowVelocity;
+    public float timeToMaxVelocity;
 
-    public float cooldownBetweenUses;
+    public ParticleSystem explosionVFX;
+    public AudioClip explosionSFX;
 
     [Header("Animation Lengths")]
     public float throwDelay;

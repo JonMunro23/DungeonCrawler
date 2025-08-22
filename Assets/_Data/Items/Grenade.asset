@@ -25,7 +25,13 @@ MonoBehaviour:
     type: 3}
   throwablePrefab: {fileID: 1652115390431381414, guid: c25f47be78f680644a9eaed2ba7aa5ad,
     type: 3}
+  fuseLength: 3
   blastRadius: 2
-  throwVelocity: 10
-  cooldownBetweenUses: 0.25
+  damage: 250
+  minThrowVelocity: 4
+  maxThrowVelocity: 25
+  timeToMaxVelocity: 3
+  explosionVFX: {fileID: 198969382488698180, guid: 4c61a5c87840e904494e62da5a53bb0b,
+    type: 3}
+  explosionSFX: {fileID: 8300000, guid: 1bfc29ba9e0166e429c770dda48da8a5, type: 3}
   throwDelay: 0.133

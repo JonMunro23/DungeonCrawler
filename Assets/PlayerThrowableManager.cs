@@ -18,11 +18,6 @@ public class PlayerThrowableManager : MonoBehaviour
         this.playerController = playerController;
     }
 
-    void Awake()
-    {
-        if (trajectoryLine) trajectoryLine.useWorldSpace = true; // make sure we draw in world space
-    }
-
     private void Start()
     {
         SetCurrentlySelectedThrowable(tempDefaultThrowableItem);
@@ -49,19 +44,13 @@ public class PlayerThrowableManager : MonoBehaviour
 
     // ===== Charging fields =====
     [Header("Charging")]
-    [SerializeField] float minThrowVelocity = 4f;          // tap speed
-    [SerializeField] float timeToMaxVelocity = 1.0f;       // seconds to reach max
     [SerializeField] AnimationCurve chargeCurve = null;    // optional easing; null = linear
 
     float readyStartTime;     // when charging began
     float currentCharge01;    // 0..1
     float currentThrowSpeed;  // used for preview & final throw
 
-    float MaxThrowVelocity => (currentlySelectedThrowable != null && currentlySelectedThrowable.throwVelocity > 0f)
-        ? currentlySelectedThrowable.throwVelocity
-        : 15f;
-
-    public void ReadyThrowable()
+        public void ReadyThrowable()
     {
         if (isThrowableReadied) return;
 
@@ -70,7 +59,7 @@ public class PlayerThrowableManager : MonoBehaviour
         // start charging
         readyStartTime = Time.time;
         currentCharge01 = 0f;
-        currentThrowSpeed = Mathf.Min(minThrowVelocity, MaxThrowVelocity);
+        currentThrowSpeed = Mathf.Min(currentlySelectedThrowable.minThrowVelocity, currentlySelectedThrowable.maxThrowVelocity);
 
         currentThrowableAnimator.Play("Pull_Pin");
         SetTrajectoryLineActive(true);
@@ -106,7 +95,8 @@ public class PlayerThrowableManager : MonoBehaviour
         );
 
         clone.Launch(finalSpeed * throwDir);
-
+        clone.Prime();
+        
         await Task.Delay((int)(0.7f * 1000));
         currentThrowableAnimator.Play("Draw");
         // Assign clone throwData, remove from inventory, etc.
@@ -140,13 +130,13 @@ public class PlayerThrowableManager : MonoBehaviour
         if (!isThrowableReadied) return;
 
         // Update charge 0..1 over timeToMaxVelocity
-        float raw = Mathf.Clamp01((Time.time - readyStartTime) / Mathf.Max(0.0001f, timeToMaxVelocity));
+        float raw = Mathf.Clamp01((Time.time - readyStartTime) / Mathf.Max(0.0001f, currentlySelectedThrowable.timeToMaxVelocity));
         float eased = (chargeCurve != null) ? chargeCurve.Evaluate(raw) : raw;
 
         currentCharge01 = eased;
         currentThrowSpeed = Mathf.Lerp(
-            Mathf.Min(minThrowVelocity, MaxThrowVelocity),
-            MaxThrowVelocity,
+            Mathf.Min(currentlySelectedThrowable.minThrowVelocity, currentlySelectedThrowable.maxThrowVelocity),
+            currentlySelectedThrowable.maxThrowVelocity,
             currentCharge01
         );
 
