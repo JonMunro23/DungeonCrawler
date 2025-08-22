@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 [System.Serializable]
@@ -38,6 +39,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerInventoryManager playerInventoryManager;
     [HideInInspector] public PlayerEquipmentManager playerEquipmentManager;
     [HideInInspector] public PlayerWeaponManager playerWeaponManager;
+    [HideInInspector] public PlayerThrowableManager playerThrowableManager;
     [HideInInspector] public PlayerStatsManager playerStatsManager;
     [HideInInspector] public PlayerSkillsManager playerSkillsManager;
     [HideInInspector] public Camera playerCamera;
@@ -47,8 +49,6 @@ public class PlayerController : MonoBehaviour
     public static GridNode currentOccupiedNode;
     public Rigidbody rb;
     public static bool isPlayerAlive;
-    public
-
     Vector3 defaultCamPos;
 
     public static Action<PlayerController> onPlayerInitialised;
@@ -56,12 +56,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        InventoryContextMenu.onHealSyringeUsed += OnHealSyringeUsed;
+        InventoryContextMenu.onHealSyringeUsedFromContextMenu += OnHealSyringeUsedFromContextMenu;
     }
 
     private void OnDisable()
     {
-        InventoryContextMenu.onHealSyringeUsed -= OnHealSyringeUsed;
+        InventoryContextMenu.onHealSyringeUsedFromContextMenu -= OnHealSyringeUsedFromContextMenu;
     }
 
     private void Awake()
@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
+        playerThrowableManager = GetComponent<PlayerThrowableManager>();
         itemPickupManager = GetComponent<WorldInteractionManager>();
         playerStatsManager = GetComponent<PlayerStatsManager>();
         playerSkillsManager = GetComponent<PlayerSkillsManager>();
@@ -84,7 +85,7 @@ public class PlayerController : MonoBehaviour
         defaultCamPos = playerCamera.transform.localPosition;
     }
 
-    void OnHealSyringeUsed(ISlot slot)
+    void OnHealSyringeUsedFromContextMenu(ISlot slot)
     {
         TryUseHealthSyringe(slot);
     }
@@ -99,6 +100,7 @@ public class PlayerController : MonoBehaviour
         playerInventoryManager.Init(this);
         playerEquipmentManager.Init(this);
         playerWeaponManager.Init(this);
+        playerThrowableManager.Init(this);
         playerStatsManager.Init(playerCharacterData);
         playerHealthManager.Init(this);
         playerSkillsManager.Init(playerCharacterData);
@@ -133,6 +135,11 @@ public class PlayerController : MonoBehaviour
         TryUseHealthSyringe(playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe));
     }
 
+    public async void EquipThrowableHotkey()
+    {
+        await playerThrowableManager.EquipThrowable();
+    }
+
     public async void TryUseHealthSyringe(ISlot slotToUse)
     {
         if (playerHealthManager.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
@@ -153,7 +160,13 @@ public class PlayerController : MonoBehaviour
 
     public void TryUseCurrentWeapon()
     {
-        if(!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem)
+        if (playerThrowableManager.IsThrowableActive())
+        {
+            _ = playerThrowableManager.UseThrowable();
+            return;
+        }
+
+        if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem)
         {
             playerWeaponManager.UseCurrentWeapon();
         }
@@ -167,10 +180,27 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        if(playerThrowableManager.IsThrowableActive())
+        {
+            playerThrowableManager.ReadyThrowable();
+            return;
+        }
+
         if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer)
         {
             playerWeaponManager.ReadyWeapon();
         }
+    }
+
+    public void TryUnreadyCurrentWeapon()
+    {
+        if (playerThrowableManager.IsThrowableActive())
+        {
+            playerThrowableManager.UnreadyThrowable();
+            return;
+        }
+
+        playerWeaponManager.UnreadyWeapon();
     }
 
     void RemoveGrabbedItem()

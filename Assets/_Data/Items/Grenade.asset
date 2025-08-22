@@ -21,6 +21,11 @@ MonoBehaviour:
   itemWeight: 0.25
   isItemStackable: 1
   maxItemStackSize: 5
+  throwableArmsPrefab: {fileID: 8925242296018203832, guid: af1043c188150e14cb74831acf23b520,
+    type: 3}
+  throwablePrefab: {fileID: 1652115390431381414, guid: c25f47be78f680644a9eaed2ba7aa5ad,
+    type: 3}
   blastRadius: 2
-  throwVelocity: 500
+  throwVelocity: 10
   cooldownBetweenUses: 0.25
+  throwDelay: 0.133

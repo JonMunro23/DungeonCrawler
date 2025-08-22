@@ -472,7 +472,6 @@ public class PlayerWeaponManager : MonoBehaviour
         if (currentWeapon.IsMeleeWeapon())
             return;
 
-        //cancel meme task here
         currentWeapon.GetRangedWeapon().UnreadyWeapon();
     }
 

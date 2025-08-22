@@ -22,7 +22,7 @@ public class InventoryContextMenu : MonoBehaviour
     public static Action<ISlot> onInventorySlotWeaponItemUnequipped;
 
     public static Action<ISlot> onBoosterUsed;
-    public static Action<ISlot> onHealSyringeUsed;
+    public static Action<ISlot> onHealSyringeUsedFromContextMenu;
 
     public void Init(ISlot slot)
     {
@@ -142,7 +142,7 @@ public class InventoryContextMenu : MonoBehaviour
     }
     public void UseHealSyringe()
     {
-        onHealSyringeUsed?.Invoke(slot);
+        onHealSyringeUsedFromContextMenu?.Invoke(slot);
         HideContextMenu();
     }
 
