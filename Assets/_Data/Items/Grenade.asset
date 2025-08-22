@@ -34,4 +34,5 @@ MonoBehaviour:
   explosionVFX: {fileID: 198969382488698180, guid: 4c61a5c87840e904494e62da5a53bb0b,
     type: 3}
   explosionSFX: {fileID: 8300000, guid: 1bfc29ba9e0166e429c770dda48da8a5, type: 3}
+  bounceSFX: {fileID: 8300000, guid: 005ea6ecd6587a44fb7adf7fcbbdd133, type: 3}
   throwDelay: 0.133

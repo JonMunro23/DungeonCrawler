@@ -6,12 +6,9 @@ public class Throwable : MonoBehaviour
     [SerializeField] ThrowableItemData itemData;
     Rigidbody rb;
 
-    AudioSource audioSource;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        audioSource = GetComponent<AudioSource>();
     }
 
     public void Launch(Vector3 velocity)
@@ -29,7 +26,7 @@ public class Throwable : MonoBehaviour
     void Explode()
     {
         ParticleSystem explosionVFX = Instantiate(itemData.explosionVFX, transform.position, transform.rotation);
-        audioSource.PlayOneShot(itemData.explosionSFX);
+        AudioManager.Instance.PlayClipAtPoint(itemData.explosionSFX, transform.position, 2.5f, 25f, .3f);         
         Collider[] colliders = Physics.OverlapSphere(transform.position, itemData.blastRadius);
         foreach (Collider collider in colliders)
         {
@@ -39,5 +36,12 @@ public class Throwable : MonoBehaviour
             }
         }
         Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player") || other.CompareTag("Enemy")) return;
+
+        AudioManager.Instance.PlayClipAtPoint(itemData.bounceSFX, transform.position, 2.5f, 15f, .3f);
     }
 }

@@ -21,6 +21,7 @@ public class ThrowableItemData : ItemData
 
     public ParticleSystem explosionVFX;
     public AudioClip explosionSFX;
+    public AudioClip bounceSFX;
 
     [Header("Animation Lengths")]
     public float throwDelay;
