@@ -11,7 +11,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     List<ItemStack> startingItemStacks = new List<ItemStack>(); 
 
     [SerializeField] InventorySlot inventorySlotPrefab;
-    public InventorySlot[] spawnedInventorySlots;
+    static InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
     [SerializeField] int heldHealthSyringes;
     [Space]
@@ -23,11 +23,14 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     [SerializeField] float openContainerCamMovementDuration, closeContainerCamMovementDuration;
     public static bool isInContainer { get; private set; }
 
+    bool hasCollectedFirstThrowable;
+
     public static Action onInventoryOpened;
     public static Action onInventoryClosed;
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
     public static Action<int> onSyringeCountUpdated;
     public static Action<AmmoItemData> onAmmoAddedToInventory;
+    public static Action<ThrowableItemData> onFirstThrowableCollected;
 
     void OnEnable()
     {
@@ -282,6 +285,17 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (freeSlot)
             {
                 freeSlot.AddItem(itemToAdd);
+
+                if(!hasCollectedFirstThrowable)
+                {
+                    ThrowableItemData throwableItemData = itemToAdd.itemData as ThrowableItemData;
+                    if(throwableItemData)
+                    {
+                        hasCollectedFirstThrowable = true;
+                        onFirstThrowableCollected?.Invoke(throwableItemData);
+                    }
+                }
+
                 return 0;
             }
 
@@ -370,6 +384,23 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             }
             return;
         }
+    }
+
+    public static int GetRemainingAmountOfItem(ItemData item)
+    {
+        int itemAmount = 0;
+        foreach (ISlot slot in spawnedInventorySlots)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            if (slot.GetItemStack().itemData != item)
+                continue;
+
+            itemAmount += slot.GetItemStack().itemAmount;
+        }
+
+        return itemAmount;
     }
 
     public void LockSlotsWithAmmoOfType(AmmoItemData ammoTypeToLock)
@@ -461,6 +492,24 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public void Load(PlayerSaveData data)
     {
         LoadItems(data.storedItems);
+    }
+
+    public List<ThrowableItemData> GetAllAvailableThrowables()
+    {
+        List<ThrowableItemData> heldThrowables = new List<ThrowableItemData>();
+        foreach (ISlot slot in spawnedInventorySlots)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            ThrowableItemData throwableItemData = slot.GetItemStack().itemData as ThrowableItemData;
+            if (!throwableItemData)
+                continue;
+
+            if (!heldThrowables.Contains(throwableItemData))
+                heldThrowables.Add(throwableItemData);
+        }
+        return heldThrowables;
     }
 
     #endregion

@@ -185,7 +185,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 45ff8d8246c9bac49a9090e30411f8bf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -260,7 +260,7 @@ LineRenderer:
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
-    textureMode: 0
+    textureMode: 1
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
@@ -1060,6 +1060,38 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - key: 103
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7316973756976472174}
+          m_TargetAssemblyTypeName: PlayerThrowableManager, Assembly-CSharp
+          m_MethodName: OpenThrowableSelectionMenu
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 50
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    minHoldDuration: 0.375
+    keyReleaseCallback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7316973756976472174}
+          m_TargetAssemblyTypeName: PlayerThrowableManager, Assembly-CSharp
+          m_MethodName: CloseThrowableSelectionMenu
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!114 &162635141120244599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1223,6 +1255,9 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: fe62d0e8903935a4295444afeb22411f, type: 2}
     itemAmount: 5
     loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: c38aca0848b687440981d6016d8fdeae, type: 2}
+    itemAmount: 45
+    loadedAmmo: 0
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   spawnedInventorySlots: []
@@ -1311,6 +1346,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  dottedMaterial: {fileID: 2100000, guid: 45ff8d8246c9bac49a9090e30411f8bf, type: 2}
+  dotSize: 1
+  dotScrollSpeed: 2
   trajectoryLine: {fileID: 7236164888705951764}
   arcUpBias: 0.05
   maxPoints: 60

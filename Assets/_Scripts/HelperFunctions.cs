@@ -4,15 +4,15 @@ public class HelperFunctions
 {
     public static void SetCursorActive(bool isActive)
     {
-        //if (isActive)
-        //{
-        //    Cursor.lockState = CursorLockMode.None;
-        //    Cursor.visible = true;
-        //}
-        //else if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem && !MainMenu.isInMainMenu && !MapController.isMapOpen)
-        //{
-        //    Cursor.lockState = CursorLockMode.Locked;
-        //    Cursor.visible = false;
-        //}
+        if (isActive)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem && !MainMenu.isInMainMenu && !MapController.isMapOpen)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }
