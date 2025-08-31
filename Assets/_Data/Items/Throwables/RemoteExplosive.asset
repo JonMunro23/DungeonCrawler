@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b906c7208db4abc449a613c8b2b89a20, type: 3}
-  m_Name: Molotov
+  m_Name: RemoteExplosive
   m_EditorClassIdentifier: 
-  itemName: Molotov Cocktail
-  itemIdentifier: molotov
-  itemDescription: A flaming bottle of alcohol, explodes on impact igniting tiles.
-  itemSprite: {fileID: 21300000, guid: 0d55fddba11004fe5b4947f0591be235, type: 3}
+  itemName: Remote Explosive
+  itemIdentifier: remote_explosive
+  itemDescription: A manually detonated high yield explosive
+  itemSprite: {fileID: 21300000, guid: 21faa81c346ec4b54800421c457003a7, type: 3}
   itemWorldModel: {fileID: 1842920273716216, guid: 28a11390dfca1364fb5532ac40add927,
     type: 3}
   itemWeight: 0.25
@@ -23,12 +23,12 @@ MonoBehaviour:
   maxItemStackSize: 5
   throwableArmsPrefab: {fileID: 8925242296018203832, guid: af1043c188150e14cb74831acf23b520,
     type: 3}
-  throwablePrefab: {fileID: 1652115390431381414, guid: 5f4ada892e07cca45960892dde076b7d,
+  throwablePrefab: {fileID: 1652115390431381414, guid: 924a185f8e3218740bab7bc5b9e710e2,
     type: 3}
   isExplosive: 1
-  detonationType: 2
-  fuseLength: 0
-  blastRadius: 3
+  detonationType: 3
+  fuseLength: 3
+  blastRadius: 5
   damage: 250
   minThrowVelocity: 4
   maxThrowVelocity: 25
@@ -36,6 +36,6 @@ MonoBehaviour:
   explosionVFX: {fileID: 198969382488698180, guid: 4c61a5c87840e904494e62da5a53bb0b,
     type: 3}
   explosionSFX: {fileID: 8300000, guid: 1bfc29ba9e0166e429c770dda48da8a5, type: 3}
-  bounceSFX: {fileID: 0}
+  bounceSFX: {fileID: 8300000, guid: 005ea6ecd6587a44fb7adf7fcbbdd133, type: 3}
   readyDelay: 0.417
   throwDelay: 0.133

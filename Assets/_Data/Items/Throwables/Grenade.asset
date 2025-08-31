@@ -26,7 +26,7 @@ MonoBehaviour:
   throwablePrefab: {fileID: 1652115390431381414, guid: c25f47be78f680644a9eaed2ba7aa5ad,
     type: 3}
   isExplosive: 1
-  explodesOnContact: 0
+  detonationType: 1
   fuseLength: 3
   blastRadius: 5
   damage: 250

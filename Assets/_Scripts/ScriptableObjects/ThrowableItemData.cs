@@ -1,10 +1,13 @@
 using UnityEngine;
 
-//public enum ThrowableType
-//{
-//    Grenade,
-//    RemoteExplosive
-//}
+public enum DetonationType
+{
+    None,
+    Timed,
+    Contact,
+    Remote,
+    Proximity
+}
 
 [CreateAssetMenu(fileName = "ThrowableItem", menuName = "Items/New Throwable Item")]
 public class ThrowableItemData : ItemData
@@ -13,7 +16,7 @@ public class ThrowableItemData : ItemData
     public ThrowableArms throwableArmsPrefab;
     public Throwable throwablePrefab;
     public bool isExplosive;
-    public bool explodesOnContact;
+    public DetonationType detonationType;
     public float fuseLength = 3f;
     public float blastRadius = 1f;
     public int damage;

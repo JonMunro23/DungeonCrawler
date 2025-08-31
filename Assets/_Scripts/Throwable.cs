@@ -14,7 +14,7 @@ public class Throwable : MonoBehaviour
     public void Throw(Vector3 launchVelocity)
     {
         rb.linearVelocity = launchVelocity;
-        if(itemData.isExplosive && !itemData.explodesOnContact)
+        if(itemData.isExplosive && itemData.detonationType == DetonationType.Timed)
             Prime();
     }
 
@@ -25,7 +25,7 @@ public class Throwable : MonoBehaviour
         Explode();
     }
 
-    void Explode()
+    public void Explode()
     {
         ParticleSystem explosionVFX = Instantiate(itemData.explosionVFX, transform.position, transform.rotation);
         AudioManager.Instance.PlayClipAtPoint(itemData.explosionSFX, transform.position, 2.5f, 25f, .3f);         
@@ -44,7 +44,7 @@ public class Throwable : MonoBehaviour
     {
         if (other.CompareTag("Player")) return;
 
-        if(itemData.explodesOnContact)
+        if(itemData.detonationType == DetonationType.Contact)
         {
             Explode();
             return;

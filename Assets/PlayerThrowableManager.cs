@@ -14,6 +14,8 @@ public class PlayerThrowableManager : MonoBehaviour
     Transform currentThrowableThrowLocation;
     bool isCurrentThrowableActive, isThrowableReadied, isThrowInProgress, isThrowableSelectionMenuOpen;
 
+    [SerializeField] List<Throwable> manuallyDetonatedThrowables = new List<Throwable>();
+
     public static Action<IInventory, ThrowableItemData> onThrowableSelectionMenuOpened;
     public static Action OnThrowableSelectionMenuClosed;
 
@@ -157,8 +159,26 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public async Task UseThrowable()
     {
-        if (!isThrowableReadied) return;
         if (isThrowInProgress) return;
+        if (!isThrowableReadied)
+        {
+            if(manuallyDetonatedThrowables.Count > 0)
+            {
+                foreach(Throwable throwable in manuallyDetonatedThrowables)
+                {
+                    throwable.Explode();
+                }
+            }
+
+            if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
+            {
+                //holster remoteexplosives
+                await Task.Delay((int)(0.7f * 1000));
+                await UnequipThrowable();
+            }
+
+            return;
+        }
 
         isThrowInProgress = true;   // lock immediately
         isThrowableReadied = false; // consume the readied state
@@ -179,10 +199,12 @@ public class PlayerThrowableManager : MonoBehaviour
         );
 
         clone.Throw(finalSpeed * throwDir);
+        if(currentlySelectedThrowable.detonationType == DetonationType.Remote)
+            manuallyDetonatedThrowables.Add(clone);
 
         playerController.playerInventoryManager.RemoveThrowableOfType(currentlySelectedThrowable, 1);
 
-        if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) > 0)
+        if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) > 0 || (currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count > 0))
         {
             await Task.Delay((int)(0.7f * 1000));
             currentThrowableAnimator.Play("Draw");
