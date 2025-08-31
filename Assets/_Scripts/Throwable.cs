@@ -11,9 +11,11 @@ public class Throwable : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    public void Launch(Vector3 velocity)
+    public void Throw(Vector3 launchVelocity)
     {
-        rb.linearVelocity = velocity;
+        rb.linearVelocity = launchVelocity;
+        if(itemData.isExplosive && !itemData.explodesOnContact)
+            Prime();
     }
 
     public async void Prime()
@@ -40,8 +42,23 @@ public class Throwable : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") || other.CompareTag("Enemy")) return;
+        if (other.CompareTag("Player")) return;
+
+        if(itemData.explodesOnContact)
+        {
+            Explode();
+            return;
+        }
+
+        if (other.CompareTag("Enemy")) return;
 
         AudioManager.Instance.PlayClipAtPoint(itemData.bounceSFX, transform.position, 2.5f, 15f, .3f);
     }
+
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = new Color(1, .92f, .0016f, .25f);
+    //    Gizmos.DrawSphere(transform.position, itemData.blastRadius);
+    //}
+
 }

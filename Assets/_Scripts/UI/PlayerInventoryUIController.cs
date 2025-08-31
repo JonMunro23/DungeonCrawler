@@ -17,11 +17,6 @@ public class PlayerInventoryUIController : MonoBehaviour
     [Header("Syringe")]
     [SerializeField] TMP_Text syringeAmountText;
 
-    [Header("Throwable")]
-    [SerializeField] GameObject throwableContainer;
-    [SerializeField] Image throwableImage;
-    [SerializeField] TMP_Text throwableAmountText;
-
     [Header("Context Menu")]
     [SerializeField] InventoryContextMenu contextMenu;
 
@@ -40,11 +35,6 @@ public class PlayerInventoryUIController : MonoBehaviour
         WorldInteractionManager.onNearbyInteractableUpdated += OnNearbyInteractableUpdated;
 
         InventorySlot.onInventorySlotRightClicked += ShowContextMenu;
-
-        ThrowableSelectionButton.OnThrowableSelected += OnThrowableSelected;
-
-        PlayerInventoryManager.onFirstThrowableCollected += OnFirstThrowableCollected;
-
     }
 
     private void OnDisable()
@@ -59,12 +49,6 @@ public class PlayerInventoryUIController : MonoBehaviour
         WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
 
         InventorySlot.onInventorySlotRightClicked -= ShowContextMenu;
-
-        ThrowableSelectionButton.OnThrowableSelected -= OnThrowableSelected;
-
-        PlayerInventoryManager.onFirstThrowableCollected -= OnFirstThrowableCollected;
-
-
     }
 
     void OnNewGroundItemDetected(ItemStack detectedItem)
@@ -109,23 +93,6 @@ public class PlayerInventoryUIController : MonoBehaviour
         {
             slot.transform.SetParent(invSlotSpawnParent.transform, false);
         }
-    }
-
-    void OnFirstThrowableCollected(ThrowableItemData firstThrowable)
-    {
-        throwableContainer.SetActive(true);
-        UpdateThrowableUI(firstThrowable);
-    }
-
-    void OnThrowableSelected(ThrowableItemData throwableData)
-    {
-        UpdateThrowableUI(throwableData);
-    }
-
-    private void UpdateThrowableUI(ThrowableItemData throwableData)
-    {
-        throwableImage.sprite = throwableData.itemSprite;
-        throwableAmountText.text = PlayerInventoryManager.GetRemainingAmountOfItem(throwableData).ToString();
     }
 
     private void Start()

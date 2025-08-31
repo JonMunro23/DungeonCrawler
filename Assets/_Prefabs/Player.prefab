@@ -1252,15 +1252,11 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
     itemAmount: 1
     loadedAmmo: 30
-  - itemData: {fileID: 11400000, guid: fe62d0e8903935a4295444afeb22411f, type: 2}
-    itemAmount: 5
-    loadedAmmo: 0
   - itemData: {fileID: 11400000, guid: c38aca0848b687440981d6016d8fdeae, type: 2}
     itemAmount: 45
     loadedAmmo: 0
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
-  spawnedInventorySlots: []
   totalNumInventorySlots: 30
   heldHealthSyringes: 0
   openContainerCamPos: {x: 0, y: 1.75, z: -0.04}
@@ -1318,9 +1314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 550f24c7b54b7434a97a794235a992e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tempDefaultThrowableItem: {fileID: 11400000, guid: fe62d0e8903935a4295444afeb22411f,
-    type: 2}
-  throwableArmaSpawnTransform: {fileID: 677067965771730991}
+  throwableArmsSpawnTransform: {fileID: 677067965771730991}
   currentlySelectedThrowableArms: {fileID: 0}
   chargeCurve:
     serializedVersion: 2
@@ -1349,6 +1343,7 @@ MonoBehaviour:
   dottedMaterial: {fileID: 2100000, guid: 45ff8d8246c9bac49a9090e30411f8bf, type: 2}
   dotSize: 1
   dotScrollSpeed: 2
+  clampShortLines: 1
   trajectoryLine: {fileID: 7236164888705951764}
   arcUpBias: 0.05
   maxPoints: 60

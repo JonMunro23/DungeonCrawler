@@ -122,7 +122,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public int RemoveFromExistingStack(int amountToRemove)
     {
         int remainder = 0;
-        if (currentSlotItemStack.itemAmount < amountToRemove)
+        if (currentSlotItemStack.itemAmount <= amountToRemove)
         {
             amountToRemove -= currentSlotItemStack.itemAmount;
             RemoveItem();
@@ -273,6 +273,14 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
                     break;
             }
         }
+
+        //ThrowableItemData throwableItemData = currentSlotItemStack.itemData as ThrowableItemData;
+        //if (throwableItemData)
+        //{
+
+        //}
+
+
 
         //AmmoItemData ammoData = GetDataAsAmmo(currentSlotItemStack.itemData);
         //if (ammoData)

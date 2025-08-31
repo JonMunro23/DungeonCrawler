@@ -131,7 +131,6 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public async void UseSyringeInSlot(ISlot slot)
     {
-        //Debug.Log("Using syringe");
         ConsumableItemData consumableData = slot.GetItemStack().itemData as ConsumableItemData;
         if (consumableData == null)
             return;

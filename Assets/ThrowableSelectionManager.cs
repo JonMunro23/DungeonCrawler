@@ -12,20 +12,20 @@ public class ThrowableSelectionManager : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerThrowableManager.OnThrowableSelectionMenuOpened += OpenThrowableSelectionMenu;
+        PlayerThrowableManager.onThrowableSelectionMenuOpened += OpenThrowableSelectionMenu;
         PlayerThrowableManager.OnThrowableSelectionMenuClosed += CloseThrowableSelectionMenu;
 
-        ThrowableSelectionButton.OnThrowableSelected += OnThrowableSelected;
+        ThrowableSelectionButton.onThrowableSelected += OnThrowableSelected;
 
 
     }
 
     private void OnDisable()
     {
-        PlayerThrowableManager.OnThrowableSelectionMenuOpened -= OpenThrowableSelectionMenu;
+        PlayerThrowableManager.onThrowableSelectionMenuOpened -= OpenThrowableSelectionMenu;
         PlayerThrowableManager.OnThrowableSelectionMenuClosed -= CloseThrowableSelectionMenu;
 
-        ThrowableSelectionButton.OnThrowableSelected -= OnThrowableSelected;
+        ThrowableSelectionButton.onThrowableSelected -= OnThrowableSelected;
 
     }
 

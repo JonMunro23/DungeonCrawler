@@ -31,6 +31,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public static Action<int> onSyringeCountUpdated;
     public static Action<AmmoItemData> onAmmoAddedToInventory;
     public static Action<ThrowableItemData> onFirstThrowableCollected;
+    public static Action<ThrowableItemData> onThrowableRemoved;
 
     void OnEnable()
     {
@@ -188,6 +189,30 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         heldHealthSyringes -= amountToRemove;
         onSyringeCountUpdated?.Invoke(heldHealthSyringes);
+    }
+
+    public void RemoveThrowableOfType(ThrowableItemData throwableToRemove, int amountToRemove)
+    {
+        //reverse list so it takes from the last slot first 
+        List<InventorySlot> slotsReversed = new List<InventorySlot>(spawnedInventorySlots.Reverse());
+
+        foreach (ISlot slot in slotsReversed)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            ItemStack slotItemStack = slot.GetItemStack();
+
+            ThrowableItemData throwableItemData = slotItemStack.itemData as ThrowableItemData;
+            if (!throwableItemData)
+                continue;
+
+            if (throwableItemData != throwableToRemove)
+                continue;
+
+            slot.RemoveFromExistingStack(amountToRemove);
+            onThrowableRemoved?.Invoke(throwableToRemove);
+        }
     }
 
     public InventorySlot FindSlotWithConsumableOfType(ConsumableType typeToFind)

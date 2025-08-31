@@ -38,3 +38,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e06847091251c5141896a30305911b8d, type: 2}
   throwableItemData:
   - {fileID: 11400000, guid: fe62d0e8903935a4295444afeb22411f, type: 2}
+  - {fileID: 11400000, guid: 68fd85449d15d4941a2563384e596920, type: 2}
+  - {fileID: 11400000, guid: 4b857d58b203b4142a2e11c092a6b78a, type: 2}

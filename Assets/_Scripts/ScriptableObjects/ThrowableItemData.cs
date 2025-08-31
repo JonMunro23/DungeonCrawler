@@ -12,6 +12,8 @@ public class ThrowableItemData : ItemData
     [Header("Throwable Item Properties")]
     public ThrowableArms throwableArmsPrefab;
     public Throwable throwablePrefab;
+    public bool isExplosive;
+    public bool explodesOnContact;
     public float fuseLength = 3f;
     public float blastRadius = 1f;
     public int damage;
@@ -24,6 +26,7 @@ public class ThrowableItemData : ItemData
     public AudioClip bounceSFX;
 
     [Header("Animation Lengths")]
+    public float readyDelay;
     public float throwDelay;
 }
 

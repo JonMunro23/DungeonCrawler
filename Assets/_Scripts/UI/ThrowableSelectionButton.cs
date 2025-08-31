@@ -9,7 +9,7 @@ public class ThrowableSelectionButton : MonoBehaviour
 
     public Button button;
 
-    public static Action<ThrowableItemData> OnThrowableSelected;
+    public static Action<ThrowableItemData> onThrowableSelected;
 
     public void Init(ThrowableItemData throwableItemData)
     {
@@ -22,7 +22,7 @@ public class ThrowableSelectionButton : MonoBehaviour
     /// </summary>
     public void SelectThrowable()
     {
-        OnThrowableSelected?.Invoke(throwableItemData);
+        onThrowableSelected?.Invoke(throwableItemData);
         Debug.Log("Selected " + throwableItemData.itemName);
     }
 }

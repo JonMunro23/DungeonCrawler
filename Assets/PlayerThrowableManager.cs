@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerThrowableManager : MonoBehaviour
 {
     PlayerController playerController;
-    [SerializeField] ThrowableItemData tempDefaultThrowableItem;
-    [SerializeField] Transform throwableArmaSpawnTransform;
+    [SerializeField] Transform throwableArmsSpawnTransform;
 
     ThrowableItemData currentlySelectedThrowable;
     [SerializeField] ThrowableArms currentlySelectedThrowableArms;
     Animator currentThrowableAnimator;
     Transform currentThrowableThrowLocation;
-    bool isCurrentThrowableActive, isThrowableReadied, isThrowableSelectionMenuOpen;
+    bool isCurrentThrowableActive, isThrowableReadied, isThrowInProgress, isThrowableSelectionMenuOpen;
 
-    public static Action<IInventory, ThrowableItemData> OnThrowableSelectionMenuOpened;
+    public static Action<IInventory, ThrowableItemData> onThrowableSelectionMenuOpened;
     public static Action OnThrowableSelectionMenuClosed;
 
     [Header("Charging")]
@@ -25,9 +25,9 @@ public class PlayerThrowableManager : MonoBehaviour
     float currentThrowSpeed;  // used for preview & final throw
 
     [Header("Dotted Line")]
-    [SerializeField] Material dottedMaterial;          // assign the material with the dash texture
-    [SerializeField, Min(0.01f)] float dotSize = 0.35f;  // world meters per pattern repeat (smaller = more dots)
-    [SerializeField] float dotScrollSpeed = 1.5f;      // repeats per second moving towards impact
+    [SerializeField] Material dottedMaterial;              // assign the material with the dash texture
+    [SerializeField, Min(0.01f)] float dotSize = 0.35f;    // world meters per pattern repeat (smaller = more dots)
+    [SerializeField] float dotScrollSpeed = 1.5f;          // repeats per second moving towards impact
     static readonly int _MainTex = Shader.PropertyToID("_MainTex");
     static readonly int _BaseMap = Shader.PropertyToID("_BaseMap");
     static readonly int _MainTexST = Shader.PropertyToID("_MainTex_ST");
@@ -48,17 +48,16 @@ public class PlayerThrowableManager : MonoBehaviour
     public float grenadeRadius = 0.12f;
     public LayerMask collisionMask = ~0;
 
+
     private void OnEnable()
     {
-        ThrowableSelectionButton.OnThrowableSelected += OnThrowableSelected;
-
+        ThrowableSelectionButton.onThrowableSelected += OnThrowableSelected;
         PlayerInventoryManager.onFirstThrowableCollected += OnFirstThrowableCollected;
     }
 
     private void OnDisable()
     {
-        ThrowableSelectionButton.OnThrowableSelected -= OnThrowableSelected;
-
+        ThrowableSelectionButton.onThrowableSelected -= OnThrowableSelected;
         PlayerInventoryManager.onFirstThrowableCollected -= OnFirstThrowableCollected;
     }
 
@@ -83,11 +82,6 @@ public class PlayerThrowableManager : MonoBehaviour
         }
     }
 
-    //private void Start()
-    //{
-    //    SetCurrentlySelectedThrowable(tempDefaultThrowableItem);
-    //}
-
     public void Init(PlayerController playerController)
     {
         this.playerController = playerController;
@@ -96,7 +90,7 @@ public class PlayerThrowableManager : MonoBehaviour
     public void OpenThrowableSelectionMenu()
     {
         isThrowableSelectionMenuOpen = true;
-        OnThrowableSelectionMenuOpened?.Invoke(playerController.playerInventoryManager, currentlySelectedThrowable);
+        onThrowableSelectionMenuOpened?.Invoke(playerController.playerInventoryManager, currentlySelectedThrowable);
     }
 
     public void CloseThrowableSelectionMenu()
@@ -107,8 +101,9 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public void SetCurrentlySelectedThrowable(ThrowableItemData newThrowable)
     {
+        Debug.Log(newThrowable.itemName);
         currentlySelectedThrowable = newThrowable;
-        ThrowableArms arms = Instantiate(newThrowable.throwableArmsPrefab, throwableArmaSpawnTransform, currentlySelectedThrowableArms);
+        ThrowableArms arms = Instantiate(newThrowable.throwableArmsPrefab, throwableArmsSpawnTransform);
         currentlySelectedThrowableArms = arms;
         currentThrowableAnimator = arms.GetArmsAnimator();
         currentThrowableThrowLocation = arms.GetArmsThrowLocation();
@@ -120,14 +115,28 @@ public class PlayerThrowableManager : MonoBehaviour
         if (currentlySelectedThrowable == null)
             return;
 
+        if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
+            return;
+
         await playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
         SetCurrentThrowableActive(true);
     }
 
+    public async Task UnequipThrowable()
+    {
+        await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+        SetCurrentThrowableActive(false);
+    }
 
-        public void ReadyThrowable()
+    public void ReadyThrowable()
     {
         if (isThrowableReadied) return;
+
+        // Block ready if a throw is in progress or still cooling down
+        if (isThrowInProgress) return;
+
+        if (currentlySelectedThrowable == null) return;
+        if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0) return;
 
         isThrowableReadied = true;
 
@@ -142,21 +151,22 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public void UnreadyThrowable()
     {
-        if(!isThrowableReadied) return;
-
+        if (!isThrowableReadied) return;
         _ = UseThrowable();
     }
 
     public async Task UseThrowable()
     {
-        if (!isThrowableReadied)
-            return;
+        if (!isThrowableReadied) return;
+        if (isThrowInProgress) return;
+
+        isThrowInProgress = true;   // lock immediately
+        isThrowableReadied = false; // consume the readied state
 
         // Lock in speed & direction at release time (before delays)
         float finalSpeed = currentThrowSpeed;
         Vector3 throwDir = (currentThrowableThrowLocation.forward + Vector3.up * arcUpBias).normalized;
 
-        isThrowableReadied = false;
         SetTrajectoryLineActive(false);
 
         currentThrowableAnimator.Play("Throw");
@@ -168,12 +178,23 @@ public class PlayerThrowableManager : MonoBehaviour
             currentThrowableThrowLocation.rotation
         );
 
-        clone.Launch(finalSpeed * throwDir);
-        clone.Prime();
-        
-        await Task.Delay((int)(0.7f * 1000));
-        currentThrowableAnimator.Play("Draw");
-        // Assign clone throwData, remove from inventory, etc.
+        clone.Throw(finalSpeed * throwDir);
+
+        playerController.playerInventoryManager.RemoveThrowableOfType(currentlySelectedThrowable, 1);
+
+        if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) > 0)
+        {
+            await Task.Delay((int)(0.7f * 1000));
+            currentThrowableAnimator.Play("Draw");
+            await Task.Delay((int)(0.767f * 1000));
+        }
+        else
+        {
+            await Task.Delay((int)(0.7f * 1000));
+            await UnequipThrowable();
+        }
+
+        isThrowInProgress = false;   // unlock
     }
 
     void SetCurrentThrowableActive(bool isActive)
@@ -187,9 +208,10 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public bool IsThrowableActive() => isCurrentThrowableActive;
 
-
     void Update()
     {
+        // Don’t simulate/preview during an active throw
+        if (isThrowInProgress) return;
         if (!isThrowableReadied) return;
 
         // Update charge 0..1 over timeToMaxVelocity
@@ -247,7 +269,7 @@ public class PlayerThrowableManager : MonoBehaviour
                     trajectoryLine.positionCount = count;
                     trajectoryLine.SetPositions(points);
 
-                    UpdateDottedUV(points, count); // <— NEW
+                    UpdateDottedUV(points, count);
                     return;
                 }
             }
@@ -262,11 +284,10 @@ public class PlayerThrowableManager : MonoBehaviour
         trajectoryLine.positionCount = count;
         trajectoryLine.SetPositions(points);
 
-        UpdateDottedUV(points, count); // <— NEW
+        UpdateDottedUV(points, count);
     }
 
-    // NEW helper: keeps dot size constant and scrolls them forward
-    // Replace your UpdateDottedUV with this:
+    // keeps dot size constant and scrolls them forward
     void UpdateDottedUV(Vector3[] points, int count)
     {
         if (!trajectoryLine) return;
@@ -281,10 +302,7 @@ public class PlayerThrowableManager : MonoBehaviour
         // 2) How many repeats so one repeat ~= dotSize meters
         float repeatsExact = totalLen / Mathf.Max(0.001f, dotSize);
 
-        // If repeats < 1, most shaders will “zoom” the texture (bigger dots).
-        // Clamp to at least 1 to avoid that visual; this means very short arcs
-        // will show a partial/oversized first dot — that’s the best we can do
-        // with a stock LineRenderer and no custom shader/instancing.
+        // Clamp to at least 1 to avoid zoomed texture on short lines
         float repeats = clampShortLines ? Mathf.Max(1f, repeatsExact) : Mathf.Max(0.0001f, repeatsExact);
 
         // 3) Scroll towards the impact
@@ -316,6 +334,4 @@ public class PlayerThrowableManager : MonoBehaviour
         var tex = mat.mainTexture;
         if (tex) tex.wrapMode = TextureWrapMode.Repeat;
     }
-
-
 }
