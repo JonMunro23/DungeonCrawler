@@ -30,7 +30,10 @@ MonoBehaviour:
   fuseLength: 3
   blastRadius: 5
   proximityDetectionRadius: 0
+  damageType: 3
   damage: 250
+  inflictedStatusEffect: 0
+  statusEffectLength: 0
   minThrowVelocity: 4
   maxThrowVelocity: 25
   timeToMaxVelocity: 3

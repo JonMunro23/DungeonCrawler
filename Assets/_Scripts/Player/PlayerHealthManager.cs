@@ -229,6 +229,16 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5)
     {
-        throw new NotImplementedException();
+        switch (statusEffectTypeToAdd)
+        {
+            case StatusEffectType.None:
+                break;
+            case StatusEffectType.Fire:
+                break;
+            case StatusEffectType.Acid:
+                break;
+            default:
+                break;
+        }
     }
 }

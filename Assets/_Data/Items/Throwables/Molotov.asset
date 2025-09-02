@@ -33,7 +33,7 @@ MonoBehaviour:
   damageType: 1
   damage: 250
   inflictedStatusEffect: 1
-  statusEffectLength: 0
+  statusEffectLength: 8
   minThrowVelocity: 4
   maxThrowVelocity: 25
   timeToMaxVelocity: 3

@@ -103,6 +103,14 @@ public class GridNode : MonoBehaviour
     public void SetOccupant(GridNodeOccupant newOccupant)
     {
         currentOccupant = newOccupant;
+        if(isIgnited)
+        {
+            if (GetOccupyingGameobject() && GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
+            {
+                damageable.AddStatusEffect(StatusEffectType.Fire);
+            }
+        }
+
         onNodeOccupancyUpdated?.Invoke();
     }
 
@@ -226,9 +234,9 @@ public class GridNode : MonoBehaviour
         if (!nodeData.isWalkable || isVoid) return;
 
         isIgnited = true;
-        //display ignited VFX
+        fireParticles.Play();
         //play ignited SFX
-        if(GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
+        if(GetOccupyingGameobject() && GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
         {
             damageable.AddStatusEffect(StatusEffectType.Fire);
         }
@@ -245,6 +253,7 @@ public class GridNode : MonoBehaviour
         {
             case StatusEffectType.Fire:
                 isIgnited = false;
+                fireParticles.Stop();
                 break;
             case StatusEffectType.Acid:
                 break;
