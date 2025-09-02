@@ -29,6 +29,7 @@ MonoBehaviour:
   detonationType: 1
   fuseLength: 3
   blastRadius: 5
+  proximityDetectionRadius: 0
   damage: 250
   minThrowVelocity: 4
   maxThrowVelocity: 25
@@ -39,3 +40,4 @@ MonoBehaviour:
   bounceSFX: {fileID: 8300000, guid: 005ea6ecd6587a44fb7adf7fcbbdd133, type: 3}
   readyDelay: 0.417
   throwDelay: 0.133
+  holsterLength: 0.767

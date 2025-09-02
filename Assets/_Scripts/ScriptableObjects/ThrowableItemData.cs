@@ -17,8 +17,9 @@ public class ThrowableItemData : ItemData
     public Throwable throwablePrefab;
     public bool isExplosive;
     public DetonationType detonationType;
-    public float fuseLength = 3f;
-    public float blastRadius = 1f;
+    public float fuseLength;
+    public float blastRadius;
+    public float proximityDetectionRadius;
     public int damage;
     public float minThrowVelocity;
     public float maxThrowVelocity;
@@ -31,5 +32,6 @@ public class ThrowableItemData : ItemData
     [Header("Animation Lengths")]
     public float readyDelay;
     public float throwDelay;
+    public float holsterLength;
 }
 

@@ -198,15 +198,11 @@ public class GridNode : MonoBehaviour
     {
         SetIsExplored(true);
 
-        foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
-        {
-            neighbouringNode.SetIsExplored(true);
-        }
+        List<GridNode> nodesToSetExplored = new List<GridNode>(GetNeighbouringNodes(true));
 
-        //Check diagonals
-        foreach (GridNode neighbouringNode in DiagDirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+        foreach(GridNode node in nodesToSetExplored)
         {
-            neighbouringNode.SetIsExplored(true);
+            node.SetIsExplored(true);
         }
     }
 
@@ -221,12 +217,27 @@ public class GridNode : MonoBehaviour
 
     public void CacheNeighbours()
     {
-        neighbouringNodes = new List<GridNode>();
+        neighbouringNodes = GetNeighbouringNodes();
+    }
+
+    public List<GridNode> GetNeighbouringNodes(bool getDiagonals = false)
+    {
+        List<GridNode> nodes = new List<GridNode>();
 
         foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
         {
-            neighbouringNodes.Add(neighbouringNode);
+            nodes.Add(neighbouringNode);
         }
+
+        if(getDiagonals)
+        {
+            foreach (GridNode diagNeighbouringNode in DiagDirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+            {
+                nodes.Add(diagNeighbouringNode);
+            }
+        }
+
+        return nodes;
     }
 
     public GridNode GetNodeInDirection(Vector3 direction)

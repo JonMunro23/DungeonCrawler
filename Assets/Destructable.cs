@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Destructable : MonoBehaviour, IDamageable, IGridNode
 {
     [Header("Stats")]
+    [SerializeField] List<DamageType> susceptibleDamageTypes = new List<DamageType>();
     [SerializeField] int health;
     [SerializeField] int armourRating;
 
@@ -42,7 +44,7 @@ public class Destructable : MonoBehaviour, IDamageable, IGridNode
 
     public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard)
     {
-        if (damageType != DamageType.Explosive)
+        if (!susceptibleDamageTypes.Contains(damageType))
             return;
 
         occupyingNode.ResetOccupant();

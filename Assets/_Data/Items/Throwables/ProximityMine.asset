@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b906c7208db4abc449a613c8b2b89a20, type: 3}
-  m_Name: RemoteExplosive
+  m_Name: ProximityMine
   m_EditorClassIdentifier: 
-  itemName: Remote Explosive
-  itemIdentifier: remote_explosive
-  itemDescription: A manually detonated high yield explosive
+  itemName: Proximity Mine
+  itemIdentifier: prox_mine
+  itemDescription: 'An explosive mine that explodes when an enemy is close. '
   itemSprite: {fileID: 21300000, guid: 21faa81c346ec4b54800421c457003a7, type: 3}
   itemWorldModel: {fileID: 1842920273716216, guid: 28a11390dfca1364fb5532ac40add927,
     type: 3}
@@ -27,9 +27,9 @@ MonoBehaviour:
     type: 3}
   isExplosive: 1
   detonationType: 3
-  fuseLength: 2
+  fuseLength: 3
   blastRadius: 1
-  proximityDetectionRadius: 0
+  proximityDetectionRadius: 4.5
   damage: 250
   minThrowVelocity: 2
   maxThrowVelocity: 14

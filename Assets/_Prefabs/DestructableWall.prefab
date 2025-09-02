@@ -132,6 +132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ec1b307b5398b94c84539e4ce874e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  susceptibleDamageTypes: 03000000
   health: 25
   armourRating: 0
 --- !u!65 &5896119463260131950

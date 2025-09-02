@@ -112,12 +112,20 @@ public class PlayerThrowableManager : MonoBehaviour
         arms.gameObject.SetActive(false);
     }
 
-    public async Task EquipThrowable()
+    public async Task ToggleEquipThrowable()
+    {
+        if (!IsThrowableActive())
+            await EquipThrowable();
+        else
+            await UnequipThrowable();
+    }
+
+    async Task EquipThrowable()
     {
         if (currentlySelectedThrowable == null)
             return;
 
-        if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
+        if ((currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count == 0) && PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
             return;
 
         await playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
@@ -126,12 +134,18 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public async Task UnequipThrowable()
     {
-        await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+        isThrowableReadied = false;
+        SetTrajectoryLineActive(false);
+        isCurrentThrowableActive = false; //set inactive early to prevent further readying
+        currentThrowableAnimator.Play("Holster");
+        await Task.Delay((int)(currentlySelectedThrowable.holsterLength * 1000));
         SetCurrentThrowableActive(false);
+        await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
     }
 
     public void ReadyThrowable()
     {
+        if (!IsThrowableActive()) return;
         if (isThrowableReadied) return;
 
         // Block ready if a throw is in progress or still cooling down
@@ -162,15 +176,28 @@ public class PlayerThrowableManager : MonoBehaviour
         if (isThrowInProgress) return;
         if (!isThrowableReadied)
         {
+            if (WorldInteractionManager.IsLookingAtInteractable()) return;
+
             if(manuallyDetonatedThrowables.Count > 0)
             {
+                List<Throwable> detonatedThrowables = new List<Throwable>();
                 foreach(Throwable throwable in manuallyDetonatedThrowables)
                 {
-                    throwable.Explode();
+                    if(throwable.IsArmed())
+                    {
+                        throwable.Explode();
+                        detonatedThrowables.Add(throwable);
+                    }
                 }
+
+                foreach(Throwable detonatedThrowable in detonatedThrowables)
+                {
+                    manuallyDetonatedThrowables.Remove(detonatedThrowable);
+                }
+                detonatedThrowables.Clear();
             }
 
-            if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
+            if (manuallyDetonatedThrowables.Count == 0 && PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
             {
                 //holster remoteexplosives
                 await Task.Delay((int)(0.7f * 1000));

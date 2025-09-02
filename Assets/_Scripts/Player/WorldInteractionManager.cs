@@ -24,7 +24,7 @@ public class WorldInteractionManager : MonoBehaviour
     IContainer nearbyContainer;
     IInteractable nearbyInteractable;
 
-    IHighlightable highlightedTarget;
+    static IHighlightable highlightedTarget;
     public static IContainer currentOpenContainer;
     bool isLookingAtPickup, isLookingAtInteractable, isLookingAtContainer;
 
@@ -60,6 +60,8 @@ public class WorldInteractionManager : MonoBehaviour
 
         InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
+
+    public static bool IsLookingAtInteractable() => highlightedTarget != null;
 
     private void Start()
     {

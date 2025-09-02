@@ -368,13 +368,21 @@ public class PlayerWeaponManager : MonoBehaviour
         }
     }
 
-    public void SwitchWeaponSets()
+    public async void SwitchWeaponSets()
     {
-        if (!currentWeapon.CanUse())
-            return;
+        if(playerController.playerThrowableManager.IsThrowableActive())
+        {
+            await playerController.playerThrowableManager.UnequipThrowable();
+        }
+        else
+        {
 
-        if (isAmmoSelectionMenuOpen)
-            return;
+            if (!currentWeapon.CanUse())
+                return;
+
+            if (isAmmoSelectionMenuOpen)
+                return;
+        }
 
         if (activeSlotIndex == 0)
         {

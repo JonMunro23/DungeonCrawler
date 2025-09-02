@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
 
     public async void EquipThrowableHotkey()
     {
-        await playerThrowableManager.EquipThrowable();
+        await playerThrowableManager.ToggleEquipThrowable();
     }
 
     public async void TryUseHealthSyringe(ISlot slotToUse)
