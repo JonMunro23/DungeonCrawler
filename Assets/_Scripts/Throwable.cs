@@ -46,14 +46,25 @@ public class Throwable : MonoBehaviour
         ParticleSystem explosionVFX = Instantiate(itemData.explosionVFX, transform.position, transform.rotation);
         AudioManager.Instance.PlayClipAtPoint(itemData.explosionSFX, transform.position, 2.5f, 25f, .3f);
 
-        List<GridNode> damageTiles = new List<GridNode>();
+        List<GridNode> nodesInBlastRadius = new List<GridNode>();
         GridNode centerNode = GridController.Instance.GetNodeFromWorldPos(transform.position);
-        damageTiles.Add(centerNode);
-        damageTiles.AddRange(centerNode.GetNeighbouringNodes(true));
+        nodesInBlastRadius.Add(centerNode);
+        nodesInBlastRadius.AddRange(centerNode.GetNeighbouringNodes(true));
 
-        foreach (GridNode node in damageTiles)
+        switch (itemData.inflictedStatusEffect)
         {
-            node.HighlightCellPath();
+            case StatusEffectType.None:
+                break;
+            case StatusEffectType.Fire:
+                foreach (GridNode node in nodesInBlastRadius)
+                {
+                    node.IgniteNode(itemData.statusEffectLength);
+                }
+                break;
+            case StatusEffectType.Acid:
+                break;
+            default:
+                break;
         }
 
         Collider[] colliders = Physics.OverlapSphere(transform.position, itemData.blastRadius);
@@ -61,7 +72,7 @@ public class Throwable : MonoBehaviour
         {
             if (collider.TryGetComponent(out IDamageable damageable))
             {
-                damageable.TryDamage(itemData.damage, DamageType.Explosive);
+                damageable.TryDamage(itemData.damage, itemData.damageType);
             }
         }
         Destroy(gameObject);

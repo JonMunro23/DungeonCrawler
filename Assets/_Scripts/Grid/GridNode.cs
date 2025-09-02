@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -55,6 +56,11 @@ public class GridNode : MonoBehaviour
     bool isVoid;
 
     public static Action onNodeOccupancyUpdated;
+
+    [Header("Tile Effects")]
+    [SerializeField] ParticleSystem fireParticles;
+    bool isIgnited;
+    Coroutine ignitedRoutine;
 
     [Header("Pathfinding")]
     [SerializeField]
@@ -213,6 +219,44 @@ public class GridNode : MonoBehaviour
         Coords = _coords;
 
         coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
+    }
+
+    public void IgniteNode(float igniteLength)
+    {
+        if (!nodeData.isWalkable || isVoid) return;
+
+        isIgnited = true;
+        //display ignited VFX
+        //play ignited SFX
+        if(GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
+        {
+            damageable.AddStatusEffect(StatusEffectType.Fire);
+        }
+
+        if (ignitedRoutine != null)
+            StopCoroutine(ignitedRoutine);
+
+        ignitedRoutine = StartCoroutine(TileEffectTimer(StatusEffectType.Fire, igniteLength));
+    }
+
+    public void RemoveTileEffect(StatusEffectType effectToRemove)
+    {
+        switch (effectToRemove)
+        {
+            case StatusEffectType.Fire:
+                isIgnited = false;
+                break;
+            case StatusEffectType.Acid:
+                break;
+            default:
+                break;
+        }
+    }
+
+    IEnumerator TileEffectTimer(StatusEffectType effect, float length)
+    {
+        yield return new WaitForSeconds(length);
+        RemoveTileEffect(effect);
     }
 
     public void CacheNeighbours()

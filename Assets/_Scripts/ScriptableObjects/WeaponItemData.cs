@@ -21,6 +21,7 @@ public enum AmmoType
 
 public enum StatusEffectType
 {
+    None,
     Fire,
     Acid
 }

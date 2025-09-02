@@ -20,7 +20,10 @@ public class ThrowableItemData : ItemData
     public float fuseLength;
     public float blastRadius;
     public float proximityDetectionRadius;
+    public DamageType damageType;
     public int damage;
+    public StatusEffectType inflictedStatusEffect;
+    public float statusEffectLength;
     public float minThrowVelocity;
     public float maxThrowVelocity;
     public float timeToMaxVelocity;
