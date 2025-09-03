@@ -146,7 +146,7 @@ public class PlayerThrowableManager : MonoBehaviour
             onCurrentlySelectedThrowableAmountUpdated?.Invoke(availableThrowables[throwableToAdd]);
     }
 
-    public void RemoveThrowableFromAvailable(ThrowableItemData throwableToRemove, int amountToRemove)
+    public async void RemoveThrowableFromAvailable(ThrowableItemData throwableToRemove, int amountToRemove)
     {
         if (availableThrowables.TryGetValue(throwableToRemove, out int currentAmount))
         {
@@ -154,7 +154,12 @@ public class PlayerThrowableManager : MonoBehaviour
         }
 
         if (throwableToRemove == currentlySelectedThrowable)
+        {
             onCurrentlySelectedThrowableAmountUpdated?.Invoke(availableThrowables[throwableToRemove]);
+            if(IsThrowableActive())
+                if (GetRemainingAmountOfThrowable(throwableToRemove) == 0 && (currentlySelectedThrowable.detonationType != DetonationType.Remote && manuallyDetonatedThrowables.Count == 0))
+                    await UnequipThrowable();
+        }
     }
 
 
@@ -272,9 +277,11 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public async Task UseThrowable()
     {
-        if (isThrowInProgress) return;
+        if (isThrowInProgress || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
         if (!isThrowableReadied)
         {
+            if(currentlySelectedThrowable.detonationType != DetonationType.Remote) return;
+
             if (WorldInteractionManager.IsLookingAtInteractable()) return;
 
             if(manuallyDetonatedThrowables.Count > 0)

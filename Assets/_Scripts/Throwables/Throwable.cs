@@ -35,7 +35,6 @@ public class Throwable : MonoBehaviour
         isArming = true;
         await Task.Delay((int)(itemData.fuseLength * 1000));
         isArmed = true;
-        Debug.Log("Armed");
     }
 
     public void Explode()
@@ -51,20 +50,23 @@ public class Throwable : MonoBehaviour
         nodesInBlastRadius.Add(centerNode);
         nodesInBlastRadius.AddRange(centerNode.allNeighbouringNodes);
 
-        switch (itemData.statusEffect.effectType)
+        if(itemData.statusEffect != null)
         {
-            case StatusEffectType.None:
-                break;
-            case StatusEffectType.Fire:
-                foreach (GridNode node in nodesInBlastRadius)
-                {
-                    node.ApplyEffectToNode(itemData.statusEffect);
-                }
-                break;
-            case StatusEffectType.Acid:
-                break;
-            default:
-                break;
+            switch (itemData.statusEffect.effectType)
+            {
+                case StatusEffectType.None:
+                    break;
+                case StatusEffectType.Fire:
+                    foreach (GridNode node in nodesInBlastRadius)
+                    {
+                        node.ApplyEffectToNode(itemData.statusEffect);
+                    }
+                    break;
+                case StatusEffectType.Acid:
+                    break;
+                default:
+                    break;
+            }
         }
 
         Collider[] colliders = Physics.OverlapSphere(transform.position, itemData.blastRadius);

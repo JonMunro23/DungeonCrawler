@@ -98,7 +98,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         ItemStack slotAmmo = new ItemStack(weaponSlot.GetWeapon().GetRangedWeapon().GetCurrentLoadedAmmoData(), slot.UnloadAmmo());
         TryAddItem(slotAmmo);
 
-        
     }
 
     public void Init(PlayerController newPlayerController)
@@ -145,6 +144,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void ToggleInventory()
     {
+
         if (CharacterMenuUIController.isCharacterMenuOpen == true)
         {
             CloseInventory();

@@ -11,6 +11,7 @@ public class PauseMenu : MonoBehaviour
     [Header("Pause Menu")]
     [SerializeField] GameObject pauseMenu;
 
+    public static Action onPause;
     public static Action onQuit;
 
     private void Awake()
@@ -92,10 +93,12 @@ public class PauseMenu : MonoBehaviour
     void OpenPauseMenu()
     {
         isPaused = true;
+        onPause?.Invoke();
         pauseMenu.SetActive(true);
+        uiController.SetLoadGameButtonsInteractable();
         Time.timeScale = 0;
 
-        uiController.SetLoadGameButtonsInteractable();
+
     }
     public void ResumeGame()
     {

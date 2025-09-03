@@ -50,7 +50,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleCharacterMenu()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
 
         if (!isCharacterMenuOpen)
             OpenCharacterMenu();
@@ -83,7 +83,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleInventoryPanel()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
 
         if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Inventory)
             CloseCharacterMenu();
@@ -99,7 +99,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleSkillsPanel()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
 
         if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Skills)
             CloseCharacterMenu();
@@ -115,7 +115,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleStatsPanel()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
 
         if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Stats)
             CloseCharacterMenu();

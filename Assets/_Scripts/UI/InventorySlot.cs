@@ -168,8 +168,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         {
             playerInventoryManager.playerController.playerThrowableManager.RemoveThrowableFromAvailable(throwableTaken, itemToTake.itemAmount);
         }
-        else
-            RemoveItem();
+        RemoveItem();
         return itemToTake;
     }
 

@@ -7,7 +7,6 @@ public class ThrowableSelectionManager : MonoBehaviour
     [SerializeField] ThrowableSelectionButton throwableSelectionButtonPrefab;
     List<ThrowableSelectionButton> spawnedThrowableSelectionButtons = new List<ThrowableSelectionButton>();
     public static bool isThrowableSelectionMenuOpen;
-    IInventory playerInventory;
     ThrowableItemData currentlySelectedThrowable;
 
     private void OnEnable()
@@ -16,6 +15,8 @@ public class ThrowableSelectionManager : MonoBehaviour
         PlayerThrowableManager.onThrowableSelectionMenuClosed += CloseThrowableSelectionMenu;
 
         ThrowableSelectionButton.onThrowableSelected += OnThrowableSelected;
+
+        PauseMenu.onPause += OnPause;
     }
 
     private void OnDisable()
@@ -24,10 +25,19 @@ public class ThrowableSelectionManager : MonoBehaviour
         PlayerThrowableManager.onThrowableSelectionMenuClosed -= CloseThrowableSelectionMenu;
 
         ThrowableSelectionButton.onThrowableSelected -= OnThrowableSelected;
+
+        PauseMenu.onPause -= OnPause;
+    }
+
+    void OnPause()
+    {
+        CloseThrowableSelectionMenu();
     }
 
     public void OpenThrowableSelectionMenu(Dictionary<ThrowableItemData, int> availableThrowables, ThrowableItemData currentlySelectedThrowable) 
     {
+        if (PauseMenu.isPaused || CharacterMenuUIController.isCharacterMenuOpen) return;
+
         this.currentlySelectedThrowable = currentlySelectedThrowable;
         GetHeldThrowableTypes(availableThrowables);
         isThrowableSelectionMenuOpen = true;
