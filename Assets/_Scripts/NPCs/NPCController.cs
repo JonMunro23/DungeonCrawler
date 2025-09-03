@@ -193,57 +193,33 @@ public class NPCController : MonoBehaviour, IDamageable
         return new DamageData(Mathf.RoundToInt(currentGroupHealth), currentArmourRating, currentEvasionRating);
     }
 
-    public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5)
+    public void AddStatusEffect(StatusEffect statusEffectToAdd)
     {
-        switch (statusEffectTypeToAdd)
-        {
-            case StatusEffectType.Fire:
-                if(fireDamageCoroutine != null)
-                    StopCoroutine(fireDamageCoroutine);
+        //switch (statusEffectToAdd.effectType)
+        //{
+        //    case StatusEffectType.Fire:
+        //        if(fireDamageCoroutine != null)
+        //            StopCoroutine(fireDamageCoroutine);
 
-                fireDamageCoroutine = StartCoroutine(TakeDamageOverTime(duration, 20, 60, .45f, DamageType.Fire));
-                break;
-            case StatusEffectType.Acid:
-                int acidArmourReduction = 20;
-                if (armourReductionCoroutine != null)
-                {
-                    StopCoroutine(armourReductionCoroutine);
-                    currentArmourRating = NPCData.baseArmourRating;
-                }
+        //        fireDamageCoroutine = StartCoroutine(HelperFunctions.TakeDamageOverTime(this, statusEffectToAdd));
+        //        break;
+        //    case StatusEffectType.Acid:
+        //        int acidArmourReduction = 20;
+        //        if (armourReductionCoroutine != null)
+        //        {
+        //            StopCoroutine(armourReductionCoroutine);
+        //            currentArmourRating = NPCData.baseArmourRating;
+        //        }
 
-                armourReductionCoroutine = StartCoroutine(ReduceArmourRating(duration, acidArmourReduction));
+        //        armourReductionCoroutine = StartCoroutine(ReduceArmourRating(statusEffectToAdd.effectLength, acidArmourReduction));
 
-                if(acidDamageCoroutine != null)
-                    StopCoroutine(acidDamageCoroutine);
+        //        if(acidDamageCoroutine != null)
+        //            StopCoroutine(acidDamageCoroutine);
 
-                acidDamageCoroutine = StartCoroutine(TakeDamageOverTime(duration, 15, 40, .6f, DamageType.Acid));
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Deals damage to the entity at a set interval over a period of time
-    /// </summary>
-    /// <param name="duration">Duration of the damage over time effect.</param>
-    /// <param name="minDamage">The minimum possible damage to take.</param>
-    /// <param name="maxDamage">The maximum possible damage to take.</param>
-    /// <param name="damageIntervals">The time between damage ticks.</param>
-    IEnumerator TakeDamageOverTime(float duration, int minDamage, int maxDamage, float damageIntervals, DamageType damageType)
-    {
-        float timeElapsed = 0;
-        float interval = 0;
-
-        while (timeElapsed < duration)
-        {
-            if (timeElapsed >= interval)
-            {
-                TryDamage(Random.Range(minDamage, maxDamage), damageType);
-                interval += damageIntervals;
-            }
-
-            timeElapsed += Time.deltaTime;
-            yield return null;
-        }
+        //        acidDamageCoroutine = StartCoroutine(HelperFunctions.TakeDamageOverTime(this, statusEffectToAdd));
+        //        break;
+        //}
+        //statusEffectToAdd.ApplyStatusEffect(this);
     }
 
     IEnumerator ReduceArmourRating(float duration, int reductionAmount)

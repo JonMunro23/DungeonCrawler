@@ -12,7 +12,7 @@ public class Destructable : MonoBehaviour, IDamageable, IGridNode
     GridNode occupyingNode;
     int levelIndex;
 
-    public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5)
+    public void AddStatusEffect(StatusEffect statusEffectToAdd)
     {
         //Cannot have status effects applied
     }

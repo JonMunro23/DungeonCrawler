@@ -7,5 +7,6 @@ public class AmmoItemData : ItemData
     public WeaponType[] weaponTypes;
     //public AmmoWeaponType ammoWeaponType;
     public AmmoType ammoType;
+    public StatusEffect ammoStatusEffect;
 }
 

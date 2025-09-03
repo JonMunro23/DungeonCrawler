@@ -76,6 +76,12 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             PlayerInventoryManager.onAmmoAddedToInventory?.Invoke(ammoData);
         }
 
+        ThrowableItemData throwableData = itemToAdd.itemData as ThrowableItemData;
+        if(throwableData != null)
+        {
+            playerInventoryManager.playerController.playerThrowableManager.AddThrowableToAvailable(throwableData, itemToAdd.itemAmount);
+        }
+
         SetTooltipTriggerActive(true);
         UpdateSlotUI();
     }
@@ -110,6 +116,12 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             {
                 playerInventoryManager.AddHealthSyringe(amountToAdd);
             }
+        }
+
+        ThrowableItemData throwableData = currentSlotItemStack.itemData as ThrowableItemData;
+        if (throwableData != null)
+        {
+            playerInventoryManager.playerController.playerThrowableManager.AddThrowableToAvailable(throwableData, amountToAdd);
         }
 
         //AmmoItemData ammoData = GetDataAsAmmo(currentSlotItemStack.itemData);
@@ -151,7 +163,13 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public virtual ItemStack TakeItem()
     {
         ItemStack itemToTake = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount, currentSlotItemStack.loadedAmmo);
-        RemoveItem();
+        ThrowableItemData throwableTaken = itemToTake.itemData as ThrowableItemData;
+        if (throwableTaken != null)
+        {
+            playerInventoryManager.playerController.playerThrowableManager.RemoveThrowableFromAvailable(throwableTaken, itemToTake.itemAmount);
+        }
+        else
+            RemoveItem();
         return itemToTake;
     }
 

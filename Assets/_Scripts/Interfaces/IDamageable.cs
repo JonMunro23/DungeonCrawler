@@ -17,5 +17,5 @@ public interface IDamageable
 {
     public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard);  
     public DamageData GetDamageData();
-    public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5f);
+    public void AddStatusEffect(StatusEffect statusEffectToAdd);
 }

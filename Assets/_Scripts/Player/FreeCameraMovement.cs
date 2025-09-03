@@ -14,7 +14,7 @@ public class FreeCameraMovement : MonoBehaviour
 
     void Update()
     {
-        if (PauseMenu.isPaused || CharacterMenuUIController.isCharacterMenuOpen || MapController.isMapOpen)
+        if (PauseMenu.isPaused || CharacterMenuUIController.isCharacterMenuOpen || MapController.isMapOpen || ThrowableSelectionManager.isThrowableSelectionMenuOpen)
             return;
 
         // Get mouse input

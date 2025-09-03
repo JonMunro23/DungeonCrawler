@@ -31,9 +31,8 @@ MonoBehaviour:
   blastRadius: 3
   proximityDetectionRadius: 0
   damageType: 1
-  damage: 250
-  inflictedStatusEffect: 1
-  statusEffectLength: 8
+  damage: 25
+  statusEffect: {fileID: 11400000, guid: 35c746f7dbcefe74186cf20afa358e5f, type: 2}
   minThrowVelocity: 4
   maxThrowVelocity: 25
   timeToMaxVelocity: 3

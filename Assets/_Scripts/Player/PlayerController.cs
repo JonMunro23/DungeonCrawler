@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem)
+        if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem && !ThrowableSelectionManager.isThrowableSelectionMenuOpen)
         {
             playerWeaponManager.UseCurrentWeapon();
         }

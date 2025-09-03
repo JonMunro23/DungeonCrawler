@@ -456,7 +456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30612c9928b70104d9c90d2928bd7111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 1000
+  mouseSensitivity: 600
   playerBody: {fileID: 3180298802843086112}
 --- !u!1 &4388155825826268218
 GameObject:
@@ -962,22 +962,6 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - key: 103
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4750780804372824305}
-          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: EquipThrowableHotkey
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
   - key: 323
     callback:
       m_PersistentCalls:
@@ -1018,6 +1002,22 @@ MonoBehaviour:
         - m_Target: {fileID: 4750780804372824305}
           m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
           m_MethodName: TryUnreadyCurrentWeapon
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 50
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - key: 103
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4750780804372824305}
+          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+          m_MethodName: EquipThrowableHotkey
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1245,14 +1245,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b540e6fc33d904b41aba33e18efb0788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
   startingItemStacks:
   - itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
     itemAmount: 1
-    loadedAmmo: 30
+    loadedAmmo: 15
   - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
     itemAmount: 1
     loadedAmmo: 30
   - itemData: {fileID: 11400000, guid: c38aca0848b687440981d6016d8fdeae, type: 2}
+    itemAmount: 45
+    loadedAmmo: 0
+  - itemData: {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1, type: 2}
     itemAmount: 45
     loadedAmmo: 0
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,

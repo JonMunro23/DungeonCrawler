@@ -6,80 +6,74 @@ public class ThrowableSelectionManager : MonoBehaviour
     [SerializeField] Transform throwableSelectionButtonSpawnParent;
     [SerializeField] ThrowableSelectionButton throwableSelectionButtonPrefab;
     List<ThrowableSelectionButton> spawnedThrowableSelectionButtons = new List<ThrowableSelectionButton>();
-
+    public static bool isThrowableSelectionMenuOpen;
     IInventory playerInventory;
     ThrowableItemData currentlySelectedThrowable;
 
     private void OnEnable()
     {
         PlayerThrowableManager.onThrowableSelectionMenuOpened += OpenThrowableSelectionMenu;
-        PlayerThrowableManager.OnThrowableSelectionMenuClosed += CloseThrowableSelectionMenu;
+        PlayerThrowableManager.onThrowableSelectionMenuClosed += CloseThrowableSelectionMenu;
 
         ThrowableSelectionButton.onThrowableSelected += OnThrowableSelected;
-
-
     }
 
     private void OnDisable()
     {
         PlayerThrowableManager.onThrowableSelectionMenuOpened -= OpenThrowableSelectionMenu;
-        PlayerThrowableManager.OnThrowableSelectionMenuClosed -= CloseThrowableSelectionMenu;
+        PlayerThrowableManager.onThrowableSelectionMenuClosed -= CloseThrowableSelectionMenu;
 
         ThrowableSelectionButton.onThrowableSelected -= OnThrowableSelected;
-
     }
 
-
-
-    public void OnThrowableSelected(ThrowableItemData throwableTypeSelected)
+    public void OpenThrowableSelectionMenu(Dictionary<ThrowableItemData, int> availableThrowables, ThrowableItemData currentlySelectedThrowable) 
     {
-        foreach (ThrowableSelectionButton button in spawnedThrowableSelectionButtons)
-        {
-            button.button.interactable = true;
-            if (button.throwableItemData == throwableTypeSelected)
-            {
-                button.button.interactable = false;
-            }
-        }
-    }
-
-    public void OpenThrowableSelectionMenu(IInventory playerInventory, ThrowableItemData currentlySelectedThrowable)
-    {
-        this.playerInventory = playerInventory;
         this.currentlySelectedThrowable = currentlySelectedThrowable;
-        GetHeldThrowableTypes();
+        GetHeldThrowableTypes(availableThrowables);
+        isThrowableSelectionMenuOpen = true;
     }
 
     public void CloseThrowableSelectionMenu()
     {
         HelperFunctions.SetCursorActive(false);
         RemoveThrowableSelectionButtons();
+        isThrowableSelectionMenuOpen = false;
     }
 
-    void GetHeldThrowableTypes()
+    public void OnThrowableSelected(ThrowableItemData selectedThrowable, int amountAvailable)
     {
-        List<ThrowableItemData> availableThrowableTypes = playerInventory.GetAllAvailableThrowables();
-        foreach (ThrowableItemData throwableData in availableThrowableTypes)
-        {
-            SpawnThrowableSelectionButton(throwableData);
-        }
-        if (availableThrowableTypes.Count > 0)
-            HelperFunctions.SetCursorActive(true);
+        UpdateSpawnedButtonsInteractability(selectedThrowable);
+    }
 
-        if (currentlySelectedThrowable == null) return;
+    private void UpdateSpawnedButtonsInteractability(ThrowableItemData currentlySelectedThrowable)
+    {
         foreach (ThrowableSelectionButton button in spawnedThrowableSelectionButtons)
         {
-            if (button.throwableItemData == currentlySelectedThrowable)
-            {
+            button.button.interactable = true;
+
+            if (button.availableAmount == 0 || button.throwableItemData == currentlySelectedThrowable)
                 button.button.interactable = false;
-            }
         }
     }
 
-    void SpawnThrowableSelectionButton(ThrowableItemData throwableDataToInitalise)
+    void GetHeldThrowableTypes(Dictionary<ThrowableItemData, int> availableThrowables)
+    {
+        foreach (KeyValuePair<ThrowableItemData, int> availableThrowable in availableThrowables)
+        {
+            SpawnThrowableSelectionButton(availableThrowable.Key, availableThrowable.Value);
+        }
+        if (availableThrowables.Count > 0)
+            HelperFunctions.SetCursorActive(true);
+
+        UpdateSpawnedButtonsInteractability(currentlySelectedThrowable);
+    }
+
+    void SpawnThrowableSelectionButton(ThrowableItemData throwableDataToInitalise, int throwableAmount)
     {
         ThrowableSelectionButton throwableSelectionButton = Instantiate(throwableSelectionButtonPrefab, throwableSelectionButtonSpawnParent);
-        throwableSelectionButton.Init(throwableDataToInitalise);
+        throwableSelectionButton.Init(throwableDataToInitalise, throwableAmount);
+        if (throwableDataToInitalise == currentlySelectedThrowable)
+            throwableSelectionButton.button.interactable = false;
         spawnedThrowableSelectionButtons.Add(throwableSelectionButton);
     }
 

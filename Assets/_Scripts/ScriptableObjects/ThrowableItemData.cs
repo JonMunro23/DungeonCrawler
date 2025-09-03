@@ -22,8 +22,8 @@ public class ThrowableItemData : ItemData
     public float proximityDetectionRadius;
     public DamageType damageType;
     public int damage;
-    public StatusEffectType inflictedStatusEffect;
-    public float statusEffectLength;
+    public StatusEffect statusEffect;
+    [Space]
     public float minThrowVelocity;
     public float maxThrowVelocity;
     public float timeToMaxVelocity;

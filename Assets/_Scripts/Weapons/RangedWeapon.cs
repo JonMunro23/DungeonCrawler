@@ -182,14 +182,14 @@ public class RangedWeapon : Weapon
                             //if (isCrit)
                             //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
                             damageable.TryDamage(damage, DamageType.Fire);
-                            damageable.AddStatusEffect(StatusEffectType.Fire);
+                            damageable.AddStatusEffect(currentLoadedAmmoData.ammoStatusEffect);
                             break;
                         case AmmoType.Acid:
                             damage = CalculateDamage(AR);
                             //if (isCrit)
                             //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
                             damageable.TryDamage(damage, DamageType.Acid);
-                            damageable.AddStatusEffect(StatusEffectType.Acid);
+                            damageable.AddStatusEffect(currentLoadedAmmoData.ammoStatusEffect);
                             break;
 
                     }

@@ -12,12 +12,15 @@ public class PlayerThrowableManager : MonoBehaviour
     [SerializeField] ThrowableArms currentlySelectedThrowableArms;
     Animator currentThrowableAnimator;
     Transform currentThrowableThrowLocation;
-    bool isCurrentThrowableActive, isThrowableReadied, isThrowInProgress, isThrowableSelectionMenuOpen;
+    bool isCurrentThrowableActive, isThrowableReadied, isThrowInProgress;
 
+    [SerializeField] Dictionary<ThrowableItemData, int> availableThrowables = new Dictionary<ThrowableItemData, int>();
     [SerializeField] List<Throwable> manuallyDetonatedThrowables = new List<Throwable>();
 
-    public static Action<IInventory, ThrowableItemData> onThrowableSelectionMenuOpened;
-    public static Action OnThrowableSelectionMenuClosed;
+    public static Action<Dictionary<ThrowableItemData, int>, ThrowableItemData> onThrowableSelectionMenuOpened;
+    public static Action onThrowableSelectionMenuClosed;
+    public static Action<ThrowableItemData, int> onFirstThrowableCollected;
+    public static Action<int> onCurrentlySelectedThrowableAmountUpdated;
 
     [Header("Charging")]
     [SerializeField] AnimationCurve chargeCurve = null;    // optional easing; null = linear
@@ -54,23 +57,34 @@ public class PlayerThrowableManager : MonoBehaviour
     private void OnEnable()
     {
         ThrowableSelectionButton.onThrowableSelected += OnThrowableSelected;
-        PlayerInventoryManager.onFirstThrowableCollected += OnFirstThrowableCollected;
+
+        PlayerInventoryManager.onThrowableRemoved += OnThrowableRemoved;
     }
 
     private void OnDisable()
     {
         ThrowableSelectionButton.onThrowableSelected -= OnThrowableSelected;
-        PlayerInventoryManager.onFirstThrowableCollected -= OnFirstThrowableCollected;
+
+        PlayerInventoryManager.onThrowableRemoved -= OnThrowableRemoved;
+
+
     }
 
-    void OnFirstThrowableCollected(ThrowableItemData collectedThrowable)
+    async void OnThrowableSelected(ThrowableItemData selectedThrowable, int throwableAmount)
     {
-        SetCurrentlySelectedThrowable(collectedThrowable);
+        if(IsThrowableActive())
+        {
+            await SwapThrowable(selectedThrowable);
+        }
+        else
+            SetCurrentlySelectedThrowable(selectedThrowable);
     }
 
-    void OnThrowableSelected(ThrowableItemData selectedThrowable)
+    async void OnThrowableRemoved(ThrowableItemData removedThrowable)
     {
-        SetCurrentlySelectedThrowable(selectedThrowable);
+        if (removedThrowable == currentlySelectedThrowable)
+            if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
+                await UnequipThrowable();
     }
 
     void Awake()
@@ -84,33 +98,91 @@ public class PlayerThrowableManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        // Don’t simulate/preview during an active throw
+        if (isThrowInProgress) return;
+        if (!isThrowableReadied) return;
+
+        // Update charge 0..1 over timeToMaxVelocity
+        float raw = Mathf.Clamp01((Time.time - readyStartTime) / Mathf.Max(0.0001f, currentlySelectedThrowable.timeToMaxVelocity));
+        float eased = (chargeCurve != null) ? chargeCurve.Evaluate(raw) : raw;
+
+        currentCharge01 = eased;
+        currentThrowSpeed = Mathf.Lerp(
+            Mathf.Min(currentlySelectedThrowable.minThrowVelocity, currentlySelectedThrowable.maxThrowVelocity),
+            currentlySelectedThrowable.maxThrowVelocity,
+            currentCharge01
+        );
+
+        // World-space start pose & velocity
+        Vector3 startPos = currentThrowableThrowLocation.position
+                         + currentThrowableThrowLocation.forward * grenadeRadius; // small nudge to avoid self-hit
+        Vector3 dir = (currentThrowableThrowLocation.forward + Vector3.up * arcUpBias).normalized;
+        Vector3 startVel = dir * currentThrowSpeed;
+
+        DrawTrajectory(startPos, startVel);
+    }
+
     public void Init(PlayerController playerController)
     {
         this.playerController = playerController;
     }
 
+    public void AddThrowableToAvailable(ThrowableItemData throwableToAdd, int amountToAdd)
+    {
+        if(availableThrowables.Count == 0)
+        {
+            onFirstThrowableCollected?.Invoke(throwableToAdd, amountToAdd);
+            SetCurrentlySelectedThrowable(throwableToAdd);
+        }
+
+        availableThrowables[throwableToAdd] =
+            availableThrowables.TryGetValue(throwableToAdd, out int current)
+            ? current + amountToAdd
+            : amountToAdd;
+
+        if (throwableToAdd == currentlySelectedThrowable)
+            onCurrentlySelectedThrowableAmountUpdated?.Invoke(availableThrowables[throwableToAdd]);
+    }
+
+    public void RemoveThrowableFromAvailable(ThrowableItemData throwableToRemove, int amountToRemove)
+    {
+        if (availableThrowables.TryGetValue(throwableToRemove, out int currentAmount))
+        {
+            availableThrowables[throwableToRemove] = currentAmount - amountToRemove;
+        }
+
+        if (throwableToRemove == currentlySelectedThrowable)
+            onCurrentlySelectedThrowableAmountUpdated?.Invoke(availableThrowables[throwableToRemove]);
+    }
+
+
+    public int GetRemainingAmountOfThrowable(ThrowableItemData throwableToCheck)
+    {
+        if(availableThrowables.TryGetValue(throwableToCheck, out int amountOfAvailableeThrowables))
+            return amountOfAvailableeThrowables;
+
+        return 0;
+    }
+
+    #region Throwable Selection Menu
+
     public void OpenThrowableSelectionMenu()
     {
-        isThrowableSelectionMenuOpen = true;
-        onThrowableSelectionMenuOpened?.Invoke(playerController.playerInventoryManager, currentlySelectedThrowable);
+        if(isThrowableReadied) return;
+
+        onThrowableSelectionMenuOpened?.Invoke(availableThrowables, currentlySelectedThrowable);
     }
 
     public void CloseThrowableSelectionMenu()
     {
-        isThrowableSelectionMenuOpen = false;
-        OnThrowableSelectionMenuClosed?.Invoke();
+        onThrowableSelectionMenuClosed?.Invoke();
     }
 
-    public void SetCurrentlySelectedThrowable(ThrowableItemData newThrowable)
-    {
-        Debug.Log(newThrowable.itemName);
-        currentlySelectedThrowable = newThrowable;
-        ThrowableArms arms = Instantiate(newThrowable.throwableArmsPrefab, throwableArmsSpawnTransform);
-        currentlySelectedThrowableArms = arms;
-        currentThrowableAnimator = arms.GetArmsAnimator();
-        currentThrowableThrowLocation = arms.GetArmsThrowLocation();
-        arms.gameObject.SetActive(false);
-    }
+    #endregion
+
+    #region Equipping
 
     public async Task ToggleEquipThrowable()
     {
@@ -143,6 +215,22 @@ public class PlayerThrowableManager : MonoBehaviour
         await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
     }
 
+
+    public async Task SwapThrowable(ThrowableItemData throwableToSwapTo)
+    {
+        isThrowableReadied = false;
+        SetTrajectoryLineActive(false);
+        isCurrentThrowableActive = false; //set inactive early to prevent further readying
+        currentThrowableAnimator.Play("Holster");
+        await Task.Delay((int)(currentlySelectedThrowable.holsterLength * 1000));
+        SetCurrentThrowableActive(false);
+        SetCurrentlySelectedThrowable(throwableToSwapTo);
+        SetCurrentThrowableActive(true);
+
+    }
+    #endregion
+
+    #region Readying
     public void ReadyThrowable()
     {
         if (!IsThrowableActive()) return;
@@ -169,6 +257,17 @@ public class PlayerThrowableManager : MonoBehaviour
     {
         if (!isThrowableReadied) return;
         _ = UseThrowable();
+    }
+    #endregion
+
+    public void SetCurrentlySelectedThrowable(ThrowableItemData newThrowable)
+    {
+        currentlySelectedThrowable = newThrowable;
+        ThrowableArms arms = Instantiate(newThrowable.throwableArmsPrefab, throwableArmsSpawnTransform);
+        currentlySelectedThrowableArms = arms;
+        currentThrowableAnimator = arms.GetArmsAnimator();
+        currentThrowableThrowLocation = arms.GetArmsThrowLocation();
+        arms.gameObject.SetActive(false);
     }
 
     public async Task UseThrowable()
@@ -197,7 +296,7 @@ public class PlayerThrowableManager : MonoBehaviour
                 detonatedThrowables.Clear();
             }
 
-            if (manuallyDetonatedThrowables.Count == 0 && PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
+            if (manuallyDetonatedThrowables.Count == 0 && GetRemainingAmountOfThrowable(currentlySelectedThrowable) == 0)
             {
                 //holster remoteexplosives
                 await Task.Delay((int)(0.7f * 1000));
@@ -229,9 +328,9 @@ public class PlayerThrowableManager : MonoBehaviour
         if(currentlySelectedThrowable.detonationType == DetonationType.Remote)
             manuallyDetonatedThrowables.Add(clone);
 
-        playerController.playerInventoryManager.RemoveThrowableOfType(currentlySelectedThrowable, 1);
+        RemoveThrowableFromAvailable(currentlySelectedThrowable, 1);
 
-        if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) > 0 || (currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count > 0))
+        if (GetRemainingAmountOfThrowable(currentlySelectedThrowable) > 0 || (currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count > 0))
         {
             await Task.Delay((int)(0.7f * 1000));
             currentThrowableAnimator.Play("Draw");
@@ -257,31 +356,7 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public bool IsThrowableActive() => isCurrentThrowableActive;
 
-    void Update()
-    {
-        // Don’t simulate/preview during an active throw
-        if (isThrowInProgress) return;
-        if (!isThrowableReadied) return;
-
-        // Update charge 0..1 over timeToMaxVelocity
-        float raw = Mathf.Clamp01((Time.time - readyStartTime) / Mathf.Max(0.0001f, currentlySelectedThrowable.timeToMaxVelocity));
-        float eased = (chargeCurve != null) ? chargeCurve.Evaluate(raw) : raw;
-
-        currentCharge01 = eased;
-        currentThrowSpeed = Mathf.Lerp(
-            Mathf.Min(currentlySelectedThrowable.minThrowVelocity, currentlySelectedThrowable.maxThrowVelocity),
-            currentlySelectedThrowable.maxThrowVelocity,
-            currentCharge01
-        );
-
-        // World-space start pose & velocity
-        Vector3 startPos = currentThrowableThrowLocation.position
-                         + currentThrowableThrowLocation.forward * grenadeRadius; // small nudge to avoid self-hit
-        Vector3 dir = (currentThrowableThrowLocation.forward + Vector3.up * arcUpBias).normalized;
-        Vector3 startVel = dir * currentThrowSpeed;
-
-        DrawTrajectory(startPos, startVel);
-    }
+    #region Trajectory Line
 
     void SetTrajectoryLineActive(bool isActive)
     {
@@ -383,4 +458,6 @@ public class PlayerThrowableManager : MonoBehaviour
         var tex = mat.mainTexture;
         if (tex) tex.wrapMode = TextureWrapMode.Repeat;
     }
+
+    #endregion
 }

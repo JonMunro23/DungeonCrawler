@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerInventoryManager : MonoBehaviour, IInventory
 {
-    PlayerController playerController;
+    public PlayerController playerController;
     [SerializeField]
     List<ItemStack> startingItemStacks = new List<ItemStack>(); 
 
@@ -30,7 +30,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
     public static Action<int> onSyringeCountUpdated;
     public static Action<AmmoItemData> onAmmoAddedToInventory;
-    public static Action<ThrowableItemData> onFirstThrowableCollected;
     public static Action<ThrowableItemData> onThrowableRemoved;
 
     void OnEnable()
@@ -310,16 +309,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (freeSlot)
             {
                 freeSlot.AddItem(itemToAdd);
-
-                if(!hasCollectedFirstThrowable)
-                {
-                    ThrowableItemData throwableItemData = itemToAdd.itemData as ThrowableItemData;
-                    if(throwableItemData)
-                    {
-                        hasCollectedFirstThrowable = true;
-                        onFirstThrowableCollected?.Invoke(throwableItemData);
-                    }
-                }
 
                 return 0;
             }

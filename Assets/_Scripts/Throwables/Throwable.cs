@@ -49,16 +49,16 @@ public class Throwable : MonoBehaviour
         List<GridNode> nodesInBlastRadius = new List<GridNode>();
         GridNode centerNode = GridController.Instance.GetNodeFromWorldPos(transform.position);
         nodesInBlastRadius.Add(centerNode);
-        nodesInBlastRadius.AddRange(centerNode.GetNeighbouringNodes(true));
+        nodesInBlastRadius.AddRange(centerNode.allNeighbouringNodes);
 
-        switch (itemData.inflictedStatusEffect)
+        switch (itemData.statusEffect.effectType)
         {
             case StatusEffectType.None:
                 break;
             case StatusEffectType.Fire:
                 foreach (GridNode node in nodesInBlastRadius)
                 {
-                    node.IgniteNode(itemData.statusEffectLength);
+                    node.ApplyEffectToNode(itemData.statusEffect);
                 }
                 break;
             case StatusEffectType.Acid:

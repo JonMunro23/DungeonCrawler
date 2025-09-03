@@ -28,14 +28,8 @@ public class AmmoSelectionManager : MonoBehaviour
 
     public void OnAmmoSelected(AmmoItemData ammoTypeSelected)
     {
-        foreach (AmmoSelectionButton button in spawnedAmmoSelectionButtons)
-        {
-            button.button.interactable = true;
-            if (button.ammoItemData == ammoTypeSelected)
-            {
-                button.button.interactable = false;
-            }
-        }
+        CloseAmmoSelectionMenu();
+
     }
 
     public void OpenAmmoSelectionMenu(IWeapon currentHeldWeapon)

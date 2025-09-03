@@ -47,6 +47,7 @@ public class GridNode : MonoBehaviour
     Material highlightPathMat, highlightOpenMat, highlightClosedMat, defaultMat;
     [SerializeField] TMP_Text coordText;
     public List<GridNode> neighbouringNodes = new List<GridNode>();
+    public List<GridNode> allNeighbouringNodes = new List<GridNode>();
 
     public Transform moveToTransform;
     public GridNodeOccupant currentOccupant;
@@ -58,6 +59,7 @@ public class GridNode : MonoBehaviour
     public static Action onNodeOccupancyUpdated;
 
     [Header("Tile Effects")]
+    [SerializeField] StatusEffect currentNodeEffect;
     [SerializeField] ParticleSystem fireParticles;
     bool isIgnited;
     Coroutine ignitedRoutine;
@@ -103,14 +105,6 @@ public class GridNode : MonoBehaviour
     public void SetOccupant(GridNodeOccupant newOccupant)
     {
         currentOccupant = newOccupant;
-        if(isIgnited)
-        {
-            if (GetOccupyingGameobject() && GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
-            {
-                damageable.AddStatusEffect(StatusEffectType.Fire);
-            }
-        }
-
         onNodeOccupancyUpdated?.Invoke();
     }
 
@@ -212,7 +206,7 @@ public class GridNode : MonoBehaviour
     {
         SetIsExplored(true);
 
-        List<GridNode> nodesToSetExplored = new List<GridNode>(GetNeighbouringNodes(true));
+        List<GridNode> nodesToSetExplored = new List<GridNode>(allNeighbouringNodes);
 
         foreach(GridNode node in nodesToSetExplored)
         {
@@ -229,48 +223,93 @@ public class GridNode : MonoBehaviour
         coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
     }
 
-    public void IgniteNode(float igniteLength)
+    public void ApplyEffectToNode(StatusEffect statusEffectToApply)
     {
         if (!nodeData.isWalkable || isVoid) return;
 
-        isIgnited = true;
-        fireParticles.Play();
-        //play ignited SFX
-        if(GetOccupyingGameobject() && GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
+        if(currentNodeEffect != null)
+            if(currentNodeEffect.effectType != statusEffectToApply.effectType)
+                StopCurrentNodeEffect();
+
+        currentNodeEffect = statusEffectToApply;
+
+        switch (statusEffectToApply.effectType)
         {
-            damageable.AddStatusEffect(StatusEffectType.Fire);
-        }
-
-        if (ignitedRoutine != null)
-            StopCoroutine(ignitedRoutine);
-
-        ignitedRoutine = StartCoroutine(TileEffectTimer(StatusEffectType.Fire, igniteLength));
-    }
-
-    public void RemoveTileEffect(StatusEffectType effectToRemove)
-    {
-        switch (effectToRemove)
-        {
+            case StatusEffectType.None:
+                break;
             case StatusEffectType.Fire:
-                isIgnited = false;
-                fireParticles.Stop();
+                fireParticles.Play();
+                //play ignited SFX
+                if (ignitedRoutine != null)
+                    StopCoroutine(ignitedRoutine);
+
+                ignitedRoutine = StartCoroutine(TileEffectTimer(currentNodeEffect));
                 break;
             case StatusEffectType.Acid:
                 break;
             default:
                 break;
         }
+
     }
 
-    IEnumerator TileEffectTimer(StatusEffectType effect, float length)
+    public void StopCurrentNodeEffect()
     {
-        yield return new WaitForSeconds(length);
+        switch (currentNodeEffect.effectType)
+        {
+            case StatusEffectType.None:
+                break;
+            case StatusEffectType.Fire:
+                StopCoroutine(ignitedRoutine);
+                break;
+            case StatusEffectType.Acid:
+                break;
+            default:
+                break;
+        }
+        RemoveTileEffect(currentNodeEffect);
+    }
+
+    public void RemoveTileEffect(StatusEffect effectToRemove)
+    {
+        switch (effectToRemove.effectType)
+        {
+            case StatusEffectType.Fire:
+                fireParticles.Stop();
+                //stop ignited SFX
+                break;
+            case StatusEffectType.Acid:
+                break;
+            default:
+                break;
+        }
+        currentNodeEffect = null;
+    }
+
+    IEnumerator TileEffectTimer(StatusEffect effect)
+    {
+        float remainingTime = effect.nodeEffectLength;
+
+        while (remainingTime > 0)
+        {
+            if(GetOccupyingGameobject() != null)
+            {
+                if(GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.AddStatusEffect(effect);
+                }
+            }
+
+            yield return new WaitForSeconds(1f);
+            remainingTime--;
+        }
         RemoveTileEffect(effect);
     }
 
     public void CacheNeighbours()
     {
         neighbouringNodes = GetNeighbouringNodes();
+        allNeighbouringNodes = GetNeighbouringNodes(true);
     }
 
     public List<GridNode> GetNeighbouringNodes(bool getDiagonals = false)

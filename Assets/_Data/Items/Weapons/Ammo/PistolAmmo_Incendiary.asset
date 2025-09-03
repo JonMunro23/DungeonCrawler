@@ -24,3 +24,14 @@ MonoBehaviour:
   maxItemStackSize: 120
   weaponTypes: 0100000002000000
   ammoType: 3
+  ammoStatusEffect:
+    type: 1
+    damageType: 1
+    effectLength: 3
+    damage: 10
+    damageInterval: 0.5
+    canAffectNodes: 0
+    nodeEffectLength: 0
+    nodeDamage: 0
+    nodeDamageInterval: 0
+    acidArmourReduction: 0
