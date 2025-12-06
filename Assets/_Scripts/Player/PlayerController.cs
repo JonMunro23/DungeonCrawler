@@ -241,6 +241,11 @@ public class PlayerController : MonoBehaviour
         playerCamera.transform.DOLocalRotate(newRot, overDuration);
     }
 
+    public float GetCurrentYRotation()
+    {
+        return transform.localEulerAngles.y;
+    }
+
     public void RemoveAudioSources()
     {
         AudioManager.Instance.RemoveSource("[AudioEmitter] Weapon");

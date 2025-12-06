@@ -66,7 +66,7 @@ public class MapTile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
             {
                 case GridNodeOccupantType.Player:
                     PlayerIcon.enabled = true;
-                    UpdateIconFacingDirection(PlayerIcon, tileNode.GetOccupyingGameobject().GetComponent<PlayerController>().advGridMovement.GetTargetRot());
+                    UpdateIconFacingDirection(PlayerIcon, tileNode.GetOccupyingGameobject().GetComponent<PlayerController>().GetCurrentYRotation());
                     break;
                 case GridNodeOccupantType.LevelTransition:
                     LevelTransitionIcon.enabled = true;
@@ -176,7 +176,7 @@ public class MapTile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 
     void UpdateIconFacingDirection(Image icon, float targetDir)
     {
-        icon.transform.Rotate(new Vector3(0, 0, -targetDir));
+        icon.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, -targetDir));
     }
 
     public void OnPointerEnter(PointerEventData eventData)
