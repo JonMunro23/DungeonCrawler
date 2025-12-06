@@ -104,7 +104,7 @@ public class GridController : MonoBehaviour
 
     private void OnEnable()
     {
-        //MainMenu.onNewGameStarted += NewGame;
+        MainMenu.onNewGameStartedSkippedIntro += NewGame;
         SelectableCharacter.OnCharacterSelected += OnCharacterSelected;
         PauseMenu.onQuit += OnQuit;
 
@@ -119,7 +119,7 @@ public class GridController : MonoBehaviour
 
     private void OnDisable()
     {
-        //MainMenu.onNewGameStarted -= NewGame;
+        MainMenu.onNewGameStartedSkippedIntro -= NewGame;
         SelectableCharacter.OnCharacterSelected -= OnCharacterSelected;
         PauseMenu.onQuit -= OnQuit;
 
