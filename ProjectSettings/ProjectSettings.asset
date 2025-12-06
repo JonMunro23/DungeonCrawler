@@ -801,11 +801,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: e863da15-a4e4-43c5-b3ed-769fef88a169
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Dungeon Crawler 2025-12-06_15-29-27
+  organizationId: 3ac864c-2b8e-4f15-9a1d-d1b5c4b4e265
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
