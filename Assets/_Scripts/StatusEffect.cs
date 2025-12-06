@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewStatusEffect", menuName = "New Status Effect")]
@@ -14,10 +13,10 @@ public class StatusEffect : ScriptableObject
     public float damageInterval;
 
     [Header("GridNode Properties")]
-    //public bool canAffectNodes;
+    public bool canAffectNodes;
     public float nodeEffectLength;
-    //public float nodeDamage;
-    //public float nodeDamageInterval;
+    public float nodeDamage;
+    public float nodeDamageInterval;
 
     [Header("Special Properties")]
     public int armourReduction;
