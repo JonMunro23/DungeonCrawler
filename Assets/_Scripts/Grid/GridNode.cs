@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -46,6 +47,7 @@ public class GridNode : MonoBehaviour
     Material highlightPathMat, highlightOpenMat, highlightClosedMat, defaultMat;
     [SerializeField] TMP_Text coordText;
     public List<GridNode> neighbouringNodes = new List<GridNode>();
+    public List<GridNode> allNeighbouringNodes = new List<GridNode>();
 
     public Transform moveToTransform;
     public GridNodeOccupant currentOccupant;
@@ -55,6 +57,12 @@ public class GridNode : MonoBehaviour
     bool isVoid;
 
     public static Action onNodeOccupancyUpdated;
+
+    [Header("Tile Effects")]
+    [SerializeField] StatusEffect currentNodeEffect;
+    [SerializeField] ParticleSystem fireParticles;
+    bool isIgnited;
+    Coroutine ignitedRoutine;
 
     [Header("Pathfinding")]
     [SerializeField]
@@ -198,15 +206,11 @@ public class GridNode : MonoBehaviour
     {
         SetIsExplored(true);
 
-        foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
-        {
-            neighbouringNode.SetIsExplored(true);
-        }
+        List<GridNode> nodesToSetExplored = new List<GridNode>(allNeighbouringNodes);
 
-        //Check diagonals
-        foreach (GridNode neighbouringNode in DiagDirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+        foreach(GridNode node in nodesToSetExplored)
         {
-            neighbouringNode.SetIsExplored(true);
+            node.SetIsExplored(true);
         }
     }
 
@@ -219,31 +223,166 @@ public class GridNode : MonoBehaviour
         coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
     }
 
+    public void ApplyEffectToNode(StatusEffect statusEffectToApply)
+    {
+        if (!nodeData.isWalkable || isVoid) return;
+
+        if(currentNodeEffect != null)
+            if(currentNodeEffect.effectType != statusEffectToApply.effectType)
+                StopCurrentNodeEffect();
+
+        currentNodeEffect = statusEffectToApply;
+
+        switch (statusEffectToApply.effectType)
+        {
+            case StatusEffectType.None:
+                break;
+            case StatusEffectType.Fire:
+                fireParticles.Play();
+                //play ignited SFX
+                if (ignitedRoutine != null)
+                    StopCoroutine(ignitedRoutine);
+
+                ignitedRoutine = StartCoroutine(TileEffectTimer(currentNodeEffect));
+                break;
+            case StatusEffectType.Acid:
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    public void StopCurrentNodeEffect()
+    {
+        switch (currentNodeEffect.effectType)
+        {
+            case StatusEffectType.None:
+                break;
+            case StatusEffectType.Fire:
+                StopCoroutine(ignitedRoutine);
+                break;
+            case StatusEffectType.Acid:
+                break;
+            default:
+                break;
+        }
+        RemoveTileEffect(currentNodeEffect);
+    }
+
+    public void RemoveTileEffect(StatusEffect effectToRemove)
+    {
+        switch (effectToRemove.effectType)
+        {
+            case StatusEffectType.Fire:
+                fireParticles.Stop();
+                //stop ignited SFX
+                break;
+            case StatusEffectType.Acid:
+                break;
+            default:
+                break;
+        }
+        currentNodeEffect = null;
+    }
+
+    IEnumerator TileEffectTimer(StatusEffect effect)
+    {
+        float remainingTime = effect.nodeEffectLength;
+
+        while (remainingTime > 0)
+        {
+            if(GetOccupyingGameobject() != null)
+            {
+                if(GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.AddStatusEffect(effect);
+                }
+            }
+
+            yield return new WaitForSeconds(1f);
+            remainingTime--;
+        }
+        RemoveTileEffect(effect);
+    }
+
     public void CacheNeighbours()
     {
-        neighbouringNodes = new List<GridNode>();
+        neighbouringNodes = GetNeighbouringNodes();
+        allNeighbouringNodes = GetNeighbouringNodes(true);
+    }
+
+    public List<GridNode> GetNeighbouringNodes(bool getDiagonals = false)
+    {
+        List<GridNode> nodes = new List<GridNode>();
 
         foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
         {
-            neighbouringNodes.Add(neighbouringNode);
+            nodes.Add(neighbouringNode);
         }
+
+        if(getDiagonals)
+        {
+            foreach (GridNode diagNeighbouringNode in DiagDirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+            {
+                nodes.Add(diagNeighbouringNode);
+            }
+        }
+
+        return nodes;
     }
 
     public GridNode GetNodeInDirection(Vector3 direction)
     {
-        // Convert the direction into a grid offset
+        //Debug.Log($"Input Direction: {direction}");
+
+        // Round the input direction to nearest integers
+        Vector3 roundedMoveDir = new Vector3(
+            Mathf.RoundToInt(direction.x),
+            Mathf.RoundToInt(direction.y),
+            Mathf.RoundToInt(direction.z));
+
+        //Debug.Log($"Rounded Move Direction: {roundedMoveDir}");
+
+        // Initialize the offset to zero
         Vector2 offset = Vector2.zero;
 
-        if (direction == Vector3.forward)
-            offset = new Vector2(1, 0);  // Up
-        else if (direction == Vector3.back)
-            offset = new Vector2(-1, 0); // Down
-        else if (direction == Vector3.left)
+        // Handle cardinal directions
+        if (roundedMoveDir == Vector3.forward)
+        {
+            offset = new Vector2(1, 0);  // Forward
+        }
+        else if (roundedMoveDir == Vector3.back)
+        {
+            offset = new Vector2(-1, 0); // Backward
+        }
+        else if (roundedMoveDir == Vector3.left)
+        {
             offset = new Vector2(0, -1); // Left
-        else if (direction == Vector3.right)
+        }
+        else if (roundedMoveDir == Vector3.right)
+        {
             offset = new Vector2(0, 1);  // Right
+        }
+        else
+        {
+            // Handle diagonals (or other edge cases)
+            float absX = Mathf.Abs(direction.x);
+            float absZ = Mathf.Abs(direction.z);
 
-        // Calculate the target position by adding the offset to the start node position
+            if (absX > absZ)
+            {
+                // Horizontal dominance: use X for horizontal offset (left/right)
+                offset = new Vector2(0, Mathf.RoundToInt(roundedMoveDir.x));
+            }
+            else
+            {
+                // Vertical dominance: use Z for vertical offset (forward/backward)
+                offset = new Vector2(Mathf.RoundToInt(roundedMoveDir.z), 0);
+            }
+        }
+
+        // Calculate the target position
         Vector2 targetPosition = Coords.Pos + offset;
 
         // Retrieve and return the node at the target position

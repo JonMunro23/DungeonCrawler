@@ -3,6 +3,7 @@ using System;
 using Random = UnityEngine.Random;
 using System.Collections;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 public class PlayerHealthManager : MonoBehaviour, IDamageable
 {
@@ -11,6 +12,9 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     [SerializeField] GameObject syringeArms;
     [SerializeField] int maxHealth;
     [SerializeField] int currentHealth;
+
+    [Header("Status Effects")]
+    Dictionary<StatusEffectType, Coroutine> activeStatusEffects = new Dictionary<StatusEffectType, Coroutine>();
 
     [Header("Stats")]
     [SerializeField] int currentEvasion;
@@ -25,6 +29,9 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public static Action<CharacterData, float> onMaxHealthUpdated;
     public static Action<CharacterData, float> onCurrentHealthUpdated;
+    public static Action<StatusEffect> onStatusEffectAdded;
+    public static Action<StatusEffectType> onStatusEffectReset;
+    public static Action<StatusEffectType> onStatusEffectEnded;
 
     [SerializeField] AudioClip[] damageTakenSFx;
     [SerializeField] float damageTakenSFXVolume;
@@ -69,10 +76,10 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public void TakeDamageCheat(int damageToTake)
     {
-        TryDamage(true, damageToTake, DamageType.Standard, false);
+        TryDamage(damageToTake, DamageType.Standard);
     }
 
-    public void TryDamage(bool wasHit, int damageTaken, DamageType damageType = DamageType.Standard, bool wasCrit = false)
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard)
     {
         if (!PlayerController.isPlayerAlive)
             return;
@@ -83,13 +90,12 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
             return;
         }
 
-        TakeDamage(damageTaken, wasCrit);
+        TakeDamage(damageTaken);
     }
 
-    private void TakeDamage(int damageTaken, bool wasCrit)
+    private void TakeDamage(int damageTaken)
     {
-        int damageToTake = wasCrit ? damageTaken * 2 : damageTaken;
-        damageTaken -= currentArmour;
+        int damageToTake = damageTaken - currentArmour;
         audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
         playerController.ShakeScreen();
         currentHealth -= damageToTake;
@@ -132,7 +138,6 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public async void UseSyringeInSlot(ISlot slot)
     {
-        //Debug.Log("Using syringe");
         ConsumableItemData consumableData = slot.GetItemStack().itemData as ConsumableItemData;
         if (consumableData == null)
             return;
@@ -229,8 +234,60 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         return new DamageData(currentHealth, currentArmour, currentEvasion);
     }
 
-    public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5)
+    public void AddStatusEffect(StatusEffect statusEffectToAdd)
     {
-        throw new NotImplementedException();
+        if (activeStatusEffects.ContainsKey(statusEffectToAdd.effectType))
+        {
+            ResetStatusEffect(statusEffectToAdd);
+            return;
+        }
+
+        activeStatusEffects.TryAdd(statusEffectToAdd.effectType, StartCoroutine(StartStatusEffect(statusEffectToAdd)));
+    }
+
+    public void RemoveStatusEffect(StatusEffectType statusEffectToRemove)
+    {
+        if (activeStatusEffects.ContainsKey(statusEffectToRemove))
+        {
+            StopStatusEffect(statusEffectToRemove);
+            return;
+        }
+
+        activeStatusEffects.Remove(statusEffectToRemove);
+    }
+
+    IEnumerator StartStatusEffect(StatusEffect statusEffectToAdd)
+    {
+        onStatusEffectAdded?.Invoke(statusEffectToAdd);
+        if (statusEffectToAdd.dealsDOT)
+        {
+            StartCoroutine(HelperFunctions.DamageOverTime(this, statusEffectToAdd));
+        }
+
+        yield return new WaitForSeconds(statusEffectToAdd.effectLength);
+        onStatusEffectEnded?.Invoke(statusEffectToAdd.effectType);
+    }
+
+    void ResetStatusEffect(StatusEffect statusEffectToReset)
+    {
+        if(activeStatusEffects.TryGetValue(statusEffectToReset.effectType, out Coroutine effectRoutine))
+        {
+            if(effectRoutine != null)
+                StopCoroutine(effectRoutine);
+
+            effectRoutine = StartCoroutine(StartStatusEffect(statusEffectToReset));
+            onStatusEffectReset?.Invoke(statusEffectToReset.effectType);
+        }
+    }
+
+    void StopStatusEffect(StatusEffectType statusEffectToStop)
+    {
+        if (activeStatusEffects.TryGetValue(statusEffectToStop, out Coroutine effectRoutine))
+        {
+            if (effectRoutine != null)
+                StopCoroutine(effectRoutine);
+        }
+
+        activeStatusEffects.Remove(statusEffectToStop);
     }
 }

@@ -90,7 +90,7 @@ public class Door : TriggerableBase
 
     private void OpenDoor()
     {
-        Debug.Log("Opened");
+        //Debug.Log("Opened");
 
         isTriggered = true;
 
@@ -107,7 +107,7 @@ public class Door : TriggerableBase
 
     private void CloseDoor()
     {
-        Debug.Log("Closed");
+        //Debug.Log("Closed");
 
         isTriggered = false;
 

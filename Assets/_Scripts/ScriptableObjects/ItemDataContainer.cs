@@ -14,12 +14,49 @@ public class ItemDataContainer : ScriptableObject
     public List<EquipmentItemData> equipmentItemData = new List<EquipmentItemData>();
     [Header("Consumables")]
     public List<ConsumableItemData> consumableItemData = new List<ConsumableItemData>();
+    [Header("Throwables")]
+    public List<ThrowableItemData> throwableItemData = new List<ThrowableItemData>();
 
     public ItemData GetDataFromIdentifier(string identifier)
     {
         foreach (ItemData item in itemData)
         {
             if(item.itemIdentifier == identifier)
+            {
+                return item;
+            }
+        }
+        foreach (ItemData item in weaponItemData)
+        {
+            if (item.itemIdentifier == identifier)
+            {
+                return item;
+            }
+        }
+        foreach (ItemData item in ammoItemData)
+        {
+            if (item.itemIdentifier == identifier)
+            {
+                return item;
+            }
+        }
+        foreach (ItemData item in equipmentItemData)
+        {
+            if (item.itemIdentifier == identifier)
+            {
+                return item;
+            }
+        }
+        foreach (ItemData item in consumableItemData)
+        {
+            if (item.itemIdentifier == identifier)
+            {
+                return item;
+            }
+        }
+        foreach (ItemData item in throwableItemData)
+        {
+            if (item.itemIdentifier == identifier)
             {
                 return item;
             }

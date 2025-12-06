@@ -49,12 +49,11 @@ public class PlayerInventoryUIController : MonoBehaviour
         WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
 
         InventorySlot.onInventorySlotRightClicked -= ShowContextMenu;
-
     }
 
     void OnNewGroundItemDetected(ItemStack detectedItem)
     {
-        pickupItemText.text = $"Press F to pickup {(detectedItem.itemAmount > 0 ? detectedItem.itemAmount : "")} {detectedItem.itemData.itemName}.";
+        pickupItemText.text = $"F: Pickup {(detectedItem.itemAmount > 0 ? detectedItem.itemAmount : "")} {detectedItem.itemData.itemName}.";
     }
 
     void OnNearbyContainerUpdated(IContainer container)
@@ -66,7 +65,7 @@ public class PlayerInventoryUIController : MonoBehaviour
             return;
         }
 
-        pickupItemText.text = $"Press F to {(container.IsOpen() ? "close" : "open")} container.";
+        pickupItemText.text = $"F: {(container.IsOpen() ? "Close" : "Open")} container.";
     }
 
     void OnNearbyInteractableUpdated(IInteractable interactable)
@@ -78,7 +77,7 @@ public class PlayerInventoryUIController : MonoBehaviour
             return;
         }
 
-        pickupItemText.text = "Press F to interact.";
+        pickupItemText.text = "F: Interact.";
     }
 
     void OnLastGroundItemRemoved()
@@ -117,7 +116,8 @@ public class PlayerInventoryUIController : MonoBehaviour
 
         HideContextMenu();
 
-        HelperFunctions.SetCursorActive(true);
+        //HelperFunctions.SetCursorActive(true);
+        CrosshairController.SetCrosshairLocked(false);
     }
 
     public void CloseInventory()

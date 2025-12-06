@@ -21,12 +21,21 @@ public class CharacterMenuUIController : MonoBehaviour
     {
         PlayerInventoryManager.onInventoryOpened += OpenCharacterMenu;
         PlayerInventoryManager.onInventoryClosed += CloseCharacterMenu;
+
+        Container.onContainerClosed += OnContainerClosed;
     }
 
     private void OnDisable()
     {
-        PlayerInventoryManager.onInventoryClosed -= OpenCharacterMenu;
+        PlayerInventoryManager.onInventoryOpened -= OpenCharacterMenu;
         PlayerInventoryManager.onInventoryClosed -= CloseCharacterMenu;
+
+        Container.onContainerClosed -= OnContainerClosed;
+    }
+
+    void OnContainerClosed()
+    {
+        CloseCharacterMenu();
     }
 
     private void Awake()
@@ -41,7 +50,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleCharacterMenu()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
 
         if (!isCharacterMenuOpen)
             OpenCharacterMenu();
@@ -60,8 +69,10 @@ public class CharacterMenuUIController : MonoBehaviour
         isCharacterMenuOpen = false;
         SetPanelsInactive();
         characterMenuPanelsParent.SetActive(false);
-
-        HelperFunctions.SetCursorActive(false);
+        if(PlayerInventoryManager.isInContainer)
+            WorldInteractionManager.CloseCurrentOpenContainer();
+        //HelperFunctions.SetCursorActive(false);
+        CrosshairController.SetCrosshairLocked(true);
     }
 
     void ShowCurrentOpenPanel()
@@ -72,7 +83,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleInventoryPanel()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
 
         if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Inventory)
             CloseCharacterMenu();
@@ -88,7 +99,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleSkillsPanel()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
 
         if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Skills)
             CloseCharacterMenu();
@@ -104,7 +115,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     public void ToggleStatsPanel()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
 
         if (isCharacterMenuOpen && currentOpenInventoryPanel == InventoryPanel.Stats)
             CloseCharacterMenu();

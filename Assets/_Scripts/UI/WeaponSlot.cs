@@ -17,6 +17,7 @@ public class WeaponSlot : InventorySlot
 
     public static Action<int, WeaponItemData> onWeaponSetToDefault;
 
+    public static Action<IWeapon> onWeaponDrawn;
 
     AudioEmitter audioEmitter;
 
@@ -84,7 +85,10 @@ public class WeaponSlot : InventorySlot
     public async Task DrawWeapon()
     {
         if (currentWeapon != null)
+        {
             await currentWeapon.DrawWeapon();
+            onWeaponDrawn?.Invoke(currentWeapon);
+        }
     }
 
     public void SetWeapon(IWeapon newWeapon)

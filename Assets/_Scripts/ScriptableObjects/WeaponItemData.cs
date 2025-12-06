@@ -21,6 +21,7 @@ public enum AmmoType
 
 public enum StatusEffectType
 {
+    None,
     Fire,
     Acid
 }
@@ -29,7 +30,8 @@ public enum DamageType
 {
     Standard,
     Fire,
-    Acid
+    Acid,
+    Explosive
 }
 
 
@@ -59,6 +61,9 @@ public class WeaponItemData : EquipmentItemData
 
     [Header("Recoil Data")]
     public WeaponRecoilData recoilData;
+    public float spreadReductionSpeed = 1.2f;
+    public float perShotSpreadIncrease = .2f;
+    public float onWeaponReadiedSpreadAmount = 2f;
 
     [Header("Weapon SFX")]
     public AudioClip[] attackSFX;
@@ -67,9 +72,17 @@ public class WeaponItemData : EquipmentItemData
     public float specialSFXVolume = .3f;
 
     [Header("Animations")]
+    public float grabAnimDuration;
+    public AudioClip grabSFX;
+    public float grabVolume;
+    [Space]
     public float drawAnimDuration;
     public AudioClip drawSFX;
     public float drawVolume = .3f;
+    [Space]
+    public float readyAnimDuration;
+    public AudioClip readySFX;
+    public float readyVolume = .3f;
     [Space]
     public float hideAnimDuration;
     public AudioClip hideSFX;

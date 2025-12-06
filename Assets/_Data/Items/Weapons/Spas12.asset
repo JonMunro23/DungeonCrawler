@@ -45,14 +45,21 @@ MonoBehaviour:
   defaultLoadedAmmoData: {fileID: 11400000, guid: 6684da6b5e8fecc44a3685ac0da4a1fd,
     type: 2}
   recoilData: {fileID: 11400000, guid: 7c7c1528df6797f4898a475787174cb3, type: 2}
+  spreadReductionSpeed: 1.8
   attackSFX:
   - {fileID: 8300000, guid: 75969f62278ac744d875f460ba9e1bde, type: 3}
   attackSFXVolume: 0.3
   specialSFX: {fileID: 0}
   specialSFXVolume: 0.3
+  grabAnimDuration: 1.5
+  grabSFX: {fileID: 0}
+  grabVolume: 0.3
   drawAnimDuration: 1
   drawSFX: {fileID: 8300000, guid: 56fa2ac4774f57b42bd934e5568eedcf, type: 3}
   drawVolume: 0.3
+  readyAnimDuration: 0
+  readySFX: {fileID: 0}
+  readyVolume: 0.3
   hideAnimDuration: 0.75
   hideSFX: {fileID: 8300000, guid: c71487212091ea34db8387c3d85bf164, type: 3}
   hideVolume: 0.3

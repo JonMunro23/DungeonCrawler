@@ -76,6 +76,8 @@ public class GridController : MonoBehaviour
     [SerializeField] Door secretDoorPrefab;
     List<ITriggerable> spawnedTriggerables = new List<ITriggerable>();
 
+    [Header("Destructables")]
+    [SerializeField] Destructable destructableWallPrefab;
 
     [Header("Spawn Offsets")]
     [SerializeField] Vector3 centeredEntitySpawnOffset;
@@ -410,7 +412,7 @@ public class GridController : MonoBehaviour
                                     interactable.SetTriggerOnExit((bool)entityLayer.EntityInstances[k].FieldInstances[5].Value);
                                     interactable.SetIsSingleUse((bool)entityLayer.EntityInstances[k].FieldInstances[6].Value);
                                     interactable.SetLevelIndex(levelIndex);
-                                    interactable.SetNode(spawnNode);
+                                    interactable.SetOccupyingNode(spawnNode);
                                     spawnedInteractables.Add(interactable);
                                     break;
                                 case "Triggerable":
@@ -437,6 +439,14 @@ public class GridController : MonoBehaviour
                                     newOccupant = new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible);
                                     spawnNode.SetBaseOccupant(newOccupant);
                                     spawnNode.SetOccupant(newOccupant);
+                                    break;
+                                case "Destructable_Wall":
+                                    Destructable spawnedDestructable = null;
+                                    spawnedDestructable = Instantiate(destructableWallPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                    spawnedDestructable.SetOccupyingNode(spawnNode);
+                                    spawnedDestructable.SetLevelIndex(levelIndex);
+                                    GridNodeOccupant occupant = new GridNodeOccupant(spawnedDestructable.gameObject, GridNodeOccupantType.Obstacle);
+                                    spawnNode.SetOccupant(occupant);
                                     break;
                             }
                         }

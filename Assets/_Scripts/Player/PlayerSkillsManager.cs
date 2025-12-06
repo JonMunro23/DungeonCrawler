@@ -154,7 +154,7 @@ public class PlayerSkillsManager : MonoBehaviour
 
     public void AddSkillPoints(int amountToAdd)
     {
-        for (int i = 0; i < startingSkillPoints; i++)
+        for (int i = 0; i < amountToAdd; i++)
             AddSkillPoint();
     }
 

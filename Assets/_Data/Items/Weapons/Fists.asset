@@ -50,6 +50,9 @@ MonoBehaviour:
   attackSFXVolume: 0.6
   specialSFX: {fileID: 0}
   specialSFXVolume: 0.3
+  grabAnimDuration: 0.95
+  grabSFX: {fileID: 0}
+  grabVolume: 0.3
   drawAnimDuration: 0.967
   drawSFX: {fileID: 8300000, guid: a0286b96b7b7f384fbc3ec369e55bded, type: 3}
   drawVolume: 0.3
@@ -72,3 +75,6 @@ MonoBehaviour:
   reloadEndAnimDuration: 0
   reloadStopSFX: {fileID: 0}
   reloadStopVolume: 0.3
+  ejectShellAnimDuration: 0
+  ejectShellSFX: {fileID: 0}
+  ejectShellVolume: 0.3

@@ -5,7 +5,7 @@ public class DamageData
     public int currentArmourRating;
     public int currentEvasionRating;
 
-    public DamageData(int currentHealth, int currentArmourRating, int currentEvasionRating)
+    public DamageData(int currentHealth, int currentArmourRating = 0, int currentEvasionRating = 0)
     {
         this.currentHealth = currentHealth;
         this.currentArmourRating = currentArmourRating;
@@ -15,7 +15,7 @@ public class DamageData
 
 public interface IDamageable
 {
-    public void TryDamage(bool wasHit, int damageTaken, DamageType damageType = DamageType.Standard, bool wasCrit = false);  
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard);  
     public DamageData GetDamageData();
-    public void AddStatusEffect(StatusEffectType statusEffectTypeToAdd, float duration = 5f);
+    public void AddStatusEffect(StatusEffect statusEffectToAdd) { }
 }

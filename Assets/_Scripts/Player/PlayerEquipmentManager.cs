@@ -28,6 +28,8 @@ public class PlayerEquipmentManager : MonoBehaviour
     [Header("Carry Weight")]
     [SerializeField] float currentCarryWeight, maxCarryWeight;
 
+    bool canUseEquipment;
+
     public static Action<EquippedItem> onEquippedItemAdded;
     public static Action<EquippedItem> onEquippedItemRemoved;
 
@@ -55,6 +57,8 @@ public class PlayerEquipmentManager : MonoBehaviour
         PauseMenu.onQuit -= RemoveEquipmentSlots;
     }
 
+    public bool CanUseEquipment() => canUseEquipment;
+
     void OnInventorySlotEquipmentItemEquipped(ISlot slot)
     {
         EquipmentItemData equipmentItemData = slot.GetItemStack().itemData as EquipmentItemData;
@@ -75,7 +79,7 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     void OnInventorySlotEquipmentItemUnequipped(ISlot slot)
     {
-        playerController.playerInventoryManager.TryAddItemToInventory(slot.TakeItem());
+        playerController.playerInventoryManager.TryAddItem(slot.TakeItem());
     }
 
     public void Init(PlayerController controller)

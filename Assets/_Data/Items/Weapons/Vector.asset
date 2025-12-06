@@ -30,8 +30,7 @@ MonoBehaviour:
     modifyAmount: 15
   itemPrefab: {fileID: 5015189803522481237, guid: 99acbf84f17962845a02eb098b57f53b,
     type: 3}
-  magDropPrefab: {fileID: 54144127183699200, guid: eb0d0272b48705a46a29a19b0a7aec1f,
-    type: 3}
+  magDropPrefab: {fileID: 0}
   isTwoHanded: 1
   weaponType: 2
   itemDamageMinMax: {x: 12, y: 25}
@@ -49,6 +48,9 @@ MonoBehaviour:
   defaultLoadedAmmoData: {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1,
     type: 2}
   recoilData: {fileID: 11400000, guid: 1dd2f7d44e5a4d04d81b3f408545096a, type: 2}
+  spreadReductionSpeed: 1.4
+  perShotSpreadIncrease: 0.2
+  onWeaponReadiedSpreadAmount: 1.6
   attackSFX:
   - {fileID: 8300000, guid: 406e8486c88ba1941aaf35f44f86e570, type: 3}
   - {fileID: 8300000, guid: 03cb07fd4c96c764d87c7dcf9f6f2e9b, type: 3}
@@ -57,9 +59,15 @@ MonoBehaviour:
   attackSFXVolume: 0.3
   specialSFX: {fileID: 0}
   specialSFXVolume: 0.3
+  grabAnimDuration: 1.4
+  grabSFX: {fileID: 0}
+  grabVolume: 0.3
   drawAnimDuration: 1.017
   drawSFX: {fileID: 8300000, guid: 3ae9f4e1105518d49885a89387f87197, type: 3}
   drawVolume: 0.3
+  readyAnimDuration: 0.3
+  readySFX: {fileID: 0}
+  readyVolume: 0.3
   hideAnimDuration: 0.9
   hideSFX: {fileID: 8300000, guid: c7112d16f68f0df44b469600d0c4e516, type: 3}
   hideVolume: 0.3
@@ -79,3 +87,6 @@ MonoBehaviour:
   reloadEndAnimDuration: 0
   reloadStopSFX: {fileID: 0}
   reloadStopVolume: 0.3
+  ejectShellAnimDuration: 0
+  ejectShellSFX: {fileID: 0}
+  ejectShellVolume: 0.3

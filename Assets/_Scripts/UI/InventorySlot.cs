@@ -76,6 +76,12 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             PlayerInventoryManager.onAmmoAddedToInventory?.Invoke(ammoData);
         }
 
+        ThrowableItemData throwableData = itemToAdd.itemData as ThrowableItemData;
+        if(throwableData != null)
+        {
+            playerInventoryManager.playerController.playerThrowableManager.AddThrowableToAvailable(throwableData, itemToAdd.itemAmount);
+        }
+
         SetTooltipTriggerActive(true);
         UpdateSlotUI();
     }
@@ -112,6 +118,12 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             }
         }
 
+        ThrowableItemData throwableData = currentSlotItemStack.itemData as ThrowableItemData;
+        if (throwableData != null)
+        {
+            playerInventoryManager.playerController.playerThrowableManager.AddThrowableToAvailable(throwableData, amountToAdd);
+        }
+
         //AmmoItemData ammoData = GetDataAsAmmo(currentSlotItemStack.itemData);
         //if (ammoData)
         //{
@@ -122,7 +134,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public int RemoveFromExistingStack(int amountToRemove)
     {
         int remainder = 0;
-        if (currentSlotItemStack.itemAmount < amountToRemove)
+        if (currentSlotItemStack.itemAmount <= amountToRemove)
         {
             amountToRemove -= currentSlotItemStack.itemAmount;
             RemoveItem();
@@ -151,6 +163,11 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public virtual ItemStack TakeItem()
     {
         ItemStack itemToTake = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount, currentSlotItemStack.loadedAmmo);
+        ThrowableItemData throwableTaken = itemToTake.itemData as ThrowableItemData;
+        if (throwableTaken != null)
+        {
+            playerInventoryManager.playerController.playerThrowableManager.RemoveThrowableFromAvailable(throwableTaken, itemToTake.itemAmount);
+        }
         RemoveItem();
         return itemToTake;
     }
@@ -273,6 +290,14 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
                     break;
             }
         }
+
+        //ThrowableItemData throwableItemData = currentSlotItemStack.itemData as ThrowableItemData;
+        //if (throwableItemData)
+        //{
+
+        //}
+
+
 
         //AmmoItemData ammoData = GetDataAsAmmo(currentSlotItemStack.itemData);
         //if (ammoData)

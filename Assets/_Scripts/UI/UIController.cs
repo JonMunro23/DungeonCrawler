@@ -15,6 +15,7 @@ public class UIController : MonoBehaviour
     [SerializeField] PlayerWeaponUIManager playerWeaponUIManager;
     public PlayerSkillsUIManager playerSkillsUIManager;
     [SerializeField] MapController mapController;
+    [SerializeField] CrosshairController crosshairController;
 
     [Header("Pause Menu")]
     [SerializeField] PauseMenu pauseMenu;
@@ -220,9 +221,9 @@ public class UIController : MonoBehaviour
         playerWeaponUIManager.UpdateWeaponDisplayLoadedAmmoCount(slotIndex, loaded);
     }
 
-    void OnWeaponSlotSetActive(int slotIndex)
+    void OnWeaponSlotSetActive(WeaponSlot activeSlot)
     {
-        playerWeaponUIManager.SetSlotActive(slotIndex);
+        playerWeaponUIManager.SetSlotActive(activeSlot.slotIndex);
     }
 
     async void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)

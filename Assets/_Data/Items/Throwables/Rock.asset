@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b906c7208db4abc449a613c8b2b89a20, type: 3}
+  m_Name: Rock
+  m_EditorClassIdentifier: 
+  itemName: Rock
+  itemIdentifier: rock
+  itemDescription: A shefty rock
+  itemSprite: {fileID: 21300004, guid: ce97ed62c0a56e84ab25e22c8dfd5bca, type: 3}
+  itemWorldModel: {fileID: 1842920273716216, guid: 28a11390dfca1364fb5532ac40add927,
+    type: 3}
+  itemWeight: 0.25
+  isItemStackable: 1
+  maxItemStackSize: 10
+  throwableArmsPrefab: {fileID: 8925242296018203832, guid: af1043c188150e14cb74831acf23b520,
+    type: 3}
+  throwablePrefab: {fileID: 1652115390431381414, guid: c25f47be78f680644a9eaed2ba7aa5ad,
+    type: 3}
+  isExplosive: 0
+  detonationType: 0
+  fuseLength: 0
+  blastRadius: 0
+  proximityDetectionRadius: 0
+  damage: 0
+  minThrowVelocity: 4
+  maxThrowVelocity: 25
+  timeToMaxVelocity: 3
+  explosionVFX: {fileID: 0}
+  explosionSFX: {fileID: 0}
+  bounceSFX: {fileID: 8300000, guid: 005ea6ecd6587a44fb7adf7fcbbdd133, type: 3}
+  readyDelay: 0
+  throwDelay: 0
+  holsterLength: 0.767

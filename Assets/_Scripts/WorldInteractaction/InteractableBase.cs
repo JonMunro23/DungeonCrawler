@@ -1,3 +1,4 @@
+using HighlightPlus;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,6 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
     int levelIndex;
     GridNode node;
-    Vector2 coords;
 
     TriggerOperation triggerOperation = TriggerOperation.Toggle;
     InteractableType interactableType;
@@ -33,6 +33,12 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     public List<ITriggerable> objectsToTrigger = new List<ITriggerable>();
     public List<Dictionary<string, object>> entityRefsToTrigger = new List<Dictionary<string, object>>();
 
+    HighlightEffect highlightEffect;
+
+    private void Awake()
+    {
+        highlightEffect = GetComponent<HighlightEffect>();
+    }
 
     public abstract void Interact();
     public abstract void InteractWithItem(ItemData item);
@@ -90,13 +96,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 
     public Vector2 GetCoords()
     {
-        return coords;
-    }
-
-    public void SetNode(GridNode spawnNode)
-    {
-        node = spawnNode;
-        coords = spawnNode.Coords.Pos;
+        return node.Coords.Pos;
     }
 
     public virtual void SetRequiredKeycardType(string keycardType)
@@ -152,4 +152,14 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     }
 
     public GameObject GetGameObject() => gameObject;
+
+    public void SetHighlighted(bool isHighlighted)
+    {
+        highlightEffect.highlighted = isHighlighted;
+    }
+
+    public void SetOccupyingNode(GridNode occupyingNode)
+    {
+        node = occupyingNode;
+    }
 }

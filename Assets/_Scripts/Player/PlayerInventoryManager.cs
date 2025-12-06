@@ -6,33 +6,38 @@ using UnityEngine;
 
 public class PlayerInventoryManager : MonoBehaviour, IInventory
 {
-    PlayerController playerController;
+    public PlayerController playerController;
     [SerializeField]
     List<ItemStack> startingItemStacks = new List<ItemStack>(); 
 
     [SerializeField] InventorySlot inventorySlotPrefab;
-    public InventorySlot[] spawnedInventorySlots;
+    static InventorySlot[] spawnedInventorySlots;
     [SerializeField] int totalNumInventorySlots;
     [SerializeField] int heldHealthSyringes;
     [Space]
     [Header("Camera Anim On Container Interaction")]
-    [SerializeField] Vector3 openContainerCamPos, defaultCamPos;
-    [SerializeField] Vector3 openContainerCamRot, defaultCamRot;
+    [SerializeField] Vector3 openContainerCamPos;
+    [SerializeField] Vector3 returnCamPos;
+    [SerializeField] Vector3 openContainerCamRot;
+    [SerializeField] Vector3 returnCamRot;
     [SerializeField] float openContainerCamMovementDuration, closeContainerCamMovementDuration;
     public static bool isInContainer { get; private set; }
+
+    bool hasCollectedFirstThrowable;
 
     public static Action onInventoryOpened;
     public static Action onInventoryClosed;
     public static Action<InventorySlot[]> onInventorySlotsSpawned;
     public static Action<int> onSyringeCountUpdated;
     public static Action<AmmoItemData> onAmmoAddedToInventory;
+    public static Action<ThrowableItemData> onThrowableRemoved;
 
     void OnEnable()
     {
         Container.onContainerOpened += OnContainerOpened;
         Container.onContainerClosed += OnContainerClosed;
 
-        WorldInteractionManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
+        //WorldInteractionManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
 
         InventoryContextMenu.onInventorySlotWeaponUnloaded += OnInventorySlotWeaponUnloaded;
 
@@ -44,29 +49,32 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         Container.onContainerOpened -= OnContainerOpened;
         Container.onContainerClosed -= OnContainerClosed;
 
-        WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
+        //WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
 
         InventoryContextMenu.onInventorySlotWeaponUnloaded -= OnInventorySlotWeaponUnloaded;
 
         PauseMenu.onQuit -= RemoveInventorySlots;
     }
 
-    void OnNearbyContainerUpdated(IContainer nearbyContainer)
-    {
-        if(nearbyContainer == null)
-        {
-            playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
-            playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
-        }
-    }
+    //void OnNearbyContainerUpdated(IContainer nearbyContainer)
+    //{
+    //    if(nearbyContainer == null)
+    //    {
+    //        playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
+    //        playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
+    //    }
+    //}
 
-    async void OnContainerOpened()
+    void OnContainerOpened()
     {
+        returnCamPos = Camera.main.transform.localPosition;
+        returnCamRot = Camera.main.transform.localEulerAngles;
+
         playerController.MoveCameraPos(openContainerCamPos, openContainerCamMovementDuration);
         playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
         isInContainer = true;
 
-        await Task.Delay((int)((openContainerCamMovementDuration / 2) * 1000));
+        //await Task.Delay((int)((openContainerCamMovementDuration / 2) * 1000));
 
         if (!CharacterMenuUIController.isCharacterMenuOpen)
             OpenInventory();
@@ -74,8 +82,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     void OnContainerClosed()
     {
-        playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
-        playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
+        playerController.MoveCameraPos(returnCamPos, closeContainerCamMovementDuration);
+        playerController.RotCamera(returnCamRot, closeContainerCamMovementDuration);
         isInContainer = false;
 
         HelperFunctions.SetCursorActive(false);
@@ -88,9 +96,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             return;
 
         ItemStack slotAmmo = new ItemStack(weaponSlot.GetWeapon().GetRangedWeapon().GetCurrentLoadedAmmoData(), slot.UnloadAmmo());
-        TryAddItemToInventory(slotAmmo);
+        TryAddItem(slotAmmo);
 
-        
     }
 
     public void Init(PlayerController newPlayerController)
@@ -137,6 +144,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public void ToggleInventory()
     {
+
         if (CharacterMenuUIController.isCharacterMenuOpen == true)
         {
             CloseInventory();
@@ -182,6 +190,30 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         onSyringeCountUpdated?.Invoke(heldHealthSyringes);
     }
 
+    public void RemoveThrowableOfType(ThrowableItemData throwableToRemove, int amountToRemove)
+    {
+        //reverse list so it takes from the last slot first 
+        List<InventorySlot> slotsReversed = new List<InventorySlot>(spawnedInventorySlots.Reverse());
+
+        foreach (ISlot slot in slotsReversed)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            ItemStack slotItemStack = slot.GetItemStack();
+
+            ThrowableItemData throwableItemData = slotItemStack.itemData as ThrowableItemData;
+            if (!throwableItemData)
+                continue;
+
+            if (throwableItemData != throwableToRemove)
+                continue;
+
+            slot.RemoveFromExistingStack(amountToRemove);
+            onThrowableRemoved?.Invoke(throwableToRemove);
+        }
+    }
+
     public InventorySlot FindSlotWithConsumableOfType(ConsumableType typeToFind)
     {
         foreach (InventorySlot slot in spawnedInventorySlots)
@@ -213,12 +245,12 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         return null;
     }
 
-    InventorySlot[] GetSlotOfTypeWithSpace(ItemData itemData)
+    InventorySlot[] GetSlotWithItemWithSpace(ItemData itemData)
     {
         List<InventorySlot> slotsWithItemAndSpace = new List<InventorySlot>();
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
-            if (!slot.IsSlotEmpty())
+            if (slot.IsSlotEmpty())
                 continue;
 
             if(slot.GetItemStack().itemData == itemData)
@@ -236,9 +268,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         return null;
     }
 
-    public int TryAddItemToInventory(ItemStack itemToAdd)
+    public int TryAddItem(ItemStack itemToAdd)
     {
-        InventorySlot[] slotsWithSpace = GetSlotOfTypeWithSpace(itemToAdd.itemData);
+        InventorySlot[] slotsWithSpace = GetSlotWithItemWithSpace(itemToAdd.itemData);
         if(slotsWithSpace != null && slotsWithSpace.Length > 0)
         {
             int remainingAmountToAdd = itemToAdd.itemAmount;
@@ -277,6 +309,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (freeSlot)
             {
                 freeSlot.AddItem(itemToAdd);
+
                 return 0;
             }
 
@@ -365,6 +398,23 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             }
             return;
         }
+    }
+
+    public static int GetRemainingAmountOfItem(ItemData item)
+    {
+        int itemAmount = 0;
+        foreach (ISlot slot in spawnedInventorySlots)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            if (slot.GetItemStack().itemData != item)
+                continue;
+
+            itemAmount += slot.GetItemStack().itemAmount;
+        }
+
+        return itemAmount;
     }
 
     public void LockSlotsWithAmmoOfType(AmmoItemData ammoTypeToLock)
@@ -456,6 +506,24 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     public void Load(PlayerSaveData data)
     {
         LoadItems(data.storedItems);
+    }
+
+    public List<ThrowableItemData> GetAllAvailableThrowables()
+    {
+        List<ThrowableItemData> heldThrowables = new List<ThrowableItemData>();
+        foreach (ISlot slot in spawnedInventorySlots)
+        {
+            if (slot.IsSlotEmpty())
+                continue;
+
+            ThrowableItemData throwableItemData = slot.GetItemStack().itemData as ThrowableItemData;
+            if (!throwableItemData)
+                continue;
+
+            if (!heldThrowables.Contains(throwableItemData))
+                heldThrowables.Add(throwableItemData);
+        }
+        return heldThrowables;
     }
 
     #endregion

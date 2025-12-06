@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IInteractable
+public interface IInteractable : IHighlightable, IGridNode
 {
     public void Interact();  
     public void InteractWithItem(ItemData item);
@@ -9,13 +9,9 @@ public interface IInteractable
     public void AddEntityRefToTrigger(Dictionary<string, object> entityRefToTrigger);
     public List<string> GetEntityRefsToTrigger();
     public bool GetIsActivated();
-    public int GetLevelIndex();
-    public Vector2 GetCoords();
     public void SetInteractableType(string interactableType);
     public InteractableType GetInteractableType();
     public void SetIsActivated(bool activatedState);
-    public void SetLevelIndex(int _levelIndex);
-    public void SetNode(GridNode spawnNode);
     public void SetRequiredKeycardType(string keycardType);
     public void SetTriggerOperation(string triggerOperation);
 
@@ -35,5 +31,4 @@ public interface IInteractable
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData);
     public void Destroy();
     public GameObject GetGameObject();
-
 }

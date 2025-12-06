@@ -30,18 +30,19 @@ public class PlayerInputHandler : MonoBehaviour
 
     void Update()
     {
-        if(PauseMenu.isPaused || !PlayerController.isPlayerAlive || MapController.isMapOpen) return;
-
-        Action<EventMapping> actionKeyDown = new Action<EventMapping>(InputMappingKeyDown);
-        Array.ForEach(eventMappingsKeyDown, actionKeyDown);
-
-        Action<EventMapping> actionKeyUp = new Action<EventMapping>(InputMappingKeyUp);
-        Array.ForEach(eventMappingsKeyUp, actionKeyUp);
-
-        if(eventMappings.Length > 0)
+        if(!PauseMenu.isPaused || PlayerController.isPlayerAlive || !MapController.isMapOpen)
         {
-            Action<EventMapping> action = new Action<EventMapping>(InputMapping);
-            Array.ForEach(eventMappings, action);
+            Action<EventMapping> actionKeyDown = new Action<EventMapping>(InputMappingKeyDown);
+            Array.ForEach(eventMappingsKeyDown, actionKeyDown);
+
+            Action<EventMapping> actionKeyUp = new Action<EventMapping>(InputMappingKeyUp);
+            Array.ForEach(eventMappingsKeyUp, actionKeyUp);
+
+            if(eventMappings.Length > 0)
+            {
+                Action<EventMapping> action = new Action<EventMapping>(InputMapping);
+                Array.ForEach(eventMappings, action);
+            }
         }
 
         if(eventMappingsHold.Length > 0)
