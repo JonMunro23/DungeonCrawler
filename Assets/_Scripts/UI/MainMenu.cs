@@ -4,16 +4,20 @@ using UnityEngine;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] GameObject mainMenu;
-    [SerializeField] GameObject mainCamera;
+    [SerializeField] GameObject mainMenuCamera;
     [SerializeField] GameObject hudCanvas;
-
+    [SerializeField] bool startFromMainMenu = false;
+    [SerializeField] bool skipIntro = false;
     public static bool isInMainMenu = false;
 
     public static Action onNewGameStarted;
+    public static Action onNewGameStartedSkippedIntro;
 
     private void Start()
     {
         HelperFunctions.SetCursorActive(true);
+        if(startFromMainMenu)
+            OpenMainMenu();
     }
 
     public void NewGame()
@@ -25,13 +29,16 @@ public class MainMenu : MonoBehaviour
         //intro cutscene
         //show character selection
 
-        onNewGameStarted?.Invoke();
+        if(skipIntro)
+            onNewGameStartedSkippedIntro?.Invoke();
+        else
+            onNewGameStarted?.Invoke();
     }
 
     public void OpenMainMenu()
     {
         mainMenu.SetActive(true);
-        mainCamera.SetActive(true);
+        mainMenuCamera.SetActive(true);
         HelperFunctions.SetCursorActive(true);
         isInMainMenu = true;
     }
@@ -41,11 +48,12 @@ public class MainMenu : MonoBehaviour
         HelperFunctions.SetCursorActive(false);
         isInMainMenu = false;
         mainMenu.SetActive(false);
+        mainMenuCamera.SetActive(false);
     }
 
     public void SetCameraActive(bool isActive)
     {
-        mainCamera.SetActive(isActive);
+        mainMenuCamera.SetActive(isActive);
     }
 
     public void OpenOptionsMenu()
