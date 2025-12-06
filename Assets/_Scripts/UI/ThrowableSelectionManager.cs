@@ -61,6 +61,9 @@ public class ThrowableSelectionManager : MonoBehaviour
         {
             button.button.interactable = true;
 
+            if (button.throwableItemData.detonationType == DetonationType.Remote)
+                continue;
+
             if (button.availableAmount == 0 || button.throwableItemData == currentlySelectedThrowable)
                 button.button.interactable = false;
         }
