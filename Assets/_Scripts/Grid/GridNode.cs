@@ -84,10 +84,17 @@ public class GridNode : MonoBehaviour
     {
         if(!showDebugInfo)
         {
-            _fCostText.enabled = false;
-            _gCostText.enabled = false;
-            _hCostText.enabled = false;
-            coordText.enabled = false;
+            if(_fCostText)
+                _fCostText.enabled = false;
+
+            if(_gCostText)
+                _gCostText.enabled = false;
+
+            if(_hCostText)
+                _hCostText.enabled = false;
+
+            if(coordText)
+                coordText.enabled = false;
         }
 
     }
@@ -110,14 +117,14 @@ public class GridNode : MonoBehaviour
 
     public void ResetOccupant()
     {
-        if (baseOccupant != null)
-        {
+        //if (baseOccupant != null)
+        //{
             currentOccupant = baseOccupant;
-            return;
-        }
+        //    return;
+        //}
 
-        currentOccupant.occupantType = GridNodeOccupantType.None;
-        currentOccupant.occupyingGameobject = null;
+        //currentOccupant.occupantType = GridNodeOccupantType.None;
+        //currentOccupant.occupyingGameobject = null;
     }
 
     public GridNodeOccupantType GetOccupantType()
@@ -219,8 +226,8 @@ public class GridNode : MonoBehaviour
     public void InitNode(ICoords _coords)
     {
         Coords = _coords;
-
-        coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
+        if(coordText)
+            coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
     }
 
     public void ApplyEffectToNode(StatusEffect statusEffectToApply)

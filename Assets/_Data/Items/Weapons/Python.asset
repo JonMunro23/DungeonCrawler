@@ -41,9 +41,12 @@ MonoBehaviour:
   isBurst: 0
   perShotInBurstDelay: 0
   burstLength: 0
-  defaultLoadedAmmoData: {fileID: 0}
+  defaultLoadedAmmoData: {fileID: 11400000, guid: d3475db692ba1f344838119acd690b14,
+    type: 2}
   recoilData: {fileID: 11400000, guid: 3afd667deccd372408bf52a4c221db98, type: 2}
   spreadReductionSpeed: 1
+  perShotSpreadIncrease: 0.2
+  onWeaponReadiedSpreadAmount: 2
   attackSFX:
   - {fileID: 8300000, guid: 19d35041f281bd242ac163aa8a6abcf5, type: 3}
   attackSFXVolume: 0.3

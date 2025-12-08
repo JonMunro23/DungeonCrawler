@@ -187,7 +187,7 @@ public class WorldInteractionManager : MonoBehaviour
 
     void SpawnWorldItem(ItemStack itemStackToSpawn, GridNode nodePlacedIn, Vector3 placementLocation)
     {
-        WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, playerController.advGridMovement.GetTargetRot(), 0)));
+        WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, playerController.transform.localEulerAngles.y, 0)));
         worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), nodePlacedIn.Coords.Pos, itemStackToSpawn);
         worldItem.transform.GetChild(0).localPosition = new Vector3(worldItem.transform.GetChild(0).localPosition.x, worldItem.transform.GetChild(0).localPosition.y, 0);
         worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
