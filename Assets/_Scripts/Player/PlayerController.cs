@@ -174,6 +174,11 @@ public class PlayerController : MonoBehaviour
 
     public void TryReadyCurrentWeapon()
     {
+        if(PlayerInventoryManager.isInContainer)
+        {
+            WorldInteractionManager.CloseCurrentOpenContainer();
+        }
+
         if(WorldInteractionManager.hasGrabbedItem)
         {
             RemoveGrabbedItem();
