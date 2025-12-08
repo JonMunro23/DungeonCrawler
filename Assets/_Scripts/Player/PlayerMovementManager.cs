@@ -9,7 +9,9 @@ public class PlayerMovementManager : MonoBehaviour
 
     [Header("Movement Settings")]
     [Tooltip("How long it should take to move exactly one tile.")]
-    public float moveDuration = 0.2f;
+    public float baseMoveDuration = 0.2f;
+    public float weaponReadiedMoveDurationMultiplier = 2;
+    float currentMoveDuration = 0.2f;
 
     [Header("Continuous Movement (Hold-to-move)")]
     [Tooltip("Enable chaining steps while holding down movement keys.")]
@@ -18,6 +20,7 @@ public class PlayerMovementManager : MonoBehaviour
     public KeyCode backwardKey = KeyCode.S;
     public KeyCode strafeLeftKey = KeyCode.A;
     public KeyCode strafeRightKey = KeyCode.D;
+    private bool isBusy;
 
     [Header("Start Ease")]
     [Tooltip("Fraction of the first tile's duration used to ease-in (0 = none, 0.1 = first 10% of tile).")]
@@ -26,21 +29,61 @@ public class PlayerMovementManager : MonoBehaviour
 
     [Header("Headbob")]
     [Tooltip("Camera to apply headbob to.")]
+    [SerializeField] Vector3 cameraInitialLocalPos;
     public Transform cameraTransform;
     public float headbobAmplitude = 0.05f;              // Vertical bob height
     public float headbobHorizontalAmplitude = 0.03f;    // Left/right sway
     public float headbobFrequency = 8f;                 // Bob speed multiplier
+    private float headbobTimer = 0f;
 
     [Header("Weapon Bob")]
     WeaponMotion weaponMotion;
 
-    private bool isBusy;
+    // FOOTSTEPS -------------------------------
+    [Header("Footsteps")]
+    [Tooltip("AudioSource used to play footstep sounds.")]
+    [SerializeField] private AudioSource footstepAudioSource;
+
+    [Tooltip("Possible footstep clips to randomly choose from.")]
+    [SerializeField] private AudioClip[] footstepClips;
+
+    [Tooltip("Volume for each footstep.")]
+    [Range(0f, 1f)]
+    [SerializeField] private float footstepVolume = 0.8f;
+
+    [Tooltip("Minimum pitch for randomized footsteps.")]
+    [SerializeField] private float footstepMinPitch = 0.95f;
+
+    [Tooltip("Maximum pitch for randomized footsteps.")]
+    [SerializeField] private float footstepMaxPitch = 1.05f;
+
+    [Tooltip("Minimum time between two footsteps (safeguard against double-triggers).")]
+    [SerializeField] private float footstepCooldown = 0.05f;
+
+    private float _lastFootstepTime = -999f;
+    // ----------------------------------------
+
     private PlayerController playerController;
 
-    private float headbobTimer = 0f;
-    [SerializeField] Vector3 cameraInitialLocalPos;
-
     public static Action onPlayerMoved;
+
+    private void OnEnable()
+    {
+        RangedWeapon.onRangedWeaponReadied += OnRangedWeaponReadied;
+    }
+
+    private void OnDisable()
+    {
+        RangedWeapon.onRangedWeaponReadied -= OnRangedWeaponReadied;
+    }
+
+    void OnRangedWeaponReadied(bool isWeaponReadied)
+    {
+        if (isWeaponReadied)
+            currentMoveDuration = currentMoveDuration * weaponReadiedMoveDurationMultiplier;
+        else
+            currentMoveDuration = baseMoveDuration;
+    }
 
     private void Awake()
     {
@@ -49,6 +92,8 @@ public class PlayerMovementManager : MonoBehaviour
 
     private void Start()
     {
+        currentMoveDuration = baseMoveDuration;
+
         if (currentNode != null)
         {
             transform.position = currentNode.moveToTransform != null
@@ -68,6 +113,7 @@ public class PlayerMovementManager : MonoBehaviour
         transform.position = destination;
         isBusy = false;
         ResetHeadbob();
+        // No footsteps here – teleport should be silent.
     }
 
     // These are called from PlayerInputHandler (usually on key down)
@@ -139,17 +185,14 @@ public class PlayerMovementManager : MonoBehaviour
 
             if (isFirstTile)
             {
-                // Use the direction we started with, even if the key is already released.
                 moveDir = firstDir;
             }
             else
             {
-                // For subsequent tiles, pick a direction based on currently held keys.
                 if (!GetCurrentMoveDirection(out moveDir, out activeKey))
-                    break; // No movement key held anymore, stop chain
+                    break;
             }
 
-            // Keep movement on XZ
             moveDir.y = 0f;
             if (moveDir.sqrMagnitude < 0.0001f)
                 break;
@@ -159,6 +202,8 @@ public class PlayerMovementManager : MonoBehaviour
             GridNode targetNode = node.GetNodeInDirection(moveDir);
             if (!IsNodeWalkable(targetNode))
                 break;
+
+            targetNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
 
             Vector3 startPos = transform.position;
             Vector3 endPos = targetNode.moveToTransform != null
@@ -174,6 +219,8 @@ public class PlayerMovementManager : MonoBehaviour
                 currentNode = targetNode;
                 node = targetNode;
 
+                // No footstep here – we didn't really move.
+
                 if (!allowContinuousHold)
                     break;
 
@@ -185,23 +232,23 @@ public class PlayerMovementManager : MonoBehaviour
             float easeDuration = 0f;
             if (isFirstTile && startEaseFraction > 0f)
             {
-                easeDuration = Mathf.Clamp(moveDuration * startEaseFraction, 0f, moveDuration);
+                easeDuration = Mathf.Clamp(currentMoveDuration * startEaseFraction, 0f, currentMoveDuration);
             }
 
             float baseSpeed;
             if (isFirstTile && easeDuration > 0f)
             {
-                // Distance covered = 0.5 * baseSpeed * easeDuration (ramp 0->base)
-                //                   + baseSpeed * (moveDuration - easeDuration)
-                // => distance = baseSpeed * (moveDuration - 0.5 * easeDuration)
-                baseSpeed = distance / (moveDuration - 0.5f * easeDuration);
+                baseSpeed = distance / (currentMoveDuration - 0.5f * easeDuration);
             }
             else
             {
-                baseSpeed = distance / moveDuration;
+                baseSpeed = distance / currentMoveDuration;
             }
 
             float elapsedTileTime = 0f;
+
+            //track if we've played the mid-step sound for this tile
+            bool footstepPlayedThisTile = false;
 
             // Move towards this tile centre
             while (Vector3.Distance(transform.position, endPos) > 0.001f)
@@ -210,11 +257,9 @@ public class PlayerMovementManager : MonoBehaviour
 
                 float speed = baseSpeed;
 
-                // Apply ease-in only on the very first tile of the chain
                 if (isFirstTile && easeDuration > 0f)
                 {
                     float factor = Mathf.Clamp01(elapsedTileTime / easeDuration);
-                    // Linear acceleration from 0 -> 1 over easeDuration
                     speed = baseSpeed * factor;
                 }
 
@@ -225,6 +270,15 @@ public class PlayerMovementManager : MonoBehaviour
                     speed * Time.deltaTime
                 );
 
+                //compute progress along this step and fire at halfway
+                float travelled = Vector3.Distance(startPos, transform.position);
+                float stepProgress = travelled / distance;
+
+                if (!footstepPlayedThisTile && stepProgress >= 0.5f)
+                {
+                    footstepPlayedThisTile = true;
+                    PlayFootstep();
+                }
 
                 // Apply headbob based on current movement speed
                 ApplyHeadbob(speed);
@@ -239,23 +293,21 @@ public class PlayerMovementManager : MonoBehaviour
             node = targetNode;
             OnPlayerMoved();
 
-            // Reset headbob to avoid camera ending between bob frames
+            //PlayFootstep();
+
             ResetHeadbob();
 
             isFirstTile = false;
 
-            // If we’re not chaining, stop after the first tile
             if (!allowContinuousHold)
                 break;
-
-            // For next tile, loop again and possibly pick a new direction based on input+camera
         }
 
         OnPlayerMoved();
-
         isBusy = false;
         ResetHeadbob();
     }
+
 
     private void OnPlayerMoved()
     {
@@ -318,7 +370,8 @@ public class PlayerMovementManager : MonoBehaviour
             return false;
 
         var occ = node.GetOccupantType();
-        if (occ == GridNodeOccupantType.Obstacle)
+        if (occ == GridNodeOccupantType.Obstacle ||
+            occ == GridNodeOccupantType.NPC)
             return false;
 
         return true;
@@ -352,4 +405,31 @@ public class PlayerMovementManager : MonoBehaviour
         headbobTimer = 0f;
         cameraTransform.localPosition = cameraInitialLocalPos;
     }
+
+    // FOOTSTEPS -------------------------------
+    private void PlayFootstep()
+    {
+        if (footstepAudioSource == null)
+            return;
+
+        if (footstepClips == null || footstepClips.Length == 0)
+            return;
+
+        if (Time.time < _lastFootstepTime + footstepCooldown)
+            return;
+
+        _lastFootstepTime = Time.time;
+
+        // Random clip & pitch for variation
+        int index = UnityEngine.Random.Range(0, footstepClips.Length);
+        AudioClip clip = footstepClips[index];
+
+        if (clip == null)
+            return;
+
+        float pitch = UnityEngine.Random.Range(footstepMinPitch, footstepMaxPitch);
+        footstepAudioSource.pitch = pitch;
+        footstepAudioSource.PlayOneShot(clip, footstepVolume);
+    }
+    // ----------------------------------------
 }
