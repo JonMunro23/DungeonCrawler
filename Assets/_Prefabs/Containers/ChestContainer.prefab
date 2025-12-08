@@ -606,7 +606,7 @@ GameObject:
   - component: {fileID: -2831518242313359022}
   - component: {fileID: 7354847689792715796}
   m_Layer: 0
-  m_Name: LargeContainer
+  m_Name: ChestContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

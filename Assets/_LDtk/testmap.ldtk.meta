@@ -27,11 +27,13 @@ ScriptedImporter:
   - _key: Tiles_3
     _asset: {instanceID: 0}
   _entities:
+  - _key: Obstacle
+    _asset: {instanceID: 0}
+  - _key: NPC_Invis_Wall
+    _asset: {instanceID: 0}
   - _key: Player_Start
     _asset: {instanceID: 0}
   - _key: NPC_Spawn
-    _asset: {instanceID: 0}
-  - _key: WorldItem
     _asset: {instanceID: 0}
   - _key: Interactable
     _asset: {instanceID: 0}
@@ -39,13 +41,19 @@ ScriptedImporter:
     _asset: {instanceID: 0}
   - _key: Level_Transition
     _asset: {instanceID: 0}
-  - _key: Container
-    _asset: {instanceID: 0}
   - _key: LightSource
     _asset: {instanceID: 0}
-  - _key: NPC_Invis_Wall
+  - _key: Container
     _asset: {instanceID: 0}
   - _key: Destructable_Wall
+    _asset: {instanceID: 0}
+  - _key: Grenade_Hole
+    _asset: {instanceID: 0}
+  - _key: WorldItem
+    _asset: {instanceID: 0}
+  - _key: Sign
+    _asset: {instanceID: 0}
+  - _key: Door
     _asset: {instanceID: 0}
   _enumGenerate: 0
   _enumPath: 

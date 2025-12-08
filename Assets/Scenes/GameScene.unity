@@ -3020,8 +3020,14 @@ PrefabInstance:
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
       propertyPath: startingLevelIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
+      propertyPath: chestContainerPrefab
+      value: 
+      objectReference: {fileID: 3550158488799289131, guid: 0aceb50fab28f27468fe2487a72fbdd1,
+        type: 3}
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
       propertyPath: destructableWallPrefab

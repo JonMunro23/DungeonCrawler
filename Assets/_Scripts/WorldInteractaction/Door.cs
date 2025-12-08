@@ -12,16 +12,6 @@ public class Door : TriggerableBase
 
     List<IInteractable> activeInteractables = new List<IInteractable>();
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        transformToMove.localPosition = isTriggered ? openedPos : closedPos;
-
-        if(!isTriggered)
-            if (occupyingGridNode)
-                occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle));
-    }
-
     public override void Trigger(IInteractable triggeredInteractable)
     {
         switch(triggeredInteractable.GetTriggerOperation())
@@ -90,8 +80,6 @@ public class Door : TriggerableBase
 
     private void OpenDoor()
     {
-        //Debug.Log("Opened");
-
         isTriggered = true;
 
         if(occupyingGridNode)
@@ -107,8 +95,6 @@ public class Door : TriggerableBase
 
     private void CloseDoor()
     {
-        //Debug.Log("Closed");
-
         isTriggered = false;
 
         if (occupyingGridNode)
@@ -125,12 +111,24 @@ public class Door : TriggerableBase
     public override void SetIsTriggered(bool _isTriggered)
     {
         isTriggered = _isTriggered;
-        Debug.Log(isTriggered);
+        transformToMove.localPosition = isTriggered ? openedPos : closedPos;
         if(isTriggered)
         {
-            transformToMove.localPosition = openedPos;
             if (occupyingGridNode)
-                occupyingGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.None));
+            {
+                GridNodeOccupant newOccupant = new GridNodeOccupant(gameObject, GridNodeOccupantType.None);
+                occupyingGridNode.SetOccupant(newOccupant);
+                occupyingGridNode.SetBaseOccupant(newOccupant);
+            }
+        }
+        else
+        {
+            if (occupyingGridNode)
+            {
+                GridNodeOccupant newOccupant = new GridNodeOccupant(gameObject, GridNodeOccupantType.Obstacle);
+                occupyingGridNode.SetOccupant(newOccupant);
+                occupyingGridNode.SetBaseOccupant(newOccupant);
+            }
         }
     }
 

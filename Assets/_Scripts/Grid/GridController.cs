@@ -60,7 +60,7 @@ public class GridController : MonoBehaviour
     [SerializeField] List<LevelTransition> spawnedLevelTransitions = new List<LevelTransition>();
 
     [Header("Containers")]
-    [SerializeField] Container largeContainerPrefab;
+    [SerializeField] Container chestContainerPrefab;
     [SerializeField] List<IContainer> spawnedContainers = new List<IContainer>();
 
     [Header("Interactables")]
@@ -356,12 +356,26 @@ public class GridController : MonoBehaviour
                                     break;
                                 case "Container":
                                     IContainer spawnedContainer = null;
+                                    List<object> itemNames = new List<object>();
+                                    List<object> itemAmounts = new List<object>();
                                     switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
                                     {
-                                        case "Large":
-                                            spawnedContainer = Instantiate(largeContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            List<object> itemNames = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
-                                            List<object> itemAmounts = (List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value;
+                                        case "Chest":
+                                            spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                            itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
+                                            itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
+                                            for (int l = 0; l < itemNames.Count; l++)
+                                            {
+                                                ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
+                                                int itemAmount = Convert.ToInt32(itemAmounts[l]);
+                                                spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
+                                            }
+                                            break;
+                                        case "Desk":
+                                            //change to Desk prefab
+                                            spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                            itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
+                                            itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
                                             for (int l = 0; l < itemNames.Count; l++)
                                             {
                                                 ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
@@ -370,6 +384,20 @@ public class GridController : MonoBehaviour
 
                                             }
                                             break;
+                                        case "Filling_Cabinet":
+                                            //change to Filling cabinet prefab
+                                            spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                            itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
+                                            itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
+                                            for (int l = 0; l < itemNames.Count; l++)
+                                            {
+                                                ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
+                                                int itemAmount = Convert.ToInt32(itemAmounts[l]);
+                                                spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
+
+                                            }
+                                            break;
+
                                     }
                                     spawnedContainer.InitContainer(levelIndex, spawnCoords);
                                     spawnedContainers.Add(spawnedContainer);
@@ -415,7 +443,27 @@ public class GridController : MonoBehaviour
                                     interactable.SetOccupyingNode(spawnNode);
                                     spawnedInteractables.Add(interactable);
                                     break;
-                                case "Triggerable":
+                                //case "Triggerable":
+                                //    Door spawnedDoor = null;
+                                //    switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
+                                //    {
+                                //        case "Door":
+                                //            spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                //            break;
+                                //        case "Secret_Door":
+                                //            spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                //            break;
+                                //    }
+                                //    spawnedDoor.SetOccupyingNode(spawnNode);
+                                //    spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
+                                //    spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                                //    spawnedDoor.SetLevelIndex(levelIndex);
+                                //    newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
+                                //    spawnNode.SetBaseOccupant(newOccupant);
+                                //    spawnNode.SetOccupant(newOccupant);
+                                //    spawnedTriggerables.Add(spawnedDoor);
+                                //    break;
+                                case "Door":
                                     Door spawnedDoor = null;
                                     switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
                                     {
@@ -433,6 +481,7 @@ public class GridController : MonoBehaviour
                                     newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
                                     spawnNode.SetBaseOccupant(newOccupant);
                                     spawnNode.SetOccupant(newOccupant);
+                                    spawnedDoor.SetIsTriggered(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[2].Value));
                                     spawnedTriggerables.Add(spawnedDoor);
                                     break;
                                 case "NPC_Invis_Wall":
@@ -553,7 +602,7 @@ public class GridController : MonoBehaviour
             foreach (SaveableLevelData.ContainerSaveData savedContainer in levelDataToLoad.containers)
             {
                 GridNode spawnNode = GetNodeAtCoords(savedContainer.coords);
-                IContainer spawnedContainer = Instantiate(largeContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedContainer.rotation, 0)), spawnNode.transform);
+                IContainer spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedContainer.rotation, 0)), spawnNode.transform);
                 spawnedContainer.LoadContainerItemStacks(savedContainer.containedItemStacks);
                 //Debug.Log(savedContainer.containedItemStacks[0].itemStack.itemData);
                 spawnedContainer.InitContainer(levelIndex, savedContainer.coords);
