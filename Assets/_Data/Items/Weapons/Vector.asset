@@ -65,7 +65,7 @@ MonoBehaviour:
   drawAnimDuration: 1.017
   drawSFX: {fileID: 8300000, guid: 3ae9f4e1105518d49885a89387f87197, type: 3}
   drawVolume: 0.3
-  readyAnimDuration: 0.3
+  readyAnimDuration: 0.1
   readySFX: {fileID: 0}
   readyVolume: 0.3
   hideAnimDuration: 0.9

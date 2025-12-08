@@ -26,6 +26,7 @@ public class GridController : MonoBehaviour
     [SerializeField] GridNode voidPrefab;
     [SerializeField] Dictionary<Vector2, GridNode> activeNodes = new Dictionary<Vector2, GridNode>();
     Grid grid;
+    public static float gridSize = 3;
 
     [Header("Levels")]
     [SerializeField] int startingLevelIndex;

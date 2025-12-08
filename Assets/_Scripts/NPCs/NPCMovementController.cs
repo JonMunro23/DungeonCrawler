@@ -21,14 +21,14 @@ public class NPCMovementController : MonoBehaviour
 
     private void OnEnable()
     {
-        AdvancedGridMovement.onPlayerMoved += OnPlayerMoved;
+        PlayerMovementManager.onPlayerMoved += OnPlayerMoved;
         NPCController.onNPCDeath += OnNPCDeath;
         GridNode.onNodeOccupancyUpdated += OnNodeOccupancyUpdated;
     }
 
     private void OnDisable()
     {
-        AdvancedGridMovement.onPlayerMoved -= OnPlayerMoved;
+        PlayerMovementManager.onPlayerMoved -= OnPlayerMoved;
         NPCController.onNPCDeath -= OnNPCDeath;
         GridNode.onNodeOccupancyUpdated -= OnNodeOccupancyUpdated;
     }

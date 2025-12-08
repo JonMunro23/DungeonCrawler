@@ -1,7 +1,6 @@
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [System.Serializable]
@@ -33,7 +32,8 @@ public struct PlayerSaveData
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
-    [HideInInspector] public AdvancedGridMovement advGridMovement;
+    //[HideInInspector] public AdvancedGridMovement advGridMovement;
+    [HideInInspector] public PlayerMovementManager playerMovementManager;
     [HideInInspector] public WorldInteractionManager itemPickupManager;
     [HideInInspector] public PlayerHealthManager playerHealthManager;
     [HideInInspector] public PlayerInventoryManager playerInventoryManager;
@@ -66,7 +66,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        advGridMovement = GetComponent<AdvancedGridMovement>();
+        //advGridMovement = GetComponent<AdvancedGridMovement>();
+        playerMovementManager = GetComponent<PlayerMovementManager>();
         playerHealthManager = GetComponent<PlayerHealthManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
@@ -104,7 +105,7 @@ public class PlayerController : MonoBehaviour
         playerStatsManager.Init(playerCharacterData);
         playerHealthManager.Init(this);
         playerSkillsManager.Init(playerCharacterData);
-        advGridMovement.Init(this);
+        playerMovementManager.Init(this);
 
         onPlayerInitialised?.Invoke(this);
     }
@@ -126,7 +127,7 @@ public class PlayerController : MonoBehaviour
         if(currentOccupiedNode)
             currentOccupiedNode.ResetOccupant();
 
-        advGridMovement.Teleport(nodeToMoveTo.moveToTransform.position);
+        playerMovementManager.Teleport(nodeToMoveTo.moveToTransform.position);
         SetCurrentOccupiedNode(nodeToMoveTo);
     }
 
@@ -226,6 +227,7 @@ public class PlayerController : MonoBehaviour
         currentOccupiedNode = newGridNode;
         currentOccupiedNode.SetSelfAndSurroundingNodesExplored();
         currentOccupiedNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
+        playerMovementManager.currentNode = currentOccupiedNode;
     }
 
     public void ShakeScreen()
@@ -260,7 +262,7 @@ public class PlayerController : MonoBehaviour
     public void Save(ref PlayerSaveData data)
     {
         data.coords = currentOccupiedNode.Coords.Pos;
-        data.yRotation = Mathf.RoundToInt(advGridMovement.GetTargetRot());
+        data.yRotation = transform.localEulerAngles.y;
 
         if (playerHealthManager)
             playerHealthManager.Save(ref data);
@@ -282,10 +284,10 @@ public class PlayerController : MonoBehaviour
     {
         isPlayerAlive = true;
         rb.isKinematic = true;
-        advGridMovement.enabled = true;
+        playerMovementManager.enabled = true;
 
         MoveToCoords(data.coords);
-        advGridMovement.SetRotation(Mathf.RoundToInt(data.yRotation));
+        //advGridMovement.SetRotation(Mathf.RoundToInt(data.yRotation));
 
         if(playerStatsManager)
             playerStatsManager.Load();
