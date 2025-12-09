@@ -65,7 +65,8 @@ public class PlayerMovementManager : MonoBehaviour
 
     private PlayerController playerController;
 
-    public static Action onPlayerMoved;
+    public static Action onPlayerMoveStarted;
+    public static Action onPlayerMoveEnded;
 
     private void OnEnable()
     {
@@ -203,7 +204,9 @@ public class PlayerMovementManager : MonoBehaviour
             if (!IsNodeWalkable(targetNode))
                 break;
 
-            targetNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
+            onPlayerMoveStarted?.Invoke();
+            playerController.SetCurrentOccupiedNode(targetNode);
+
 
             Vector3 startPos = transform.position;
             Vector3 endPos = targetNode.moveToTransform != null
@@ -291,9 +294,7 @@ public class PlayerMovementManager : MonoBehaviour
             currentNode.ResetOccupant();
             currentNode = targetNode;
             node = targetNode;
-            OnPlayerMoved();
 
-            //PlayFootstep();
 
             ResetHeadbob();
 
@@ -303,16 +304,10 @@ public class PlayerMovementManager : MonoBehaviour
                 break;
         }
 
-        OnPlayerMoved();
+        onPlayerMoveEnded?.Invoke();
+
         isBusy = false;
         ResetHeadbob();
-    }
-
-
-    private void OnPlayerMoved()
-    {
-        playerController.SetCurrentOccupiedNode(currentNode);
-        onPlayerMoved?.Invoke();
     }
 
     /// <summary>

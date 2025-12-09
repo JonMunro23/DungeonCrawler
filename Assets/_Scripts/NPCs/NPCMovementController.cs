@@ -21,14 +21,14 @@ public class NPCMovementController : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerMovementManager.onPlayerMoved += OnPlayerMoved;
+        PlayerMovementManager.onPlayerMoveEnded += OnPlayerMoveEnded;
         NPCController.onNPCDeath += OnNPCDeath;
         GridNode.onNodeOccupancyUpdated += OnNodeOccupancyUpdated;
     }
 
     private void OnDisable()
     {
-        PlayerMovementManager.onPlayerMoved -= OnPlayerMoved;
+        PlayerMovementManager.onPlayerMoveEnded -= OnPlayerMoveEnded;
         NPCController.onNPCDeath -= OnNPCDeath;
         GridNode.onNodeOccupancyUpdated -= OnNodeOccupancyUpdated;
     }
@@ -41,7 +41,7 @@ public class NPCMovementController : MonoBehaviour
         FindNewPathToPlayer();
     }
 
-    void OnPlayerMoved()
+    void OnPlayerMoveEnded()
     {
         //FindNewPathToPlayer();
         playerGridNode = PlayerController.currentOccupiedNode;

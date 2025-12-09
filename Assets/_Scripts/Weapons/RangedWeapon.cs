@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -15,6 +14,7 @@ public class RangedWeapon : Weapon
     bool canShootBurst = true;
     bool canShootBurstShot = true;
     bool isReadyingWeapon;
+    bool isPlayerMoving = false;
 
     public bool infinteAmmo = false;
     public bool isWeaponReady;
@@ -40,9 +40,42 @@ public class RangedWeapon : Weapon
     public static Action<WeaponItemData> onRangedWeaponFired;
     public static Action<bool> onRangedWeaponReadied;
 
+    private void OnEnable()
+    {
+        PlayerMovementManager.onPlayerMoveStarted += OnPlayerMoveStarted;
+        PlayerMovementManager.onPlayerMoveEnded += OnPlayerMoveEnded;
+    }
+
+    private void OnDisable()
+    {
+        PlayerMovementManager.onPlayerMoveStarted -= OnPlayerMoveStarted;
+        PlayerMovementManager.onPlayerMoveEnded -= OnPlayerMoveEnded;
+    }
+
+    void OnPlayerMoveStarted()
+    {
+        isPlayerMoving = true;
+        IncreaseBulletSpreadMultiplierOverTime(weaponItemData.maxWeaponSpreadAmount, .57f);
+    }
+
+    void OnPlayerMoveEnded()
+    {
+        isPlayerMoving = false;
+    }
+
     private void Start()
     {
         projectileSpawnLocation = Camera.main.transform;
+    }
+
+    private void Update()
+    {
+        if (isPlayerMoving) return;
+
+        if (bulletSpreadMultiplier <= weaponItemData.minWeaponSpreadAmount) return;
+
+        bulletSpreadMultiplier -= weaponItemData.spreadReductionSpeed;
+        bulletSpreadMultiplier = Mathf.Clamp(bulletSpreadMultiplier, weaponItemData.minWeaponSpreadAmount, weaponItemData.maxWeaponSpreadAmount);
     }
 
     public override bool CanUse()
@@ -133,7 +166,7 @@ public class RangedWeapon : Weapon
             UpdateLoadedAmmo(loadedAmmo - 1);
 
         onRangedWeaponFired?.Invoke(weaponItemData);
-        IncreaseBulletSpreadMultiplier(weaponItemData.perShotSpreadIncrease);
+        IncreaseBulletSpreadMultiplierinstantly(weaponItemData.perShotSpreadIncrease);
 
         RaycastHit hit;
         for (int i = 0; i < weaponItemData.projectileCount; i++)
@@ -289,7 +322,7 @@ public class RangedWeapon : Weapon
 
     public void ReadyWeapon()
     {
-        if (isReadyingWeapon || isWeaponReady || IsMeleeWeapon())
+        if (IsReloading() || isReadyingWeapon || isWeaponReady || IsMeleeWeapon())
             return;
 
         isReadyingWeapon = true;
@@ -298,25 +331,34 @@ public class RangedWeapon : Weapon
             isReadyingWeapon = false;
             isWeaponReady = true;
             onRangedWeaponReadied?.Invoke(isWeaponReady);
-            IncreaseBulletSpreadMultiplier(weaponItemData.onWeaponReadiedSpreadAmount);
+            IncreaseBulletSpreadMultiplierinstantly(weaponItemData.maxWeaponSpreadAmount);
         });
         //await Task.Delay((int)(weaponItemData.readyAnimDuration * 1000));
     }
 
 
     private Tween bulletSpreadTween;
-    private void IncreaseBulletSpreadMultiplier(float increaseAmount)
+    private void IncreaseBulletSpreadMultiplierOverTime(float increaseAmount, float timeToIncrease)
     {
-        bulletSpreadMultiplier += increaseAmount;
-
         bulletSpreadTween?.Kill();
 
-        bulletSpreadTween = DOTween.To(() => bulletSpreadMultiplier, x => bulletSpreadMultiplier = x, 0f, weaponItemData.spreadReductionSpeed)
+        float endMultiplier = bulletSpreadMultiplier + increaseAmount;
+        endMultiplier = Mathf.Clamp(endMultiplier, weaponItemData.minWeaponSpreadAmount, weaponItemData.maxWeaponSpreadAmount);
+
+        bulletSpreadTween = DOTween.To(() => bulletSpreadMultiplier, x => bulletSpreadMultiplier = x, endMultiplier, timeToIncrease)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
-                bulletSpreadMultiplier = 0;
+                bulletSpreadMultiplier = endMultiplier;
             });
+
+        bulletSpreadMultiplier = Mathf.Clamp(bulletSpreadMultiplier, weaponItemData.minWeaponSpreadAmount, weaponItemData.maxWeaponSpreadAmount);
+    }
+
+    private void IncreaseBulletSpreadMultiplierinstantly(float increaseAmount)
+    {
+        bulletSpreadMultiplier += increaseAmount;
+        bulletSpreadMultiplier = Mathf.Clamp(bulletSpreadMultiplier, weaponItemData.minWeaponSpreadAmount, weaponItemData.maxWeaponSpreadAmount);
     }
 
     public void UnreadyWeapon()
