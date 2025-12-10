@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 2212457037591207785}
   - component: {fileID: 5795832395930478358}
   - component: {fileID: 3120243568235660886}
+  - component: {fileID: 6661696628610107488}
   - component: {fileID: -8658174533761572424}
   - component: {fileID: 4154462116286843067}
   - component: {fileID: 1006225082393101937}
@@ -127,6 +128,18 @@ MonoBehaviour:
   currentEvasionRating: 0
   guaranteedDrops: []
   randomDrops: []
+--- !u!114 &6661696628610107488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2212457037591207784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9688006cbcb9a7e41b1d116ffdb6481a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!114 &-8658174533761572424
 MonoBehaviour:
   m_ObjectHideFlags: 0

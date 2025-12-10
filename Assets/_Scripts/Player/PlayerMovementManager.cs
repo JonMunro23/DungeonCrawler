@@ -205,6 +205,7 @@ public class PlayerMovementManager : MonoBehaviour
                 break;
 
             onPlayerMoveStarted?.Invoke();
+            currentNode.ResetOccupant();
             playerController.SetCurrentOccupiedNode(targetNode);
 
 
@@ -291,7 +292,7 @@ public class PlayerMovementManager : MonoBehaviour
 
             // Snap precisely to tile
             transform.position = endPos;
-            currentNode.ResetOccupant();
+            //currentNode.ResetOccupant();
             currentNode = targetNode;
             node = targetNode;
 

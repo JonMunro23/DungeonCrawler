@@ -25,7 +25,7 @@ public class NPCAttackController : MonoBehaviour
 
     int GetRandomDamageValue()
     {
-        return (int)Random.Range(npcController.NPCData.minMaxDamage.x, npcController.NPCData.minMaxDamage.y);
+        return (int)Random.Range(npcController.npcData.minMaxDamage.x, npcController.npcData.minMaxDamage.y);
     }
 
     IEnumerator Attack()
@@ -37,10 +37,10 @@ public class NPCAttackController : MonoBehaviour
         else
             npcController.animController.PlayAnimation("Attack");
 
-        if (npcController.NPCData.attackSFx.Length > 0)
+        if (npcController.npcData.attackSFx.Length > 0)
             npcController.audioSource.PlayOneShot(GetRandomAttackClip());
 
-        yield return new WaitForSeconds(npcController.NPCData.delayBeforeDamageDealt);
+        yield return new WaitForSeconds(npcController.npcData.delayBeforeDamageDealt);
         var occupyingGameObject = playerNode.GetOccupyingGameobject();
         if(occupyingGameObject)
         {
@@ -57,16 +57,16 @@ public class NPCAttackController : MonoBehaviour
 
     AudioClip GetRandomAttackClip()
     {
-        int rand = Random.Range(0, npcController.NPCData.attackSFx.Length);
-        return npcController.NPCData.attackSFx[rand];
+        int rand = Random.Range(0, npcController.npcData.attackSFx.Length);
+        return npcController.npcData.attackSFx[rand];
     }
     public bool CheckForPlayer()
     {
-        if(npcController.NPCData.isRanged)
+        if(npcController.npcData.isRanged)
         {
             Ray ray = new Ray(npcController.movementController.currentOrientation.position, npcController.movementController.currentOrientation.forward);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, npcController.NPCData.attackRange * 3))
+            if (Physics.Raycast(ray, out hit, npcController.npcData.attackRange * 3))
             {
                 //Debug.Log(hit.transform.name);
                 if (hit.transform.CompareTag("Player"))
@@ -89,9 +89,9 @@ public class NPCAttackController : MonoBehaviour
     
     IEnumerator AttackCooldown()
     {
-        yield return new WaitForSeconds(npcController.NPCData.attackCooldown);
+        yield return new WaitForSeconds(npcController.npcData.attackCooldown);
         isAttacking = false;
-        yield return new WaitForSeconds(npcController.NPCData.delayBetweenAttacks);
+        yield return new WaitForSeconds(npcController.npcData.delayBetweenAttacks);
         canAttack = true;
         npcController.TryAttack();
     }

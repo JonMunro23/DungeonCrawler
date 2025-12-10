@@ -29,7 +29,7 @@ public class PlayerLevelManager : MonoBehaviour
 
     void OnNPCDeath(NPCController npcKilled)
     {
-        AddExperiencePoints(npcKilled.NPCData.experienceValue);
+        AddExperiencePoints(npcKilled.npcData.experienceValue);
     }
 
     public void AddExperiencePoints(int amountToAdd)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NPCMovementController : MonoBehaviour
 {
-    NPCController NPCController;
+    NPCController controller;
     public const int GRID_SIZE = 3;
 
     [Header("Movement")]
@@ -36,12 +36,11 @@ public class NPCMovementController : MonoBehaviour
 
     void OnNPCDeath(NPCController deadNPC)
     {
-        if (deadNPC == NPCController)
+        if (deadNPC == controller)
             return;
 
         FindNewPathToPlayer();
     }
-
     void OnPlayerMoveEnded()
     {
         //FindNewPathToPlayer();
@@ -53,20 +52,35 @@ public class NPCMovementController : MonoBehaviour
         FindNewPathToPlayer();
     }
 
+    public void Init(NPCController controller)
+    {
+        this.controller = controller;
+    }
+
+    public void OnDeath()
+    {
+        RevertNodesOnPath();
+    }
+
     public void FindNewPathToPlayer()
     {
         if(!canMove) return;
 
-        if(pathToPlayer != null)
-            foreach (GridNode node in pathToPlayer)
-            {
-                node.RevertTile();
-            }
+        if (pathToPlayer != null)
+            RevertNodesOnPath();
 
         //Debug.Log("NPC coords: " + groupController.currentlyOccupiedGridnode.Coords.Pos);
         //Debug.Log("Player coords: " + (PlayerController.currentOccupiedNode ? PlayerController.currentOccupiedNode.Coords.Pos : "No Player Exists"));
-        pathToPlayer = Pathfinding_Custom.FindPath(NPCController.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
+        pathToPlayer = Pathfinding_Custom.FindPath(controller.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
         NavigateToPlayer();
+    }
+
+    private void RevertNodesOnPath()
+    {
+        foreach (GridNode node in pathToPlayer)
+        {
+            node.RevertTile();
+        }
     }
 
     public void NavigateToPlayer()
@@ -78,7 +92,7 @@ public class NPCMovementController : MonoBehaviour
             return;
         }
 
-        if (isMoving || isTurning || NPCController.attackController.isAttacking)
+        if (isMoving || isTurning || controller.attackController.isAttacking)
             return;
 
         targetNode = pathToPlayer[pathToPlayer.Count - 1];
@@ -96,7 +110,7 @@ public class NPCMovementController : MonoBehaviour
         }
         else if(targetNode.currentOccupant.occupantType == GridNodeOccupantType.Player && Mathf.RoundToInt(frontOrBackDot) == -1)
         {
-            NPCController.TryAttack();
+            controller.TryAttack();
         }
         else
         {
@@ -112,15 +126,11 @@ public class NPCMovementController : MonoBehaviour
 
     }
 
-    public void Init(NPCController _groupController)
-    {
-        NPCController = _groupController;
-    }
 
     AudioClip GetRandomAudioClip()
     {
-        int rand = Random.Range(0, NPCController.NPCData.walkSFX.Length);
-        return NPCController.NPCData.walkSFX[rand];
+        int rand = Random.Range(0, controller.npcData.walkSFX.Length);
+        return controller.npcData.walkSFX[rand];
     }
     public void SnapToNode(GridNode node)
     {
@@ -144,16 +154,16 @@ public class NPCMovementController : MonoBehaviour
         if (isMoving)
             return;
 
-        NPCController.currentlyOccupiedGridnode.ResetOccupant();
+        controller.currentlyOccupiedGridnode.ResetOccupant();
         AnimateMovement();
-        if(NPCController.NPCData.walkSFX.Length > 0)
-            NPCController.audioSource.PlayOneShot(GetRandomAudioClip());
+        if(controller.npcData.walkSFX.Length > 0)
+            controller.audioSource.PlayOneShot(GetRandomAudioClip());
 
-        StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, NPCController.NPCData.moveDuration));
+        StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, controller.npcData.moveDuration));
         StartCoroutine(DelayBetweenMovement());
 
-        NPCController.currentlyOccupiedGridnode = targetNode;
-        NPCController.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(NPCController.gameObject, GridNodeOccupantType.NPC));
+        controller.currentlyOccupiedGridnode = targetNode;
+        controller.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(controller.gameObject, GridNodeOccupantType.NPC));
     }
 
     /// <param name="turnDir"> -1 = left, 1 = right </param>
@@ -168,7 +178,7 @@ public class NPCMovementController : MonoBehaviour
 
     void AnimateMovement()
     {
-        NPCController.animController.PlayAnimation("Walk");
+        controller.animController.PlayAnimation("Walk");
     }
 
     void AnimateTurning(int turnDir)
@@ -176,11 +186,11 @@ public class NPCMovementController : MonoBehaviour
         isTurning = true;
         if(turnDir  == -1)
         {
-            NPCController.animController.PlayAnimation("TurnLeft", NPCController.NPCData.turnDuration);
+            controller.animController.PlayAnimation("TurnLeft", controller.npcData.turnDuration);
             
         }
         else if(turnDir == 1)
-            NPCController.animController.PlayAnimation("TurnRight", NPCController.NPCData.turnDuration);
+            controller.animController.PlayAnimation("TurnRight", controller.npcData.turnDuration);
 
         UpdateLookDir(turnDir);
     }
@@ -209,29 +219,29 @@ public class NPCMovementController : MonoBehaviour
 
     IEnumerator DelayBetweenMovement()
     {
-        yield return new WaitForSeconds(NPCController.NPCData.moveDuration);
-        NPCController.animController.PlayAnimation("Idle");
-        yield return new WaitForSeconds(NPCController.NPCData.minDelayBetweenMovement);
+        yield return new WaitForSeconds(controller.npcData.moveDuration);
+        controller.animController.PlayAnimation("Idle");
+        yield return new WaitForSeconds(controller.npcData.minDelayBetweenMovement);
         MovementEnded();
     }
 
     void MovementEnded()
     {
-        NPCController.TryAttack();
+        controller.TryAttack();
         FindNewPathToPlayer();
     }
 
 
     IEnumerator DelayBetweenTurning()
     {
-        yield return new WaitForSeconds(NPCController.NPCData.turnDuration + NPCController.NPCData.minDelayBetweenTurning);
+        yield return new WaitForSeconds(controller.npcData.turnDuration + controller.npcData.minDelayBetweenTurning);
         isTurning = false;
         TurningEnded();
     }
 
     void TurningEnded()
     {
-        NPCController.TryAttack();
+        controller.TryAttack();
         NavigateToPlayer();
     }
 }

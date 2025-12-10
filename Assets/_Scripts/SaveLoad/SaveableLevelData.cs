@@ -142,7 +142,7 @@ public class SaveableLevelData
         foreach (NPCController npc in spawnedNPCs)
         {
             if (npc.levelIndex == levelIndex)
-                NPCSaveData.Add(new NPCSaveData(npc.currentlyOccupiedGridnode.Coords.Pos, npc.transform.localRotation.eulerAngles.y, Mathf.RoundToInt(npc.currentGroupHealth), npc.NPCData));
+                NPCSaveData.Add(new NPCSaveData(npc.currentlyOccupiedGridnode.Coords.Pos, npc.transform.localRotation.eulerAngles.y, Mathf.RoundToInt(npc.healthController.CurrentHealth), npc.npcData));
         }
 
         return NPCSaveData;

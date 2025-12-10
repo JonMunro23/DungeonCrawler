@@ -5,11 +5,11 @@ public class NPCData : ScriptableObject
 {
     public string identifier;
     public GameObject prefab;
-    public Vector2 minMaxGroupSize = new Vector2(1,1);
+    //public Vector2 minMaxGroupSize = new Vector2(1,1);
 
     [Header("Stats")]
     public int experienceValue;
-    public int health = 100;
+    public int maxHealth = 100;
     public int baseArmourRating;
     public int baseEvasionRating;
 

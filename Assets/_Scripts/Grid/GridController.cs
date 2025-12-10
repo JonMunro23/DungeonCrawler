@@ -337,8 +337,8 @@ public class GridController : MonoBehaviour
                                     if(spawnNPCs)
                                     {
                                         NPCController NPCClone = Instantiate(npcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                        NPCData spawnData = GetNPCData(entityLayer.EntityInstances[k].FieldInstances[1].Value);
-                                        NPCClone.InitNPC(levelIndex, spawnData, spawnNode);
+                                        //NPCData spawnData = GetNPCData(entityLayer.EntityInstances[k].FieldInstances[1].Value);
+                                        NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
                                         NPCClone.SetActive(false);
                                         spawnedNPCs.Add(NPCClone);
                                     }
@@ -566,8 +566,8 @@ public class GridController : MonoBehaviour
             {
                 GridNode spawnNode = GetNodeAtCoords(savedNPCData.coords);
                 NPCController NPCClone = Instantiate(npcPrefab, spawnNode.transform.localPosition + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedNPCData.rotation, 0)), spawnNode.transform);
-                NPCClone.InitNPC(levelIndex, savedNPCData.npcData, spawnNode);
-                NPCClone.SetNPCHealth(savedNPCData.currentHealth);
+                NPCClone.InitNPC(levelIndex, /*savedNPCData.npcData, */spawnNode);
+                NPCClone.healthController.SetHealth(savedNPCData.currentHealth);
                 NPCClone.SetActive(false);
                 spawnedNPCs.Add(NPCClone);
             }

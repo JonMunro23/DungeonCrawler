@@ -3013,6 +3013,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
+      propertyPath: npcPrefab
+      value: 
+      objectReference: {fileID: 8651504595935704073, guid: 604f96a20eff0ad468b945f0c6ff04ae,
+        type: 3}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
       propertyPath: destructableWall
       value: 
       objectReference: {fileID: 5856851048016783610, guid: 1d44805cad6884a478a689a34a8a57e0,

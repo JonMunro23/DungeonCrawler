@@ -74,7 +74,7 @@ public class RangedWeapon : Weapon
 
         if (bulletSpreadMultiplier <= weaponItemData.minWeaponSpreadAmount) return;
 
-        bulletSpreadMultiplier -= weaponItemData.spreadReductionSpeed;
+        bulletSpreadMultiplier -= weaponItemData.spreadReductionSpeed * Time.deltaTime;
         bulletSpreadMultiplier = Mathf.Clamp(bulletSpreadMultiplier, weaponItemData.minWeaponSpreadAmount, weaponItemData.maxWeaponSpreadAmount);
     }
 

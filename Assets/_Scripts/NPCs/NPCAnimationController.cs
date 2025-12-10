@@ -1,55 +1,35 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NPCAnimationController : MonoBehaviour
 {
-    NPCController groupController;
+    NPCController controller;
+    Animator animator;
 
-    [SerializeField] List<Animator> animators = new List<Animator>();
+    [SerializeField] GameObject npcMesh;
 
-    public void Init(NPCController _groupController)
+    public void Init(NPCController controller)
     {
-        groupController = _groupController;
-
-        foreach (GameObject NPC in groupController.spawnedNPCs)
-        {
-            animators.Add(NPC.GetComponent<Animator>());
-        }
+        this.controller = controller;
+        animator = GetComponentInChildren<Animator>();
     }
 
-    public void PlayAnimation(string animationName, float animationDuration = 0f, int npcIndex = -1)
+    public void PlayAnimation(string animationName, float animationDuration = 0f)
     {
-        if(npcIndex > -1)
-        {
-            animators[npcIndex].Play(animationName);
+        if (!animator)
             return;
-        }
 
-        foreach (Animator animator in animators)
+        if(animationName == "TurnLeft")
         {
-            if (!animator)
-                return;
-
-            GameObject npc = animator.gameObject;
-
-            if(animationName == "TurnLeft")
-            {
-                StartCoroutine(LerpNPCRot(npc, npc.transform.localRotation, npc.transform.localRotation * Quaternion.Euler(-Vector3.up * 90), animationDuration));
-            }
-            else if (animationName == "TurnRight")
-            {
-                StartCoroutine(LerpNPCRot(npc, npc.transform.localRotation, npc.transform.localRotation * Quaternion.Euler(Vector3.up * 90), animationDuration));
-            }
-            else
-                animator.Play(animationName);
+            StartCoroutine(LerpNPCRot(npcMesh, npcMesh.transform.localRotation, npcMesh.transform.localRotation * Quaternion.Euler(-Vector3.up * 90), animationDuration));
         }
-    }
+        else if (animationName == "TurnRight")
+        {
+            StartCoroutine(LerpNPCRot(npcMesh, npcMesh.transform.localRotation, npcMesh.transform.localRotation * Quaternion.Euler(Vector3.up * 90), animationDuration));
+        }
+        else
+            animator.Play(animationName);
 
-    public void RemoveNPCsAnimator(GameObject NPC)
-    {
-        if(animators.Contains(NPC.GetComponent<Animator>()))
-            animators.Remove(NPC.GetComponent<Animator>());
     }
 
     IEnumerator LerpNPCRot(GameObject NPC, Quaternion startRot, Quaternion endRot, float lerpDuration)
