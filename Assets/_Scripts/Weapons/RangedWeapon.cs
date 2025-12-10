@@ -184,44 +184,35 @@ public class RangedWeapon : Weapon
                     return;
                 }
 
-                IDamageable damageable = hit.transform.GetComponent<IDamageable>();
+                IDamageable damageable = hit.transform.GetComponentInParent<IDamageable>();
                 if (damageable != null)
                 {
                     int damage = 0;
-                    int AR = damageable.GetDamageData().currentArmourRating;
-                    //bool isCrit = RollForCrit();
-                    //bool wasHit = RollForHit();
+                    int armourRating = damageable.GetDamageData().currentArmourRating;
+                    bool isCrit = hit.transform.CompareTag("CritZone");
 
                     switch (currentLoadedAmmoData.ammoType)
                     {
                         case AmmoType.Standard:
-                            damage = CalculateDamage(AR);
-                            //if (isCrit)
-                            //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
-                            damageable.TryDamage(damage, DamageType.Standard);
+                            damage = CalculateDamage(armourRating);
+                            damageable.TryDamage(damage, DamageType.Standard, isCrit);
                             break;
                         case AmmoType.ArmourPiercing:
-                            int reducedAR = Mathf.RoundToInt(AR * .5f);
+                            int reducedAR = Mathf.RoundToInt(armourRating * .5f);
                             damage = CalculateDamage(reducedAR);
-                            //if (isCrit)
-                            //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
-                            damageable.TryDamage(damage, DamageType.Standard);
+                            damageable.TryDamage(damage, DamageType.Standard, isCrit);
                             break;
                         case AmmoType.HollowPoint:
                             //more damage to unarmoured targets but reduced against armour
                             break;
                         case AmmoType.Incendiary:
-                            damage = CalculateDamage(AR);
-                            //if (isCrit)
-                            //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
-                            damageable.TryDamage(damage, DamageType.Fire);
+                            damage = CalculateDamage(armourRating);
+                            damageable.TryDamage(damage, DamageType.Fire, isCrit);
                             damageable.AddStatusEffect(currentLoadedAmmoData.ammoStatusEffect);
                             break;
                         case AmmoType.Acid:
-                            damage = CalculateDamage(AR);
-                            //if (isCrit)
-                            //    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier);
-                            damageable.TryDamage(damage, DamageType.Acid);
+                            damage = CalculateDamage(armourRating);
+                            damageable.TryDamage(damage, DamageType.Acid, isCrit);
                             damageable.AddStatusEffect(currentLoadedAmmoData.ammoStatusEffect);
                             break;
 
@@ -392,12 +383,16 @@ public class RangedWeapon : Weapon
             return;
 
         playerInventory.LockSlotsWithAmmoOfType(currentLoadedAmmoData);
+
         if (!weaponItemData.bulletByBulletReload)
         {
             if(oldAmmoType != null)
                 playerInventory.IncreaseAmmoOfType(oldAmmoType, loadedAmmo);
             else
                 playerInventory.IncreaseAmmoOfType(currentLoadedAmmoData, loadedAmmo);
+
+            heldAmmo += loadedAmmo;
+
             UpdateLoadedAmmo(0);
             UpdateReserveAmmo();
 

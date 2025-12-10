@@ -42,7 +42,7 @@ public class Destructable : MonoBehaviour, IDamageable, IGridNode
         this.occupyingNode = occupyingNode;
     }
 
-    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard)
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard, bool isCrit = false)
     {
         if (!susceptibleDamageTypes.Contains(damageType))
             return;

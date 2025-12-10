@@ -15,7 +15,7 @@ public class DamageData
 
 public interface IDamageable
 {
-    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard);  
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard, bool isCrit = false);  
     public DamageData GetDamageData();
     public void AddStatusEffect(StatusEffect statusEffectToAdd) { }
 }

@@ -14,8 +14,6 @@ public class NPCHealthController : MonoBehaviour, IDamageable
     [SerializeField] int currentEvasionRating;
     bool isDead;
 
-    [SerializeField] int hitReactionChance = 25;
-
     [Header("Item Dropping")]
     public List<ItemData> guaranteedDrops = new List<ItemData>();
     public List<ItemData> randomDrops = new List<ItemData>();
@@ -34,14 +32,18 @@ public class NPCHealthController : MonoBehaviour, IDamageable
         currentHealth = newHealthValue;
     }
 
-    public void TryDamage(int damage, DamageType damageType = DamageType.Standard)
+    public void TryDamage(int damage, DamageType damageType = DamageType.Standard, bool isCrit = false)
     {
         if (isDead) return;
 
+        if(isCrit)
+        {
+            PlayHitReaction();
+            damage *= 2;
+        }
         currentHealth -= damage;
-        controller.floatingTextController.SpawnDamageText(damage, damageType);
+        controller.floatingTextController.SpawnDamageText(damage, damageType, isCrit);
 
-        PlayHitReaction();
 
         if (currentHealth <= 0)
         {
@@ -106,11 +108,7 @@ public class NPCHealthController : MonoBehaviour, IDamageable
 
     public void PlayHitReaction()
     {
-        if (!controller.movementController.isTurning && !controller.movementController.isMoving)
-        {
-            int rand = Random.Range(0, 100);
-            if (rand <= hitReactionChance)
-                controller.animController.PlayAnimation("HitReaction", 0);
-        }
+       //pause movement?
+        controller.animController.PlayAnimation("HitReaction", 0);
     }
 }

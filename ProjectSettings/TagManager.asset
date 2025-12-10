@@ -15,6 +15,7 @@ TagManager:
   - Ground
   - BreakableWall
   - GrabbedItemUI
+  - CritZone
   layers:
   - Default
   - TransparentFX
