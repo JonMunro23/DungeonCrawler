@@ -22,7 +22,7 @@ public class NPCFloatingTextController : MonoBehaviour
     [SerializeField] Color fireDamageTextColour;
     [SerializeField] Color acidDamageTextColour;
 
-    public void SpawnDamageText(int damage, DamageType damageType = DamageType.Standard)
+    public void SpawnDamageText(int damage, DamageType damageType = DamageType.Standard, bool isCrit = false)
     {
         GameObject textClone = Instantiate(damageTakenFloatingText, RandomiseFloatingTextSpawnLocation(), transform.rotation);
         textClone.GetComponent<FloatingDamageText>().SetUpwardsSpeed(textSpeed);
@@ -39,12 +39,15 @@ public class NPCFloatingTextController : MonoBehaviour
                 break;
         }
 
-        //if (wasCrit)
-        //{
-        //    cloneTextComponent.color = critDamageTextColour;
-        //    cloneTextComponent.fontSize += .10f;
-        //}
-        cloneTextComponent.text = damage.ToString();
+        string critString = "";
+        if (isCrit)
+        {
+            cloneTextComponent.color = critDamageTextColour;
+            cloneTextComponent.fontSize += .10f;
+            critString = "!";
+        }
+
+        cloneTextComponent.text = damage.ToString() + critString;
 
         StartTextRemoval(textClone, cloneTextComponent);
     }

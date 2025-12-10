@@ -42,7 +42,7 @@ public class NPCHealthController : MonoBehaviour, IDamageable
             damage *= 2;
         }
         currentHealth -= damage;
-        controller.floatingTextController.SpawnDamageText(damage, damageType);
+        controller.floatingTextController.SpawnDamageText(damage, damageType, isCrit);
 
 
         if (currentHealth <= 0)
