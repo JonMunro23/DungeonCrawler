@@ -59,8 +59,8 @@ public class NPCController : MonoBehaviour, IDamageable
 
         if(spawnGridNode != null)
         {
-            //spawnGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.NPC));
             currentlyOccupiedGridnode = spawnGridNode;
+            spawnGridNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.NPC));
         }
 
         SpawnNPCModels();

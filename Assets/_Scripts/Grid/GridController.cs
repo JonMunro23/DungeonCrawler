@@ -46,6 +46,7 @@ public class GridController : MonoBehaviour
     Vector2 playerSpawnCoords = Vector2.zero;
 
     [Header("NPCs")]
+    [SerializeField] bool spawnNPCs = true;
     [SerializeField] NPCController npcPrefab;
     [SerializeField] List<NPCController> spawnedNPCs = new List<NPCController>();
     [SerializeField] List<NPCController> activeNPCs = new List<NPCController>();
@@ -333,11 +334,14 @@ public class GridController : MonoBehaviour
                                     playerSpawnCoords = spawnCoords;
                                     break;
                                 case "NPC_Spawn":
-                                    NPCController NPCClone = Instantiate(npcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                    NPCData spawnData = GetNPCData(entityLayer.EntityInstances[k].FieldInstances[1].Value);
-                                    NPCClone.InitNPC(levelIndex, spawnData, spawnNode);
-                                    NPCClone.SetActive(false);
-                                    spawnedNPCs.Add(NPCClone);
+                                    if(spawnNPCs)
+                                    {
+                                        NPCController NPCClone = Instantiate(npcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                        NPCData spawnData = GetNPCData(entityLayer.EntityInstances[k].FieldInstances[1].Value);
+                                        NPCClone.InitNPC(levelIndex, spawnData, spawnNode);
+                                        NPCClone.SetActive(false);
+                                        spawnedNPCs.Add(NPCClone);
+                                    }
                                     break;
                                 case "WorldItem":
                                     WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
@@ -444,26 +448,6 @@ public class GridController : MonoBehaviour
                                     interactable.SetOccupyingNode(spawnNode);
                                     spawnedInteractables.Add(interactable);
                                     break;
-                                //case "Triggerable":
-                                //    Door spawnedDoor = null;
-                                //    switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
-                                //    {
-                                //        case "Door":
-                                //            spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                //            break;
-                                //        case "Secret_Door":
-                                //            spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                //            break;
-                                //    }
-                                //    spawnedDoor.SetOccupyingNode(spawnNode);
-                                //    spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
-                                //    spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                                //    spawnedDoor.SetLevelIndex(levelIndex);
-                                //    newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
-                                //    spawnNode.SetBaseOccupant(newOccupant);
-                                //    spawnNode.SetOccupant(newOccupant);
-                                //    spawnedTriggerables.Add(spawnedDoor);
-                                //    break;
                                 case "Door":
                                     Door spawnedDoor = null;
                                     switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)

@@ -8,8 +8,9 @@ public class NPCMovementController : MonoBehaviour
     public const int GRID_SIZE = 3;
 
     [Header("Movement")]
+    [SerializeField] bool canMove = true;
     public bool isMoving;
-    [SerializeField] List<GridNode> path = new List<GridNode>();
+    [SerializeField] List<GridNode> pathToPlayer = new List<GridNode>();
     public GridNode targetNode;
 
     [Space]
@@ -54,21 +55,23 @@ public class NPCMovementController : MonoBehaviour
 
     public void FindNewPathToPlayer()
     {
-        if(path != null)
-            foreach (GridNode node in path)
+        if(!canMove) return;
+
+        if(pathToPlayer != null)
+            foreach (GridNode node in pathToPlayer)
             {
                 node.RevertTile();
             }
 
         //Debug.Log("NPC coords: " + groupController.currentlyOccupiedGridnode.Coords.Pos);
         //Debug.Log("Player coords: " + (PlayerController.currentOccupiedNode ? PlayerController.currentOccupiedNode.Coords.Pos : "No Player Exists"));
-        path = Pathfinding_Custom.FindPath(NPCController.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
+        pathToPlayer = Pathfinding_Custom.FindPath(NPCController.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
         NavigateToPlayer();
     }
 
     public void NavigateToPlayer()
     {
-        if(path == null)
+        if(pathToPlayer == null)
         {
             //Roam?
             //Debug.Log("NAE PATH");
@@ -78,7 +81,7 @@ public class NPCMovementController : MonoBehaviour
         if (isMoving || isTurning || NPCController.attackController.isAttacking)
             return;
 
-        targetNode = path[path.Count - 1];
+        targetNode = pathToPlayer[pathToPlayer.Count - 1];
         Vector3 dirToTarget = Vector3.Normalize(currentOrientation.position - targetNode.moveToTransform.position);
         float leftOrRightDot = Vector3.Dot(currentOrientation.right, dirToTarget);
         float frontOrBackDot = Vector3.Dot(currentOrientation.forward, dirToTarget);
