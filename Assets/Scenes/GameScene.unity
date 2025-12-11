@@ -1405,6 +1405,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5364630906786291162, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -59.060303
+      objectReference: {fileID: 0}
     - target: {fileID: 5468686961137445747, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -3011,35 +3016,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grid
       objectReference: {fileID: 0}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: npcPrefab
-      value: 
-      objectReference: {fileID: 8651504595935704073, guid: 604f96a20eff0ad468b945f0c6ff04ae,
-        type: 3}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: destructableWall
-      value: 
-      objectReference: {fileID: 5856851048016783610, guid: 1d44805cad6884a478a689a34a8a57e0,
-        type: 3}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: startingLevelIndex
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: chestContainerPrefab
-      value: 
-      objectReference: {fileID: 3550158488799289131, guid: 0aceb50fab28f27468fe2487a72fbdd1,
-        type: 3}
-    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
-        type: 3}
-      propertyPath: destructableWallPrefab
-      value: 
-      objectReference: {fileID: 5856851048016783610, guid: 1d44805cad6884a478a689a34a8a57e0,
-        type: 3}
     - target: {fileID: 7918361601237953702, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
       propertyPath: m_LocalPosition.x

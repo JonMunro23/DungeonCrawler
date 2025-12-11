@@ -1,5 +1,6 @@
 trackSelection = true
 refreshSearchWindowsInPlayMode = false
+pickerAdvancedUI = false
 fetchPreview = true
 defaultFlags = 0
 keepOpen = false
@@ -55,10 +56,26 @@ providers = {
 		priority = 25
 		defaultAction = null
 	}
+	"unity.ai.pattern.search" = {
+		active = true
+		priority = 80
+		defaultAction = null
+	}
+	"unity.ai.file.search" = {
+		active = true
+		priority = 85
+		defaultAction = null
+	}
+	presets_provider = {
+		active = false
+		priority = -10
+		defaultAction = null
+	}
 }
 objectSelectors = {
 }
 recentSearches = [
+	"h: t:Rigidbody"
 ]
 searchItemFavorites = [
 ]
@@ -73,3 +90,4 @@ helperWidgetCurrentArea = "all"
 disabledIndexers = ""
 minIndexVariations = 2
 findProviderIndexHelper = true
+itemIconSize = 32

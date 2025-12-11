@@ -68,7 +68,12 @@ MonoBehaviour:
     type: 3}
   spawnedPlayerSpawnPoint: {fileID: 0}
   playerController: {fileID: 0}
-  npcPrefab: {fileID: 3120243568235660886, guid: 89ade3ceb54b48e4dade0019bad8a785,
+  spawnNPCs: 1
+  zombieNpcPrefab: {fileID: 8651504595935704073, guid: 604f96a20eff0ad468b945f0c6ff04ae,
+    type: 3}
+  rangerNpcPrefab: {fileID: 8651504595935704073, guid: baaf0020e3f252740b651875dc49dc06,
+    type: 3}
+  bugNpcPrefab: {fileID: 8651504595935704073, guid: 649ae97880b1ace41ace2134f977d20f,
     type: 3}
   spawnedNPCs: []
   activeNPCs: []
@@ -80,7 +85,7 @@ MonoBehaviour:
   levelTransitionPrefab: {fileID: 1429862990062753556, guid: aa4ae444892f5814f99f601b8ee5174a,
     type: 3}
   spawnedLevelTransitions: []
-  largeContainerPrefab: {fileID: 3550158488799289131, guid: 0aceb50fab28f27468fe2487a72fbdd1,
+  chestContainerPrefab: {fileID: 3550158488799289131, guid: 0aceb50fab28f27468fe2487a72fbdd1,
     type: 3}
   leverPrefab: {fileID: 1492938548008945344, guid: 16761ec7673e36441b6676673f785e42,
     type: 3}
@@ -95,6 +100,8 @@ MonoBehaviour:
   doorPrefab: {fileID: 2992099999898577703, guid: f7a6d8d37daf52d40ae50816b3fc5883,
     type: 3}
   secretDoorPrefab: {fileID: 2900067432425157529, guid: 60823032845347a4ba344a99ee115650,
+    type: 3}
+  destructableWallPrefab: {fileID: 5856851048016783610, guid: 1d44805cad6884a478a689a34a8a57e0,
     type: 3}
   centeredEntitySpawnOffset: {x: -1.5, y: 0, z: -1.5}
   worldItemSpawnOffset: {x: -0.25, y: 0.1, z: -1.5}

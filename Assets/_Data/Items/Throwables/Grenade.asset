@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Grenade
   m_EditorClassIdentifier: 
   itemName: Grenade
-  itemIdentifier: grenade
+  itemIdentifier: frag_grenade
   itemDescription: An explosive grenade
   itemSprite: {fileID: 21300000, guid: d46a8939a0ed14cbba0ea62925c22bb9, type: 3}
   itemWorldModel: {fileID: 1842920273716216, guid: 28a11390dfca1364fb5532ac40add927,
@@ -32,8 +32,7 @@ MonoBehaviour:
   proximityDetectionRadius: 0
   damageType: 3
   damage: 250
-  inflictedStatusEffect: 0
-  statusEffectLength: 0
+  statusEffect: {fileID: 0}
   minThrowVelocity: 4
   maxThrowVelocity: 25
   timeToMaxVelocity: 3

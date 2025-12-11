@@ -21,7 +21,7 @@ MonoBehaviour:
   itemWeight: 3.4
   isItemStackable: 0
   maxItemStackSize: 1
-  itemCooldown: 1.4
+  itemCooldown: 2
   EquipmentSlotType: 7
   statModifiers: []
   itemPrefab: {fileID: 3657685001478897229, guid: 86bfbcd86be44d140a6eefcd8256adc6,
@@ -44,9 +44,10 @@ MonoBehaviour:
   defaultLoadedAmmoData: {fileID: 11400000, guid: e7ca3b9d2beb1094eb773977c5389d53,
     type: 2}
   recoilData: {fileID: 11400000, guid: 3b03e7ed13250e449972c88b4863eeba, type: 2}
-  spreadReductionSpeed: 1
+  spreadReductionSpeed: 1.75
   perShotSpreadIncrease: 0.4
-  onWeaponReadiedSpreadAmount: 2
+  minWeaponSpreadAmount: 0.1
+  maxWeaponSpreadAmount: 1.6
   attackSFX:
   - {fileID: 8300000, guid: 1324052f1fc863844b7fa1f764538c89, type: 3}
   - {fileID: 8300000, guid: 0ba0920f74d30134f900dfc6cd14456d, type: 3}
@@ -60,7 +61,7 @@ MonoBehaviour:
   drawAnimDuration: 0.817
   drawSFX: {fileID: 8300000, guid: a9d2071f54cb2b647b922dbfe2df2eed, type: 3}
   drawVolume: 0.3
-  readyAnimDuration: 0.1
+  readyAnimDuration: 0.15
   readySFX: {fileID: 0}
   readyVolume: 0.3
   hideAnimDuration: 0.467

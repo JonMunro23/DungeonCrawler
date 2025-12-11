@@ -47,7 +47,9 @@ public class GridController : MonoBehaviour
 
     [Header("NPCs")]
     [SerializeField] bool spawnNPCs = true;
-    [SerializeField] NPCController npcPrefab;
+    [SerializeField] NPCController zombieNpcPrefab;
+    [SerializeField] NPCController rangerNpcPrefab;
+    [SerializeField] NPCController bugNpcPrefab;
     [SerializeField] List<NPCController> spawnedNPCs = new List<NPCController>();
     [SerializeField] List<NPCController> activeNPCs = new List<NPCController>();
     [SerializeField] NPCDataContainer NPCDataContainer;
@@ -333,11 +335,28 @@ public class GridController : MonoBehaviour
                                 case "Player_Start":
                                     playerSpawnCoords = spawnCoords;
                                     break;
-                                case "NPC_Spawn":
+                                case "NPC_Zombie":
                                     if(spawnNPCs)
                                     {
-                                        NPCController NPCClone = Instantiate(npcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                        //NPCData spawnData = GetNPCData(entityLayer.EntityInstances[k].FieldInstances[1].Value);
+                                        NPCController NPCClone = Instantiate(zombieNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                        NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
+                                        NPCClone.SetActive(false);
+                                        spawnedNPCs.Add(NPCClone);
+                                    }
+                                    break;
+                                case "NPC_Ranger":
+                                    if (spawnNPCs)
+                                    {
+                                        NPCController NPCClone = Instantiate(rangerNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
+                                        NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
+                                        NPCClone.SetActive(false);
+                                        spawnedNPCs.Add(NPCClone);
+                                    }
+                                    break;
+                                case "NPC_Bug":
+                                    if (spawnNPCs)
+                                    {
+                                        NPCController NPCClone = Instantiate(bugNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
                                         NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
                                         NPCClone.SetActive(false);
                                         spawnedNPCs.Add(NPCClone);
@@ -565,7 +584,7 @@ public class GridController : MonoBehaviour
             foreach (SaveableLevelData.NPCSaveData savedNPCData in levelDataToLoad.NPCs)
             {
                 GridNode spawnNode = GetNodeAtCoords(savedNPCData.coords);
-                NPCController NPCClone = Instantiate(npcPrefab, spawnNode.transform.localPosition + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedNPCData.rotation, 0)), spawnNode.transform);
+                NPCController NPCClone = Instantiate(zombieNpcPrefab, spawnNode.transform.localPosition + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedNPCData.rotation, 0)), spawnNode.transform);
                 NPCClone.InitNPC(levelIndex, /*savedNPCData.npcData, */spawnNode);
                 NPCClone.healthController.SetHealth(savedNPCData.currentHealth);
                 NPCClone.SetActive(false);
