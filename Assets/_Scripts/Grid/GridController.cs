@@ -35,7 +35,7 @@ public class GridController : MonoBehaviour
     /// int = levelIndex
     /// </summary>
     Dictionary<int, LevelData> levelDataDictionary = new Dictionary<int, LevelData>();
-    [SerializeField] List<GameObject> levelParents = new List<GameObject>();
+    [SerializeField] List<Transform> levelParents = new List<Transform>();
 
 
     [Header("Player")]
@@ -69,6 +69,7 @@ public class GridController : MonoBehaviour
 
     [Header("Interactables")]
     [SerializeField] Lever leverPrefab;
+    [SerializeField] Button buttonPrefab;
     [SerializeField] KeycardReader keycardReaderPrefab;
     [SerializeField] PressurePlate pressurePlatePrefab;
     [SerializeField] Tripwire tripwirePrefab;
@@ -276,236 +277,280 @@ public class GridController : MonoBehaviour
         entityLayer = levels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
         intGridLayer = levels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
 
-        GenerateLevel(levelIndex, false);
+        Transform levelParent = new GameObject($"Level {levelIndex}").transform;
+        levelParents.Add(levelParent);
+
+        GenerateLevel(levelIndex);
 
         LinkInteractablesToTriggerables();
         CacheGridNodeNeighbours();
     }
 
-    void GenerateLevel(int levelIndex, bool isLoaded)
+    void GenerateLevel(int levelIndex)
     {
         int index = 0;
         Vector2 spawnCoords = Vector2.zero;
-        GameObject levelParent = new GameObject($"Level {levelIndex}");
-        levelParents.Add(levelParent);
-        Transform levelParentTransform = levelParent.transform;
-        levelParentTransform.SetParent(transform);
-        GridNodeOccupant newOccupant;
+        Transform nodeParent = levelParents[levelIndex];
         for (int i = 0; i < intGridLayer.CWid; i++)
         {
             for (int j = 0; j < intGridLayer.CHei; j++)
             {
-                GridNode clone;
+                GridNode clone = null;
                 //Spawn tiles
                 //i index is reversed to match orientation in LDtk
+                spawnCoords = new Vector2(-i, j);
+                SquareCoords sqCoords = new SquareCoords { Pos = new Vector2(-i, j) };
                 switch (intGridLayer.IntGridCsv[index])
                 {
                     case 1:
-                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, levelParentTransform);
+                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
                         clone.transform.localPosition += new Vector3(-1.5f, 1.5f, -1.5f);
-                        spawnCoords = new Vector2(-i, j);
-                        clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
-                        activeNodes.Add(spawnCoords, clone);
                         break; //Spawn Walls
                     case 2:
-                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, levelParentTransform);
-                        spawnCoords = new Vector2(-i, j);
-                        clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
-                        activeNodes.Add(spawnCoords, clone);
+                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
                         break; //Spawn Walkables
                     case 3:
-                        clone = Instantiate(voidPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, levelParentTransform);
-                        spawnCoords = new Vector2(-i, j);
+                        clone = Instantiate(voidPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
                         clone.SetIsVoid(true);
-                        clone.InitNode(new SquareCoords { Pos = new Vector2(-i, j) });
-                        activeNodes.Add(spawnCoords, clone);
+                        break; //Spawn Void
+                }
+                clone.InitNode(sqCoords);
+                activeNodes.Add(spawnCoords, clone);
+                Vector2 loopIndices = new Vector2(i, j);
+                GenerateEntities(levelIndex, loopIndices, spawnCoords);
+                index++;
+            }
+        }
+    }
+
+    void GenerateEntities(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
+    {
+        GridNodeOccupant newOccupant;
+        for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
+        {
+            if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
+            {
+                GridNode spawnNode = GetNodeAtCoords(spawnCoords);
+                switch (entityLayer.EntityInstances[k].Identifier)
+                {
+                    case "Player_Start":
+                        playerSpawnCoords = spawnCoords;
+                        break;
+                    case "WorldItem":
+                        WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        spawnedWorldItems.Add(spawnedWorldItem);
+                        ItemData worldItemData = itemDataContainer.GetDataFromIdentifier(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString());
+                        spawnedWorldItem.InitWorldItem(levelIndex, spawnCoords, new ItemStack(worldItemData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value)));
+                        break;
+                    case "Level_Transition":
+                        LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0, 1.5f, 0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        int levelIndexToGoTo = Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[1].Value);
+                        List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
+                        spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
+                        spawnedLevelTransitions.Add(spawnedLevelTransition);
+                        newOccupant = new GridNodeOccupant(spawnedLevelTransition.gameObject, GridNodeOccupantType.LevelTransition);
+                        spawnNode.SetBaseOccupant(newOccupant);
+                        spawnNode.SetOccupant(newOccupant);
+                        break;
+                    case "Container":
+                        IContainer spawnedContainer = null;
+                        List<object> itemNames = new List<object>();
+                        List<object> itemAmounts = new List<object>();
+                        switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
+                        {
+                            case "Chest":
+                                spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                                itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
+                                itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
+                                for (int l = 0; l < itemNames.Count; l++)
+                                {
+                                    ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
+                                    int itemAmount = Convert.ToInt32(itemAmounts[l]);
+                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
+                                }
+                                break;
+                            case "Desk":
+                                //change to Desk prefab
+                                spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                                itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
+                                itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
+                                for (int l = 0; l < itemNames.Count; l++)
+                                {
+                                    ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
+                                    int itemAmount = Convert.ToInt32(itemAmounts[l]);
+                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
+
+                                }
+                                break;
+                            case "Filling_Cabinet":
+                                //change to Filling cabinet prefab
+                                spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                                itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
+                                itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
+                                for (int l = 0; l < itemNames.Count; l++)
+                                {
+                                    ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
+                                    int itemAmount = Convert.ToInt32(itemAmounts[l]);
+                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
+
+                                }
+                                break;
+
+                        }
+                        spawnedContainer.InitContainer(levelIndex, spawnCoords);
+                        spawnedContainers.Add(spawnedContainer);
+
+                        break;
+                    case "Door":
+                        Door spawnedDoor = null;
+                        switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
+                        {
+                            case "Door":
+                                spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                                break;
+                            case "Secret_Door":
+                                spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                                break;
+                        }
+                        spawnedDoor.SetOccupyingNode(spawnNode);
+                        spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
+                        spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                        spawnedDoor.SetLevelIndex(levelIndex);
+                        newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
+                        spawnNode.SetBaseOccupant(newOccupant);
+                        spawnNode.SetOccupant(newOccupant);
+                        spawnedDoor.SetIsTriggered(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                        spawnedTriggerables.Add(spawnedDoor);
+                        break;
+                    case "NPC_Invis_Wall":
+                        newOccupant = new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible);
+                        spawnNode.SetBaseOccupant(newOccupant);
+                        spawnNode.SetOccupant(newOccupant);
+                        break;
+                    case "Destructable_Wall":
+                        Destructable spawnedDestructable = null;
+                        spawnedDestructable = Instantiate(destructableWallPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        spawnedDestructable.SetOccupyingNode(spawnNode);
+                        spawnedDestructable.SetLevelIndex(levelIndex);
+                        GridNodeOccupant occupant = new GridNodeOccupant(spawnedDestructable.gameObject, GridNodeOccupantType.Obstacle);
+                        spawnNode.SetOccupant(occupant);
+                        break;
+                }
+                GenerateNPCs(levelIndex, loopIndices, spawnCoords);
+                GenerateInteractables(levelIndex, loopIndices, spawnCoords);
+            }
+        }
+    }
+
+    void GenerateNPCs(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
+    {
+        for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
+        {
+            if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
+            {
+                GridNode spawnNode = GetNodeAtCoords(spawnCoords);
+                switch (entityLayer.EntityInstances[k].Identifier)
+                {
+                            
+                    case "NPC_Zombie":
+                        if (spawnNPCs)
+                        {
+                            NPCController NPCClone = Instantiate(zombieNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                            NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
+                            NPCClone.SetActive(false);
+                            spawnedNPCs.Add(NPCClone);
+                        }
+                        break;
+                    case "NPC_Ranger":
+                        if (spawnNPCs)
+                        {
+                            NPCController NPCClone = Instantiate(rangerNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                            NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
+                            NPCClone.SetActive(false);
+                            spawnedNPCs.Add(NPCClone);
+                        }
+                        break;
+                    case "NPC_Bug":
+                        if (spawnNPCs)
+                        {
+                            NPCController NPCClone = Instantiate(bugNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                            NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
+                            NPCClone.SetActive(false);
+                            spawnedNPCs.Add(NPCClone);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
+    void GenerateInteractables(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
+    {
+        for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
+        {
+            if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
+            {
+                GridNode spawnNode = GetNodeAtCoords(spawnCoords);
+                GridNodeOccupant newOccupant;
+                IInteractable interactable = null;
+                switch (entityLayer.EntityInstances[k].Identifier)
+                {
+                    case "Lever":
+                        interactable = Instantiate(leverPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        break;
+                    case "Button":
+                        interactable = Instantiate(buttonPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        break;
+                    case "Keycard_Reader":
+                        interactable = Instantiate(keycardReaderPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        interactable.SetRequiredKeycardType(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[4].Value));
+                        break;
+                    case "Pressure_Plate":
+                        PressurePlate plate = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        plate.SetTriggerOnExit(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[4].Value));
+                        interactable = plate;
+                        newOccupant = new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate);
+                        spawnNode.SetBaseOccupant(newOccupant);
+                        spawnNode.SetOccupant(newOccupant);
+                        break;
+                    case "Tripwire":
+                        Tripwire tripwire = Instantiate(tripwirePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
+                        tripwire.InitTripwire();
+                        interactable = tripwire;
+                        break;
+                    case "Shootable_Target":
+                        interactable = Instantiate(shootableTargetPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
                         break;
                 }
 
-                if (!isLoaded)
+                if (interactable == null)
+                    return;
+
+                FieldInstance field = Array.Find(
+                    entityLayer.EntityInstances[k].FieldInstances,
+                    f => f.Identifier == "Entities_To_Trigger"
+                    );
+
+                if(field != null)
                 {
-                    //Spawn Entities
-                    for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
+                    var list = field.Value as List<object>;
+                    foreach (var item in list)
                     {
-                        if (entityLayer.EntityInstances[k].Grid[1] == i && entityLayer.EntityInstances[k].Grid[0] == j)
+                        if (item is Dictionary<string, object> dict)
                         {
-                            GridNode spawnNode = GetNodeAtCoords(spawnCoords);
-                            switch (entityLayer.EntityInstances[k].Identifier)
-                            {
-                                case "Player_Start":
-                                    playerSpawnCoords = spawnCoords;
-                                    break;
-                                case "NPC_Zombie":
-                                    if(spawnNPCs)
-                                    {
-                                        NPCController NPCClone = Instantiate(zombieNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                        NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
-                                        NPCClone.SetActive(false);
-                                        spawnedNPCs.Add(NPCClone);
-                                    }
-                                    break;
-                                case "NPC_Ranger":
-                                    if (spawnNPCs)
-                                    {
-                                        NPCController NPCClone = Instantiate(rangerNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                        NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
-                                        NPCClone.SetActive(false);
-                                        spawnedNPCs.Add(NPCClone);
-                                    }
-                                    break;
-                                case "NPC_Bug":
-                                    if (spawnNPCs)
-                                    {
-                                        NPCController NPCClone = Instantiate(bugNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                        NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
-                                        NPCClone.SetActive(false);
-                                        spawnedNPCs.Add(NPCClone);
-                                    }
-                                    break;
-                                case "WorldItem":
-                                    WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                    spawnedWorldItems.Add(spawnedWorldItem);
-                                    ItemData worldItemData = itemDataContainer.GetDataFromIdentifier(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString());
-                                    spawnedWorldItem.InitWorldItem(levelIndex, spawnCoords, new ItemStack(worldItemData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value)));
-                                    break;
-                                case "Level_Transition":
-                                    LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0, 1.5f, 0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                    int levelIndexToGoTo = Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[1].Value);
-                                    List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
-                                    spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
-                                    spawnedLevelTransitions.Add(spawnedLevelTransition);
-                                    newOccupant = new GridNodeOccupant(spawnedLevelTransition.gameObject, GridNodeOccupantType.LevelTransition);
-                                    spawnNode.SetBaseOccupant(newOccupant);
-                                    spawnNode.SetOccupant(newOccupant);
-                                    break;
-                                case "Container":
-                                    IContainer spawnedContainer = null;
-                                    List<object> itemNames = new List<object>();
-                                    List<object> itemAmounts = new List<object>();
-                                    switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
-                                    {
-                                        case "Chest":
-                                            spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
-                                            itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
-                                            for (int l = 0; l < itemNames.Count; l++)
-                                            {
-                                                ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
-                                                int itemAmount = Convert.ToInt32(itemAmounts[l]);
-                                                spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
-                                            }
-                                            break;
-                                        case "Desk":
-                                            //change to Desk prefab
-                                            spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
-                                            itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
-                                            for (int l = 0; l < itemNames.Count; l++)
-                                            {
-                                                ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
-                                                int itemAmount = Convert.ToInt32(itemAmounts[l]);
-                                                spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
-
-                                            }
-                                            break;
-                                        case "Filling_Cabinet":
-                                            //change to Filling cabinet prefab
-                                            spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
-                                            itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
-                                            for (int l = 0; l < itemNames.Count; l++)
-                                            {
-                                                ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
-                                                int itemAmount = Convert.ToInt32(itemAmounts[l]);
-                                                spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
-
-                                            }
-                                            break;
-
-                                    }
-                                    spawnedContainer.InitContainer(levelIndex, spawnCoords);
-                                    spawnedContainers.Add(spawnedContainer);
-
-                                    break;
-                                case "Interactable":
-                                    IInteractable interactable = null;
-                                    switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
-                                    {
-                                        case "Lever":
-                                            interactable = Instantiate(leverPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            break;
-                                        case "Keycard_Reader":
-                                            interactable = Instantiate(keycardReaderPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            interactable.SetRequiredKeycardType((string)entityLayer.EntityInstances[k].FieldInstances[3].Value);
-                                            break;
-                                        case "Pressure_Plate":
-                                            interactable = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            newOccupant = new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate);
-                                            spawnNode.SetBaseOccupant(newOccupant);
-                                            spawnNode.SetOccupant(newOccupant);
-                                            break;
-                                        case "Tripwire":
-                                            Tripwire tripwire = Instantiate(tripwirePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()) + 180, 0)), spawnNode.transform);
-                                            tripwire.InitTripwire();
-                                            interactable = tripwire;
-                                            break;
-                                        case "Shootable_Target":
-                                            interactable = Instantiate(shootableTargetPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()) + 180, 0)), spawnNode.transform);
-                                            break;
-                                    }
-
-                                    List<object> entityRefsToTrigger = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
-                                    foreach (object entityRef in entityRefsToTrigger)
-                                    {
-                                        interactable.AddEntityRefToTrigger((Dictionary<string, object>)entityRef);
-                                    }
-                                    interactable.SetInteractableType((string)entityLayer.EntityInstances[k].FieldInstances[1].Value);
-                                    interactable.SetTriggerOperation((string)entityLayer.EntityInstances[k].FieldInstances[4].Value);
-                                    interactable.SetTriggerOnExit((bool)entityLayer.EntityInstances[k].FieldInstances[5].Value);
-                                    interactable.SetIsSingleUse((bool)entityLayer.EntityInstances[k].FieldInstances[6].Value);
-                                    interactable.SetLevelIndex(levelIndex);
-                                    interactable.SetOccupyingNode(spawnNode);
-                                    spawnedInteractables.Add(interactable);
-                                    break;
-                                case "Door":
-                                    Door spawnedDoor = null;
-                                    switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
-                                    {
-                                        case "Door":
-                                            spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            break;
-                                        case "Secret_Door":
-                                            spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                            break;
-                                    }
-                                    spawnedDoor.SetOccupyingNode(spawnNode);
-                                    spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
-                                    spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                                    spawnedDoor.SetLevelIndex(levelIndex);
-                                    newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
-                                    spawnNode.SetBaseOccupant(newOccupant);
-                                    spawnNode.SetOccupant(newOccupant);
-                                    spawnedDoor.SetIsTriggered(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                                    spawnedTriggerables.Add(spawnedDoor);
-                                    break;
-                                case "NPC_Invis_Wall":
-                                    newOccupant = new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible);
-                                    spawnNode.SetBaseOccupant(newOccupant);
-                                    spawnNode.SetOccupant(newOccupant);
-                                    break;
-                                case "Destructable_Wall":
-                                    Destructable spawnedDestructable = null;
-                                    spawnedDestructable = Instantiate(destructableWallPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k].FieldInstances[0].Value.ToString()), 0)), spawnNode.transform);
-                                    spawnedDestructable.SetOccupyingNode(spawnNode);
-                                    spawnedDestructable.SetLevelIndex(levelIndex);
-                                    GridNodeOccupant occupant = new GridNodeOccupant(spawnedDestructable.gameObject, GridNodeOccupantType.Obstacle);
-                                    spawnNode.SetOccupant(occupant);
-                                    break;
-                            }
+                            interactable.AddEntityRefToTrigger(dict);
+                        }
+                        else
+                        {
+                            Debug.LogError($"Unexpected element type in EntityRef array: {item?.GetType().FullName}");
                         }
                     }
                 }
-                index++;
+                interactable.SetTriggerOperation(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                interactable.SetIsSingleUse(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[3].Value));
+                interactable.SetLevelIndex(levelIndex);
+                interactable.SetOccupyingNode(spawnNode);
+                spawnedInteractables.Add(interactable);
             }
         }
     }
@@ -514,9 +559,9 @@ public class GridController : MonoBehaviour
     #region LoadGame
     private void LoadGame(LevelSaveData data)
     {
-        foreach (GameObject levelParent in levelParents)
+        foreach (Transform levelParent in levelParents)
         {
-            Destroy(levelParent);
+            Destroy(levelParent.gameObject);
         }
         levelParents.Clear();
 
@@ -570,7 +615,9 @@ public class GridController : MonoBehaviour
 
     void LoadGridNodes(int levelIndex, SaveableLevelData levelDataToLoad)
     {
-        GenerateLevel(levelIndex, true);
+        GenerateLevel(levelIndex);
+        //GenerateEntities(levelIndex);
+        //GenerateNPCs(levelIndex);
 
         //Load Entities
         LoadNPCs(levelIndex, levelDataToLoad);
@@ -788,10 +835,12 @@ public class GridController : MonoBehaviour
 
     public GridNode GetNodeFromWorldPos(Vector3 worldPos) => GetNodeAtCoords(new Vector2(grid.WorldToCell(worldPos).x, grid.WorldToCell(worldPos).y));
 
-    public float DecideSpawnDir(string dir)
+    public float DecideSpawnDir(EntityInstance dir)
     {
+        string meme = dir.FieldInstances[0].Value.ToString();
+
         float returnDir = 0;
-        switch (dir)
+        switch (meme)
         {
             case "North":
                 returnDir = 0;

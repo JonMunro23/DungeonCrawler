@@ -10,7 +10,7 @@ public class ThrowableSelectionButton : MonoBehaviour
     [SerializeField] Image throwableImage;
     [SerializeField] TMP_Text throwableAmountText;
 
-    public Button button;
+    public UnityEngine.UI.Button button;
 
     public static Action<ThrowableItemData, int> onThrowableSelected;
 

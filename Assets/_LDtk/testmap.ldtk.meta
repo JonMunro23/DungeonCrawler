@@ -33,11 +33,11 @@ ScriptedImporter:
     _asset: {instanceID: 0}
   - _key: Player_Start
     _asset: {instanceID: 0}
-  - _key: NPC_Spawn
+  - _key: NPC_Zombie
     _asset: {instanceID: 0}
-  - _key: Interactable
+  - _key: NPC_Ranger
     _asset: {instanceID: 0}
-  - _key: Triggerable
+  - _key: NPC_Bug
     _asset: {instanceID: 0}
   - _key: Level_Transition
     _asset: {instanceID: 0}
@@ -54,6 +54,16 @@ ScriptedImporter:
   - _key: Sign
     _asset: {instanceID: 0}
   - _key: Door
+    _asset: {instanceID: 0}
+  - _key: Trigger
+    _asset: {instanceID: 0}
+  - _key: Lever
+    _asset: {instanceID: 0}
+  - _key: Button
+    _asset: {instanceID: 0}
+  - _key: Keycard_Reader
+    _asset: {instanceID: 0}
+  - _key: Pressure_Plate
     _asset: {instanceID: 0}
   _enumGenerate: 0
   _enumPath: 

@@ -42,25 +42,10 @@ public class Lever : InteractableBase
         }
     }
 
-    public override void SetIsActivated(bool _isActivated)
+    public override void SetStartingActivationState(bool _isActivated)
     {
         isActivated = _isActivated;
 
-        if(isActivated)
-        {
-            if (isSingleUse)
-                canUse = false;
-
-            leverPivotPoint.localRotation = Quaternion.Euler(flippedRotation);
-        }
-    }
-
-    public override void SetTriggerOnExit(bool triggerOnExit)
-    {
-    }
-
-    public override bool GetTriggerOnExit()
-    {
-        throw new System.NotImplementedException();
+        FlipLever();
     }
 }

@@ -5,14 +5,10 @@ public class ShootableTarget : InteractableBase
 {
     [SerializeField] MeshRenderer targetMeshRenderer;
     [SerializeField] Material activatedMaterial;
-    public override bool GetTriggerOnExit()
-    {
-        throw new System.NotImplementedException();
-    }
 
     public override void Interact()
     {
-        SetIsActivated(true);
+        SetStartingActivationState(true);
     }
 
     public override void InteractWithItem(ItemData item)
@@ -20,7 +16,7 @@ public class ShootableTarget : InteractableBase
         throw new System.NotImplementedException();
     }
 
-    public override void SetIsActivated(bool activatedState)
+    public override void SetStartingActivationState(bool activatedState)
     {
         if(activatedState)
         {
@@ -32,10 +28,5 @@ public class ShootableTarget : InteractableBase
     void SetTargetMaterial(Material materialToSet)
     {
         targetMeshRenderer.material = materialToSet;
-    }
-
-    public override void SetTriggerOnExit(bool triggerOnExit)
-    {
-        
     }
 }

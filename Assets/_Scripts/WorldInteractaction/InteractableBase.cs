@@ -81,7 +81,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
             canUse = false;
     }
 
-    public abstract void SetIsActivated(bool activatedState);
+    public abstract void SetStartingActivationState(bool activatedState);
     public bool GetIsActivated() => isActivated;
 
     public void SetLevelIndex(int _levelIndex)
@@ -106,7 +106,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData)
     {
-        SetIsActivated(interactableSaveData.isActivated);
+        SetStartingActivationState(interactableSaveData.isActivated);
         if(interactableType == InteractableType.Pressure_Plate)
         {
             node.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.PressurePlate));
@@ -136,8 +136,8 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
         return triggerOperation;
     }
 
-    public abstract void SetTriggerOnExit(bool triggerOnExit);
-    public abstract bool GetTriggerOnExit();
+    //public virtual void SetTriggerOnExit(bool triggerOnExit) { }
+    //public virtual bool GetTriggerOnExit() { return false; }
 
     public void SetInteractableType(string interactableType)
     {

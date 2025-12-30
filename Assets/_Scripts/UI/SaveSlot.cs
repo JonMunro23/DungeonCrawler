@@ -9,7 +9,7 @@ public class SaveSlot : MonoBehaviour
     public SaveSystem.SaveData slotData;
 
     [SerializeField] TMP_Text saveNameText, areaNameText, gameTimeText, saveDataText;
-    public Button slotButton, deleteButton;
+    public UnityEngine.UI.Button slotButton, deleteButton;
 
     public static Action onCreateNewSaveButtonPressed;
 

@@ -95,6 +95,9 @@ public class Door : TriggerableBase
 
     private void CloseDoor()
     {
+        if (occupyingGridNode.GetOccupantType() == GridNodeOccupantType.NPC)
+            return;
+
         isTriggered = false;
 
         if (occupyingGridNode)

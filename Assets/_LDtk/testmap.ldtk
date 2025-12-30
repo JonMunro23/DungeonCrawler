@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 99,
+	"nextUid": 146,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -594,316 +594,6 @@
 						"id": "V_String",
 						"params": ["North"]
 					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				}
-			]
-		},
-		{
-			"identifier": "Interactable",
-			"uid": 11,
-			"tags": [],
-			"exportToToc": false,
-			"allowOutOfBounds": false,
-			"doc": null,
-			"width": 16,
-			"height": 16,
-			"resizableX": false,
-			"resizableY": false,
-			"minWidth": null,
-			"maxWidth": null,
-			"minHeight": null,
-			"maxHeight": null,
-			"keepAspectRatio": false,
-			"tileOpacity": 1,
-			"fillOpacity": 0.08,
-			"lineOpacity": 0,
-			"hollow": false,
-			"color": "#E4A672",
-			"renderMode": "Tile",
-			"showName": true,
-			"tilesetId": 3,
-			"tileRenderMode": "FitInside",
-			"tileRect": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-			"uiTileRect": null,
-			"nineSliceBorders": [],
-			"maxCount": 0,
-			"limitScope": "PerLevel",
-			"limitBehavior": "MoveLastOne",
-			"pivotX": 0.5,
-			"pivotY": 0.5,
-			"fieldDefs": [
-				{
-					"identifier": "Facing_Direction",
-					"doc": null,
-					"__type": "LocalEnum.Facing_Direction",
-					"uid": 16,
-					"type": "F_Enum(4)",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["North"]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "Interactable_Type",
-					"doc": null,
-					"__type": "LocalEnum.Interactable_Type",
-					"uid": 20,
-					"type": "F_Enum(18)",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["Lever"]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "Linked_Triggerables",
-					"doc": null,
-					"__type": "Array<EntityRef>",
-					"uid": 31,
-					"type": "F_EntityRef",
-					"isArray": true,
-					"canBeNull": true,
-					"arrayMinLength": 1,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "RefLinkBetweenCenters",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "CurvedArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlyTags",
-					"allowedRefsEntityUid": 12,
-					"allowedRefTags": ["Triggerable"],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "Keycard_Type",
-					"doc": null,
-					"__type": "LocalEnum.Keycard_Type",
-					"uid": 33,
-					"type": "F_Enum(32)",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["None"]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "Trigger_Operation",
-					"doc": null,
-					"__type": "LocalEnum.Trigger_Operation",
-					"uid": 57,
-					"type": "F_Enum(56)",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_String",
-						"params": ["Toggle"]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "Trigger_On_Exit",
-					"doc": null,
-					"__type": "Bool",
-					"uid": 58,
-					"type": "F_Bool",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": {
-						"id": "V_Bool",
-						"params": [ true ]
-					},
-					"textLanguageMode": null,
-					"symmetricalRef": false,
-					"autoChainRef": true,
-					"allowOutOfLevelRef": true,
-					"allowedRefs": "OnlySame",
-					"allowedRefsEntityUid": null,
-					"allowedRefTags": [],
-					"tilesetUid": null
-				},
-				{
-					"identifier": "Is_Single_Use",
-					"doc": null,
-					"__type": "Bool",
-					"uid": 59,
-					"type": "F_Bool",
-					"isArray": false,
-					"canBeNull": false,
-					"arrayMinLength": null,
-					"arrayMaxLength": null,
-					"editorDisplayMode": "Hidden",
-					"editorDisplayScale": 1,
-					"editorDisplayPos": "Above",
-					"editorLinkStyle": "StraightArrow",
-					"editorDisplayColor": null,
-					"editorAlwaysShow": false,
-					"editorShowInWorld": true,
-					"editorCutLongValues": true,
-					"editorTextSuffix": null,
-					"editorTextPrefix": null,
-					"useForSmartColor": false,
-					"exportToToc": false,
-					"searchable": false,
-					"min": null,
-					"max": null,
-					"regex": null,
-					"acceptFileTypes": null,
-					"defaultOverride": null,
 					"textLanguageMode": null,
 					"symmetricalRef": false,
 					"autoChainRef": true,
@@ -1941,7 +1631,7 @@
 		{
 			"identifier": "Trigger",
 			"uid": 90,
-			"tags": [],
+			"tags": ["Interactable"],
 			"exportToToc": false,
 			"allowOutOfBounds": false,
 			"doc": null,
@@ -1958,7 +1648,7 @@
 			"fillOpacity": 0.08,
 			"lineOpacity": 0,
 			"hollow": false,
-			"color": "#2CE8F5",
+			"color": "#FFFFFF",
 			"renderMode": "Tile",
 			"showName": true,
 			"tilesetId": 3,
@@ -2010,6 +1700,843 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "Lever",
+			"uid": 123,
+			"tags": ["Interactable"],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#FFFFFF",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 3,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 3, "x": 160, "y": 48, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": [
+				{
+					"identifier": "Facing_Direction",
+					"doc": null,
+					"__type": "LocalEnum.Facing_Direction",
+					"uid": 124,
+					"type": "F_Enum(4)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["North"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Entities_To_Trigger",
+					"doc": null,
+					"__type": "Array<EntityRef>",
+					"uid": 125,
+					"type": "F_EntityRef",
+					"isArray": true,
+					"canBeNull": false,
+					"arrayMinLength": 1,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "RefLinkBetweenCenters",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "CurvedArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlyTags",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": ["Triggerable"],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Trigger_Operation",
+					"doc": null,
+					"__type": "LocalEnum.Trigger_Operation",
+					"uid": 126,
+					"type": "F_Enum(56)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Toggle"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Is_Single_Use",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 127,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
+		},
+		{
+			"identifier": "Button",
+			"uid": 141,
+			"tags": ["Interactable"],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#FFFFFF",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 3,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 3, "x": 416, "y": 16, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": [
+				{
+					"identifier": "Facing_Direction",
+					"doc": null,
+					"__type": "LocalEnum.Facing_Direction",
+					"uid": 142,
+					"type": "F_Enum(4)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["North"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Entities_To_Trigger",
+					"doc": null,
+					"__type": "Array<EntityRef>",
+					"uid": 143,
+					"type": "F_EntityRef",
+					"isArray": true,
+					"canBeNull": false,
+					"arrayMinLength": 1,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "RefLinkBetweenCenters",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "CurvedArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlyTags",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": ["Triggerable"],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Trigger_Operation",
+					"doc": null,
+					"__type": "LocalEnum.Trigger_Operation",
+					"uid": 144,
+					"type": "F_Enum(56)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Toggle"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Is_Single_Use",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 145,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
+		},
+		{
+			"identifier": "Keycard_Reader",
+			"uid": 128,
+			"tags": ["Interactable"],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#FFFFFF",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 3,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 3, "x": 80, "y": 48, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": [
+				{
+					"identifier": "Facing_Direction",
+					"doc": null,
+					"__type": "LocalEnum.Facing_Direction",
+					"uid": 129,
+					"type": "F_Enum(4)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["North"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Entities_To_Trigger",
+					"doc": null,
+					"__type": "Array<EntityRef>",
+					"uid": 130,
+					"type": "F_EntityRef",
+					"isArray": true,
+					"canBeNull": false,
+					"arrayMinLength": 1,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "RefLinkBetweenCenters",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "CurvedArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlyTags",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": ["Triggerable"],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Trigger_Operation",
+					"doc": null,
+					"__type": "LocalEnum.Trigger_Operation",
+					"uid": 131,
+					"type": "F_Enum(56)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Toggle"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Is_Single_Use",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 132,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Keycard_Type",
+					"doc": null,
+					"__type": "LocalEnum.Keycard_Type",
+					"uid": 133,
+					"type": "F_Enum(32)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Red"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
+		},
+		{
+			"identifier": "Pressure_Plate",
+			"uid": 134,
+			"tags": ["Interactable"],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": false,
+			"resizableY": false,
+			"minWidth": null,
+			"maxWidth": null,
+			"minHeight": null,
+			"maxHeight": null,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#FFFFFF",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 3,
+			"tileRenderMode": "FitInside",
+			"tileRect": { "tilesetUid": 3, "x": 432, "y": 16, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": [
+				{
+					"identifier": "Facing_Direction",
+					"doc": null,
+					"__type": "LocalEnum.Facing_Direction",
+					"uid": 135,
+					"type": "F_Enum(4)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["North"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Entities_To_Trigger",
+					"doc": null,
+					"__type": "Array<EntityRef>",
+					"uid": 136,
+					"type": "F_EntityRef",
+					"isArray": true,
+					"canBeNull": false,
+					"arrayMinLength": 1,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "RefLinkBetweenCenters",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "CurvedArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlyTags",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": ["Triggerable"],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Trigger_Operation",
+					"doc": null,
+					"__type": "LocalEnum.Trigger_Operation",
+					"uid": 137,
+					"type": "F_Enum(56)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Toggle"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Is_Single_Use",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 138,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "Trigger_On_Exit",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 140,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -2050,7 +2577,6 @@
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Triggerable_Type", "uid": 19, "values": [ { "id": "Door", "tileRect": null, "color": 12470831 }, { "id": "Secret_Door", "tileRect": null, "color": 14120515 } ], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "Keycard_Type", "uid": 32, "values": [
-			{ "id": "None", "tileRect": null, "color": 0 },
 			{ "id": "Red", "tileRect": null, "color": 16711680 },
 			{ "id": "Blue", "tileRect": null, "color": 5631 },
 			{ "id": "Green", "tileRect": null, "color": 1900288 },
@@ -2274,50 +2800,6 @@
 							"__worldY": -392
 						},
 						{
-							"__identifier": "Interactable",
-							"__grid": [27,6],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "cecdf2b4-d380-11f0-a3aa-c9415494f2cc",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [440,104],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "cecdf2bf-d380-11f0-a3aa-3b31472c554f",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["cecdf2bf-d380-11f0-a3aa-3b31472c554f"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 440,
-							"__worldY": -408
-						},
-						{
 							"__identifier": "Container",
 							"__grid": [27,8],
 							"__pivot": [0.5,0.5],
@@ -2349,138 +2831,6 @@
 								{ "__identifier": "Required_Key", "__type": "LocalEnum.Required_Key", "__value": "None", "__tile": null, "defUid": 82, "realEditorValues": [] }
 							],
 							"__worldX": 440,
-							"__worldY": -376
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [25,2],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "cecdf2b6-d380-11f0-a3aa-af98ce53f387",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [408,40],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Keycard_Reader", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Keycard_Reader"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "cecdf2bd-d380-11f0-a3aa-2bba532b44a1",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["cecdf2bd-d380-11f0-a3aa-2bba532b44a1"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["None"]
-								}] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 408,
-							"__worldY": -472
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [25,6],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "cecdf2b7-d380-11f0-a3aa-ebee19e68504",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [408,104],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Keycard_Reader", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Keycard_Reader"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "cecdf2bc-d380-11f0-a3aa-b3209ac4ea7e",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["cecdf2bc-d380-11f0-a3aa-b3209ac4ea7e"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "Green", "__tile": null, "defUid": 33, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Green"]
-								}] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 408,
-							"__worldY": -408
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [25,8],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "cecdf2b8-d380-11f0-a3aa-f54c4cfb8135",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [408,136],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["East"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Keycard_Reader", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Keycard_Reader"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "cecdf2bf-d380-11f0-a3aa-3b31472c554f",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["cecdf2bf-d380-11f0-a3aa-3b31472c554f"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "Blue", "__tile": null, "defUid": 33, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Blue"]
-								}] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 408,
 							"__worldY": -376
 						},
 						{
@@ -2649,50 +2999,6 @@
 							],
 							"__worldX": 424,
 							"__worldY": -392
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [25,4],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "cecdf2c0-d380-11f0-a3aa-5115b2637b5f",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [408,72],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["East"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Keycard_Reader", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Keycard_Reader"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "cecdf2be-d380-11f0-a3aa-f980f727e5c9",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["cecdf2be-d380-11f0-a3aa-f980f727e5c9"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "Red", "__tile": null, "defUid": 33, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Red"]
-								}] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 408,
-							"__worldY": -440
 						},
 						{
 							"__identifier": "WorldItem",
@@ -3199,850 +3505,6 @@
 							"__worldY": -264
 						},
 						{
-							"__identifier": "Interactable",
-							"__grid": [27,2],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "adef60a0-d380-11f0-a3aa-c7ca8193ca2a",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [440,40],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "cecdf2bf-d380-11f0-a3aa-3b31472c554f",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["cecdf2bf-d380-11f0-a3aa-3b31472c554f"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 440,
-							"__worldY": -472
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [17,2],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "ae9082a0-d380-11f0-a3aa-d1acb2a5ef69",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [280,40],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a3a31dd0-d380-11f0-a3aa-75301ae7f4df",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a3a31dd0-d380-11f0-a3aa-75301ae7f4df"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 280,
-							"__worldY": -472
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [17,6],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "af19d6e0-d380-11f0-a3aa-2bf31461104f",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [280,104],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a3f05370-d380-11f0-a3aa-8bd0bec81205",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a3f05370-d380-11f0-a3aa-8bd0bec81205"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 280,
-							"__worldY": -408
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [17,10],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "af684500-d380-11f0-a3aa-83d8f6521213",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [280,168],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a44948e0-d380-11f0-a3aa-677c2e0b56e3",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a44948e0-d380-11f0-a3aa-677c2e0b56e3"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 280,
-							"__worldY": -344
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [17,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "afb9e770-d380-11f0-a3aa-4d2dedfc1b12",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [280,232],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a4c3a900-d380-11f0-a3aa-07493e4a2d20",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a4c3a900-d380-11f0-a3aa-07493e4a2d20"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 280,
-							"__worldY": -280
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [13,16],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b0fb6820-d380-11f0-a3aa-357e965e4f29",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [216,264],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a2578b00-d380-11f0-a3aa-ab386bf8dc08",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a2578b00-d380-11f0-a3aa-ab386bf8dc08"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 216,
-							"__worldY": -248
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [13,12],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b14b83f0-d380-11f0-a3aa-8955077959ff",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [216,200],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a2abc580-d380-11f0-a3aa-4985c173a234",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a2abc580-d380-11f0-a3aa-4985c173a234"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 216,
-							"__worldY": -312
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [13,8],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b1a0f6f0-d380-11f0-a3aa-dbefadd4740d",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [216,136],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a3041eb0-d380-11f0-a3aa-4f2d365f0156",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a3041eb0-d380-11f0-a3aa-4f2d365f0156"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 216,
-							"__worldY": -376
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [13,4],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b1ff91b0-d380-11f0-a3aa-d7aa42cd45f7",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [216,72],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a3576ed0-d380-11f0-a3aa-2d6642fe4269",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a3576ed0-d380-11f0-a3aa-2d6642fe4269"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 216,
-							"__worldY": -440
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [7,2],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b29fc950-d380-11f0-a3aa-4198a464fb91",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [120,40],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a066de90-d380-11f0-a3aa-79dba08df5d1",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a066de90-d380-11f0-a3aa-79dba08df5d1"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 120,
-							"__worldY": -472
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [7,6],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b3ca66a0-d380-11f0-a3aa-85e129cdbae2",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [120,104],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a12377d0-d380-11f0-a3aa-11dd6d30e03b",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a12377d0-d380-11f0-a3aa-11dd6d30e03b"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 120,
-							"__worldY": -408
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [7,10],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b43a8d90-d380-11f0-a3aa-b50305e05aa0",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [120,168],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a186a670-d380-11f0-a3aa-89bb9a614a96",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a186a670-d380-11f0-a3aa-89bb9a614a96"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 120,
-							"__worldY": -344
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [7,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b4938300-d380-11f0-a3aa-f9889ca66e45",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [120,232],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a1f60a10-d380-11f0-a3aa-3118c299efdd",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a1f60a10-d380-11f0-a3aa-3118c299efdd"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 120,
-							"__worldY": -280
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [3,16],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b66a17c0-d380-11f0-a3aa-471b0c6346fa",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [56,264],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "9a57d040-d380-11f0-a3aa-0b57a0284a49",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["9a57d040-d380-11f0-a3aa-0b57a0284a49"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 56,
-							"__worldY": -248
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [3,12],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b6dfe400-d380-11f0-a3aa-4d5417448774",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [56,200],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "9f560ad0-d380-11f0-a3aa-bd56bd76ad91",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["9f560ad0-d380-11f0-a3aa-bd56bd76ad91"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 56,
-							"__worldY": -312
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [3,8],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b72f1570-d380-11f0-a3aa-b1531cbe9c85",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [56,136],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "9fbfc920-d380-11f0-a3aa-49585aa16457",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["9fbfc920-d380-11f0-a3aa-49585aa16457"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 56,
-							"__worldY": -376
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [3,4],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "b78831f0-d380-11f0-a3aa-831e7c0330a1",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [56,72],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 16, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["West"]
-								}] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Lever"]
-								}] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a015b150-d380-11f0-a3aa-b36b93f65582",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a015b150-d380-11f0-a3aa-b36b93f65582"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Toggle"]
-								}] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": false, "__tile": null, "defUid": 58, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ false ]
-								}] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 56,
-							"__worldY": -440
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [27,14],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "d19385e0-d380-11f0-a3aa-2f58e6e13983",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [440,232],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 16, "realEditorValues": [] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a608fa40-d380-11f0-a3aa-678f413e6b15",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a608fa40-d380-11f0-a3aa-678f413e6b15"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 440,
-							"__worldY": -280
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [23,16],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "d1de98a0-d380-11f0-a3aa-9512cee8dbbc",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [376,264],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 16, "realEditorValues": [] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a52af650-d380-11f0-a3aa-d3bd96aa20c9",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a52af650-d380-11f0-a3aa-d3bd96aa20c9"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 376,
-							"__worldY": -248
-						},
-						{
-							"__identifier": "Interactable",
-							"__grid": [23,12],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 400, "y": 16, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "d2269e20-d380-11f0-a3aa-a98691778784",
-							"width": 16,
-							"height": 16,
-							"defUid": 11,
-							"px": [376,200],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 16, "realEditorValues": [] },
-								{ "__identifier": "Interactable_Type", "__type": "LocalEnum.Interactable_Type", "__value": "Lever", "__tile": null, "defUid": 20, "realEditorValues": [] },
-								{ "__identifier": "Linked_Triggerables", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "a574a980-d380-11f0-a3aa-d942d528eb93",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 31, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["a574a980-d380-11f0-a3aa-d942d528eb93"]
-								}] },
-								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "None", "__tile": null, "defUid": 33, "realEditorValues": [] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 57, "realEditorValues": [] },
-								{ "__identifier": "Trigger_On_Exit", "__type": "Bool", "__value": true, "__tile": null, "defUid": 58, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 59, "realEditorValues": [] }
-							],
-							"__worldX": 376,
-							"__worldY": -312
-						},
-						{
 							"__identifier": "NPC_Zombie",
 							"__grid": [23,3],
 							"__pivot": [0.5,0.5],
@@ -4103,9 +3565,9 @@
 							"__identifier": "Trigger",
 							"__grid": [25,7],
 							"__pivot": [0.5,0.5],
-							"__tags": [],
+							"__tags": ["Interactable"],
 							"__tile": { "tilesetUid": 3, "x": 256, "y": 64, "w": 16, "h": 16 },
-							"__smartColor": "#2CE8F5",
+							"__smartColor": "#FFFFFF",
 							"iid": "4438c3c0-d380-11f0-81e1-73bd4a74fbb1",
 							"width": 16,
 							"height": 16,
@@ -4122,6 +3584,179 @@
 							}] }],
 							"__worldX": 408,
 							"__worldY": -392
+						},
+						{
+							"__identifier": "Keycard_Reader",
+							"__grid": [25,8],
+							"__pivot": [0.5,0.5],
+							"__tags": ["Interactable"],
+							"__tile": { "tilesetUid": 3, "x": 80, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "ee45dee0-d380-11f0-a497-fba61d3e07b2",
+							"width": 16,
+							"height": 16,
+							"defUid": 128,
+							"px": [408,136],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["East"]
+								}] },
+								{ "__identifier": "Entities_To_Trigger", "__type": "Array<EntityRef>", "__value": [{
+									"entityIid": "cecdf2bf-d380-11f0-a3aa-3b31472c554f",
+									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
+									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
+									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
+								}], "__tile": null, "defUid": 130, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["cecdf2bf-d380-11f0-a3aa-3b31472c554f"]
+								}] },
+								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 131, "realEditorValues": [] },
+								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 132, "realEditorValues": [] },
+								{ "__identifier": "Keycard_Type", "__type": "LocalEnum.Keycard_Type", "__value": "Blue", "__tile": null, "defUid": 133, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Blue"]
+								}] }
+							],
+							"__worldX": 408,
+							"__worldY": -376
+						},
+						{
+							"__identifier": "Lever",
+							"__grid": [17,2],
+							"__pivot": [0.5,0.5],
+							"__tags": ["Interactable"],
+							"__tile": { "tilesetUid": 3, "x": 160, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e6549810-d380-11f0-a74c-cb8a74ef94f6",
+							"width": 16,
+							"height": 16,
+							"defUid": 123,
+							"px": [280,40],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 124, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["West"]
+								}] },
+								{ "__identifier": "Entities_To_Trigger", "__type": "Array<EntityRef>", "__value": [{
+									"entityIid": "a3a31dd0-d380-11f0-a3aa-75301ae7f4df",
+									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
+									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
+									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
+								}], "__tile": null, "defUid": 125, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["a3a31dd0-d380-11f0-a3aa-75301ae7f4df"]
+								}] },
+								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 126, "realEditorValues": [] },
+								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 127, "realEditorValues": [] }
+							],
+							"__worldX": 280,
+							"__worldY": -472
+						},
+						{
+							"__identifier": "Lever",
+							"__grid": [23,4],
+							"__pivot": [0.5,0.5],
+							"__tags": ["Interactable"],
+							"__tile": { "tilesetUid": 3, "x": 160, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "e9310410-d380-11f0-a74c-a72c3de6e43f",
+							"width": 16,
+							"height": 16,
+							"defUid": 123,
+							"px": [376,72],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "East", "__tile": null, "defUid": 124, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["East"]
+								}] },
+								{ "__identifier": "Entities_To_Trigger", "__type": "Array<EntityRef>", "__value": [{
+									"entityIid": "cecdf2bd-d380-11f0-a3aa-2bba532b44a1",
+									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
+									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
+									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
+								}], "__tile": null, "defUid": 125, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["cecdf2bd-d380-11f0-a3aa-2bba532b44a1"]
+								}] },
+								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 126, "realEditorValues": [] },
+								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 127, "realEditorValues": [] }
+							],
+							"__worldX": 376,
+							"__worldY": -440
+						},
+						{
+							"__identifier": "Destructable_Wall",
+							"__grid": [20,4],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 128, "y": 128, "w": 16, "h": 16 },
+							"__smartColor": "#CA8882",
+							"iid": "03e234f0-d380-11f0-a74c-4d2579dbf71e",
+							"width": 16,
+							"height": 16,
+							"defUid": 63,
+							"px": [328,72],
+							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 64, "realEditorValues": [] }],
+							"__worldX": 328,
+							"__worldY": -440
+						},
+						{
+							"__identifier": "Sign",
+							"__grid": [26,6],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 16, "y": 48, "w": 16, "h": 16 },
+							"__smartColor": "#0099DB",
+							"iid": "dd71c8f0-d380-11f0-a74c-012802eb4dbc",
+							"width": 16,
+							"height": 16,
+							"defUid": 76,
+							"px": [424,104],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 78, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["West"]
+								}] },
+								{ "__identifier": "Sign_Text", "__type": "String", "__value": "Pvt. Dimitry", "__tile": null, "defUid": 77, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Pvt. Dimitry"]
+								}] }
+							],
+							"__worldX": 424,
+							"__worldY": -408
+						},
+						{
+							"__identifier": "Button",
+							"__grid": [27,6],
+							"__pivot": [0.5,0.5],
+							"__tags": ["Interactable"],
+							"__tile": { "tilesetUid": 3, "x": 416, "y": 16, "w": 16, "h": 16 },
+							"__smartColor": "#FFFFFF",
+							"iid": "14b28ad0-d380-11f0-a74c-7575e91e07a4",
+							"width": 16,
+							"height": 16,
+							"defUid": 141,
+							"px": [440,104],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "West", "__tile": null, "defUid": 142, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["West"]
+								}] },
+								{ "__identifier": "Entities_To_Trigger", "__type": "Array<EntityRef>", "__value": [{
+									"entityIid": "cecdf2bf-d380-11f0-a3aa-3b31472c554f",
+									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
+									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
+									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
+								}], "__tile": null, "defUid": 143, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["cecdf2bf-d380-11f0-a3aa-3b31472c554f"]
+								}] },
+								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 144, "realEditorValues": [] },
+								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": false, "__tile": null, "defUid": 145, "realEditorValues": [] }
+							],
+							"__worldX": 440,
+							"__worldY": -408
 						}
 					]
 				},

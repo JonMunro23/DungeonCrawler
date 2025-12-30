@@ -35,7 +35,7 @@ public class Tripwire : InteractableBase
             if (hit.collider != initialCollider)
             {
                 if(!isActivated)
-                    SetIsActivated(true);
+                    SetStartingActivationState(true);
 
                 lineRenderer.enabled = false;
             }
@@ -52,18 +52,9 @@ public class Tripwire : InteractableBase
         throw new System.NotImplementedException();
     }
 
-    public override void SetIsActivated(bool activatedState)
+    public override void SetStartingActivationState(bool activatedState)
     {
         if(activatedState)
             TriggerObjects();
-    }
-
-    public override void SetTriggerOnExit(bool triggerOnExit)
-    {
-    }
-
-    public override bool GetTriggerOnExit()
-    {
-        throw new System.NotImplementedException();
     }
 }

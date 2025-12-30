@@ -36,7 +36,7 @@ public class UIController : MonoBehaviour
     public GameObject loadGameConfrimPopup;
     [SerializeField] TMP_Text LoadGameConfirmPopupText;
     [SerializeField] List<SaveSlot> spawnedLoadSlots = new List<SaveSlot>();
-    [SerializeField] List<Button> loadGameButtons = new List<Button>();
+    [SerializeField] List<UnityEngine.UI.Button> loadGameButtons = new List<UnityEngine.UI.Button>();
     SaveSlot slotToLoad;
 
     [Header("Game Over")]
@@ -48,7 +48,7 @@ public class UIController : MonoBehaviour
     public bool isInputtingName;
     [SerializeField] GameObject saveNameInputPopup;
     [SerializeField] TMP_InputField saveNameInputField;
-    [SerializeField] Button saveNameSubmitButton;
+    [SerializeField] UnityEngine.UI.Button saveNameSubmitButton;
 
     [Header("Save Deletion")]
     public GameObject deleteSaveConfirmPopup;
@@ -343,7 +343,7 @@ public class UIController : MonoBehaviour
     }
     public void SetLoadGameButtonsInteractable()
     {
-        foreach (Button button in loadGameButtons)
+        foreach (UnityEngine.UI.Button button in loadGameButtons)
         {
             if (SaveSystem.GetSaveData().Count == 0)
                 button.interactable = false;

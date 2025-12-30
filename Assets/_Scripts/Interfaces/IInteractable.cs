@@ -11,7 +11,7 @@ public interface IInteractable : IHighlightable, IGridNode
     public bool GetIsActivated();
     public void SetInteractableType(string interactableType);
     public InteractableType GetInteractableType();
-    public void SetIsActivated(bool activatedState);
+    public void SetStartingActivationState(bool activatedState);
     public void SetRequiredKeycardType(string keycardType);
     public void SetTriggerOperation(string triggerOperation);
 
@@ -19,14 +19,14 @@ public interface IInteractable : IHighlightable, IGridNode
     /// Sets wether a pressure plate will be triggered when it is no longer pressed
     /// </summary>
     /// <param name="triggerOnExit"></param>
-    public void SetTriggerOnExit(bool triggerOnExit);
+    //public void SetTriggerOnExit(bool triggerOnExit);
     public TriggerOperation GetTriggerOperation();
 
     /// <summary>
     /// Get wether a pressure plater will be triggered when it is no longer pressed
     /// </summary>
     /// <returns></returns>
-    public bool GetTriggerOnExit();
+    //public bool GetTriggerOnExit();
     public void SetIsSingleUse(bool isSingleUse);
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData);
     public void Destroy();

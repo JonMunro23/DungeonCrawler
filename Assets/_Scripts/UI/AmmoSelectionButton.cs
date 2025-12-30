@@ -7,7 +7,7 @@ public class AmmoSelectionButton : MonoBehaviour
     public AmmoItemData ammoItemData;
     [SerializeField] Image ammoImage;
 
-    public Button button;
+    public UnityEngine.UI.Button button;
 
     IWeapon weapon;
 

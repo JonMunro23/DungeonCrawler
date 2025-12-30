@@ -96,7 +96,7 @@ public class KeycardReader : InteractableBase
         //somehow show player that a keycard is required
     }
 
-    public override void SetIsActivated(bool _isActivated)
+    public override void SetStartingActivationState(bool _isActivated)
     {
         isActivated = _isActivated;
 
@@ -107,14 +107,5 @@ public class KeycardReader : InteractableBase
 
             SetIndicatorMaterial(successMat);
         }
-    }
-
-    public override void SetTriggerOnExit(bool triggerOnExit)
-    {
-    }
-
-    public override bool GetTriggerOnExit()
-    {
-        throw new NotImplementedException();
     }
 }

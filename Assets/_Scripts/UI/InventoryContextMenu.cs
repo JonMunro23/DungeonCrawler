@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class InventoryContextMenu : MonoBehaviour
 {
-    [SerializeField] Button DropButton;
-    [SerializeField] Button UnloadAmmoButton;
-    [SerializeField] Button EquipButton;
-    [SerializeField] Button UseButton;
+    [SerializeField] UnityEngine.UI.Button DropButton;
+    [SerializeField] UnityEngine.UI.Button UnloadAmmoButton;
+    [SerializeField] UnityEngine.UI.Button EquipButton;
+    [SerializeField] UnityEngine.UI.Button UseButton;
 
     ISlot slot;
 

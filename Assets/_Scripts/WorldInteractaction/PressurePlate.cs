@@ -38,7 +38,7 @@ public class PressurePlate : InteractableBase
 
     }
 
-    public override void SetIsActivated(bool activatedState)
+    public override void SetStartingActivationState(bool activatedState)
     {
         if (activatedState)
         {
@@ -48,7 +48,7 @@ public class PressurePlate : InteractableBase
         else
         {
             ReleasePlateAnim();
-            if (GetTriggerOnExit())
+            if (triggerOnExit)
                 TriggerObjects();
         }
 
@@ -62,7 +62,7 @@ public class PressurePlate : InteractableBase
         if (presentObjects.Count == 0)
         {
             if(canUse)
-                SetIsActivated(false);
+                SetStartingActivationState(false);
         }
     }
 
@@ -71,7 +71,7 @@ public class PressurePlate : InteractableBase
         if(!canUse) return;
 
         if(presentObjects.Count == 0)
-            SetIsActivated(true);
+            SetStartingActivationState(true);
 
         presentObjects.Add(other.gameObject);
 
@@ -86,13 +86,8 @@ public class PressurePlate : InteractableBase
         RemoveGameobjectFromPlate(other.gameObject);
     }
 
-    public override void SetTriggerOnExit(bool triggerOnExit)
+    public void SetTriggerOnExit(bool triggerOnExit)
     {
         this.triggerOnExit = triggerOnExit;
-    }
-
-    public override bool GetTriggerOnExit()
-    {
-        return triggerOnExit;
     }
 }
