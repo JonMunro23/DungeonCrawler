@@ -74,12 +74,14 @@ public class GridController : MonoBehaviour
     [SerializeField] PressurePlate pressurePlatePrefab;
     [SerializeField] Tripwire tripwirePrefab;
     [SerializeField] ShootableTarget shootableTargetPrefab;
+    [SerializeField] PlayerTrigger playerTriggerPrefab;
     [SerializeField] Sign signPrefab;
     List<IInteractable> spawnedInteractables = new List<IInteractable>();
 
     [Header("Triggerables")]
     [SerializeField] Door doorPrefab;
     [SerializeField] Door secretDoorPrefab;
+    [SerializeField] NPCSpawner npcSpawnerPrefab;
     List<ITriggerable> spawnedTriggerables = new List<ITriggerable>();
 
     [Header("Destructables")]
@@ -400,28 +402,6 @@ public class GridController : MonoBehaviour
                         }
                         spawnedContainer.InitContainer(levelIndex, spawnCoords);
                         spawnedContainers.Add(spawnedContainer);
-
-                        break;
-                    case "Door":
-                        Door spawnedDoor = null;
-                        switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
-                        {
-                            case "Door":
-                                spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                                break;
-                            case "Secret_Door":
-                                spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                                break;
-                        }
-                        spawnedDoor.SetOccupyingNode(spawnNode);
-                        spawnedDoor.SetEntityRef(entityLayer.EntityInstances[k].Iid);
-                        spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                        spawnedDoor.SetLevelIndex(levelIndex);
-                        newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
-                        spawnNode.SetBaseOccupant(newOccupant);
-                        spawnNode.SetOccupant(newOccupant);
-                        spawnedDoor.SetIsTriggered(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                        spawnedTriggerables.Add(spawnedDoor);
                         break;
                     case "NPC_Invis_Wall":
                         newOccupant = new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible);
@@ -436,9 +416,16 @@ public class GridController : MonoBehaviour
                         GridNodeOccupant occupant = new GridNodeOccupant(spawnedDestructable.gameObject, GridNodeOccupantType.Obstacle);
                         spawnNode.SetOccupant(occupant);
                         break;
+                    case "Sign":
+                        Sign sign = Instantiate(signPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
+                        sign.SetSignText(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[1].Value));
+                        //interactable = sign;
+                        break;
+
                 }
                 GenerateNPCs(levelIndex, loopIndices, spawnCoords);
                 GenerateInteractables(levelIndex, loopIndices, spawnCoords);
+                GenerateTriggerables(levelIndex, loopIndices, spawnCoords);
             }
         }
     }
@@ -522,10 +509,8 @@ public class GridController : MonoBehaviour
                     case "Shootable_Target":
                         interactable = Instantiate(shootableTargetPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
                         break;
-                    case "Sign":
-                        Sign sign = Instantiate(signPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        sign.SetSignText(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[1].Value));
-                        //interactable = sign;
+                    case "Trigger":
+                        interactable = Instantiate(playerTriggerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
                         break;
                 }
 
@@ -563,6 +548,53 @@ public class GridController : MonoBehaviour
                 interactable.SetLevelIndex(levelIndex);
                 interactable.SetOccupyingNode(spawnNode);
                 spawnedInteractables.Add(interactable);
+            }
+        }
+    }
+
+    void GenerateTriggerables(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
+    {
+        for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
+        {
+            if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
+            {
+                GridNode spawnNode = GetNodeAtCoords(spawnCoords);
+                GridNodeOccupant newOccupant;
+                ITriggerable triggerable = null;
+                switch (entityLayer.EntityInstances[k].Identifier)
+                {
+                    case "Door":
+                        Door spawnedDoor = null;
+                        switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
+                        {
+                            case "Door":
+                                spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                                break;
+                            case "Secret_Door":
+                                spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                                break;
+                        }
+                        spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                        spawnedDoor.SetOccupyingNode(spawnNode);
+                        newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
+                        spawnNode.SetBaseOccupant(newOccupant);
+                        spawnNode.SetOccupant(newOccupant);
+                        spawnedDoor.SetIsTriggered(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                        triggerable = spawnedDoor;
+                        break;
+                    case "NPC_Spawner":
+                        NPCSpawner npcSpawner = Instantiate(npcSpawnerPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
+                        npcSpawner.SetNPCToSpawn(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[0].Value));
+                        triggerable = npcSpawner;
+                        break;
+                }
+
+                if (triggerable == null)
+                    return;
+
+                triggerable.SetEntityRef(entityLayer.EntityInstances[k].Iid);
+                triggerable.SetLevelIndex(levelIndex);
+                spawnedTriggerables.Add(triggerable);
             }
         }
     }

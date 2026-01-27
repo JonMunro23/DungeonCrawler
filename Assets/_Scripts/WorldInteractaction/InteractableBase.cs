@@ -40,7 +40,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
         highlightEffect = GetComponent<HighlightEffect>();
     }
 
-    public abstract void Interact();
+    public virtual void Interact() { }
     public virtual void InteractWithItem(ItemData item) { }
 
     public void AddObjectToTrigger(ITriggerable objectToTrigger)
@@ -155,7 +155,8 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 
     public void SetHighlighted(bool isHighlighted)
     {
-        highlightEffect.highlighted = isHighlighted;
+        if(highlightEffect)
+            highlightEffect.highlighted = isHighlighted;
     }
 
     public void SetOccupyingNode(GridNode occupyingNode)

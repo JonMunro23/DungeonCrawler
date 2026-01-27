@@ -1,7 +1,6 @@
-using DG.Tweening;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 [SelectionBase]
 public class PressurePlate : InteractableBase
 {
@@ -15,16 +14,6 @@ public class PressurePlate : InteractableBase
     private void Start()
     {
         defaultPos = plateTransform.localPosition.y;
-    }
-
-    public override void Interact()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void InteractWithItem(ItemData item)
-    {
-        throw new System.NotImplementedException();
     }
 
     void PressPlateAnim()
