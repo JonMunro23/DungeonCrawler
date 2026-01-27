@@ -74,6 +74,7 @@ public class GridController : MonoBehaviour
     [SerializeField] PressurePlate pressurePlatePrefab;
     [SerializeField] Tripwire tripwirePrefab;
     [SerializeField] ShootableTarget shootableTargetPrefab;
+    [SerializeField] Sign signPrefab;
     List<IInteractable> spawnedInteractables = new List<IInteractable>();
 
     [Header("Triggerables")]
@@ -521,17 +522,23 @@ public class GridController : MonoBehaviour
                     case "Shootable_Target":
                         interactable = Instantiate(shootableTargetPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
                         break;
+                    case "Sign":
+                        Sign sign = Instantiate(signPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
+                        sign.SetSignText(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[1].Value));
+                        //interactable = sign;
+                        break;
                 }
 
                 if (interactable == null)
                     return;
+
 
                 FieldInstance field = Array.Find(
                     entityLayer.EntityInstances[k].FieldInstances,
                     f => f.Identifier == "Entities_To_Trigger"
                     );
 
-                if(field != null)
+                if (field != null)
                 {
                     var list = field.Value as List<object>;
                     foreach (var item in list)
@@ -546,8 +553,13 @@ public class GridController : MonoBehaviour
                         }
                     }
                 }
-                interactable.SetTriggerOperation(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                interactable.SetIsSingleUse(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[3].Value));
+
+                if (entityLayer.EntityInstances[k].FieldInstances.Length >= 3)
+                    interactable.SetTriggerOperation(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+
+                if (entityLayer.EntityInstances[k].FieldInstances.Length >= 4)
+                    interactable.SetIsSingleUse(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[3].Value));
+
                 interactable.SetLevelIndex(levelIndex);
                 interactable.SetOccupyingNode(spawnNode);
                 spawnedInteractables.Add(interactable);

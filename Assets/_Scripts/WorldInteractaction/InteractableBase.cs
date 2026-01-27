@@ -41,7 +41,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     }
 
     public abstract void Interact();
-    public abstract void InteractWithItem(ItemData item);
+    public virtual void InteractWithItem(ItemData item) { }
 
     public void AddObjectToTrigger(ITriggerable objectToTrigger)
     {
@@ -81,7 +81,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
             canUse = false;
     }
 
-    public abstract void SetStartingActivationState(bool activatedState);
+    public virtual void SetStartingActivationState(bool activatedState) { }
     public bool GetIsActivated() => isActivated;
 
     public void SetLevelIndex(int _levelIndex)
