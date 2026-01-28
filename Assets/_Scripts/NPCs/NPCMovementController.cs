@@ -2,6 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum NPCMovementBehaviour
+{
+    Idle,
+    Roam,
+    Pursue
+}
+
 public class NPCMovementController : MonoBehaviour
 {
     NPCController controller;
@@ -10,8 +17,11 @@ public class NPCMovementController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] bool canMove = true;
     public bool isMoving;
-    [SerializeField] List<GridNode> pathToPlayer = new List<GridNode>();
-    public GridNode targetNode;
+    [SerializeField] List<GridNode> pathToTarget = new List<GridNode>();
+    public GridNode targetNode, previousTargetNode;
+    public NPCMovementBehaviour currentBehaviour;
+    [SerializeField] List<GridNode> walkableNodes = new List<GridNode>();
+
 
     [Space]
     [Header("Turning")]
@@ -39,7 +49,7 @@ public class NPCMovementController : MonoBehaviour
         if (deadNPC == controller)
             return;
 
-        FindNewPathToPlayer();
+        FindNewPathToTarget();
     }
     void OnPlayerMoveEnded()
     {
@@ -49,7 +59,7 @@ public class NPCMovementController : MonoBehaviour
 
     void OnNodeOccupancyUpdated()
     {
-        FindNewPathToPlayer();
+        FindNewPathToTarget();
     }
 
     public void Init(NPCController controller)
@@ -57,35 +67,84 @@ public class NPCMovementController : MonoBehaviour
         this.controller = controller;
     }
 
+    public void SetSpawnBehaviour(NPCMovementBehaviour spawnBehaviour)
+    {
+        currentBehaviour = spawnBehaviour;
+        switch (spawnBehaviour)
+        {
+            case NPCMovementBehaviour.Idle:
+                break;
+            case NPCMovementBehaviour.Roam:
+                SetTarget(GetRandomAdjacentWalkableNode());
+                FindNewPathToTarget();
+                break;
+            case NPCMovementBehaviour.Pursue:
+                SetTarget(playerGridNode);
+                break;
+            default:
+                break;
+        }
+    }
+
+    GridNode GetRandomAdjacentWalkableNode(GridNode previousTargetNode = null)
+    {
+        List<GridNode> neighbouringNodes = new List<GridNode>(controller.currentlyOccupiedGridnode.GetNeighbouringNodes(false));
+        walkableNodes.Clear();
+        foreach (GridNode node in neighbouringNodes)
+        {
+            if(node.nodeData.isWalkable)
+                if(node.currentOccupant == null 
+                    || node.currentOccupant.occupantType == GridNodeOccupantType.PressurePlate 
+                    || node.currentOccupant.occupantType == GridNodeOccupantType.None)
+                walkableNodes.Add(node);
+        }
+        if(previousTargetNode != null)
+        {
+            if(walkableNodes.Contains(previousTargetNode) && walkableNodes.Count > 1)
+            {
+                walkableNodes.Remove(previousTargetNode);
+                Debug.Log("REMOVED PREVIOUS NODE");
+            }
+        }
+
+        int randomIndex = Random.Range(0, walkableNodes.Count);
+        return walkableNodes[randomIndex];
+    }
+
     public void OnDeath()
     {
         RevertNodesOnPath();
     }
 
-    public void FindNewPathToPlayer()
+    public void SetTarget(GridNode targetNode)
     {
-        if(!canMove) return;
+        this.targetNode = targetNode;
+    }
 
-        if (pathToPlayer != null)
+    public void FindNewPathToTarget()
+    {
+        if(!canMove || targetNode == null) return;
+
+        if (pathToTarget != null)
             RevertNodesOnPath();
 
         //Debug.Log("NPC coords: " + groupController.currentlyOccupiedGridnode.Coords.Pos);
         //Debug.Log("Player coords: " + (PlayerController.currentOccupiedNode ? PlayerController.currentOccupiedNode.Coords.Pos : "No Player Exists"));
-        pathToPlayer = Pathfinding_Custom.FindPath(controller.currentlyOccupiedGridnode, PlayerController.currentOccupiedNode);
-        NavigateToPlayer();
+        pathToTarget = Pathfinding_Custom.FindPath(controller.currentlyOccupiedGridnode, targetNode);
+        NavigateToTarget();
     }
 
     private void RevertNodesOnPath()
     {
-        foreach (GridNode node in pathToPlayer)
+        foreach (GridNode node in pathToTarget)
         {
             node.RevertTile();
         }
     }
 
-    public void NavigateToPlayer()
+    public void NavigateToTarget()
     {
-        if(pathToPlayer == null)
+        if(pathToTarget == null)
         {
             //Roam?
             //Debug.Log("NAE PATH");
@@ -95,8 +154,19 @@ public class NPCMovementController : MonoBehaviour
         if (isMoving || isTurning || controller.attackController.isAttacking)
             return;
 
-        targetNode = pathToPlayer[pathToPlayer.Count - 1];
-        Vector3 dirToTarget = Vector3.Normalize(currentOrientation.position - targetNode.moveToTransform.position);
+        //if (currentBehaviour == NPCMovementBehaviour.Roam)
+        //    SetTarget(GetRandomAdjacentWalkableNode());
+        //else
+        if (pathToTarget.Count > 0)
+            SetTarget(pathToTarget[pathToTarget.Count - 1]);
+        else
+        {
+            SetTarget(GetRandomAdjacentWalkableNode(previousTargetNode));
+            FindNewPathToTarget();
+        }
+
+
+            Vector3 dirToTarget = Vector3.Normalize(currentOrientation.position - targetNode.moveToTransform.position);
         float leftOrRightDot = Vector3.Dot(currentOrientation.right, dirToTarget);
         float frontOrBackDot = Vector3.Dot(currentOrientation.forward, dirToTarget);
 
@@ -161,7 +231,7 @@ public class NPCMovementController : MonoBehaviour
 
         StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, controller.npcData.moveDuration));
         StartCoroutine(DelayBetweenMovement());
-
+        previousTargetNode = controller.currentlyOccupiedGridnode;
         controller.currentlyOccupiedGridnode = targetNode;
         controller.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(controller.gameObject, GridNodeOccupantType.NPC));
     }
@@ -228,7 +298,7 @@ public class NPCMovementController : MonoBehaviour
     void MovementEnded()
     {
         controller.TryAttack();
-        FindNewPathToPlayer();
+        FindNewPathToTarget();
     }
 
 
@@ -242,6 +312,6 @@ public class NPCMovementController : MonoBehaviour
     void TurningEnded()
     {
         controller.TryAttack();
-        NavigateToPlayer();
+        NavigateToTarget();
     }
 }

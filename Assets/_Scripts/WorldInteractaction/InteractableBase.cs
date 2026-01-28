@@ -99,10 +99,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
         return node.Coords.Pos;
     }
 
-    public virtual void SetRequiredKeycardType(string keycardType)
-    {
-        
-    }
+    public virtual void SetRequiredKeycardType(string keycardType) { }
 
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData)
     {
@@ -125,10 +122,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 
     public void SetTriggerOperation(string triggerOperation)
     {
-        if (Enum.TryParse(triggerOperation, out TriggerOperation type))
-        {
-            this.triggerOperation = type;
-        }
+        this.triggerOperation = HelperFunctions.ToEnum<TriggerOperation>(triggerOperation);
     }
 
     public TriggerOperation GetTriggerOperation()
@@ -141,10 +135,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 
     public void SetInteractableType(string interactableType)
     {
-        if (Enum.TryParse(interactableType, out InteractableType type))
-        {
-            this.interactableType = type;
-        }
+        this.interactableType = HelperFunctions.ToEnum<InteractableType>(interactableType);
     }
     public void SetIsSingleUse(bool isSingleUse)
     {

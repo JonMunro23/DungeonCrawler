@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -50,4 +51,13 @@ public class HelperFunctions
         }
     }
 
+    public static T ToEnum<T>(string value, bool ignoreCase = true) where T : struct, Enum
+    {
+        if (Enum.TryParse<T>(value, ignoreCase, out var result))
+        {
+            return result;
+        }
+
+        throw new ArgumentException($"'{value}' is not a valid value for enum {typeof(T).Name}");
+    }
 }

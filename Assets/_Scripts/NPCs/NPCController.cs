@@ -17,7 +17,6 @@ public class NPCController : MonoBehaviour
     public AudioSource audioSource;
     public GridNode currentlyOccupiedGridnode;
 
-
     public static Action<NPCController> onNPCDeath;
     Coroutine fireDamageCoroutine, acidDamageCoroutine, armourReductionCoroutine;
 
@@ -62,10 +61,9 @@ public class NPCController : MonoBehaviour
         movementController.SnapToNode(node);
     }
 
-    void SnapToRotation(float newRot)
+    public void SetMovementBehaviour(NPCMovementBehaviour spawnBehaviour)
     {
-        movementController.SnapToRotation(newRot);
-
+        movementController.SetSpawnBehaviour(spawnBehaviour);
     }
 
     public void TryAttack()
@@ -75,7 +73,7 @@ public class NPCController : MonoBehaviour
             attackController.TryAttack();
         }
         else
-            movementController.FindNewPathToPlayer();
+            movementController.FindNewPathToTarget();
     }
 
     public void OnDeath()

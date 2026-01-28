@@ -347,7 +347,7 @@ public class GridController : MonoBehaviour
                         break;
                     case "Level_Transition":
                         LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0, 1.5f, 0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        int levelIndexToGoTo = Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[1].Value);
+                        int levelIndexToGoTo = LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[1].Value);
                         List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
                         spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
                         spawnedLevelTransitions.Add(spawnedLevelTransition);
@@ -418,7 +418,7 @@ public class GridController : MonoBehaviour
                         break;
                     case "Sign":
                         Sign sign = Instantiate(signPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        sign.SetSignText(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[1].Value));
+                        sign.SetSignText(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[1].Value));
                         //interactable = sign;
                         break;
 
@@ -437,37 +437,37 @@ public class GridController : MonoBehaviour
             if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
             {
                 GridNode spawnNode = GetNodeAtCoords(spawnCoords);
+                NPCController NPCClone = null;
                 switch (entityLayer.EntityInstances[k].Identifier)
                 {
                             
                     case "NPC_Zombie":
                         if (spawnNPCs)
                         {
-                            NPCController NPCClone = Instantiate(zombieNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                            NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
-                            NPCClone.SetActive(false);
-                            spawnedNPCs.Add(NPCClone);
+                            NPCClone = Instantiate(zombieNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                         }
                         break;
                     case "NPC_Ranger":
                         if (spawnNPCs)
                         {
-                            NPCController NPCClone = Instantiate(rangerNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                            NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
-                            NPCClone.SetActive(false);
-                            spawnedNPCs.Add(NPCClone);
+                            NPCClone = Instantiate(rangerNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                         }
                         break;
                     case "NPC_Bug":
                         if (spawnNPCs)
                         {
-                            NPCController NPCClone = Instantiate(bugNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                            NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
-                            NPCClone.SetActive(false);
-                            spawnedNPCs.Add(NPCClone);
+                            NPCClone = Instantiate(bugNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                         }
                         break;
                 }
+
+                if (NPCClone == null)
+                    continue;
+
+                NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
+                NPCClone.SetMovementBehaviour(HelperFunctions.ToEnum<NPCMovementBehaviour>(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString()));
+                NPCClone.SetActive(false);
+                spawnedNPCs.Add(NPCClone);
             }
         }
     }
@@ -491,11 +491,11 @@ public class GridController : MonoBehaviour
                         break;
                     case "Keycard_Reader":
                         interactable = Instantiate(keycardReaderPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        interactable.SetRequiredKeycardType(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[4].Value));
+                        interactable.SetRequiredKeycardType(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
                         break;
                     case "Pressure_Plate":
                         PressurePlate plate = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        plate.SetTriggerOnExit(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[4].Value));
+                        plate.SetTriggerOnExit(LDtkFieldHelper.GetValue<bool>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
                         interactable = plate;
                         newOccupant = new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate);
                         spawnNode.SetBaseOccupant(newOccupant);
@@ -540,10 +540,10 @@ public class GridController : MonoBehaviour
                 }
 
                 if (entityLayer.EntityInstances[k].FieldInstances.Length >= 3)
-                    interactable.SetTriggerOperation(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                    interactable.SetTriggerOperation(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[2].Value));
 
                 if (entityLayer.EntityInstances[k].FieldInstances.Length >= 4)
-                    interactable.SetIsSingleUse(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[3].Value));
+                    interactable.SetIsSingleUse(LDtkFieldHelper.GetValue<bool>(entityLayer.EntityInstances[k].FieldInstances[3].Value));
 
                 interactable.SetLevelIndex(levelIndex);
                 interactable.SetOccupyingNode(spawnNode);
@@ -574,12 +574,12 @@ public class GridController : MonoBehaviour
                                 spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                                 break;
                         }
-                        spawnedDoor.SetRequiredNumberOfTriggers(Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                        spawnedDoor.SetRequiredNumberOfTriggers(LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[2].Value));
                         spawnedDoor.SetOccupyingNode(spawnNode);
                         newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
                         spawnNode.SetBaseOccupant(newOccupant);
                         spawnNode.SetOccupant(newOccupant);
-                        spawnedDoor.SetIsTriggered(Convert.ToBoolean(entityLayer.EntityInstances[k].FieldInstances[2].Value));
+                        spawnedDoor.SetIsTriggered(LDtkFieldHelper.GetValue<bool>(entityLayer.EntityInstances[k].FieldInstances[2].Value));
                         triggerable = spawnedDoor;
                         break;
                     case "NPC_Spawner":
@@ -587,7 +587,8 @@ public class GridController : MonoBehaviour
                         npcSpawner.AssignSpawnedNPCsList(ref spawnedNPCs);
                         npcSpawner.SetOccupyingNode(spawnNode);
                         npcSpawner.SetLevelIndex(levelIndex); //need to do it early to pass to spawnedNPC
-                        npcSpawner.SpawnNPC(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[0].Value));
+                        npcSpawner.SetSpawnBehaviour(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[1].Value));
+                        npcSpawner.SpawnNPC(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[0].Value));
                         triggerable = npcSpawner;
                         break;
                 }

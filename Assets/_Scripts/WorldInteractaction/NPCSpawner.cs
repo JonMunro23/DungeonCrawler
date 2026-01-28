@@ -2,17 +2,22 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-enum NPC_Type
-{
-    Zombie,
-    Ranger,
-    Bug
-}
+
 
 public class NPCSpawner : TriggerableBase
 {
+    enum NPC_Type
+    {
+        Zombie,
+        Ranger,
+        Bug
+    }
+
     NPCController npcToSpawn;
-    NPCController SpawnedNpc;
+    NPCController spawnedNpc;
+
+    NPCMovementBehaviour spawnBehaviour;
+
     [Header("Enemy Types")]
     [SerializeField] NPCController zombie;
     [SerializeField] NPCController ranger;
@@ -32,33 +37,38 @@ public class NPCSpawner : TriggerableBase
 
     public override void Trigger(IInteractable triggeredInteractable)
     {
-        SpawnedNpc.SetActive(true);
+        spawnedNpc.SetActive(true);
     }
 
     public void SpawnNPC(string npcTypeToSpawn)
     {
-        SpawnedNpc = Instantiate(DecideNPCToSpawn(npcTypeToSpawn), occupyingGridNode.transform.position + new Vector3(-1.5f, 0, -1.5f), Quaternion.identity);
-        SpawnedNpc.InitNPC(GetLevelIndex(), occupyingGridNode);
-        spawnedNPCsListRef.Add(SpawnedNpc);
-        SpawnedNpc.SetActive(false);
+        spawnedNpc = Instantiate(DecideNPCToSpawn(npcTypeToSpawn), occupyingGridNode.transform.position + new Vector3(-1.5f, 0, -1.5f), Quaternion.identity);
+        spawnedNpc.InitNPC(GetLevelIndex(), occupyingGridNode);
+        spawnedNpc.SetMovementBehaviour(spawnBehaviour);
+        spawnedNPCsListRef.Add(spawnedNpc);
+        spawnedNpc.SetActive(false);
     }
+
+    public void SetSpawnBehaviour(string spawnBehaviour)
+    {
+        this.spawnBehaviour = HelperFunctions.ToEnum<NPCMovementBehaviour>(spawnBehaviour); ;
+    }
+
     NPCController DecideNPCToSpawn(string npcType)
     {
-        if (Enum.TryParse(npcType, out NPC_Type type))
+        NPC_Type type = HelperFunctions.ToEnum<NPC_Type>(npcType);
+        NPCController npcToSpawn = null;
+        switch (type)
         {
-            NPCController npcToSpawn = null;
-            switch (type)
-            {
-                case NPC_Type.Zombie:
-                    npcToSpawn = zombie;
-                    break;
-                case NPC_Type.Ranger:
-                    npcToSpawn = ranger;
-                    break;
-                case NPC_Type.Bug:
-                    npcToSpawn = bug;
-                    break;
-            }
+            case NPC_Type.Zombie:
+                npcToSpawn = zombie;
+                break;
+            case NPC_Type.Ranger:
+                npcToSpawn = ranger;
+                break;
+            case NPC_Type.Bug:
+                npcToSpawn = bug;
+                break;
         }
         return npcToSpawn;
     }

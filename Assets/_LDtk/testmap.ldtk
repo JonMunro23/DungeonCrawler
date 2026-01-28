@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 154,
+	"nextUid": 157,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -413,6 +413,46 @@
 					"allowedRefsEntityUid": null,
 					"allowedRefTags": [],
 					"tilesetUid": null
+				},
+				{
+					"identifier": "NPC_Behaviour_On_Spawn",
+					"doc": null,
+					"__type": "LocalEnum.NPC_Action",
+					"uid": 154,
+					"type": "F_Enum(152)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Roam"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
 				}
 			]
 		},
@@ -489,6 +529,46 @@
 					"allowedRefsEntityUid": null,
 					"allowedRefTags": [],
 					"tilesetUid": null
+				},
+				{
+					"identifier": "NPC_Behaviour_On_Spawn",
+					"doc": null,
+					"__type": "LocalEnum.NPC_Action",
+					"uid": 155,
+					"type": "F_Enum(152)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Roam"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
 				}
 			]
 		},
@@ -556,6 +636,46 @@
 					"defaultOverride": {
 						"id": "V_String",
 						"params": ["North"]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "NPC_Behaviour_On_Spawn",
+					"doc": null,
+					"__type": "LocalEnum.NPC_Action",
+					"uid": 156,
+					"type": "F_Enum(152)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_String",
+						"params": ["Roam"]
 					},
 					"textLanguageMode": null,
 					"symmetricalRef": false,
@@ -2693,7 +2813,7 @@
 					"tilesetUid": null
 				},
 				{
-					"identifier": "NPC_Action_On_Spawn",
+					"identifier": "NPC_Behaviour_On_Spawn",
 					"doc": null,
 					"__type": "LocalEnum.NPC_Action",
 					"uid": 153,
@@ -2721,7 +2841,7 @@
 					"acceptFileTypes": null,
 					"defaultOverride": {
 						"id": "V_String",
-						"params": ["Seek_Player"]
+						"params": ["Roam"]
 					},
 					"textLanguageMode": null,
 					"symmetricalRef": false,
@@ -2817,7 +2937,7 @@
 			{ "id": "Bug", "tileRect": null, "color": 14120515 }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] },
 		{ "identifier": "NPC_Action", "uid": 152, "values": [
-			{ "id": "Seek_Player", "tileRect": null, "color": 12470831 },
+			{ "id": "Pursue", "tileRect": null, "color": 12470831 },
 			{ "id": "Roam", "tileRect": null, "color": 14120515 },
 			{ "id": "Idle", "tileRect": null, "color": 15389866 }
 		], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] }
@@ -3722,7 +3842,10 @@
 							"height": 16,
 							"defUid": 91,
 							"px": [248,296],
-							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 92, "realEditorValues": [] }],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 92, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 155, "realEditorValues": [] }
+							],
 							"__worldX": 248,
 							"__worldY": -216
 						},
@@ -3738,7 +3861,10 @@
 							"height": 16,
 							"defUid": 94,
 							"px": [104,392],
-							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 95, "realEditorValues": [] }],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 95, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 156, "realEditorValues": [] }
+							],
 							"__worldX": 104,
 							"__worldY": -120
 						},
@@ -3964,7 +4090,10 @@
 							"px": [376,56],
 							"fieldInstances": [
 								{ "__identifier": "Enemy_Type_To_Spawn", "__type": "LocalEnum.Enemy_Type", "__value": "Zombie", "__tile": null, "defUid": 151, "realEditorValues": [] },
-								{ "__identifier": "NPC_Action_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Seek_Player", "__tile": null, "defUid": 153, "realEditorValues": [] }
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 153, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Roam"]
+								}] }
 							],
 							"__worldX": 376,
 							"__worldY": -456

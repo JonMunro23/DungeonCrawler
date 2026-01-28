@@ -44,10 +44,7 @@ public class KeycardReader : InteractableBase
 
     public override void SetRequiredKeycardType(string requiredType)
     {
-        if(Enum.TryParse(requiredType, out KeycardType type))
-        {
-            requiredKeycard = type;
-        }
+        requiredKeycard = HelperFunctions.ToEnum<KeycardType>(requiredType);
     }
 
     void TryUseKeycard(KeyItemData keyData)
