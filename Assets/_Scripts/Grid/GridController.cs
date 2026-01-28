@@ -156,14 +156,14 @@ public class GridController : MonoBehaviour
     }
     void OnNPCDeath(NPCController deadNPC)
     {
-        foreach(LevelData levelData in levelDataDictionary.Values)
-        {
-            if (levelData.spawnedNPCs.Contains(deadNPC))
-                levelData.spawnedNPCs.Remove(deadNPC);
-        }
+        //foreach(LevelData levelData in levelDataDictionary.Values)
+        //{
+        //    if (levelData.spawnedNPCs.Contains(deadNPC))
+        //        levelData.spawnedNPCs.Remove(deadNPC);
+        //}
 
-        if(spawnedNPCs.Contains(deadNPC))
-            spawnedNPCs.Remove(deadNPC);
+        //if(spawnedNPCs.Contains(deadNPC))
+        //    spawnedNPCs.Remove(deadNPC);
 
         if(activeNPCs.Contains(deadNPC))
             activeNPCs.Remove(deadNPC);
@@ -584,7 +584,10 @@ public class GridController : MonoBehaviour
                         break;
                     case "NPC_Spawner":
                         NPCSpawner npcSpawner = Instantiate(npcSpawnerPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        npcSpawner.SetNPCToSpawn(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[0].Value));
+                        npcSpawner.AssignSpawnedNPCsList(ref spawnedNPCs);
+                        npcSpawner.SetOccupyingNode(spawnNode);
+                        npcSpawner.SetLevelIndex(levelIndex); //need to do it early to pass to spawnedNPC
+                        npcSpawner.SpawnNPC(Convert.ToString(entityLayer.EntityInstances[k].FieldInstances[0].Value));
                         triggerable = npcSpawner;
                         break;
                 }

@@ -46,7 +46,7 @@ public abstract class TriggerableBase : MonoBehaviour, ITriggerable
         return levelIndex;
     }
 
-    public abstract void SetIsTriggered(bool isTriggered);
+    public virtual void SetIsTriggered(bool isTriggered) { }
 
     public int GetCurrentNumberOfTriggers()
     {

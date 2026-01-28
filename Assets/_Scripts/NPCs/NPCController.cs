@@ -83,6 +83,6 @@ public class NPCController : MonoBehaviour
         onNPCDeath?.Invoke(this);
         movementController.OnDeath();
         currentlyOccupiedGridnode.ResetOccupant();
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }

@@ -49,3 +49,6 @@ MonoBehaviour:
   requiredNumOfTriggers: 1
   currentNumOfTriggers: 0
   entityRef: 
+  zombie: {fileID: 8651504595935704073, guid: 604f96a20eff0ad468b945f0c6ff04ae, type: 3}
+  ranger: {fileID: 8651504595935704073, guid: baaf0020e3f252740b651875dc49dc06, type: 3}
+  bug: {fileID: 8651504595935704073, guid: 649ae97880b1ace41ace2134f977d20f, type: 3}

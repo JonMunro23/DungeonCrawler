@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 enum NPC_Type
@@ -10,28 +11,55 @@ enum NPC_Type
 
 public class NPCSpawner : TriggerableBase
 {
-    NPC_Type enemyToSpawn;
+    NPCController npcToSpawn;
+    NPCController SpawnedNpc;
+    [Header("Enemy Types")]
+    [SerializeField] NPCController zombie;
+    [SerializeField] NPCController ranger;
+    [SerializeField] NPCController bug;
+
+    List<NPCController> spawnedNPCsListRef;
 
     public override void LoadData(SaveableLevelData.TriggerableSaveData data)
     {
         throw new System.NotImplementedException();
     }
 
-    public override void SetIsTriggered(bool isTriggered)
+    public void AssignSpawnedNPCsList(ref List<NPCController> spawnedNPCs)
     {
-        Debug.Log("Set is triggerd");
+        spawnedNPCsListRef = spawnedNPCs;
     }
 
     public override void Trigger(IInteractable triggeredInteractable)
     {
-        Debug.Log($"Spawning {enemyToSpawn}...");
+        SpawnedNpc.SetActive(true);
     }
 
-    public void SetNPCToSpawn(string npcToSpawn)
+    public void SpawnNPC(string npcTypeToSpawn)
     {
-        if (Enum.TryParse(npcToSpawn, out NPC_Type type))
+        SpawnedNpc = Instantiate(DecideNPCToSpawn(npcTypeToSpawn), occupyingGridNode.transform.position + new Vector3(-1.5f, 0, -1.5f), Quaternion.identity);
+        SpawnedNpc.InitNPC(GetLevelIndex(), occupyingGridNode);
+        spawnedNPCsListRef.Add(SpawnedNpc);
+        SpawnedNpc.SetActive(false);
+    }
+    NPCController DecideNPCToSpawn(string npcType)
+    {
+        if (Enum.TryParse(npcType, out NPC_Type type))
         {
-            enemyToSpawn = type;
+            NPCController npcToSpawn = null;
+            switch (type)
+            {
+                case NPC_Type.Zombie:
+                    npcToSpawn = zombie;
+                    break;
+                case NPC_Type.Ranger:
+                    npcToSpawn = ranger;
+                    break;
+                case NPC_Type.Bug:
+                    npcToSpawn = bug;
+                    break;
+            }
         }
+        return npcToSpawn;
     }
 }
