@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,258 +8,411 @@ public enum NPCMovementBehaviour
     Roam,
     Pursue
 }
-
 public class NPCMovementController : MonoBehaviour
 {
+    // ==========================
+    // References
+    // ==========================
     NPCController controller;
-    public const int GRID_SIZE = 3;
+    NPCVisionSensor vision;
+    NPCRoamPlanner roamPlanner;
 
+
+    // ==========================
+    // Movement state
+    // ==========================
     [Header("Movement")]
     [SerializeField] bool canMove = true;
     public bool isMoving;
-    [SerializeField] List<GridNode> pathToTarget = new List<GridNode>();
-    public GridNode targetNode, previousTargetNode;
-    public NPCMovementBehaviour currentBehaviour;
-    [SerializeField] List<GridNode> walkableNodes = new List<GridNode>();
 
+    [SerializeField] List<GridNode> currentPathToNavigate = new List<GridNode>();
+    [SerializeField] GridNode currentNavTargetNode, previousTargetNode;
 
-    [Space]
+    public GridNode CurrentNavTargetNode => currentNavTargetNode;
+    public NPCMovementBehaviour currentMovementBehaviour;
+
+    // ==========================
+    // Turning
+    // ==========================
     [Header("Turning")]
-    public Transform currentOrientation; 
+    public Transform currentOrientation;
     public bool isTurning;
 
+    // ==========================
+    // Targets
+    // ==========================
+    [Header("Targets")]
     [SerializeField] GridNode playerGridNode;
+
+    // ==========================
+    // Aggro / Deaggro
+    // ==========================
+    [Header("Aggro")]
+    [Tooltip("If true, NPC never deaggros once it has aggroed.")]
+    [SerializeField] bool stickyAggro = true;
+    bool isAggro;
+
+    [Header("Deaggro (Timeout)")]
+    [SerializeField] bool enableDeaggroTimeout = true;
+
+    [Tooltip("If player is not detected for this many real-time seconds, NPC deaggros back to Roam (only if stickyAggro is false).")]
+    [SerializeField] float loseSightSeconds = 10f;
+
+    [Tooltip("How often to re-check detection while pursuing (seconds). Higher = cheaper, lower = more responsive.")]
+    [SerializeField] float deaggroCheckInterval = 0.25f;
+
+    float timeSinceLastDetected;
+    float timeSinceLastDeaggroCheck;
+
+    // ==========================
+    // Unity lifecycle
+    // ==========================
+    void Awake()
+    {
+        if (vision == null) vision = GetComponent<NPCVisionSensor>();
+        if (roamPlanner == null) roamPlanner = GetComponent<NPCRoamPlanner>();
+
+        if (vision != null && currentOrientation != null)
+            vision.SetOrientation(currentOrientation);
+    }
+
+    void Update()
+    {
+        TickDeaggroTimeout();
+    }
 
     private void OnEnable()
     {
-        PlayerMovementManager.onPlayerMoveEnded += OnPlayerMoveEnded;
+        PlayerController.onPlayerOccupiedNodeUpdated += OnPlayerOccupiedNodeUpdated;
         NPCController.onNPCDeath += OnNPCDeath;
         GridNode.onNodeOccupancyUpdated += OnNodeOccupancyUpdated;
     }
 
     private void OnDisable()
     {
-        PlayerMovementManager.onPlayerMoveEnded -= OnPlayerMoveEnded;
+        PlayerController.onPlayerOccupiedNodeUpdated -= OnPlayerOccupiedNodeUpdated;
         NPCController.onNPCDeath -= OnNPCDeath;
         GridNode.onNodeOccupancyUpdated -= OnNodeOccupancyUpdated;
+
+        if (controller != null && controller.healthController != null)
+            controller.healthController.onDamaged -= OnDamaged;
+
+        if (vision != null)
+            vision.ClearHighlights();
     }
 
+    // ==========================
+    // Init / external API
+    // ==========================
+    public void Init(NPCController controller)
+    {
+        this.controller = controller;
+
+        if (controller != null && controller.healthController != null)
+            controller.healthController.onDamaged += OnDamaged;
+    }
+
+    public void BeginMovement() => FindNewPath();
+
+    public void SetSpawnBehaviour(NPCMovementBehaviour spawnBehaviour)
+    {
+        currentMovementBehaviour = spawnBehaviour;
+
+        if (spawnBehaviour != NPCMovementBehaviour.Pursue && !stickyAggro)
+            isAggro = false;
+
+        if (spawnBehaviour != NPCMovementBehaviour.Roam && roamPlanner != null)
+            roamPlanner.CancelDestination();
+
+        ResetDeaggroTimer();
+    }
+
+    // ==========================
+    // Event handlers
+    // ==========================
     void OnNPCDeath(NPCController deadNPC)
     {
-        if (deadNPC == controller)
-            return;
+        if (deadNPC == controller) return;
 
-        FindNewPathToTarget();
+        if (currentMovementBehaviour == NPCMovementBehaviour.Pursue)
+            FindNewPath();
     }
-    void OnPlayerMoveEnded()
+
+    void OnPlayerOccupiedNodeUpdated(GridNode newNode)
     {
-        //FindNewPathToPlayer();
-        playerGridNode = PlayerController.currentOccupiedNode;
+        playerGridNode = newNode;
+
+        EvaluateDetectionAndMaybeAggro();
+
+        if (currentMovementBehaviour == NPCMovementBehaviour.Pursue)
+            FindNewPath();
     }
 
     void OnNodeOccupancyUpdated()
     {
-        FindNewPathToTarget();
+        if (currentMovementBehaviour == NPCMovementBehaviour.Pursue)
+            FindNewPath();
+
+        if (currentMovementBehaviour == NPCMovementBehaviour.Roam && roamPlanner != null)
+            roamPlanner.InvalidateIfBlocked();
     }
 
-    public void Init(NPCController controller)
+    void OnDamaged(int damage, DamageType damageType, bool isCrit)
     {
-        this.controller = controller;
+        if (!canMove) return;
+
+        AggroToPursue();
+        FindNewPath();
     }
 
-    public void SetSpawnBehaviour(NPCMovementBehaviour spawnBehaviour)
+    // ==========================
+    // Aggro / Deaggro logic
+    // ==========================
+    void EvaluateDetectionAndMaybeAggro()
     {
-        currentBehaviour = spawnBehaviour;
-        switch (spawnBehaviour)
+        if (vision == null || !vision.Enabled) return;
+        if (controller == null || controller.currentlyOccupiedGridnode == null) return;
+        if (playerGridNode == null) return;
+
+        bool detected = vision.IsPlayerDetected(controller.currentlyOccupiedGridnode, playerGridNode);
+
+        if (detected)
+        {
+            // If already pursuing, just reset timer
+            if (currentMovementBehaviour == NPCMovementBehaviour.Pursue)
+            {
+                ResetDeaggroTimer();
+                return;
+            }
+
+            AggroToPursue();
+        }
+    }
+
+    void TickDeaggroTimeout()
+    {
+        if (!enableDeaggroTimeout) return;
+        if (stickyAggro) return;
+        if (currentMovementBehaviour != NPCMovementBehaviour.Pursue) return;
+
+        // Accumulate real-time since last seen
+        timeSinceLastDetected += Time.deltaTime;
+
+        // Only run BFS check every interval
+        timeSinceLastDeaggroCheck += Time.deltaTime;
+        if (timeSinceLastDeaggroCheck < deaggroCheckInterval)
+            return;
+
+        timeSinceLastDeaggroCheck = 0f;
+
+        if (vision == null || !vision.Enabled) return;
+        if (controller == null || controller.currentlyOccupiedGridnode == null) return;
+        if (playerGridNode == null) return;
+
+        bool detectedNow = vision.IsPlayerDetected(controller.currentlyOccupiedGridnode, playerGridNode);
+
+        if (detectedNow)
+        {
+            ResetDeaggroTimer();
+            return;
+        }
+
+        if (timeSinceLastDetected >= loseSightSeconds)
+            DeaggroToRoam();
+    }
+
+    void AggroToPursue()
+    {
+        isAggro = true;
+        currentMovementBehaviour = NPCMovementBehaviour.Pursue;
+
+        // Cancel roaming immediately
+        if (roamPlanner != null) roamPlanner.CancelDestination();
+        currentPathToNavigate.Clear();
+
+        ResetDeaggroTimer();
+    }
+
+    void DeaggroToRoam()
+    {
+        isAggro = false;
+        currentMovementBehaviour = NPCMovementBehaviour.Roam;
+
+        currentPathToNavigate.Clear();
+        if (roamPlanner != null) roamPlanner.CancelDestination();
+
+        ResetDeaggroTimer();
+        FindNewPath();
+    }
+
+    void ResetDeaggroTimer()
+    {
+        timeSinceLastDetected = 0f;
+        timeSinceLastDeaggroCheck = 0f;
+    }
+
+    // ==========================
+    // Path selection
+    // ==========================
+    public void FindNewPath()
+    {
+        if (!canMove) return;
+        if (controller == null || controller.currentlyOccupiedGridnode == null) return;
+
+        GridNode targetNode = null;
+
+        switch (currentMovementBehaviour)
         {
             case NPCMovementBehaviour.Idle:
-                break;
+                currentPathToNavigate = null;
+                return;
+
             case NPCMovementBehaviour.Roam:
-                SetTarget(GetRandomAdjacentWalkableNode());
-                FindNewPathToTarget();
+                targetNode = GetRoamTarget();
                 break;
+
             case NPCMovementBehaviour.Pursue:
-                SetTarget(playerGridNode);
-                break;
-            default:
+                targetNode = playerGridNode;
                 break;
         }
-    }
 
-    GridNode GetRandomAdjacentWalkableNode(GridNode previousTargetNode = null)
-    {
-        List<GridNode> neighbouringNodes = new List<GridNode>(controller.currentlyOccupiedGridnode.GetNeighbouringNodes(false));
-        walkableNodes.Clear();
-        foreach (GridNode node in neighbouringNodes)
+        if (targetNode == null)
         {
-            if(node.nodeData.isWalkable)
-                if(node.currentOccupant == null 
-                    || node.currentOccupant.occupantType == GridNodeOccupantType.PressurePlate 
-                    || node.currentOccupant.occupantType == GridNodeOccupantType.None)
-                walkableNodes.Add(node);
-        }
-        if(previousTargetNode != null)
-        {
-            if(walkableNodes.Contains(previousTargetNode) && walkableNodes.Count > 1)
-            {
-                walkableNodes.Remove(previousTargetNode);
-                Debug.Log("REMOVED PREVIOUS NODE");
-            }
+            currentPathToNavigate = null;
+            return;
         }
 
-        int randomIndex = Random.Range(0, walkableNodes.Count);
-        return walkableNodes[randomIndex];
+        currentPathToNavigate = Pathfinding_Custom.FindPath(controller.currentlyOccupiedGridnode, targetNode);
+        NavigatePath(currentPathToNavigate);
     }
 
-    public void OnDeath()
+    GridNode GetRoamTarget()
     {
-        RevertNodesOnPath();
+        GridNode fallbackAdjacent = GetRandomAdjacentWalkableNode(previousTargetNode);
+
+        if (roamPlanner == null || vision == null)
+            return fallbackAdjacent;
+
+        return roamPlanner.GetRoamTarget(controller.currentlyOccupiedGridnode, fallbackAdjacent, vision);
     }
 
-    public void SetTarget(GridNode targetNode)
+    GridNode GetRandomAdjacentWalkableNode(GridNode previous = null)
     {
-        this.targetNode = targetNode;
-    }
+        List<GridNode> neighbours = new List<GridNode>(controller.currentlyOccupiedGridnode.GetNeighbouringNodes(false));
+        List<GridNode> walkable = new List<GridNode>();
 
-    public void FindNewPathToTarget()
-    {
-        if(!canMove || targetNode == null) return;
-
-        if (pathToTarget != null)
-            RevertNodesOnPath();
-
-        //Debug.Log("NPC coords: " + groupController.currentlyOccupiedGridnode.Coords.Pos);
-        //Debug.Log("Player coords: " + (PlayerController.currentOccupiedNode ? PlayerController.currentOccupiedNode.Coords.Pos : "No Player Exists"));
-        pathToTarget = Pathfinding_Custom.FindPath(controller.currentlyOccupiedGridnode, targetNode);
-        NavigateToTarget();
-    }
-
-    private void RevertNodesOnPath()
-    {
-        foreach (GridNode node in pathToTarget)
+        foreach (GridNode node in neighbours)
         {
-            node.RevertTile();
+            if (node == null) continue;
+            if (node.nodeData == null || !node.nodeData.isWalkable) continue;
+            if (node.currentOccupant == null) continue;
+
+            var occ = node.currentOccupant.occupantType;
+            if (occ == GridNodeOccupantType.None || occ == GridNodeOccupantType.PressurePlate)
+                walkable.Add(node);
         }
+
+        if (previous != null && walkable.Contains(previous) && walkable.Count > 1)
+            walkable.Remove(previous);
+
+        if (walkable.Count == 0) return null;
+        return walkable[Random.Range(0, walkable.Count)];
     }
 
-    public void NavigateToTarget()
+    // ==========================
+    // Navigation / steering
+    // ==========================
+    public void NavigatePath(List<GridNode> pathToNavigate)
     {
-        if(pathToTarget == null)
+        if (pathToNavigate == null || pathToNavigate.Count == 0)
         {
-            //Roam?
-            //Debug.Log("NAE PATH");
+            if (currentMovementBehaviour == NPCMovementBehaviour.Roam)
+                FindNewPath();
             return;
         }
 
         if (isMoving || isTurning || controller.attackController.isAttacking)
             return;
 
-        //if (currentBehaviour == NPCMovementBehaviour.Roam)
-        //    SetTarget(GetRandomAdjacentWalkableNode());
-        //else
-        if (pathToTarget.Count > 0)
-            SetTarget(pathToTarget[pathToTarget.Count - 1]);
-        else
-        {
-            SetTarget(GetRandomAdjacentWalkableNode(previousTargetNode));
-            FindNewPathToTarget();
-        }
+        GridNode next = pathToNavigate[pathToNavigate.Count - 1];
+        currentNavTargetNode = next;
 
+        Vector3 toTarget = next.moveToTransform.position - currentOrientation.position;
+        toTarget.y = 0f;
+        if (toTarget.sqrMagnitude < 0.0001f) return;
 
-            Vector3 dirToTarget = Vector3.Normalize(currentOrientation.position - targetNode.moveToTransform.position);
-        float leftOrRightDot = Vector3.Dot(currentOrientation.right, dirToTarget);
-        float frontOrBackDot = Vector3.Dot(currentOrientation.forward, dirToTarget);
+        toTarget.Normalize();
+        float signed = Vector3.SignedAngle(currentOrientation.forward, toTarget, Vector3.up);
 
-        //Debug.Log("Left/Right: " + Mathf.RoundToInt(leftOrRight));
-        //Debug.Log("Front/Back: " + Mathf.RoundToInt(dot));
+        const float forwardToleranceDeg = 10f;
+        bool facing = Mathf.Abs(signed) <= forwardToleranceDeg;
 
-        if ((targetNode.currentOccupant.occupantType == GridNodeOccupantType.None || 
-            targetNode.currentOccupant.occupantType == GridNodeOccupantType.PressurePlate ) && Mathf.RoundToInt(frontOrBackDot) == -1)
+        var occ = next.currentOccupant.occupantType;
+
+        bool stepIsWalkable = (occ == GridNodeOccupantType.None || occ == GridNodeOccupantType.PressurePlate);
+        bool stepIsPlayer = (occ == GridNodeOccupantType.Player);
+
+        if (facing)
         {
-            MoveToTargetNode();
-        }
-        else if(targetNode.currentOccupant.occupantType == GridNodeOccupantType.Player && Mathf.RoundToInt(frontOrBackDot) == -1)
-        {
-            controller.TryAttack();
-        }
-        else
-        {
-            if (Mathf.RoundToInt(leftOrRightDot) == -1 || Mathf.RoundToInt(leftOrRightDot) == 0 && Mathf.RoundToInt(frontOrBackDot) == 1)
+            if (stepIsWalkable)
             {
-                Turn(1);
+                MoveToNode(next);
+                return;
             }
-            else if(Mathf.RoundToInt(leftOrRightDot) == 1)
+
+            if (stepIsPlayer)
             {
-                Turn(-1);
+                controller.TryAttack();
+                return;
             }
+
+            FindNewPath();
+            return;
         }
 
+        if (signed > 0f) Turn(1);
+        else Turn(-1);
     }
 
-
-    AudioClip GetRandomAudioClip()
+    // ==========================
+    // Movement / turning execution
+    // ==========================
+    void MoveToNode(GridNode nodeToMoveTo)
     {
-        int rand = Random.Range(0, controller.npcData.walkSFX.Length);
-        return controller.npcData.walkSFX[rand];
-    }
-    public void SnapToNode(GridNode node)
-    {
-        if (!isMoving)
-            return;
-
-        transform.position = node.moveToTransform.position;
-        isMoving = false;
-        //cancel any active coroutines
-        //snap rotation
-    }
-
-    public void SnapToRotation(float newRot)
-    {
-        transform.Rotate(new Vector3(0, newRot, 0));
-        currentOrientation.Rotate(new Vector3(0, newRot, 0));
-    }
-
-    void MoveToTargetNode()
-    {
-        if (isMoving)
-            return;
+        if (isMoving) return;
 
         controller.currentlyOccupiedGridnode.ResetOccupant();
         AnimateMovement();
-        if(controller.npcData.walkSFX.Length > 0)
-            controller.audioSource.PlayOneShot(GetRandomAudioClip());
 
-        StartCoroutine(LerpPos(transform.position, targetNode.moveToTransform.position, controller.npcData.moveDuration));
+        AudioClip randClip = HelperFunctions.GetRandomAudioClipFromArray(controller.npcData.walkSFX);
+        if (randClip != null)
+            controller.audioSource.PlayOneShot(randClip);
+
+        StartCoroutine(LerpPos(transform.position, nodeToMoveTo.moveToTransform.position, controller.npcData.moveDuration));
         StartCoroutine(DelayBetweenMovement());
+
         previousTargetNode = controller.currentlyOccupiedGridnode;
-        controller.currentlyOccupiedGridnode = targetNode;
+        controller.currentlyOccupiedGridnode = nodeToMoveTo;
         controller.currentlyOccupiedGridnode.SetOccupant(new GridNodeOccupant(controller.gameObject, GridNodeOccupantType.NPC));
     }
 
-    /// <param name="turnDir"> -1 = left, 1 = right </param>
     void Turn(int turnDir)
     {
-        if (isTurning)
-            return;
+        if (isTurning) return;
 
         AnimateTurning(turnDir);
         StartCoroutine(DelayBetweenTurning());
     }
 
-    void AnimateMovement()
-    {
-        controller.animController.PlayAnimation("Walk");
-    }
+    void AnimateMovement() => controller.animController.PlayAnimation("Walk");
 
     void AnimateTurning(int turnDir)
     {
         isTurning = true;
-        if(turnDir  == -1)
-        {
+
+        if (turnDir == -1)
             controller.animController.PlayAnimation("TurnLeft", controller.npcData.turnDuration);
-            
-        }
-        else if(turnDir == 1)
+        else if (turnDir == 1)
             controller.animController.PlayAnimation("TurnRight", controller.npcData.turnDuration);
 
         UpdateLookDir(turnDir);
@@ -295,23 +448,49 @@ public class NPCMovementController : MonoBehaviour
         MovementEnded();
     }
 
-    void MovementEnded()
-    {
-        controller.TryAttack();
-        FindNewPathToTarget();
-    }
-
-
     IEnumerator DelayBetweenTurning()
     {
         yield return new WaitForSeconds(controller.npcData.turnDuration + controller.npcData.minDelayBetweenTurning);
-        isTurning = false;
         TurningEnded();
+    }
+
+    void MovementEnded()
+    {
+        if (currentMovementBehaviour == NPCMovementBehaviour.Roam && roamPlanner != null)
+            roamPlanner.ConsumeTurn();
+
+        EvaluateDetectionAndMaybeAggro();
+
+        controller.TryAttack();
+        NavigatePath(currentPathToNavigate);
     }
 
     void TurningEnded()
     {
+        isTurning = false;
+
+        if (currentMovementBehaviour == NPCMovementBehaviour.Roam && roamPlanner != null)
+            roamPlanner.ConsumeTurn();
+
+        EvaluateDetectionAndMaybeAggro();
+
         controller.TryAttack();
-        NavigateToTarget();
+        NavigatePath(currentPathToNavigate);
+    }
+
+    // ==========================
+    // Utility (existing hooks)
+    // ==========================
+    public void SnapToNode(GridNode node)
+    {
+        if (!isMoving) return;
+        transform.position = node.moveToTransform.position;
+        isMoving = false;
+    }
+
+    public void SnapToRotation(float newRot)
+    {
+        transform.Rotate(new Vector3(0, newRot, 0));
+        currentOrientation.Rotate(new Vector3(0, newRot, 0));
     }
 }

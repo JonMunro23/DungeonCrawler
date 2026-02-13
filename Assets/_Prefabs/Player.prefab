@@ -34,7 +34,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!120 &7236164888705951764
 LineRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -80,6 +80,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -138,7 +139,6 @@ LineRenderer:
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
-  m_MaskInteraction: 0
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
@@ -249,14 +249,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4019381369253348144}
   m_Enabled: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1.3
   m_Range: 25
   m_SpotAngle: 50
   m_InnerSpotAngle: 2
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 1
     m_Resolution: -1
@@ -536,7 +536,6 @@ GameObject:
   - component: {fileID: 4750780804372824305}
   - component: {fileID: 3417093745071717000}
   - component: {fileID: 3234492359194327294}
-  - component: {fileID: 4620442606277676960}
   - component: {fileID: 7813209075847040319}
   - component: {fileID: 5977534421063011795}
   - component: {fileID: 6917960533262647579}
@@ -596,6 +595,7 @@ MonoBehaviour:
   playerSkillsManager: {fileID: 0}
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
+  currentOccupiedNode: {fileID: 0}
   rb: {fileID: 0}
 --- !u!114 &3417093745071717000
 MonoBehaviour:
@@ -913,7 +913,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a40c9f043e86b45971bfc7b9bd8c61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementManager
-  currentNode: {fileID: 0}
   baseMoveDuration: 0.5
   weaponReadiedMoveDurationMultiplier: 1.575
   allowContinuousHold: 1
@@ -941,26 +940,6 @@ MonoBehaviour:
   footstepMinPitch: 0.95
   footstepMaxPitch: 1.05
   footstepCooldown: 0.05
---- !u!114 &4620442606277676960
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6206634459118426657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1519e4aabf64674d8a654eb503008f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftFoot: {fileID: 0}
-  leftFootClip: {fileID: 8300000, guid: 769aa41eed10808408ed5bca566f74e4, type: 3}
-  leftMinimumPitch: 1
-  rightFoot: {fileID: 0}
-  rightFootClip: {fileID: 8300000, guid: d426ec67005cc8c40ac2b90038cabd32, type: 3}
-  rightMinimumPitch: 1
-  turnClip: {fileID: 8300000, guid: 8544ef406feee6c45b8838e817e19246, type: 3}
-  turnMinimumPitch: 1
 --- !u!114 &7813209075847040319
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -20,6 +20,16 @@ public class NPCController : MonoBehaviour
     public static Action<NPCController> onNPCDeath;
     Coroutine fireDamageCoroutine, acidDamageCoroutine, armourReductionCoroutine;
 
+    private void OnEnable()
+    {
+        GridController.onLevelFinishedGenerating += OnLevelFinishedGenerating;
+    }
+
+    private void OnDisable()
+    {
+        GridController.onLevelFinishedGenerating -= OnLevelFinishedGenerating;
+    }
+
     private void Awake()
     {
         healthController = GetComponent<NPCHealthController>();
@@ -28,6 +38,11 @@ public class NPCController : MonoBehaviour
         attackController = GetComponent<NPCAttackController>();
         floatingTextController = GetComponent<NPCFloatingTextController>();
         audioSource = GetComponent<AudioSource>();
+    }
+
+    void OnLevelFinishedGenerating()
+    {
+        movementController.BeginMovement();
     }
 
     public void InitNPC(int _levelIndex, /*NPCData npcData, */GridNode spawnGridNode = null)
@@ -73,13 +88,13 @@ public class NPCController : MonoBehaviour
             attackController.TryAttack();
         }
         else
-            movementController.FindNewPathToTarget();
+            movementController.FindNewPath();
     }
 
     public void OnDeath()
     {
         onNPCDeath?.Invoke(this);
-        movementController.OnDeath();
+        //movementController.OnDeath();
         currentlyOccupiedGridnode.ResetOccupant();
         gameObject.SetActive(false);
     }

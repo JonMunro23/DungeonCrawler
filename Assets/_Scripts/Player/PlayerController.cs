@@ -46,13 +46,14 @@ public class PlayerController : MonoBehaviour
 
     [Header("Player Data")]
     public CharacterData playerCharacterData;
-    public static GridNode currentOccupiedNode;
+    public GridNode currentOccupiedNode;
     public Rigidbody rb;
     public static bool isPlayerAlive;
     Vector3 defaultCamPos;
 
     public static Action<PlayerController> onPlayerInitialised;
     public static Action onPlayerDeath;
+    public static Action<GridNode> onPlayerOccupiedNodeUpdated;
 
     private void OnEnable()
     {
@@ -124,11 +125,8 @@ public class PlayerController : MonoBehaviour
         if (!nodeToMoveTo)
             return;
 
-        if(currentOccupiedNode)
-            currentOccupiedNode.ResetOccupant();
-
-        playerMovementManager.Teleport(nodeToMoveTo.moveToTransform.position);
         SetCurrentOccupiedNode(nodeToMoveTo);
+        playerMovementManager.Teleport(nodeToMoveTo.moveToTransform.position);
     }
 
     public void HealthSyringeHotkey()
@@ -224,10 +222,15 @@ public class PlayerController : MonoBehaviour
 
     public void SetCurrentOccupiedNode(GridNode newGridNode)
     {
+        if(currentOccupiedNode)
+            currentOccupiedNode.ResetOccupant();
+
         currentOccupiedNode = newGridNode;
         currentOccupiedNode.SetSelfAndSurroundingNodesExplored();
         currentOccupiedNode.SetOccupant(new GridNodeOccupant(gameObject, GridNodeOccupantType.Player));
-        playerMovementManager.currentNode = currentOccupiedNode;
+        //playerMovementManager.currentNode = currentOccupiedNode;
+
+        onPlayerOccupiedNodeUpdated?.Invoke(currentOccupiedNode);
     }
 
     public void ShakeScreen()

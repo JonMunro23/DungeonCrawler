@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class NPCHealthController : MonoBehaviour, IDamageable
 {
@@ -17,6 +18,9 @@ public class NPCHealthController : MonoBehaviour, IDamageable
     [Header("Item Dropping")]
     public List<ItemData> guaranteedDrops = new List<ItemData>();
     public List<ItemData> randomDrops = new List<ItemData>();
+
+    // NEW: lets movement/AI react immediately when this NPC takes damage
+    public event Action<int, DamageType, bool> onDamaged;
 
     public void Init(NPCController controller)
     {
@@ -36,14 +40,17 @@ public class NPCHealthController : MonoBehaviour, IDamageable
     {
         if (isDead) return;
 
-        if(isCrit)
+        if (isCrit)
         {
             PlayHitReaction();
             damage *= 2;
         }
+
         currentHealth -= damage;
         controller.floatingTextController.SpawnDamageText(damage, damageType, isCrit);
 
+        // NEW: notify listeners (eg. movement controller -> switch to Pursue)
+        onDamaged?.Invoke(damage, damageType, isCrit);
 
         if (currentHealth <= 0)
         {
@@ -54,7 +61,6 @@ public class NPCHealthController : MonoBehaviour, IDamageable
                 {
                     Instantiate(drop.itemWorldModel, transform.position, Quaternion.identity);
                 }
-
             }
             controller.OnDeath();
         }
@@ -103,12 +109,11 @@ public class NPCHealthController : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(duration);
 
         currentArmourRating = controller.npcData.baseArmourRating;
-
     }
 
     public void PlayHitReaction()
     {
-       //pause movement?
+        //pause movement?
         controller.animController.PlayAnimation("HitReaction", 0);
     }
 }

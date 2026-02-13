@@ -174,7 +174,7 @@ public class GridNode : MonoBehaviour
 
     public void HighlightCellClosed()
     {
-        meshRenderer.material = highlightOpenMat;
+        meshRenderer.material = highlightClosedMat;
     }
 
     public void HighlightCellPath()

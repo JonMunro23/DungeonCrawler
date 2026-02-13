@@ -804,7 +804,7 @@ PrefabInstance:
     - target: {fileID: 2342286666150839676, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000061035156
+      value: -0.00061035156
       objectReference: {fileID: 0}
     - target: {fileID: 2842516669240827519, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
@@ -3028,6 +3028,12 @@ PrefabInstance:
       propertyPath: signPrefab
       value: 
       objectReference: {fileID: 6132813018694342244, guid: 295704a4441b1294ba6a748828445517,
+        type: 3}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
+      propertyPath: bugNpcPrefab
+      value: 
+      objectReference: {fileID: 8137090331969483777, guid: 8e26d3111dfbb32478a8abd2d444245c,
         type: 3}
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}

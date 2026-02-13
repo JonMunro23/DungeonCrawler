@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerMovementManager : MonoBehaviour
 {
-    [Header("Grid")]
-    public GridNode currentNode;
+    //[Header("Grid")]
+    //public GridNode currentNode;
 
     [Header("Movement Settings")]
     [Tooltip("How long it should take to move exactly one tile.")]
@@ -95,11 +95,11 @@ public class PlayerMovementManager : MonoBehaviour
     {
         currentMoveDuration = baseMoveDuration;
 
-        if (currentNode != null)
+        if (playerController.currentOccupiedNode != null)
         {
-            transform.position = currentNode.moveToTransform != null
-                ? currentNode.moveToTransform.position
-                : currentNode.transform.position;
+            transform.position = playerController.currentOccupiedNode.moveToTransform != null
+                ? playerController.currentOccupiedNode.moveToTransform.position
+                : playerController.currentOccupiedNode.transform.position;
         }
     }
 
@@ -114,7 +114,7 @@ public class PlayerMovementManager : MonoBehaviour
         transform.position = destination;
         isBusy = false;
         ResetHeadbob();
-        // No footsteps here – teleport should be silent.
+        onPlayerMoveEnded?.Invoke();
     }
 
     // These are called from PlayerInputHandler (usually on key down)
@@ -145,7 +145,7 @@ public class PlayerMovementManager : MonoBehaviour
     /// </summary>
     private void TryStartContinuousMove(Vector3 worldDir, KeyCode startKey)
     {
-        if (isBusy || currentNode == null)
+        if (isBusy || playerController.currentOccupiedNode == null)
             return;
 
         // Flatten & normalise the initial direction
@@ -156,7 +156,7 @@ public class PlayerMovementManager : MonoBehaviour
         worldDir.Normalize();
 
         // Check that at least the first tile in this direction is walkable
-        GridNode firstTarget = currentNode.GetNodeInDirection(worldDir);
+        GridNode firstTarget = playerController.currentOccupiedNode.GetNodeInDirection(worldDir);
         if (!IsNodeWalkable(firstTarget))
             return;
 
@@ -176,7 +176,7 @@ public class PlayerMovementManager : MonoBehaviour
     {
         isBusy = true;
 
-        GridNode node = currentNode;
+        GridNode node = playerController.currentOccupiedNode;
         bool isFirstTile = true;
 
         while (true)
@@ -205,7 +205,6 @@ public class PlayerMovementManager : MonoBehaviour
                 break;
 
             onPlayerMoveStarted?.Invoke();
-            currentNode.ResetOccupant();
             playerController.SetCurrentOccupiedNode(targetNode);
 
 
@@ -219,8 +218,7 @@ public class PlayerMovementManager : MonoBehaviour
             {
                 // Degenerate case, accept tile and continue
                 transform.position = endPos;
-                currentNode.ResetOccupant();
-                currentNode = targetNode;
+                playerController.SetCurrentOccupiedNode(targetNode);
                 node = targetNode;
 
                 // No footstep here – we didn't really move.
@@ -292,8 +290,7 @@ public class PlayerMovementManager : MonoBehaviour
 
             // Snap precisely to tile
             transform.position = endPos;
-            //currentNode.ResetOccupant();
-            currentNode = targetNode;
+            playerController.SetCurrentOccupiedNode(targetNode);
             node = targetNode;
 
 

@@ -23,24 +23,26 @@ public class MeleeWeapon : Weapon
 
         weaponAudioEmitter.ForcePlay(GetRandomClipFromArray(weaponItemData.attackSFX), weaponItemData.attackSFXVolume);
 
-        GridNode forwardNode = PlayerController.currentOccupiedNode.GetNodeInDirection(transform.root.forward);
-        if (!forwardNode)
-            return;
+        //NEED TO ADD RAYCAST MELEE
 
-        if (forwardNode.currentOccupant.occupantType == GridNodeOccupantType.None)
-            return;
+        //GridNode forwardNode = playerInventory..currentOccupiedNode.GetNodeInDirection(transform.root.forward);
+        //if (!forwardNode)
+        //    return;
 
-        if (forwardNode.GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
-        {
-            //if (RollForHit())
-            //{
-                int damage = CalculateDamage(damageable.GetDamageData().currentArmourRating);
-                bool isCrit = RollForCrit();
-                if (isCrit)
-                    damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier + PlayerWeaponManager.bonusCritMultiplier);
+        //if (forwardNode.currentOccupant.occupantType == GridNodeOccupantType.None)
+        //    return;
 
-                damageable.TryDamage(damage, DamageType.Standard);
-           // }
-        }
+        //if (forwardNode.GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
+        //{
+        //    //if (RollForHit())
+        //    //{
+        //        int damage = CalculateDamage(damageable.GetDamageData().currentArmourRating);
+        //        bool isCrit = RollForCrit();
+        //        if (isCrit)
+        //            damage *= Mathf.CeilToInt(weaponItemData.critDamageMultiplier + PlayerWeaponManager.bonusCritMultiplier);
+
+        //        damageable.TryDamage(damage, DamageType.Standard);
+        //   // }
+        //}
     }
 }

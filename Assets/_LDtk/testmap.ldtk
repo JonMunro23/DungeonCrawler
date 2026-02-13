@@ -3079,22 +3079,6 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
-							"__identifier": "Player_Start",
-							"__grid": [29,7],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": { "tilesetUid": 3, "x": 256, "y": 144, "w": 16, "h": 16 },
-							"__smartColor": "#BE4A2F",
-							"iid": "cecdf2b2-d380-11f0-a3aa-ed39ca78b2e1",
-							"width": 16,
-							"height": 16,
-							"defUid": 2,
-							"px": [472,120],
-							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 5, "realEditorValues": [] }],
-							"__worldX": 472,
-							"__worldY": -392
-						},
-						{
 							"__identifier": "Container",
 							"__grid": [29,7],
 							"__pivot": [0.5,0.5],
@@ -3831,76 +3815,6 @@
 							"__worldY": -264
 						},
 						{
-							"__identifier": "NPC_Ranger",
-							"__grid": [15,18],
-							"__pivot": [0.5,0.5],
-							"__tags": [ "NPC", "Triggerable" ],
-							"__tile": { "tilesetUid": 3, "x": 96, "y": 560, "w": 16, "h": 16 },
-							"__smartColor": "#C8001B",
-							"iid": "16e67070-d380-11f0-81e1-a78dd9ad3dc6",
-							"width": 16,
-							"height": 16,
-							"defUid": 91,
-							"px": [248,296],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 92, "realEditorValues": [] },
-								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 155, "realEditorValues": [] }
-							],
-							"__worldX": 248,
-							"__worldY": -216
-						},
-						{
-							"__identifier": "NPC_Bug",
-							"__grid": [6,24],
-							"__pivot": [0.5,0.5],
-							"__tags": [ "NPC", "Triggerable" ],
-							"__tile": { "tilesetUid": 3, "x": 48, "y": 224, "w": 16, "h": 16 },
-							"__smartColor": "#C8001B",
-							"iid": "1a541ff0-d380-11f0-81e1-4757e16ca30b",
-							"width": 16,
-							"height": 16,
-							"defUid": 94,
-							"px": [104,392],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 95, "realEditorValues": [] },
-								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 156, "realEditorValues": [] }
-							],
-							"__worldX": 104,
-							"__worldY": -120
-						},
-						{
-							"__identifier": "Trigger",
-							"__grid": [25,7],
-							"__pivot": [0.5,0.5],
-							"__tags": ["Interactable"],
-							"__tile": { "tilesetUid": 3, "x": 256, "y": 64, "w": 16, "h": 16 },
-							"__smartColor": "#FFFFFF",
-							"iid": "4438c3c0-d380-11f0-81e1-73bd4a74fbb1",
-							"width": 16,
-							"height": 16,
-							"defUid": 90,
-							"px": [408,120],
-							"fieldInstances": [
-								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 148, "realEditorValues": [] },
-								{ "__identifier": "Entities_To_Trigger", "__type": "Array<EntityRef>", "__value": [{
-									"entityIid": "ce17e750-fa90-11f0-8e77-d3ac406a73fd",
-									"layerIid": "cecdf2b1-d380-11f0-a3aa-b1246c7f4355",
-									"levelIid": "cecdf2b0-d380-11f0-a3aa-0f0829177708",
-									"worldIid": "011d7371-9b00-11ef-9670-2ddfdbbca274"
-								}], "__tile": null, "defUid": 97, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["ce17e750-fa90-11f0-8e77-d3ac406a73fd"]
-								}] },
-								{ "__identifier": "Trigger_Operation", "__type": "LocalEnum.Trigger_Operation", "__value": "Toggle", "__tile": null, "defUid": 149, "realEditorValues": [] },
-								{ "__identifier": "Is_Single_Use", "__type": "Bool", "__value": true, "__tile": null, "defUid": 147, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ true ]
-								}] }
-							],
-							"__worldX": 408,
-							"__worldY": -392
-						},
-						{
 							"__identifier": "Keycard_Reader",
 							"__grid": [25,8],
 							"__pivot": [0.5,0.5],
@@ -4077,26 +3991,42 @@
 							"__worldY": -408
 						},
 						{
-							"__identifier": "NPC_Spawner",
-							"__grid": [23,3],
+							"__identifier": "Player_Start",
+							"__grid": [10,19],
 							"__pivot": [0.5,0.5],
-							"__tags": ["Triggerable"],
-							"__tile": { "tilesetUid": 3, "x": 272, "y": 64, "w": 16, "h": 16 },
-							"__smartColor": "#D77643",
-							"iid": "ce17e750-fa90-11f0-8e77-d3ac406a73fd",
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 256, "y": 144, "w": 16, "h": 16 },
+							"__smartColor": "#BE4A2F",
+							"iid": "cecdf2b2-d380-11f0-a3aa-ed39ca78b2e1",
 							"width": 16,
 							"height": 16,
-							"defUid": 146,
-							"px": [376,56],
+							"defUid": 2,
+							"px": [168,312],
+							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 5, "realEditorValues": [] }],
+							"__worldX": 168,
+							"__worldY": -200
+						},
+						{
+							"__identifier": "NPC_Bug",
+							"__grid": [5,26],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 48, "y": 224, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "80983df0-fa90-11f0-b8ec-e7cc689ce292",
+							"width": 16,
+							"height": 16,
+							"defUid": 94,
+							"px": [88,424],
 							"fieldInstances": [
-								{ "__identifier": "Enemy_Type_To_Spawn", "__type": "LocalEnum.Enemy_Type", "__value": "Zombie", "__tile": null, "defUid": 151, "realEditorValues": [] },
-								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 153, "realEditorValues": [{
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 95, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 156, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["Roam"]
 								}] }
 							],
-							"__worldX": 376,
-							"__worldY": -456
+							"__worldX": 88,
+							"__worldY": -88
 						}
 					]
 				},

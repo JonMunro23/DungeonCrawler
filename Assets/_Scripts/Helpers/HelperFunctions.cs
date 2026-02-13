@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class HelperFunctions
 {
@@ -59,5 +60,13 @@ public class HelperFunctions
         }
 
         throw new ArgumentException($"'{value}' is not a valid value for enum {typeof(T).Name}");
+    }
+
+    public static AudioClip GetRandomAudioClipFromArray(AudioClip[] clipArray)
+    {
+        if (clipArray.Length == 0) return null;
+
+        int rand = Random.Range(0, clipArray.Length);
+        return clipArray[rand];
     }
 }

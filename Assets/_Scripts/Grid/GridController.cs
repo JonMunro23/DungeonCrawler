@@ -92,6 +92,7 @@ public class GridController : MonoBehaviour
     [SerializeField] Vector3 worldItemSpawnOffset;
 
     public static Action onQuickSave;
+    public static event Action onLevelFinishedGenerating;
 
     public struct SquareCoords : ICoords
     {
@@ -240,6 +241,8 @@ public class GridController : MonoBehaviour
         SpawnPlayer();
 
         MovePlayer(playerSpawnCoords);
+
+        onLevelFinishedGenerating?.Invoke();
     }
 
     void InstantiateLevels()
@@ -815,7 +818,7 @@ public class GridController : MonoBehaviour
     {
         foreach (NPCController NPC in activeNPCs)
         {
-            NPC.SnapToNode(NPC.movementController.targetNode);
+            NPC.SnapToNode(NPC.movementController.CurrentNavTargetNode);
             NPC.SetActive(false);
         }
         activeNPCs.Clear();

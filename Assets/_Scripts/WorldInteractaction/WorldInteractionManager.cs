@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class WorldInteractionManager : MonoBehaviour
 {
-    PlayerController playerController;
+    PlayerController controller;
     [Header("References")]
     [SerializeField] WorldItem worldItemPrefab;
     [SerializeField] Transform itemDropLocation;
@@ -45,8 +45,6 @@ public class WorldInteractionManager : MonoBehaviour
         InventorySlot.onInventorySlotLeftClicked += OnInventorySlotClicked;
         ContainerSlot.onContainerItemGrabbed += OnContainerItemGrabbed;
 
-        AdvancedGridMovement.onPlayerTurned += OnPlayerTurn;
-
         InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
 
@@ -55,8 +53,6 @@ public class WorldInteractionManager : MonoBehaviour
         WorldItem.onWorldItemGrabbed -= OnWorldItemGrabbed;
         InventorySlot.onInventorySlotLeftClicked -= OnInventorySlotClicked;
         ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
-
-        AdvancedGridMovement.onPlayerTurned -= OnPlayerTurn;
 
         InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
@@ -70,7 +66,7 @@ public class WorldInteractionManager : MonoBehaviour
 
     public void Init(PlayerController playerController)
     {
-        this.playerController = playerController;
+        controller = playerController;
     }
 
     void OnPlayerTurn(int turnDir)
@@ -182,12 +178,12 @@ public class WorldInteractionManager : MonoBehaviour
 
     void DropItemFromInventoryIntoWorld(ISlot slot)
     {
-        SpawnWorldItem(slot.TakeItem(), PlayerController.currentOccupiedNode, itemDropLocation.position);
+        SpawnWorldItem(slot.TakeItem(), controller.currentOccupiedNode, itemDropLocation.position);
     }
 
     void SpawnWorldItem(ItemStack itemStackToSpawn, GridNode nodePlacedIn, Vector3 placementLocation)
     {
-        WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, playerController.transform.localEulerAngles.y, 0)));
+        WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, controller.transform.localEulerAngles.y, 0)));
         worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), nodePlacedIn.Coords.Pos, itemStackToSpawn);
         worldItem.transform.GetChild(0).localPosition = new Vector3(worldItem.transform.GetChild(0).localPosition.x, worldItem.transform.GetChild(0).localPosition.y, 0);
         worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
@@ -200,7 +196,7 @@ public class WorldInteractionManager : MonoBehaviour
     void Update()
     {
         RaycastHit hit;
-        Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = controller.playerCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, maxItemGrabDistance))
         {
             //Debug.DrawLine(ray.origin, hit.point, Color.yellow);
@@ -262,7 +258,7 @@ public class WorldInteractionManager : MonoBehaviour
                 }
                 else if(hit.transform.TryGetComponent(out IPickup pickup))
                 {
-                    pickup.AddToInventory(playerController.playerInventoryManager);
+                    pickup.AddToInventory(controller.playerInventoryManager);
                     PlayGrabAnim();
                 }
                 else if (hit.transform.TryGetComponent(out IContainer container))
@@ -321,7 +317,7 @@ public class WorldInteractionManager : MonoBehaviour
 
     void PickupItem(WorldItem itemToPickup)
     {
-        int remainingItems = playerController.playerInventoryManager.TryAddItem(itemToPickup.item);
+        int remainingItems = controller.playerInventoryManager.TryAddItem(itemToPickup.item);
         if(remainingItems != itemToPickup.item.itemAmount)
         {
             PlayGrabAnim();
@@ -346,9 +342,9 @@ public class WorldInteractionManager : MonoBehaviour
 
     private void PlayGrabAnim()
     {
-        if (playerController.playerWeaponManager.currentWeapon != null && playerController.playerWeaponManager.currentWeapon.CanUse())
+        if (controller.playerWeaponManager.currentWeapon != null && controller.playerWeaponManager.currentWeapon.CanUse())
         {
-            playerController.playerWeaponManager.currentWeapon.Grab();
+            controller.playerWeaponManager.currentWeapon.Grab();
             if(grabSFX != null)
                 itemPickupAudioEmitter.ForcePlay(grabSFX, grabSFXVolume);
         }
