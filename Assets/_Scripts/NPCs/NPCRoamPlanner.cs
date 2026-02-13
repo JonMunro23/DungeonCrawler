@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -30,6 +30,9 @@ public class NPCRoamPlanner : MonoBehaviour
 
     GridNode currentRoamDestination;
     int roamDestinationTurnsRemaining;
+
+    // Reused buffer to avoid GC
+    readonly List<GridNode> candidates = new List<GridNode>(256);
 
     // ==========================
     // Public API
@@ -65,7 +68,7 @@ public class NPCRoamPlanner : MonoBehaviour
         {
             currentRoamDestination = null;
 
-            // Ensure vision cache is up-to-date (distances + cone)
+            // ✅ refresh vision ONCE here
             vision.Refresh(currentNode);
 
             for (int i = 0; i < roamPickAttempts; i++)
@@ -88,32 +91,49 @@ public class NPCRoamPlanner : MonoBehaviour
     // ==========================
     GridNode PickRandomVisibleDestination(GridNode start, NPCVisionSensor vision)
     {
-        var dist = vision.LastDistances;
-        if (dist == null || dist.Count <= 1) return null;
+        var bfsNodes = vision.LastBfsNodes;
+        if (bfsNodes == null || bfsNodes.Count <= 1) return null;
 
-        List<GridNode> candidates = new List<GridNode>(dist.Count);
+        candidates.Clear();
 
-        foreach (var kvp in dist)
+        if (!roamTargetsMustBeInCone)
         {
-            GridNode node = kvp.Key;
-            int d = kvp.Value;
+            // BFS-only candidates
+            for (int i = 0; i < bfsNodes.Count; i++)
+            {
+                GridNode node = bfsNodes[i];
+                if (node == null || node == start) continue;
 
-            if (node == null) continue;
-            if (node == start) continue;
-            if (d < roamMinDestinationDistanceNodes) continue;
-            if (!IsValidDestination(node)) continue;
+                int d = vision.GetLastBfsDistanceSteps(node);
+                if (d < roamMinDestinationDistanceNodes) continue;
 
-            candidates.Add(node);
+                if (!IsValidDestination(node)) continue;
+
+                candidates.Add(node);
+            }
+        }
+        else
+        {
+            // Cone-filtered candidates
+            var coneNodes = vision.LastConeNodes;
+            if (coneNodes == null || coneNodes.Count == 0) return null;
+
+            for (int i = 0; i < bfsNodes.Count; i++)
+            {
+                GridNode node = bfsNodes[i];
+                if (node == null || node == start) continue;
+
+                int d = vision.GetLastBfsDistanceSteps(node);
+                if (d < roamMinDestinationDistanceNodes) continue;
+
+                if (!IsValidDestination(node)) continue;
+                if (!ContainsNode(coneNodes, node)) continue;
+
+                candidates.Add(node);
+            }
         }
 
         if (candidates.Count == 0) return null;
-
-        if (roamTargetsMustBeInCone)
-        {
-            var coneNodes = vision.LastConeNodes;
-            candidates.RemoveAll(n => !ContainsNode(coneNodes, n));
-            if (candidates.Count == 0) return null;
-        }
 
         return candidates[Random.Range(0, candidates.Count)];
     }

@@ -1,6 +1,8 @@
-using LDtkUnity;
+﻿using LDtkUnity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -27,6 +29,9 @@ public class GridController : MonoBehaviour
     [SerializeField] Dictionary<Vector2, GridNode> activeNodes = new Dictionary<Vector2, GridNode>();
     Grid grid;
     public static float gridSize = 3;
+    // Per-level index lookup (fast + correct)
+    Dictionary<int, GridNode[]> nodesByIndexPerLevel = new Dictionary<int, GridNode[]>();
+
 
     [Header("Levels")]
     [SerializeField] int startingLevelIndex;
@@ -90,6 +95,11 @@ public class GridController : MonoBehaviour
     [Header("Spawn Offsets")]
     [SerializeField] Vector3 centeredEntitySpawnOffset;
     [SerializeField] Vector3 worldItemSpawnOffset;
+
+    GridNode[] nodesByIndex;
+    public GridNode GetNodeByIndex(int idx) => (nodesByIndex != null && idx >= 0 && idx < nodesByIndex.Length) ? nodesByIndex[idx] : null;
+    public int CurrentNodeCount => nodesByIndex != null ? nodesByIndex.Length : 0;
+
 
     public static Action onQuickSave;
     public static event Action onLevelFinishedGenerating;
@@ -284,6 +294,7 @@ public class GridController : MonoBehaviour
         intGridLayer = levels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
 
         Transform levelParent = new GameObject($"Level {levelIndex}").transform;
+        levelParent.SetParent(transform);
         levelParents.Add(levelParent);
 
         GenerateLevel(levelIndex);
@@ -294,40 +305,55 @@ public class GridController : MonoBehaviour
 
     void GenerateLevel(int levelIndex)
     {
-        int index = 0;
+        int nodeIndex = 0;
         Vector2 spawnCoords = Vector2.zero;
         Transform nodeParent = levelParents[levelIndex];
+
+        // allocate once per level
+        GridNode[] levelNodesByIndex = new GridNode[intGridLayer.IntGridCsv.Length];
+
         for (int i = 0; i < intGridLayer.CWid; i++)
         {
             for (int j = 0; j < intGridLayer.CHei; j++)
             {
                 GridNode clone = null;
-                //Spawn tiles
-                //i index is reversed to match orientation in LDtk
+
                 spawnCoords = new Vector2(-i, j);
                 SquareCoords sqCoords = new SquareCoords { Pos = new Vector2(-i, j) };
-                switch (intGridLayer.IntGridCsv[index])
+
+                switch (intGridLayer.IntGridCsv[nodeIndex])
                 {
                     case 1:
                         clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
                         clone.transform.localPosition += new Vector3(-1.5f, 1.5f, -1.5f);
-                        break; //Spawn Walls
+                        break;
                     case 2:
                         clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
-                        break; //Spawn Walkables
+                        break;
                     case 3:
                         clone = Instantiate(voidPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
                         clone.SetIsVoid(true);
-                        break; //Spawn Void
+                        break;
                 }
-                clone.InitNode(sqCoords);
+
+                clone.InitNode(sqCoords, nodeIndex);
+
+                // ✅ fill the per-level array
+                levelNodesByIndex[nodeIndex] = clone;
+
                 activeNodes.Add(spawnCoords, clone);
+
                 Vector2 loopIndices = new Vector2(i, j);
                 GenerateEntities(levelIndex, loopIndices, spawnCoords);
-                index++;
+
+                nodeIndex++;
             }
         }
+
+        // ✅ store this level’s node lookup
+        nodesByIndexPerLevel[levelIndex] = levelNodesByIndex;
     }
+
 
     void GenerateEntities(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
     {
@@ -799,21 +825,27 @@ public class GridController : MonoBehaviour
 
         currentLevelIndex = levelIndex;
 
-        //Debug.Log("Loading level: " + levelIndex);
-        foreach(GridNode node in levelData.GetNodes().Values)
+        // switch lookup to this level
+        if (nodesByIndexPerLevel.TryGetValue(levelIndex, out var arr))
+            nodesByIndex = arr;
+        else
+            nodesByIndex = null;
+
+        foreach (GridNode node in levelData.GetNodes().Values)
         {
             node.SetActive(true);
             activeNodes.Add(node.Coords.Pos, node);
         }
 
-        foreach(NPCController NPC in levelData.GetNPCs())
+        foreach (NPCController NPC in levelData.GetNPCs())
         {
             NPC.SetActive(true);
             activeNPCs.Add(NPC);
         }
     }
 
-    
+
+
     void UnloadCurrentLevel()
     {
         foreach (NPCController NPC in activeNPCs)

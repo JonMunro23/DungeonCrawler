@@ -48,11 +48,12 @@ public class GridNode : MonoBehaviour
     [SerializeField] TMP_Text coordText;
     public List<GridNode> neighbouringNodes = new List<GridNode>();
     public List<GridNode> allNeighbouringNodes = new List<GridNode>();
-
     public Transform moveToTransform;
     public GridNodeOccupant currentOccupant;
     public GridNodeOccupant baseOccupant;
 
+    int nodeIndex;
+    public int NodeIndex => nodeIndex;
     bool isExplored;
     bool isVoid;
 
@@ -190,9 +191,12 @@ public class GridNode : MonoBehaviour
     private void SetText()
     {
         //if (_selected) return;
-        _gCostText.text = G.ToString();
-        _hCostText.text = H.ToString();
-        _fCostText.text = F.ToString();
+        if(_gCostText.enabled)
+            _gCostText.text = G.ToString();
+        if(_hCostText.enabled)
+            _hCostText.text = H.ToString();
+        if(_fCostText)
+            _fCostText.text = F.ToString();
     }
 
     public void RevertTile()
@@ -223,8 +227,10 @@ public class GridNode : MonoBehaviour
 
     public bool GetIsExplored() => isExplored;
 
-    public void InitNode(ICoords _coords)
+    public void InitNode(ICoords _coords, int nodeIndex)
     {
+        this.nodeIndex = nodeIndex;
+        gameObject.name = $"{gameObject.name}_{nodeIndex.ToString()}";
         Coords = _coords;
         if(coordText)
             coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";

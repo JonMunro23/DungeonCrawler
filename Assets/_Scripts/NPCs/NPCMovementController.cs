@@ -8,6 +8,7 @@ public enum NPCMovementBehaviour
     Roam,
     Pursue
 }
+
 public class NPCMovementController : MonoBehaviour
 {
     // ==========================
@@ -16,7 +17,6 @@ public class NPCMovementController : MonoBehaviour
     NPCController controller;
     NPCVisionSensor vision;
     NPCRoamPlanner roamPlanner;
-
 
     // ==========================
     // Movement state
@@ -65,6 +65,14 @@ public class NPCMovementController : MonoBehaviour
     float timeSinceLastDeaggroCheck;
 
     // ==========================
+    // Repath safety (prevents recursion stack overflow)
+    // ==========================
+    bool queueRepathToNextFrame = true;
+
+    bool repathQueued;
+    Coroutine repathRoutine;
+
+    // ==========================
     // Unity lifecycle
     // ==========================
     void Awake()
@@ -99,6 +107,11 @@ public class NPCMovementController : MonoBehaviour
 
         if (vision != null)
             vision.ClearHighlights();
+
+        if (repathRoutine != null)
+            StopCoroutine(repathRoutine);
+        repathRoutine = null;
+        repathQueued = false;
     }
 
     // ==========================
@@ -150,6 +163,8 @@ public class NPCMovementController : MonoBehaviour
 
     void OnNodeOccupancyUpdated()
     {
+        if (isMoving || isTurning) return;
+
         if (currentMovementBehaviour == NPCMovementBehaviour.Pursue)
             FindNewPath();
 
@@ -178,7 +193,6 @@ public class NPCMovementController : MonoBehaviour
 
         if (detected)
         {
-            // If already pursuing, just reset timer
             if (currentMovementBehaviour == NPCMovementBehaviour.Pursue)
             {
                 ResetDeaggroTimer();
@@ -195,10 +209,8 @@ public class NPCMovementController : MonoBehaviour
         if (stickyAggro) return;
         if (currentMovementBehaviour != NPCMovementBehaviour.Pursue) return;
 
-        // Accumulate real-time since last seen
         timeSinceLastDetected += Time.deltaTime;
 
-        // Only run BFS check every interval
         timeSinceLastDeaggroCheck += Time.deltaTime;
         if (timeSinceLastDeaggroCheck < deaggroCheckInterval)
             return;
@@ -226,7 +238,6 @@ public class NPCMovementController : MonoBehaviour
         isAggro = true;
         currentMovementBehaviour = NPCMovementBehaviour.Pursue;
 
-        // Cancel roaming immediately
         if (roamPlanner != null) roamPlanner.CancelDestination();
         currentPathToNavigate.Clear();
 
@@ -249,6 +260,37 @@ public class NPCMovementController : MonoBehaviour
     {
         timeSinceLastDetected = 0f;
         timeSinceLastDeaggroCheck = 0f;
+    }
+
+    // ==========================
+    // Repath safety helpers
+    // ==========================
+    void QueueRepath()
+    {
+        if (!queueRepathToNextFrame)
+        {
+            FindNewPath();
+            return;
+        }
+
+        if (repathQueued) return;
+        repathQueued = true;
+
+        if (repathRoutine != null)
+            StopCoroutine(repathRoutine);
+
+        repathRoutine = StartCoroutine(RepathNextFrame());
+    }
+
+    IEnumerator RepathNextFrame()
+    {
+        // Breaks FindNewPath <-> NavigatePath recursion.
+        yield return null;
+
+        repathQueued = false;
+        repathRoutine = null;
+
+        FindNewPath();
     }
 
     // ==========================
@@ -283,6 +325,9 @@ public class NPCMovementController : MonoBehaviour
         }
 
         currentPathToNavigate = Pathfinding_Custom.FindPath(controller.currentlyOccupiedGridnode, targetNode);
+
+        // Keep this call if you want immediate responsiveness.
+        // It's now safe because NavigatePath no longer calls FindNewPath directly.
         NavigatePath(currentPathToNavigate);
     }
 
@@ -298,6 +343,8 @@ public class NPCMovementController : MonoBehaviour
 
     GridNode GetRandomAdjacentWalkableNode(GridNode previous = null)
     {
+        // NOTE: this call allocates because GetNeighbouringNodes builds a new list.
+        // It's fine for now; later we can switch to cached neighbouringNodes.
         List<GridNode> neighbours = new List<GridNode>(controller.currentlyOccupiedGridnode.GetNeighbouringNodes(false));
         List<GridNode> walkable = new List<GridNode>();
 
@@ -326,8 +373,8 @@ public class NPCMovementController : MonoBehaviour
     {
         if (pathToNavigate == null || pathToNavigate.Count == 0)
         {
-            if (currentMovementBehaviour == NPCMovementBehaviour.Roam)
-                FindNewPath();
+            if (currentMovementBehaviour != NPCMovementBehaviour.Idle)
+                QueueRepath();
             return;
         }
 
@@ -366,7 +413,8 @@ public class NPCMovementController : MonoBehaviour
                 return;
             }
 
-            FindNewPath();
+            // Facing but blocked => stale path/target. Repath safely.
+            QueueRepath();
             return;
         }
 
@@ -380,6 +428,8 @@ public class NPCMovementController : MonoBehaviour
     void MoveToNode(GridNode nodeToMoveTo)
     {
         if (isMoving) return;
+
+        isMoving = true; // critical: set immediately (prevents re-entrant navigation)
 
         controller.currentlyOccupiedGridnode.ResetOccupant();
         AnimateMovement();
@@ -425,7 +475,6 @@ public class NPCMovementController : MonoBehaviour
 
     IEnumerator LerpPos(Vector3 startPos, Vector3 endPos, float lerpDuration)
     {
-        isMoving = true;
         float timeElapsed = 0;
 
         while (timeElapsed < lerpDuration)

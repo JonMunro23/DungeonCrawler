@@ -3043,6 +3043,18 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
+      propertyPath: rangerNpcPrefab
+      value: 
+      objectReference: {fileID: 4677203723223923960, guid: aa9aaba4ef1e21542b5b282736af904f,
+        type: 3}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
+      propertyPath: zombieNpcPrefab
+      value: 
+      objectReference: {fileID: 4547061936617122692, guid: 12a5396dd63d152438a47285e488de9d,
+        type: 3}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
       propertyPath: npcSpawnerPrefab
       value: 
       objectReference: {fileID: 6492329303738561571, guid: 24bbb1520d78cb94fa2a5c265b751cab,

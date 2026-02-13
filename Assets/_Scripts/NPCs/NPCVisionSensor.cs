@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,7 +30,7 @@ public class NPCVisionSensor : MonoBehaviour
     [SerializeField] bool debugDrawConeGizmos = true;
 
     [Tooltip("Highlights cone nodes (and optionally BFS nodes) using GridNode highlight materials.")]
-    [SerializeField] bool debugHighlightNodes = true;
+    [SerializeField] bool debugHighlightNodes = false;
 
     [Tooltip("Also highlight BFS-reachable nodes (not just the cone nodes).")]
     [SerializeField] bool debugHighlightBfsReachable = false;
@@ -48,28 +48,48 @@ public class NPCVisionSensor : MonoBehaviour
     [SerializeField] int gridSizeWorldUnits = 3;
 
     // ==========================
-    // Runtime caches
+    // Runtime caches (lists reused)
     // ==========================
-    Dictionary<GridNode, int> lastBfsDistances = new Dictionary<GridNode, int>();
-    readonly List<GridNode> lastBfsNodes = new List<GridNode>();
-    readonly List<GridNode> lastConeNodes = new List<GridNode>();
+    readonly List<GridNode> lastBfsNodes = new List<GridNode>(256);
+    readonly List<GridNode> lastConeNodes = new List<GridNode>(128);
 
-    readonly List<GridNode> lastHighlightedNodes = new List<GridNode>();
+    readonly List<GridNode> lastHighlightedNodes = new List<GridNode>(256);
     Coroutine clearHighlightRoutine;
+
+    // ==========================
+    // Allocation-free BFS buffers
+    // ==========================
+    int[] dist;
+    int[] stamp;
+    int currentStamp = 1;
+
+    int[] queue;
+    int qHead, qTail;
 
     // ==========================
     // Public API
     // ==========================
     public bool Enabled => enablePlayerDetection;
-    public int DetectRangeNodes => detectRangeNodes;
-    public float DetectConeAngle => detectConeAngle;
-    public bool IncludeDiagonals => bfsIncludeDiagonals;
-
-    public IReadOnlyDictionary<GridNode, int> LastDistances => lastBfsDistances;
     public IReadOnlyList<GridNode> LastBfsNodes => lastBfsNodes;
     public IReadOnlyList<GridNode> LastConeNodes => lastConeNodes;
 
     public void SetOrientation(Transform newOrientation) => orientation = newOrientation;
+
+    public void ClearHighlights()
+    {
+        if (clearHighlightRoutine != null && debugHighlightDuration <= 0f)
+        {
+            StopCoroutine(clearHighlightRoutine);
+            clearHighlightRoutine = null;
+        }
+
+        for (int i = 0; i < lastHighlightedNodes.Count; i++)
+        {
+            var n = lastHighlightedNodes[i];
+            if (n != null) n.UnhighlightCell();
+        }
+        lastHighlightedNodes.Clear();
+    }
 
     public void Refresh(GridNode npcNode)
     {
@@ -77,25 +97,13 @@ public class NPCVisionSensor : MonoBehaviour
         if (npcNode == null) return;
         if (orientation == null) return;
 
-        // 1) BFS
-        lastBfsDistances = BFS_Distances(npcNode, detectRangeNodes, bfsIncludeDiagonals);
+        EnsureBuffersSized();
 
-        // 2) Cache BFS nodes
-        lastBfsNodes.Clear();
-        foreach (var kvp in lastBfsDistances)
-            lastBfsNodes.Add(kvp.Key);
+        RunBfs(npcNode, detectRangeNodes, bfsIncludeDiagonals);
+        BuildConeFromBfsNodes();
 
-        // 3) Cone filter
-        lastConeNodes.Clear();
-        var cone = FilterNodesByCone(lastBfsNodes, orientation, detectConeAngle);
-        for (int i = 0; i < cone.Count; i++)
-            lastConeNodes.Add(cone[i]);
-
-        // 4) Debug highlight
-        if (debugHighlightNodes)
-            ApplyVisionHighlights(lastBfsNodes, lastConeNodes);
-        else
-            ClearHighlights();
+        if (debugHighlightNodes) ApplyVisionHighlights();
+        else ClearHighlights();
     }
 
     public bool IsPlayerDetected(GridNode npcNode, GridNode playerNode)
@@ -104,68 +112,165 @@ public class NPCVisionSensor : MonoBehaviour
         if (npcNode == null || playerNode == null) return false;
         if (orientation == null) return false;
 
-        // Keep cache in sync with detection
-        Refresh(npcNode);
+        EnsureBuffersSized();
 
-        if (!lastBfsDistances.ContainsKey(playerNode))
+        RunBfs(npcNode, detectRangeNodes, bfsIncludeDiagonals);
+
+        if (!IsVisited(playerNode.NodeIndex))
+        {
+            lastConeNodes.Clear();
+            if (debugHighlightNodes) ApplyVisionHighlights(); else ClearHighlights();
             return false;
+        }
 
-        for (int i = 0; i < lastConeNodes.Count; i++)
-            if (lastConeNodes[i] == playerNode)
-                return true;
+        bool playerInCone = IsNodeInCone(playerNode);
 
-        return false;
+        // Keep caches up to date for roam planner / debug
+        BuildConeFromBfsNodes();
+        if (debugHighlightNodes) ApplyVisionHighlights(); else ClearHighlights();
+
+        return playerInCone;
+    }
+
+    public int GetLastBfsDistanceSteps(GridNode node)
+    {
+        if (node == null) return int.MaxValue;
+
+        int idx = node.NodeIndex;
+        if (stamp == null || dist == null) return int.MaxValue;
+        if (idx < 0 || idx >= stamp.Length) return int.MaxValue;
+
+        if (stamp[idx] != currentStamp) return int.MaxValue;
+
+        return dist[idx];
     }
 
     // ==========================
-    // Core: BFS + Cone
+    // Buffer sizing
     // ==========================
-    Dictionary<GridNode, int> BFS_Distances(GridNode start, int maxSteps, bool includeDiagonals)
+    void EnsureBuffersSized()
     {
-        var dist = new Dictionary<GridNode, int>(128);
-        var q = new Queue<GridNode>();
+        // ✅ must match NodeIndex range for current level
+        int nodeCount = GridController.Instance.CurrentNodeCount;
+        if (nodeCount <= 0) return;
 
-        dist[start] = 0;
-        q.Enqueue(start);
-
-        while (q.Count > 0)
+        if (dist == null || dist.Length != nodeCount)
         {
-            GridNode cur = q.Dequeue();
-            int d = dist[cur];
+            dist = new int[nodeCount];
+            stamp = new int[nodeCount];
+            queue = new int[nodeCount];
+
+            currentStamp = 1;
+        }
+    }
+
+    bool IsVisited(int nodeIndex)
+    {
+        if (stamp == null) return false;
+        if (nodeIndex < 0 || nodeIndex >= stamp.Length) return false;
+        return stamp[nodeIndex] == currentStamp;
+    }
+
+    // ==========================
+    // BFS (allocation-free)
+    // ==========================
+    void RunBfs(GridNode startNode, int maxSteps, bool includeDiagonals)
+    {
+        currentStamp++;
+        if (currentStamp == int.MaxValue)
+        {
+            currentStamp = 1;
+            System.Array.Clear(stamp, 0, stamp.Length);
+        }
+
+        lastBfsNodes.Clear();
+        lastConeNodes.Clear();
+
+        qHead = 0;
+        qTail = 0;
+
+        int startIdx = startNode.NodeIndex;
+        if (startIdx < 0 || startIdx >= stamp.Length) return;
+
+        stamp[startIdx] = currentStamp;
+        dist[startIdx] = 0;
+
+        Enqueue(startIdx);
+        lastBfsNodes.Add(startNode);
+
+        while (qHead != qTail)
+        {
+            int curIdx = Dequeue();
+            int d = dist[curIdx];
 
             if (d >= maxSteps)
                 continue;
 
-            List<GridNode> neighbours = cur.GetNeighbouringNodes(includeDiagonals);
+            GridNode curNode = GetNodeByIndex(curIdx);
+            if (curNode == null) continue;
 
-            for (int i = 0; i < neighbours.Count; i++)
+            var neigh = includeDiagonals ? curNode.allNeighbouringNodes : curNode.neighbouringNodes;
+            if (neigh == null) continue;
+
+            for (int i = 0; i < neigh.Count; i++)
             {
-                GridNode next = neighbours[i];
+                GridNode next = neigh[i];
                 if (next == null) continue;
-                if (dist.ContainsKey(next)) continue;
 
+                int nextIdx = next.NodeIndex;
+                if (nextIdx < 0 || nextIdx >= stamp.Length) continue;
+
+                if (stamp[nextIdx] == currentStamp) continue;
                 if (!IsNodeTraversableForVision(next)) continue;
 
-                dist[next] = d + 1;
-                q.Enqueue(next);
+                stamp[nextIdx] = currentStamp;
+                dist[nextIdx] = d + 1;
+
+                Enqueue(nextIdx);
+                lastBfsNodes.Add(next);
             }
         }
-
-        return dist;
     }
 
-    List<GridNode> FilterNodesByCone(List<GridNode> nodes, Transform facing, float coneAngleDeg)
+    void Enqueue(int idx)
     {
-        var result = new List<GridNode>(nodes.Count);
-        Vector3 origin = facing.position;
-        Vector3 forward = facing.forward;
+        queue[qTail] = idx;
+        qTail++;
+        if (qTail >= queue.Length) qTail = 0;
+    }
 
-        float half = coneAngleDeg * 0.5f;
+    int Dequeue()
+    {
+        int idx = queue[qHead];
+        qHead++;
+        if (qHead >= queue.Length) qHead = 0;
+        return idx;
+    }
 
-        for (int i = 0; i < nodes.Count; i++)
+    GridNode GetNodeByIndex(int nodeIndex)
+    {
+        // ✅ O(1) lookup (requires GridController to swap nodesByIndex for active level)
+        return GridController.Instance.GetNodeByIndex(nodeIndex);
+    }
+
+    // ==========================
+    // Cone filtering
+    // ==========================
+    void BuildConeFromBfsNodes()
+    {
+        lastConeNodes.Clear();
+
+        Vector3 origin = orientation.position;
+        Vector3 forward = orientation.forward;
+        float half = detectConeAngle * 0.5f;
+
+        for (int i = 0; i < lastBfsNodes.Count; i++)
         {
-            GridNode node = nodes[i];
+            GridNode node = lastBfsNodes[i];
             if (node == null) continue;
+
+            // ✅ skip self (first BFS node is start)
+            if (i == 0) continue;
 
             Vector3 targetPos = GetNodeWorldPos(node);
 
@@ -177,12 +282,35 @@ public class NPCVisionSensor : MonoBehaviour
 
             float angle = Vector3.Angle(forward, to.normalized);
             if (angle <= half)
-                result.Add(node);
+                lastConeNodes.Add(node);
         }
-
-        return result;
     }
 
+    bool IsNodeInCone(GridNode node)
+    {
+        Vector3 origin = orientation.position;
+        Vector3 forward = orientation.forward;
+        float half = detectConeAngle * 0.5f;
+
+        Vector3 to = GetNodeWorldPos(node) - origin;
+        to.y = 0f;
+
+        if (to.sqrMagnitude < 0.0001f) return true;
+
+        float angle = Vector3.Angle(forward, to.normalized);
+        return angle <= half;
+    }
+
+    Vector3 GetNodeWorldPos(GridNode node)
+    {
+        if (node == null) return Vector3.zero;
+        if (node.moveToTransform != null) return node.moveToTransform.position;
+        return node.transform.position;
+    }
+
+    // ==========================
+    // Vision flood rules
+    // ==========================
     bool IsNodeTraversableForVision(GridNode node)
     {
         if (node == null) return false;
@@ -195,40 +323,32 @@ public class NPCVisionSensor : MonoBehaviour
             case GridNodeOccupantType.Obstacle:
             case GridNodeOccupantType.NPCInaccessible:
                 return false;
-
             default:
                 return true;
         }
     }
 
-    Vector3 GetNodeWorldPos(GridNode node)
-    {
-        if (node == null) return Vector3.zero;
-        if (node.moveToTransform != null) return node.moveToTransform.position;
-        return node.transform.position;
-    }
-
     // ==========================
     // Debug: Highlight tiles
     // ==========================
-    void ApplyVisionHighlights(List<GridNode> bfsNodes, List<GridNode> coneNodes)
+    void ApplyVisionHighlights()
     {
         ClearHighlights();
 
         if (debugHighlightBfsReachable)
         {
-            for (int i = 0; i < bfsNodes.Count; i++)
+            for (int i = 0; i < lastBfsNodes.Count; i++)
             {
-                GridNode n = bfsNodes[i];
+                var n = lastBfsNodes[i];
                 if (n == null) continue;
                 n.HighlightCellClosed();
                 lastHighlightedNodes.Add(n);
             }
         }
 
-        for (int i = 0; i < coneNodes.Count; i++)
+        for (int i = 0; i < lastConeNodes.Count; i++)
         {
-            GridNode n = coneNodes[i];
+            var n = lastConeNodes[i];
             if (n == null) continue;
             n.HighlightCellClosed();
             if (!lastHighlightedNodes.Contains(n))
@@ -248,23 +368,6 @@ public class NPCVisionSensor : MonoBehaviour
         yield return new WaitForSeconds(delay);
         ClearHighlights();
         clearHighlightRoutine = null;
-    }
-
-    public void ClearHighlights()
-    {
-        if (clearHighlightRoutine != null && debugHighlightDuration <= 0f)
-        {
-            StopCoroutine(clearHighlightRoutine);
-            clearHighlightRoutine = null;
-        }
-
-        for (int i = 0; i < lastHighlightedNodes.Count; i++)
-        {
-            GridNode n = lastHighlightedNodes[i];
-            if (n != null)
-                n.UnhighlightCell();
-        }
-        lastHighlightedNodes.Clear();
     }
 
     // ==========================
@@ -312,7 +415,7 @@ public class NPCVisionSensor : MonoBehaviour
             Gizmos.color = new Color(0f, 1f, 1f, 0.25f);
             for (int i = 0; i < lastBfsNodes.Count; i++)
             {
-                GridNode n = lastBfsNodes[i];
+                var n = lastBfsNodes[i];
                 if (n == null) continue;
                 Gizmos.DrawSphere(GetNodeWorldPos(n), debugBfsSphereRadius);
             }
@@ -323,7 +426,7 @@ public class NPCVisionSensor : MonoBehaviour
             Gizmos.color = new Color(1f, 1f, 0f, 0.55f);
             for (int i = 0; i < lastConeNodes.Count; i++)
             {
-                GridNode n = lastConeNodes[i];
+                var n = lastConeNodes[i];
                 if (n == null) continue;
                 Gizmos.DrawSphere(GetNodeWorldPos(n), debugConeSphereRadius);
             }

@@ -3992,7 +3992,7 @@
 						},
 						{
 							"__identifier": "Player_Start",
-							"__grid": [10,19],
+							"__grid": [29,7],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 256, "y": 144, "w": 16, "h": 16 },
@@ -4001,10 +4001,10 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 2,
-							"px": [168,312],
+							"px": [472,120],
 							"fieldInstances": [{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 5, "realEditorValues": [] }],
-							"__worldX": 168,
-							"__worldY": -200
+							"__worldX": 472,
+							"__worldY": -392
 						},
 						{
 							"__identifier": "NPC_Bug",
@@ -4027,6 +4027,158 @@
 							],
 							"__worldX": 88,
 							"__worldY": -88
+						},
+						{
+							"__identifier": "NPC_Ranger",
+							"__grid": [5,20],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 96, "y": 560, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "bed85600-fa90-11f0-b8ec-294c38e52e15",
+							"width": 16,
+							"height": 16,
+							"defUid": 91,
+							"px": [88,328],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 92, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 155, "realEditorValues": [] }
+							],
+							"__worldX": 88,
+							"__worldY": -184
+						},
+						{
+							"__identifier": "NPC_Ranger",
+							"__grid": [16,28],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 96, "y": 560, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "bf2e8c50-fa90-11f0-b8ec-0fe52e07565c",
+							"width": 16,
+							"height": 16,
+							"defUid": 91,
+							"px": [264,456],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 92, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 155, "realEditorValues": [] }
+							],
+							"__worldX": 264,
+							"__worldY": -56
+						},
+						{
+							"__identifier": "NPC_Bug",
+							"__grid": [23,20],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 48, "y": 224, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "bfce75d0-fa90-11f0-b8ec-81351cf33186",
+							"width": 16,
+							"height": 16,
+							"defUid": 94,
+							"px": [376,328],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 95, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 156, "realEditorValues": [] }
+							],
+							"__worldX": 376,
+							"__worldY": -184
+						},
+						{
+							"__identifier": "NPC_Zombie",
+							"__grid": [21,3],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 96, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "c26d1580-fa90-11f0-b8ec-b7b190913aa9",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [344,56],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 154, "realEditorValues": [] }
+							],
+							"__worldX": 344,
+							"__worldY": -456
+						},
+						{
+							"__identifier": "NPC_Zombie",
+							"__grid": [27,26],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 96, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "c4174310-fa90-11f0-b8ec-3714a0079fe2",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [440,424],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 154, "realEditorValues": [] }
+							],
+							"__worldX": 440,
+							"__worldY": -88
+						},
+						{
+							"__identifier": "NPC_Bug",
+							"__grid": [8,23],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 48, "y": 224, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "c6dc0860-fa90-11f0-b8ec-f548acf9339f",
+							"width": 16,
+							"height": 16,
+							"defUid": 94,
+							"px": [136,376],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 95, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 156, "realEditorValues": [] }
+							],
+							"__worldX": 136,
+							"__worldY": -136
+						},
+						{
+							"__identifier": "NPC_Bug",
+							"__grid": [8,28],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 48, "y": 224, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "c920c840-fa90-11f0-b8ec-45e8d93f701b",
+							"width": 16,
+							"height": 16,
+							"defUid": 94,
+							"px": [136,456],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 95, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 156, "realEditorValues": [] }
+							],
+							"__worldX": 136,
+							"__worldY": -56
+						},
+						{
+							"__identifier": "NPC_Bug",
+							"__grid": [4,23],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 48, "y": 224, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "c96f3660-fa90-11f0-b8ec-99ef90737684",
+							"width": 16,
+							"height": 16,
+							"defUid": 94,
+							"px": [72,376],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 95, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Roam", "__tile": null, "defUid": 156, "realEditorValues": [] }
+							],
+							"__worldX": 72,
+							"__worldY": -136
 						}
 					]
 				},
