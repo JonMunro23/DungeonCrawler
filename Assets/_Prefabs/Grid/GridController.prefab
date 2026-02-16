@@ -69,11 +69,11 @@ MonoBehaviour:
   spawnedPlayerSpawnPoint: {fileID: 0}
   playerController: {fileID: 0}
   spawnNPCs: 1
-  zombieNpcPrefab: {fileID: 8651504595935704073, guid: 604f96a20eff0ad468b945f0c6ff04ae,
+  zombieNpcPrefab: {fileID: 4547061936617122692, guid: 12a5396dd63d152438a47285e488de9d,
     type: 3}
-  rangerNpcPrefab: {fileID: 8651504595935704073, guid: baaf0020e3f252740b651875dc49dc06,
+  rangerNpcPrefab: {fileID: 4677203723223923960, guid: aa9aaba4ef1e21542b5b282736af904f,
     type: 3}
-  bugNpcPrefab: {fileID: 8651504595935704073, guid: 649ae97880b1ace41ace2134f977d20f,
+  bugNpcPrefab: {fileID: 8137090331969483777, guid: 8e26d3111dfbb32478a8abd2d444245c,
     type: 3}
   spawnedNPCs: []
   activeNPCs: []
@@ -89,6 +89,8 @@ MonoBehaviour:
     type: 3}
   leverPrefab: {fileID: 1492938548008945344, guid: 16761ec7673e36441b6676673f785e42,
     type: 3}
+  buttonPrefab: {fileID: 1439261526809687428, guid: 580a5199fa6d21d44934ba17ae133db9,
+    type: 3}
   keycardReaderPrefab: {fileID: 6781374973030842455, guid: 70127edbe93986a46bd226d4802bbd26,
     type: 3}
   pressurePlatePrefab: {fileID: 2020087134673327132, guid: adbe1b63c800b14489d12825dd0e52c1,
@@ -97,9 +99,17 @@ MonoBehaviour:
     type: 3}
   shootableTargetPrefab: {fileID: 8641556070606487788, guid: 69663c19de24e1c438645eb677afb829,
     type: 3}
+  playerTriggerPrefab: {fileID: 6873572430872384222, guid: 45e4283373d9bf84c9c21ebcaed0f2fc,
+    type: 3}
+  secretAreaTriggerPrefab: {fileID: 6557587221689502096, guid: 7b4c518e94611324fa0318f1f73121a6,
+    type: 3}
+  signPrefab: {fileID: 6132813018694342244, guid: 295704a4441b1294ba6a748828445517,
+    type: 3}
   doorPrefab: {fileID: 2992099999898577703, guid: f7a6d8d37daf52d40ae50816b3fc5883,
     type: 3}
   secretDoorPrefab: {fileID: 2900067432425157529, guid: 60823032845347a4ba344a99ee115650,
+    type: 3}
+  npcSpawnerPrefab: {fileID: 6492329303738561571, guid: 24bbb1520d78cb94fa2a5c265b751cab,
     type: 3}
   destructableWallPrefab: {fileID: 5856851048016783610, guid: 1d44805cad6884a478a689a34a8a57e0,
     type: 3}

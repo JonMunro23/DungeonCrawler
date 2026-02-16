@@ -23,8 +23,8 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     TooltipTrigger tooltipTrigger;
 
 
-    public static Action<ISlot> onInventorySlotLeftClicked;
-    public static Action<ISlot> onInventorySlotRightClicked;
+    public static event Action<ISlot> onInventorySlotLeftClicked;
+    public static event Action<ISlot> onInventorySlotRightClicked;
 
     private void Awake()
     {
@@ -73,7 +73,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         AmmoItemData ammoData = GetDataAsAmmo(itemToAdd.itemData);
         if (ammoData)
         {
-            PlayerInventoryManager.onAmmoAddedToInventory?.Invoke(ammoData);
+            playerInventoryManager.AddAmmo(ammoData);
         }
 
         ThrowableItemData throwableData = itemToAdd.itemData as ThrowableItemData;
@@ -92,12 +92,12 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         int availableSpace = currentSlotItemStack.itemData.maxItemStackSize - currentSlotItemStack.itemAmount;
         if (availableSpace < amountToAdd)
         {
-            AddToCurrentSlot(availableSpace);
+            AddToSlotStack(availableSpace);
             remainder = amountToAdd - availableSpace;
         }
         else if(availableSpace >= amountToAdd)
         {
-            AddToCurrentSlot(amountToAdd);
+            AddToSlotStack(amountToAdd);
         }
 
         UpdateSlotUI();
@@ -105,7 +105,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         return remainder;
     }
 
-    void AddToCurrentSlot(int amountToAdd)
+    void AddToSlotStack(int amountToAdd)
     {
         currentSlotItemStack.itemAmount += amountToAdd;
 
@@ -118,17 +118,18 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             }
         }
 
+        AmmoItemData ammoData = GetDataAsAmmo(currentSlotItemStack.itemData);
+        if (ammoData)
+        {
+            playerInventoryManager.AddAmmo(ammoData);
+        }
+
         ThrowableItemData throwableData = currentSlotItemStack.itemData as ThrowableItemData;
         if (throwableData != null)
         {
             playerInventoryManager.playerController.playerThrowableManager.AddThrowableToAvailable(throwableData, amountToAdd);
         }
 
-        //AmmoItemData ammoData = GetDataAsAmmo(currentSlotItemStack.itemData);
-        //if (ammoData)
-        //{
-        //    playerInventoryManager.AddAmmo(ammoData.ammoWeaponType, amountToAdd);
-        //}
     }
 
     public int RemoveFromExistingStack(int amountToRemove)

@@ -37,8 +37,16 @@ public class RangedWeapon : Weapon
     [SerializeField] int lastDroppedMag;
     List<GameObject> droppedMagList = new List<GameObject>();
 
-    public static Action<WeaponItemData> onRangedWeaponFired;
-    public static Action<bool> onRangedWeaponReadied;
+    /// <summary>
+    /// In order:
+    /// int = occupiedSlotIndex
+    /// int = loadedAmmo
+    /// int = reserveAmmo
+    /// </summary>
+    public static event Action<int, int> onLoadedAmmoUpdated;
+    public static event Action<int, int> onReserveAmmoUpdated;
+    public static event Action<WeaponItemData> onRangedWeaponFired;
+    public static event Action<bool> onRangedWeaponReadied;
 
     private void OnEnable()
     {

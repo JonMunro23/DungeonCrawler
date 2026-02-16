@@ -12,7 +12,7 @@ public class ThrowableSelectionButton : MonoBehaviour
 
     public UnityEngine.UI.Button button;
 
-    public static Action<ThrowableItemData, int> onThrowableSelected;
+    public static event Action<ThrowableItemData, int> onThrowableSelected;
 
     public void Init(ThrowableItemData throwableItemData, int amount)
     {

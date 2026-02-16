@@ -1,8 +1,6 @@
 ﻿using LDtkUnity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -28,7 +26,7 @@ public class GridController : MonoBehaviour
     [SerializeField] GridNode voidPrefab;
     [SerializeField] Dictionary<Vector2, GridNode> activeNodes = new Dictionary<Vector2, GridNode>();
     Grid grid;
-    public static float gridSize = 3;
+    const float GRID_SIZE = 3;
     // Per-level index lookup (fast + correct)
     Dictionary<int, GridNode[]> nodesByIndexPerLevel = new Dictionary<int, GridNode[]>();
 
@@ -39,8 +37,9 @@ public class GridController : MonoBehaviour
     /// <summary>
     /// int = levelIndex
     /// </summary>
-    Dictionary<int, LevelData> levelDataDictionary = new Dictionary<int, LevelData>();
     [SerializeField] List<Transform> levelParents = new List<Transform>();
+    Dictionary<int, LevelData> levelDataDictionary = new Dictionary<int, LevelData>();
+    int levelSecrets;
 
 
     [Header("Player")]
@@ -80,6 +79,7 @@ public class GridController : MonoBehaviour
     [SerializeField] Tripwire tripwirePrefab;
     [SerializeField] ShootableTarget shootableTargetPrefab;
     [SerializeField] PlayerTrigger playerTriggerPrefab;
+    [SerializeField] SecretAreaTrigger secretAreaTriggerPrefab;
     [SerializeField] Sign signPrefab;
     List<IInteractable> spawnedInteractables = new List<IInteractable>();
 
@@ -101,7 +101,7 @@ public class GridController : MonoBehaviour
     public int CurrentNodeCount => nodesByIndex != null ? nodesByIndex.Length : 0;
 
 
-    public static Action onQuickSave;
+    public static event Action onQuickSave;
     public static event Action onLevelFinishedGenerating;
 
     public struct SquareCoords : ICoords
@@ -358,6 +358,7 @@ public class GridController : MonoBehaviour
     void GenerateEntities(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
     {
         GridNodeOccupant newOccupant;
+        levelSecrets = 0;
         for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
         {
             if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
@@ -449,6 +450,14 @@ public class GridController : MonoBehaviour
                         Sign sign = Instantiate(signPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
                         sign.SetSignText(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[1].Value));
                         //interactable = sign;
+                        break;
+                    case "Secret_Area":
+                        SecretAreaTrigger trigger = Instantiate(secretAreaTriggerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
+                        float width = (entityLayer.EntityInstances[k].Width / 16 * GRID_SIZE);
+                        float height = (entityLayer.EntityInstances[k].Height / 16 * GRID_SIZE);
+                        trigger.SetColliderSize(width, height);
+                        trigger.SetExperienceValue(LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[0].Value));
+                        levelSecrets++;
                         break;
 
                 }
@@ -814,7 +823,7 @@ public class GridController : MonoBehaviour
 
         }
 
-        levelDataDictionary.Add(indexOfLevelToSave, new LevelData(activeNodes, npcsToSave));
+        levelDataDictionary.Add(indexOfLevelToSave, new LevelData(activeNodes, npcsToSave, levelSecrets));
         //Debug.Log("Added level "+ indexOfLevelToSave + " to levels list");
     }
 

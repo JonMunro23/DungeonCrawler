@@ -28,22 +28,22 @@ public class WorldInteractionManager : MonoBehaviour
     public static IContainer currentOpenContainer;
     bool isLookingAtPickup, isLookingAtInteractable, isLookingAtContainer;
 
-    public static Action<ItemStack> onNewItemAttachedToCursor;
-    public static Action onCurrentItemDettachedFromCursor;
+    public static event Action<ItemStack> onNewItemAttachedToCursor;
+    public static event Action onCurrentItemDettachedFromCursor;
 
-    public static Action<ItemStack> onGroundItemsUpdated;
-    public static Action onLastGroundItemRemoved;
+    public static event Action<ItemStack> onGroundItemsUpdated;
+    public static event Action onLastGroundItemRemoved;
 
-    public static Action<IContainer> onNearbyContainerUpdated;
-    public static Action<IInteractable> onNearbyInteractableUpdated;
+    //public static event Action<IContainer> onNearbyContainerUpdated;
+   // public static event Action<IInteractable> onNearbyInteractableUpdated;
 
-    public static Action<LookAtTarget> onLookAtTargetChanged;
+    public static event Action<LookAtTarget> onLookAtTargetChanged;
 
     private void OnEnable()
     {
         WorldItem.onWorldItemGrabbed += OnWorldItemGrabbed;
         InventorySlot.onInventorySlotLeftClicked += OnInventorySlotClicked;
-        ContainerSlot.onContainerItemGrabbed += OnContainerItemGrabbed;
+        //ContainerSlot.onContainerItemGrabbed += OnContainerItemGrabbed;
 
         InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
@@ -52,7 +52,7 @@ public class WorldInteractionManager : MonoBehaviour
     {
         WorldItem.onWorldItemGrabbed -= OnWorldItemGrabbed;
         InventorySlot.onInventorySlotLeftClicked -= OnInventorySlotClicked;
-        ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
+        //ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
 
         InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
@@ -90,17 +90,17 @@ public class WorldInteractionManager : MonoBehaviour
         AttachItemToMouseCursor(worldItemGrabbed.item, worldItemGrabbed);
     }
 
-    void OnContainerItemGrabbed(ContainerSlot slotGrabbedFrom)
-    {
-        if (hasGrabbedItem)
-            return;
+    //void OnContainerItemGrabbed(ContainerSlot slotGrabbedFrom)
+    //{
+    //    if (hasGrabbedItem)
+    //        return;
 
-        PlayGrabAnim();
-        ItemStack slotItem = slotGrabbedFrom.storedStack;
-        AttachItemToMouseCursor(slotItem);
-        slotGrabbedFrom.ClearSlot();
+    //    PlayGrabAnim();
+    //    ItemStack slotItem = slotGrabbedFrom.storedStack;
+    //    AttachItemToMouseCursor(slotItem);
+    //    slotGrabbedFrom.ClearSlot();
 
-    }
+    //}
 
     void OnInventorySlotClicked(ISlot slotClicked)
     {
@@ -149,6 +149,7 @@ public class WorldInteractionManager : MonoBehaviour
     }
     void AttachItemToMouseCursor(ItemStack itemToAttach, WorldItem worldItem = null)
     {
+        Debug.Log("Meme");
         currentGrabbedItem = new ItemStack(itemToAttach.itemData, itemToAttach.itemAmount, itemToAttach.loadedAmmo);
 
         onNewItemAttachedToCursor?.Invoke(currentGrabbedItem);

@@ -25,12 +25,12 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     bool hasCollectedFirstThrowable;
 
-    public static Action onInventoryOpened;
-    public static Action onInventoryClosed;
-    public static Action<InventorySlot[]> onInventorySlotsSpawned;
-    public static Action<int> onSyringeCountUpdated;
-    public static Action<AmmoItemData> onAmmoAddedToInventory;
-    public static Action<ThrowableItemData> onThrowableRemoved;
+    public static event Action onInventoryOpened;
+    public static event Action onInventoryClosed;
+    public static event Action<InventorySlot[]> onInventorySlotsSpawned;
+    public static event Action<int> onSyringeCountUpdated;
+    public static event Action<AmmoItemData> onAmmoAddedToInventory;
+    public static event Action<ThrowableItemData> onThrowableRemoved;
 
     void OnEnable()
     {
@@ -188,6 +188,11 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         heldHealthSyringes -= amountToRemove;
         onSyringeCountUpdated?.Invoke(heldHealthSyringes);
+    }
+
+    public void AddAmmo(AmmoItemData ammoData)
+    {
+        onAmmoAddedToInventory?.Invoke(ammoData);
     }
 
     public void RemoveThrowableOfType(ThrowableItemData throwableToRemove, int amountToRemove)

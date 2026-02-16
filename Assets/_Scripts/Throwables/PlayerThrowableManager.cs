@@ -17,10 +17,10 @@ public class PlayerThrowableManager : MonoBehaviour
     [SerializeField] Dictionary<ThrowableItemData, int> availableThrowables = new Dictionary<ThrowableItemData, int>();
     [SerializeField] List<Throwable> manuallyDetonatedThrowables = new List<Throwable>();
 
-    public static Action<Dictionary<ThrowableItemData, int>, ThrowableItemData> onThrowableSelectionMenuOpened;
-    public static Action onThrowableSelectionMenuClosed;
-    public static Action<ThrowableItemData, int> onFirstThrowableCollected;
-    public static Action<int> onCurrentlySelectedThrowableAmountUpdated;
+    public static event Action<Dictionary<ThrowableItemData, int>, ThrowableItemData> onThrowableSelectionMenuOpened;
+    public static event Action onThrowableSelectionMenuClosed;
+    public static event Action<ThrowableItemData, int> onFirstThrowableCollected;
+    public static event Action<int> onCurrentlySelectedThrowableAmountUpdated;
 
     [Header("Charging")]
     [SerializeField] AnimationCurve chargeCurve = null;    // optional easing; null = linear

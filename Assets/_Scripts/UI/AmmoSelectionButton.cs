@@ -11,7 +11,7 @@ public class AmmoSelectionButton : MonoBehaviour
 
     IWeapon weapon;
 
-    public static Action<AmmoItemData> OnAmmoSelected;
+    public static event Action<AmmoItemData> OnAmmoSelected;
 
     public void Init(AmmoItemData ammoItemData, IWeapon currentHeldWeapon)
     {

@@ -17,7 +17,7 @@ public class NPCController : MonoBehaviour
     public AudioSource audioSource;
     public GridNode currentlyOccupiedGridnode;
 
-    public static Action<NPCController> onNPCDeath;
+    public static event Action<NPCController> onNPCDeath;
     Coroutine fireDamageCoroutine, acidDamageCoroutine, armourReductionCoroutine;
 
     private void OnEnable()

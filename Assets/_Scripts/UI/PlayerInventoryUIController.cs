@@ -10,7 +10,7 @@ public class PlayerInventoryUIController : MonoBehaviour
     [SerializeField] InventorySlot inventorySlot;
     [SerializeField] InventorySlot[] spawnedInventorySlots;
     [SerializeField] GridLayoutGroup invSlotSpawnParent;
-    public static Action<InventorySlot[]> onInventorySlotsSpawned;
+    //public static event Action<InventorySlot[]> onInventorySlotsSpawned;
 
     [SerializeField] TMP_Text pickupItemText;
 
@@ -31,8 +31,8 @@ public class PlayerInventoryUIController : MonoBehaviour
 
         WorldInteractionManager.onGroundItemsUpdated += OnNewGroundItemDetected;
         WorldInteractionManager.onLastGroundItemRemoved += OnLastGroundItemRemoved;
-        WorldInteractionManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
-        WorldInteractionManager.onNearbyInteractableUpdated += OnNearbyInteractableUpdated;
+        //WorldInteractionManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
+        //WorldInteractionManager.onNearbyInteractableUpdated += OnNearbyInteractableUpdated;
 
         InventorySlot.onInventorySlotRightClicked += ShowContextMenu;
     }
@@ -46,7 +46,8 @@ public class PlayerInventoryUIController : MonoBehaviour
 
         WorldInteractionManager.onGroundItemsUpdated -= OnNewGroundItemDetected;
         WorldInteractionManager.onLastGroundItemRemoved -= OnLastGroundItemRemoved;
-        WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
+        //WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
+        //WorldInteractionManager.onNearbyInteractableUpdated -= OnNearbyInteractableUpdated;
 
         InventorySlot.onInventorySlotRightClicked -= ShowContextMenu;
     }
@@ -56,29 +57,29 @@ public class PlayerInventoryUIController : MonoBehaviour
         pickupItemText.text = $"F: Pickup {(detectedItem.itemAmount > 0 ? detectedItem.itemAmount : "")} {detectedItem.itemData.itemName}.";
     }
 
-    void OnNearbyContainerUpdated(IContainer container)
-    {
-        if(container == null)
-        {
-            pickupItemText.text = "";
+    //void OnNearbyContainerUpdated(IContainer container)
+    //{
+    //    if(container == null)
+    //    {
+    //        pickupItemText.text = "";
 
-            return;
-        }
+    //        return;
+    //    }
 
-        pickupItemText.text = $"F: {(container.IsOpen() ? "Close" : "Open")} container.";
-    }
+    //    pickupItemText.text = $"F: {(container.IsOpen() ? "Close" : "Open")} container.";
+    //}
 
-    void OnNearbyInteractableUpdated(IInteractable interactable)
-    {
-        if (interactable == null)
-        {
-            pickupItemText.text = "";
+    //void OnNearbyInteractableUpdated(IInteractable interactable)
+    //{
+    //    if (interactable == null)
+    //    {
+    //        pickupItemText.text = "";
 
-            return;
-        }
+    //        return;
+    //    }
 
-        pickupItemText.text = "F: Interact.";
-    }
+    //    pickupItemText.text = "F: Interact.";
+    //}
 
     void OnLastGroundItemRemoved()
     {

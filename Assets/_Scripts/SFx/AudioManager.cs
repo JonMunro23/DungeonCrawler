@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UIElements;
 
 #pragma warning disable CS0649
 
@@ -19,6 +20,8 @@ using UnityEngine.Audio;
 public sealed class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
+    //PlayerController playerController;
+
     /// <summary>
     /// Defines the Sound Effects volume, e.g explosions, environment and weapons.
     /// </summary>
@@ -118,10 +121,25 @@ public sealed class AudioManager : MonoBehaviour
 
     #endregion
 
+    //private void OnEnable()
+    //{
+    //    PlayerController.onPlayerInitialised += OnPlayerInitialised;
+    //}
+
+    //private void OnDisable()
+    //{
+    //    PlayerController.onPlayerInitialised -= OnPlayerInitialised;
+    //}
+
     private void Awake()
     {
         Instance = this;
     }
+
+    //void OnPlayerInitialised(PlayerController controller)
+    //{
+    //    playerController = controller;
+    //}
 
     /// <summary>
     /// Register a new AudioEmitter and returns its reference.
@@ -303,6 +321,28 @@ public sealed class AudioManager : MonoBehaviour
 
         source.spatialBlend = spatialBlend;
         source.outputAudioMixerGroup = m_SfxMixer;
+
+        source.Play();
+    }
+
+    /// <summary>
+    /// Plays a 2D AudioClip
+    /// </summary>
+    /// <param name="clip">The AudioClip to be played.</param>
+    /// <param name="volume">The AudioSource volume.</param>
+    public void Play2DClip(AudioClip clip, float volume)
+    {
+        if (!clip)
+            return;
+
+        AudioSource source = GetAvailableSource();
+        source.gameObject.name = "Generic 2D Source";
+        source.playOnAwake = false;
+
+        source.clip = clip;
+        source.volume = volume * m_SfxVolume;
+
+        source.spatialBlend = 0;
 
         source.Play();
     }

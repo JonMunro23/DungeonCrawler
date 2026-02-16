@@ -12,17 +12,17 @@ public class InventoryContextMenu : MonoBehaviour
 
     ISlot slot;
 
-    public static Action<ISlot> onInventorySlotWeaponUnloaded;
-    public static Action<ISlot> onInventorySlotItemDropped;
+    public static event Action<ISlot> onInventorySlotWeaponUnloaded;
+    public static event Action<ISlot> onInventorySlotItemDropped;
 
-    public static Action<ISlot> onInventorySlotEquipmentItemEquipped;
-    public static Action<ISlot> onInventorySlotWeaponItemEquipped;
+    public static event Action<ISlot> onInventorySlotEquipmentItemEquipped;
+    public static event Action<ISlot> onInventorySlotWeaponItemEquipped;
 
-    public static Action<ISlot> onInventorySlotEquipmentItemUnequipped;
-    public static Action<ISlot> onInventorySlotWeaponItemUnequipped;
+    public static event Action<ISlot> onInventorySlotEquipmentItemUnequipped;
+    public static event Action<ISlot> onInventorySlotWeaponItemUnequipped;
 
-    public static Action<ISlot> onBoosterUsed;
-    public static Action<ISlot> onHealSyringeUsedFromContextMenu;
+    public static event Action<ISlot> onBoosterUsed;
+    public static event Action<ISlot> onHealSyringeUsedFromContextMenu;
 
     public void Init(ISlot slot)
     {

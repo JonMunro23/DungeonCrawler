@@ -6,7 +6,6 @@ public class NPCFloatingTextController : MonoBehaviour
 {
     [SerializeField] GameObject damageTakenFloatingText;
     [SerializeField] Transform floatingTextSpawnLocation;
-
     [SerializeField] float textSpeed = .25f;
     [SerializeField] float textDelayBeforeFade = 1f;
     [SerializeField] float textFadeDuration = 1f;

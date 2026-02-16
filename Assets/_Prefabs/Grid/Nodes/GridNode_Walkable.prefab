@@ -1088,6 +1088,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showDebugInfo: 0
+  debugCanvas: {fileID: 4033729747109830035}
   nodeData: {fileID: 11400000, guid: 97dcdecf8ceecac4e9f063bc08e937a6, type: 2}
   highlightPathMat: {fileID: 2100000, guid: 3fab29c2075438c439a412da4df1679b, type: 2}
   highlightOpenMat: {fileID: 2100000, guid: bc708901ea0e0da48a926d2904637248, type: 2}

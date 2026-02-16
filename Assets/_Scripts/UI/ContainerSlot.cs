@@ -11,7 +11,7 @@ public class ContainerSlot : MonoBehaviour
     [SerializeField] WorldItem WorldItemPrefab;
     [SerializeField] WorldItem spawnedWorldItem;
 
-    public static Action<ContainerSlot> onContainerItemGrabbed;
+    //public static event Action<ContainerSlot> onContainerItemGrabbed;
 
     public void InitSlot(ItemStack stackToInit, Container _parentContainer, int _slotIndex)
     {

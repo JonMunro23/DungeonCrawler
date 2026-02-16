@@ -30,10 +30,10 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     bool canUseEquipment;
 
-    public static Action<EquippedItem> onEquippedItemAdded;
-    public static Action<EquippedItem> onEquippedItemRemoved;
+    public static event Action<EquippedItem> onEquippedItemAdded;
+    public static event Action<EquippedItem> onEquippedItemRemoved;
 
-    public static Action<List<EquipmentSlot>> onEquipmentSlotsSpawned;
+    public static event Action<List<EquipmentSlot>> onEquipmentSlotsSpawned;
 
     private void OnEnable()
     {

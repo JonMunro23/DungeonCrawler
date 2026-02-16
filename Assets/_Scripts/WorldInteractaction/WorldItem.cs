@@ -30,8 +30,8 @@ public class WorldItem : MonoBehaviour, IPickup
     public ItemStack item;
     public Vector2 coords;
     public PressurePlate occupiedPressurePlate;
-    public static Action<WorldItem> onWorldItemGrabbed;
-    public static Action<WorldItem> onWorldItemPickedUp;
+    public static event Action<WorldItem> onWorldItemGrabbed;
+    public static event Action<WorldItem> onWorldItemPickedUp;
 
     public bool isInContainer;
     ContainerSlot occupiedContainerSlot;

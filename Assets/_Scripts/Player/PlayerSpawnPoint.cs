@@ -8,7 +8,7 @@ public class PlayerSpawnPoint : MonoBehaviour
 
     [SerializeField] Vector3 playerSpawnOffset;
 
-    public static Action<PlayerController> onPlayerSpawned;
+    //public static event Action<PlayerController> onPlayerSpawned;
 
     public PlayerController SpawnPlayer(CharacterData playerCharData, GridNode spawnGridNode)
     {

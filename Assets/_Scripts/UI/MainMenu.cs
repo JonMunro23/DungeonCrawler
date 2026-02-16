@@ -10,8 +10,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField] bool skipIntro = false;
     public static bool isInMainMenu = false;
 
-    public static Action onNewGameStarted;
-    public static Action onNewGameStartedSkippedIntro;
+    public static event Action onNewGameStarted;
+    public static event Action onNewGameStartedSkippedIntro;
 
     private void Start()
     {

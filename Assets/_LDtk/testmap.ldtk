@@ -11,7 +11,7 @@
 	"iid": "011d7370-9b00-11ef-9670-ed7953f0b3dc",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 157,
+	"nextUid": 159,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -2853,6 +2853,79 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "Secret_Area",
+			"uid": 157,
+			"tags": [],
+			"exportToToc": false,
+			"allowOutOfBounds": false,
+			"doc": null,
+			"width": 16,
+			"height": 16,
+			"resizableX": true,
+			"resizableY": true,
+			"minWidth": 16,
+			"maxWidth": null,
+			"minHeight": 16,
+			"maxHeight": null,
+			"keepAspectRatio": true,
+			"tileOpacity": 1,
+			"fillOpacity": 0.08,
+			"lineOpacity": 0,
+			"hollow": false,
+			"color": "#BC9600",
+			"renderMode": "Tile",
+			"showName": true,
+			"tilesetId": 3,
+			"tileRenderMode": "NineSlice",
+			"tileRect": { "tilesetUid": 3, "x": 336, "y": 64, "w": 16, "h": 16 },
+			"uiTileRect": null,
+			"nineSliceBorders": [3,3,3,3],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0.5,
+			"pivotY": 0.5,
+			"fieldDefs": [
+				{
+					"identifier": "Experience_Value",
+					"doc": null,
+					"__type": "Int",
+					"uid": 158,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": 200,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": { "id": "V_Int", "params": [200] },
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -3279,9 +3352,9 @@
 									"params": ["West"]
 								}] },
 								{ "__identifier": "Triggerable_Type", "__type": "LocalEnum.Triggerable_Type", "__value": "Door", "__tile": null, "defUid": 88, "realEditorValues": [] },
-								{ "__identifier": "Starts_Open", "__type": "Bool", "__value": false, "__tile": null, "defUid": 87, "realEditorValues": [{
+								{ "__identifier": "Starts_Open", "__type": "Bool", "__value": true, "__tile": null, "defUid": 87, "realEditorValues": [{
 									"id": "V_Bool",
-									"params": [ false ]
+									"params": [ true ]
 								}] }
 							],
 							"__worldX": 424,
@@ -4179,6 +4252,22 @@
 							],
 							"__worldX": 72,
 							"__worldY": -136
+						},
+						{
+							"__identifier": "Secret_Area",
+							"__grid": [28,15],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 3, "x": 336, "y": 64, "w": 16, "h": 16 },
+							"__smartColor": "#BC9600",
+							"iid": "1ec6b6c0-fa90-11f0-b8ec-f7cfa8522197",
+							"width": 48,
+							"height": 48,
+							"defUid": 157,
+							"px": [456,248],
+							"fieldInstances": [{ "__identifier": "Experience_Value", "__type": "Int", "__value": 200, "__tile": null, "defUid": 158, "realEditorValues": [] }],
+							"__worldX": 456,
+							"__worldY": -264
 						}
 					]
 				},

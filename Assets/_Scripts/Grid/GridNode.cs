@@ -39,7 +39,7 @@ public interface ICoords
 public class GridNode : MonoBehaviour
 {
     [SerializeField] bool showDebugInfo;
-
+    [SerializeField] Canvas debugCanvas;
     public GridNodeData nodeData;
     public ICoords Coords;
     MeshRenderer meshRenderer;
@@ -57,7 +57,7 @@ public class GridNode : MonoBehaviour
     bool isExplored;
     bool isVoid;
 
-    public static Action onNodeOccupancyUpdated;
+    public static event Action onNodeOccupancyUpdated;
 
     [Header("Tile Effects")]
     [SerializeField] StatusEffect currentNodeEffect;
@@ -85,6 +85,9 @@ public class GridNode : MonoBehaviour
     {
         if(!showDebugInfo)
         {
+            if(debugCanvas)
+                debugCanvas.gameObject.SetActive(false);
+
             if(_fCostText)
                 _fCostText.enabled = false;
 

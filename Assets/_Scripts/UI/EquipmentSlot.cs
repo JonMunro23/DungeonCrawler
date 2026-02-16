@@ -6,8 +6,8 @@ public class EquipmentSlot : InventorySlot
 
     public EquipmentSlotType slotType;
 
-    public static Action<EquipmentSlotType, EquipmentItemData> onNewEquipmentItem;
-    public static Action<EquipmentSlotType> onEquipmentItemRemoved;
+    public static event Action<EquipmentSlotType, EquipmentItemData> onNewEquipmentItem;
+    public static event Action<EquipmentSlotType> onEquipmentItemRemoved;
 
     [SerializeField] Sprite defaultSlotIcon;
     [SerializeField] float placeholderIconAlpha;

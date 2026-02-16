@@ -13,7 +13,6 @@ public class PlayerTrigger : InteractableBase
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Yeet");
             Interact();
         }
     }

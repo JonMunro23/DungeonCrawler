@@ -20,17 +20,9 @@ public abstract class Weapon : MonoBehaviour, IWeapon
     public bool isDefaultWeapon;
 
     /// <summary>
-    /// In order:
-    /// int = occupiedSlotIndex
-    /// int = loadedAmmo
-    /// int = reserveAmmo
-    /// </summary>
-    public static Action<int, int> onLoadedAmmoUpdated;
-    public static Action<int, int> onReserveAmmoUpdated;
-    /// <summary>
     /// float = cooldownLength
     /// </summary>
-    public static Action<float> onWeaponCooldownActive;
+    public static event Action<float> onWeaponCooldownActive;
 
 
     public virtual bool CanUse()

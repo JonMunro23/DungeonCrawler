@@ -7,19 +7,21 @@ public class PlayerLevelManager : MonoBehaviour
     [SerializeField] int currentExperiencePoints; 
     [SerializeField] int requiredExperiencePoints;
 
-    public static Action<int> onPlayerExperienceUpdated;
-    public static Action<int> onPlayerRequiredExperienceUpdated;
-    public static Action<int> onPlayerLevelUp;
+    public static event Action<int> onPlayerExperienceUpdated;
+    public static event Action<int> onPlayerRequiredExperienceUpdated;
+    public static event Action<int> onPlayerLevelUp;
 
 
     private void OnEnable()
     {
         NPCController.onNPCDeath += OnNPCDeath;
+        SecretAreaTrigger.onSecretDiscovered += OnSecretDiscovered;
     }
 
     private void OnDisable()
     {
         NPCController.onNPCDeath -= OnNPCDeath;
+        SecretAreaTrigger.onSecretDiscovered -= OnSecretDiscovered;
     }
 
     private void Start()
@@ -30,6 +32,11 @@ public class PlayerLevelManager : MonoBehaviour
     void OnNPCDeath(NPCController npcKilled)
     {
         AddExperiencePoints(npcKilled.npcData.experienceValue);
+    }
+
+    void OnSecretDiscovered(int secretExperienceValue)
+    {
+        AddExperiencePoints(secretExperienceValue);
     }
 
     public void AddExperiencePoints(int amountToAdd)

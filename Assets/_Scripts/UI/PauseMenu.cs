@@ -11,8 +11,8 @@ public class PauseMenu : MonoBehaviour
     [Header("Pause Menu")]
     [SerializeField] GameObject pauseMenu;
 
-    public static Action onPause;
-    public static Action onQuit;
+    public static event Action onPause;
+    public static event Action onQuit;
 
     private void Awake()
     {

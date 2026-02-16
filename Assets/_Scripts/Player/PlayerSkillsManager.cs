@@ -30,11 +30,11 @@ public class PlayerSkillsManager : MonoBehaviour
     bool isSkillMenuOpen;
 
 
-    public static Action<List<PlayerSkill>> onPlayerSkillsSpawned;
-    public static Action<int> onSkillPointsUpdated;
-    public static Action onSkillMenuOpened;
-    public static Action onSkillMenuClosed;
-    public static Action<PlayerSkill> onSkillUpdated;
+    public static event Action<List<PlayerSkill>> onPlayerSkillsSpawned;
+    public static event Action<int> onSkillPointsUpdated;
+    public static event Action onSkillMenuOpened;
+    public static event Action onSkillMenuClosed;
+    public static event Action<PlayerSkill> onSkillUpdated;
 
 
     private void Start()

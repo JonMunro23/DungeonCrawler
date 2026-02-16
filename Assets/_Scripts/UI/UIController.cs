@@ -17,6 +17,9 @@ public class UIController : MonoBehaviour
     [SerializeField] MapController mapController;
     [SerializeField] CrosshairController crosshairController;
 
+    [Header("Secrets")]
+    [SerializeField] SecretDiscoveryUI secretDiscoveryUI;
+
     [Header("Pause Menu")]
     [SerializeField] PauseMenu pauseMenu;
 
@@ -81,6 +84,9 @@ public class UIController : MonoBehaviour
 
     public static bool isTransitioningLevel;
 
+    // ==========================
+    #region Unity Lifecycle
+
     private void OnEnable()
     {
         PlayerController.onPlayerInitialised += OnPlayerInitialised;
@@ -93,13 +99,15 @@ public class UIController : MonoBehaviour
         WeaponSlot.onWeaponSwappedInSlot += OnWeaponSwappedInSlot;
         WeaponSlot.onWeaponSetToDefault += OnWeaponSetToDefault;
 
-        Weapon.onLoadedAmmoUpdated += OnWeaponLoadedAmmoUpdated;
-        Weapon.onReserveAmmoUpdated += OnWeaponReserveAmmoUpdated;
+        RangedWeapon.onLoadedAmmoUpdated += OnWeaponLoadedAmmoUpdated;
+        RangedWeapon.onReserveAmmoUpdated += OnWeaponReserveAmmoUpdated;
 
         PlayerWeaponManager.onWeaponSlotSetActive += OnWeaponSlotSetActive;
         PlayerWeaponManager.onNewWeaponInitialised += OnNewWeaponInitialised;
 
         LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
+
+        SecretAreaTrigger.onSecretDiscovered += OnSecretDiscovered;
 
         GridController.onQuickSave += OnQuickSave;
 
@@ -118,13 +126,15 @@ public class UIController : MonoBehaviour
         WeaponSlot.onWeaponSwappedInSlot -= OnWeaponSwappedInSlot;
         WeaponSlot.onWeaponSetToDefault -= OnWeaponSetToDefault;
 
-        Weapon.onLoadedAmmoUpdated -= OnWeaponLoadedAmmoUpdated;
-        Weapon.onReserveAmmoUpdated -= OnWeaponReserveAmmoUpdated;
+        RangedWeapon.onLoadedAmmoUpdated -= OnWeaponLoadedAmmoUpdated;
+        RangedWeapon.onReserveAmmoUpdated -= OnWeaponReserveAmmoUpdated;
 
         PlayerWeaponManager.onNewWeaponInitialised -= OnNewWeaponInitialised;
         PlayerWeaponManager.onWeaponSlotSetActive -= OnWeaponSlotSetActive;
 
         LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
+
+        SecretAreaTrigger.onSecretDiscovered -= OnSecretDiscovered;
 
         GridController.onQuickSave -= OnQuickSave;
 
@@ -149,6 +159,12 @@ public class UIController : MonoBehaviour
 
         SetLoadGameButtonsInteractable();
     }
+
+    #endregion
+    // ==========================
+
+    // ==========================
+    #region Event Handlers
 
     void OnPlayerInitialised(PlayerController playerInitialised)
     {
@@ -242,6 +258,25 @@ public class UIController : MonoBehaviour
         saveStatusText.color = new Color(1, 0.9529412f, 0, 1);
         saveStatusText.DOFade(0, saveStatusTextFadeDuration).SetDelay(3);
     }
+
+    void OnSecretDiscovered(int secretExperienceValue)
+    {
+        ShowSecretDiscoveryUI(secretExperienceValue);
+    }
+
+    #endregion
+    // ==========================
+
+    // ==========================
+    #region Secret Discovery
+
+    void ShowSecretDiscoveryUI(int secretExperienceValue)
+    {
+        secretDiscoveryUI.ShowUI(secretExperienceValue);
+    }
+
+    #endregion
+    // ==========================
 
 
     #region Level Transition

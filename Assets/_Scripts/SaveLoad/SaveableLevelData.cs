@@ -14,11 +14,13 @@ public class LevelData
 {
     public Dictionary<Vector2, GridNode> levelNodes = new Dictionary<Vector2, GridNode>();
     public List<NPCController> spawnedNPCs = new List<NPCController>();
+    public int totalNumSecrets;
 
-    public LevelData(Dictionary<Vector2, GridNode> levelNodes, List<NPCController> spawnedNPCs)
+    public LevelData(Dictionary<Vector2, GridNode> levelNodes, List<NPCController> spawnedNPCs, int totalNumSecrets)
     {
         this.levelNodes = new Dictionary<Vector2, GridNode>(levelNodes);
         this.spawnedNPCs = new List<NPCController>(spawnedNPCs);
+        this.totalNumSecrets = totalNumSecrets;
     }
 
     public void UpdateLevelData(Dictionary<Vector2, GridNode> updatedNodes, List<NPCController> updatedNPCs)
@@ -30,15 +32,11 @@ public class LevelData
         spawnedNPCs = new List<NPCController>(updatedNPCs);
     }
 
-    public Dictionary<Vector2, GridNode> GetNodes()
-    {
-        return levelNodes;
-    }
+    public Dictionary<Vector2, GridNode> GetNodes() => levelNodes;
 
-    public List<NPCController> GetNPCs()
-    {
-        return spawnedNPCs;
-    }
+    public List<NPCController> GetNPCs() => spawnedNPCs;
+
+    public int GetAmountOfSecrets() => totalNumSecrets;
 }
 
     [System.Serializable]
@@ -120,6 +118,7 @@ public class SaveableLevelData
     }
 
     public int levelIndex;
+    public int discoveredSecrets;
     public List<InteractableSaveData> interactableSaveData = new List<InteractableSaveData>();
     public List<TriggerableSaveData> triggerableSaveData = new List<TriggerableSaveData>();
     public List<WorldItemSaveData> worldItems = new List<WorldItemSaveData>();

@@ -6,7 +6,7 @@ public class LevelTransition : MonoBehaviour
     [SerializeField] int levelIndexToGoTo;
     [SerializeField] Vector2 playerMoveToCoords;
 
-    public static Action<int, Vector2> onLevelTransitionEntered;
+    public static event Action<int, Vector2> onLevelTransitionEntered;
 
     public void InitLevelTransition(int _levelIndexToGoTo, Vector2 _playerMoveToCoords)
     {

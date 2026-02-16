@@ -9,7 +9,7 @@ public class StatData
     [SerializeField] float baseStatValue;
     [SerializeField] float currentStatValue;
 
-    public static Action<StatData> onStatUpdated;
+    public static event Action<StatData> onStatUpdated;
 
     public StatData(ModifiableCharacterStats stat, float baseStatValue, float currentStatValue)
     {

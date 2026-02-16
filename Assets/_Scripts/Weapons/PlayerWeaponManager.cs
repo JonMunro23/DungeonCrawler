@@ -54,12 +54,12 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public IWeapon currentWeapon;
 
-    public static Action<WeaponSlot[]> onWeaponSlotsSpawned;
-    public static Action<WeaponSlot> onWeaponSlotSetActive;
-    public static Action<int, WeaponItemData> onNewWeaponInitialised;
+    public static event Action<WeaponSlot[]> onWeaponSlotsSpawned;
+    public static event Action<WeaponSlot> onWeaponSlotSetActive;
+    public static event Action<int, WeaponItemData> onNewWeaponInitialised;
 
-    public static Action<IWeapon> onWeaponAmmoSelectionMenuOpened;
-    public static Action onWeaponAmmoSelectionMenuClosed;
+    public static event Action<IWeapon> onWeaponAmmoSelectionMenuOpened;
+    public static event Action onWeaponAmmoSelectionMenuClosed;
 
     private void OnEnable()
     {

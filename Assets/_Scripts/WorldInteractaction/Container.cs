@@ -37,8 +37,8 @@ public class Container : MonoBehaviour, IContainer
     HighlightEffect highlightEffect;
     BoxCollider boxCollider;
 
-    public static Action onContainerOpened;
-    public static Action onContainerClosed;
+    public static event Action onContainerOpened;
+    public static event Action onContainerClosed;
 
     private void Awake()
     {

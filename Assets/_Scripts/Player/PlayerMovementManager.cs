@@ -65,8 +65,8 @@ public class PlayerMovementManager : MonoBehaviour
 
     private PlayerController playerController;
 
-    public static Action onPlayerMoveStarted;
-    public static Action onPlayerMoveEnded;
+    public static event Action onPlayerMoveStarted;
+    public static event Action onPlayerMoveEnded;
 
     private void OnEnable()
     {

@@ -11,13 +11,13 @@ public class WeaponSlot : InventorySlot
 
     IInventory playerInventory;
 
-    public static Action<int, WeaponItemData, int> onWeaponAddedToSlot;
-    public static Action<int> onWeaponRemovedFromSlot;
-    public static Action<int, WeaponItemData, int> onWeaponSwappedInSlot;
+    public static event Action<int, WeaponItemData, int> onWeaponAddedToSlot;
+    public static event Action<int> onWeaponRemovedFromSlot;
+    public static event Action<int, WeaponItemData, int> onWeaponSwappedInSlot;
 
-    public static Action<int, WeaponItemData> onWeaponSetToDefault;
+    public static event Action<int, WeaponItemData> onWeaponSetToDefault;
 
-    public static Action<IWeapon> onWeaponDrawn;
+    public static event Action<IWeapon> onWeaponDrawn;
 
     AudioEmitter audioEmitter;
 

@@ -17,8 +17,8 @@ public class PlayerSkill : MonoBehaviour, IPointerClickHandler
 
     bool interactable;
 
-    public static Action<PlayerSkill> onPlayerSkillClicked;
-    public static Action<PlayerSkill> onPlayerSkillBought;
+    public static event Action<PlayerSkill> onPlayerSkillClicked;
+    //public static event Action<PlayerSkill> onPlayerSkillBought;
 
     private void Start()
     {

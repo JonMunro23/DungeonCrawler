@@ -50,7 +50,7 @@ public class NPCMovementController : MonoBehaviour
     [Header("Aggro")]
     [Tooltip("If true, NPC never deaggros once it has aggroed.")]
     [SerializeField] bool stickyAggro = true;
-    bool isAggro;
+    //bool isAggro;
 
     [Header("Deaggro (Timeout)")]
     [SerializeField] bool enableDeaggroTimeout = true;
@@ -131,8 +131,8 @@ public class NPCMovementController : MonoBehaviour
     {
         currentMovementBehaviour = spawnBehaviour;
 
-        if (spawnBehaviour != NPCMovementBehaviour.Pursue && !stickyAggro)
-            isAggro = false;
+        //if (spawnBehaviour != NPCMovementBehaviour.Pursue && !stickyAggro)
+        //    isAggro = false;
 
         if (spawnBehaviour != NPCMovementBehaviour.Roam && roamPlanner != null)
             roamPlanner.CancelDestination();
@@ -235,7 +235,7 @@ public class NPCMovementController : MonoBehaviour
 
     void AggroToPursue()
     {
-        isAggro = true;
+        //isAggro = true;
         currentMovementBehaviour = NPCMovementBehaviour.Pursue;
 
         if (roamPlanner != null) roamPlanner.CancelDestination();
@@ -246,7 +246,7 @@ public class NPCMovementController : MonoBehaviour
 
     void DeaggroToRoam()
     {
-        isAggro = false;
+        //isAggro = false;
         currentMovementBehaviour = NPCMovementBehaviour.Roam;
 
         currentPathToNavigate.Clear();

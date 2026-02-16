@@ -27,11 +27,11 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     public bool canUseSyringe;
 
 
-    public static Action<CharacterData, float> onMaxHealthUpdated;
-    public static Action<CharacterData, float> onCurrentHealthUpdated;
-    public static Action<StatusEffect> onStatusEffectAdded;
-    public static Action<StatusEffectType> onStatusEffectReset;
-    public static Action<StatusEffectType> onStatusEffectEnded;
+    public static event Action<CharacterData, float> onMaxHealthUpdated;
+    public static event Action<CharacterData, float> onCurrentHealthUpdated;
+    public static event Action<StatusEffect> onStatusEffectAdded;
+    public static event Action<StatusEffectType> onStatusEffectReset;
+    public static event Action<StatusEffectType> onStatusEffectEnded;
 
     [SerializeField] AudioClip[] damageTakenSFx;
     [SerializeField] float damageTakenSFXVolume;

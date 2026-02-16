@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerThrowableManager playerThrowableManager;
     [HideInInspector] public PlayerStatsManager playerStatsManager;
     [HideInInspector] public PlayerSkillsManager playerSkillsManager;
+    [HideInInspector] public PlayerLevelManager playerLevelManager;
     [HideInInspector] public Camera playerCamera;
 
     [Header("Player Data")]
@@ -51,9 +52,9 @@ public class PlayerController : MonoBehaviour
     public static bool isPlayerAlive;
     Vector3 defaultCamPos;
 
-    public static Action<PlayerController> onPlayerInitialised;
-    public static Action onPlayerDeath;
-    public static Action<GridNode> onPlayerOccupiedNodeUpdated;
+    public static event Action<PlayerController> onPlayerInitialised;
+    public static event Action onPlayerDeath;
+    public static event Action<GridNode> onPlayerOccupiedNodeUpdated;
 
     private void OnEnable()
     {
@@ -77,6 +78,7 @@ public class PlayerController : MonoBehaviour
         itemPickupManager = GetComponent<WorldInteractionManager>();
         playerStatsManager = GetComponent<PlayerStatsManager>();
         playerSkillsManager = GetComponent<PlayerSkillsManager>();
+        playerLevelManager = GetComponent<PlayerLevelManager>();
         playerCamera = GetComponentInChildren<Camera>();
 
         rb = GetComponent<Rigidbody>();
