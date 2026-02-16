@@ -36,6 +36,7 @@ public interface ICoords
 }
 
 [System.Serializable]
+[SelectionBase]
 public class GridNode : MonoBehaviour
 {
     [SerializeField] bool showDebugInfo;
@@ -56,6 +57,25 @@ public class GridNode : MonoBehaviour
     public int NodeIndex => nodeIndex;
     bool isExplored;
     bool isVoid;
+
+    [Header("Radiation")]
+    [SerializeField] int irradiationCount;
+
+    public bool IsIrradiated => irradiationCount > 0;
+
+    public void AddIrradiationSource()
+    {
+        irradiationCount++;
+        HighlightCellPath();
+    }
+
+    public void RemoveIrradiationSource()
+    {
+        irradiationCount = Mathf.Max(0, irradiationCount - 1);
+        if (irradiationCount == 0)
+            UnhighlightCell();
+    }
+
 
     public static event Action onNodeOccupancyUpdated;
 

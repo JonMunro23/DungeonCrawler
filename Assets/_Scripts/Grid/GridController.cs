@@ -87,6 +87,7 @@ public class GridController : MonoBehaviour
     [SerializeField] Door doorPrefab;
     [SerializeField] Door secretDoorPrefab;
     [SerializeField] NPCSpawner npcSpawnerPrefab;
+    [SerializeField] RadiationEmitter radEmitterPrefab;
     List<ITriggerable> spawnedTriggerables = new List<ITriggerable>();
 
     [Header("Destructables")]
@@ -178,6 +179,11 @@ public class GridController : MonoBehaviour
 
         if(activeNPCs.Contains(deadNPC))
             activeNPCs.Remove(deadNPC);
+    }
+
+    public IEnumerable<GridNode> GetAllActiveNodes()
+    {
+        return activeNodes.Values;
     }
 
     void GetLevels()
@@ -458,6 +464,10 @@ public class GridController : MonoBehaviour
                         trigger.SetColliderSize(width, height);
                         trigger.SetExperienceValue(LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[0].Value));
                         levelSecrets++;
+                        break;
+                    case "Radiation_Emitter":
+                        RadiationEmitter radEmitter = Instantiate(radEmitterPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
+                        radEmitter.Init(spawnNode, LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[0].Value));
                         break;
 
                 }
