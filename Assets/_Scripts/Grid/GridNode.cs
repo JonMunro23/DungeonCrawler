@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using Object = UnityEngine.Object;
 public enum GridNodeOccupantType
 {
     None,
@@ -27,7 +27,6 @@ public class GridNodeOccupant
         this.occupantType = occupantType;
     }
 }
-
 
 public interface ICoords
 {
@@ -58,32 +57,28 @@ public class GridNode : MonoBehaviour
     bool isExplored;
     bool isVoid;
 
-    [Header("Radiation")]
-    [SerializeField] int irradiationCount;
+    //public void IrradiateNode(StatusEffectData radiationStatusEffect)
+    //{
+    //    if(!activeNodeEffects.Contains(radiationStatusEffect))
+    //    {
+    //        activeNodeEffects.Add(radiationStatusEffect);
+    //    }
+    //    HighlightCellPath();
+    //}
 
-    public bool IsIrradiated => irradiationCount > 0;
-
-    public void AddIrradiationSource()
-    {
-        irradiationCount++;
-        HighlightCellPath();
-    }
-
-    public void RemoveIrradiationSource()
-    {
-        irradiationCount = Mathf.Max(0, irradiationCount - 1);
-        if (irradiationCount == 0)
-            UnhighlightCell();
-    }
+    //public void RemoveRadiation()
+    //{
+    //    UnhighlightCell();
+    //}
 
 
     public static event Action onNodeOccupancyUpdated;
 
-    [Header("Tile Effects")]
-    [SerializeField] StatusEffect currentNodeEffect;
-    [SerializeField] ParticleSystem fireParticles;
-    bool isIgnited;
-    Coroutine ignitedRoutine;
+    //[Header("Node Effects")]
+    //public List<StatusEffectData> activeNodeEffects = new List<StatusEffectData>();
+    //[SerializeField] ParticleSystem fireParticles;
+    //bool isIgnited;
+    //Coroutine ignitedRoutine;
 
     [Header("Pathfinding")]
     [SerializeField]
@@ -121,6 +116,15 @@ public class GridNode : MonoBehaviour
                 coordText.enabled = false;
         }
 
+    }
+
+    public void InitNode(ICoords _coords, int nodeIndex)
+    {
+        this.nodeIndex = nodeIndex;
+        gameObject.name = $"{gameObject.name}_{nodeIndex.ToString()}";
+        Coords = _coords;
+        if (coordText)
+            coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
     }
 
     public void SetActive(bool isActive)
@@ -250,97 +254,7 @@ public class GridNode : MonoBehaviour
 
     public bool GetIsExplored() => isExplored;
 
-    public void InitNode(ICoords _coords, int nodeIndex)
-    {
-        this.nodeIndex = nodeIndex;
-        gameObject.name = $"{gameObject.name}_{nodeIndex.ToString()}";
-        Coords = _coords;
-        if(coordText)
-            coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
-    }
 
-    public void ApplyEffectToNode(StatusEffect statusEffectToApply)
-    {
-        if (!nodeData.isWalkable || isVoid) return;
-
-        if(currentNodeEffect != null)
-            if(currentNodeEffect.effectType != statusEffectToApply.effectType)
-                StopCurrentNodeEffect();
-
-        currentNodeEffect = statusEffectToApply;
-
-        switch (statusEffectToApply.effectType)
-        {
-            case StatusEffectType.None:
-                break;
-            case StatusEffectType.Fire:
-                fireParticles.Play();
-                //play ignited SFX
-                if (ignitedRoutine != null)
-                    StopCoroutine(ignitedRoutine);
-
-                ignitedRoutine = StartCoroutine(TileEffectTimer(currentNodeEffect));
-                break;
-            case StatusEffectType.Acid:
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    public void StopCurrentNodeEffect()
-    {
-        switch (currentNodeEffect.effectType)
-        {
-            case StatusEffectType.None:
-                break;
-            case StatusEffectType.Fire:
-                StopCoroutine(ignitedRoutine);
-                break;
-            case StatusEffectType.Acid:
-                break;
-            default:
-                break;
-        }
-        RemoveTileEffect(currentNodeEffect);
-    }
-
-    public void RemoveTileEffect(StatusEffect effectToRemove)
-    {
-        switch (effectToRemove.effectType)
-        {
-            case StatusEffectType.Fire:
-                fireParticles.Stop();
-                //stop ignited SFX
-                break;
-            case StatusEffectType.Acid:
-                break;
-            default:
-                break;
-        }
-        currentNodeEffect = null;
-    }
-
-    IEnumerator TileEffectTimer(StatusEffect effect)
-    {
-        float remainingTime = effect.nodeEffectLength;
-
-        while (remainingTime > 0)
-        {
-            if(GetOccupyingGameobject() != null)
-            {
-                if(GetOccupyingGameobject().TryGetComponent(out IDamageable damageable))
-                {
-                    damageable.AddStatusEffect(effect);
-                }
-            }
-
-            yield return new WaitForSeconds(1f);
-            remainingTime--;
-        }
-        RemoveTileEffect(effect);
-    }
 
     public void CacheNeighbours()
     {
@@ -424,4 +338,188 @@ public class GridNode : MonoBehaviour
         // Retrieve and return the node at the target position
         return GridController.Instance.GetNodeAtCoords(targetPosition);
     }
+
+    // ==========================
+    // Node Effects (runtime)
+    // ==========================
+    public static event System.Action<GridNode> onNodeEffectsChanged;
+
+    [Header("Node Effects")]
+    public List<StatusEffectData> activeNodeEffects = new List<StatusEffectData>();
+
+    // For emitter-style effects (eg radiation): which sources currently apply this effect
+    readonly Dictionary<StatusEffectData, HashSet<Object>> _effectSources = new();
+
+    // For timed effects (eg fire): expiry + coroutine per effect
+    readonly Dictionary<StatusEffectData, float> _effectExpiryTime = new();
+    readonly Dictionary<StatusEffectData, Coroutine> _effectExpiryRoutine = new();
+
+    public bool HasNodeEffect(StatusEffectData effect) =>
+        effect != null && activeNodeEffects.Contains(effect);
+
+    /// <summary>
+    /// Adds a timed node effect (eg Fire). Refreshes duration if applied again.
+    /// If duration <= 0, uses effect.nodeEffectLength.
+    /// </summary>
+    public void AddTimedNodeEffect(StatusEffectData effect, float durationSeconds = 0f)
+    {
+        if (effect == null) return;
+        if (!effect.canAffectNodes) return;
+
+        float duration = durationSeconds > 0f ? durationSeconds : effect.nodeEffectLength;
+
+        // If length is not set, treat as "infinite" (but still timed API)
+        if (duration <= 0f)
+        {
+            AddNodeEffectInternal(effect);
+            // No expiry coroutine if infinite
+            RaiseNodeEffectsChanged();
+            return;
+        }
+
+        AddNodeEffectInternal(effect);
+
+        // Refresh expiry to max(existing, now+duration)
+        float newExpiry = Time.time + duration;
+        if (_effectExpiryTime.TryGetValue(effect, out float existing))
+            _effectExpiryTime[effect] = Mathf.Max(existing, newExpiry);
+        else
+            _effectExpiryTime[effect] = newExpiry;
+
+        // Ensure a single expiry coroutine per effect
+        if (_effectExpiryRoutine.TryGetValue(effect, out var routine) && routine != null)
+            StopCoroutine(routine);
+
+        _effectExpiryRoutine[effect] = StartCoroutine(ExpireEffectAfterTime(effect));
+
+        RaiseNodeEffectsChanged();
+    }
+
+    /// <summary>
+    /// Adds an effect from a source object (eg RadiationEmitter). Effect remains while ANY source remains.
+    /// Duration is ignored for source-based effects.
+    /// </summary>
+    public void AddNodeEffectFromSource(StatusEffectData effect, Object source)
+    {
+        if (effect == null) return;
+        if (!effect.canAffectNodes) return;
+        if (source == null)
+        {
+            // fallback: treat as timed/infinite
+            AddTimedNodeEffect(effect, effect.nodeEffectLength);
+            return;
+        }
+
+        AddNodeEffectInternal(effect);
+
+        if (!_effectSources.TryGetValue(effect, out var set) || set == null)
+        {
+            set = new HashSet<Object>();
+            _effectSources[effect] = set;
+        }
+
+        // Avoid double-adding same source
+        bool added = set.Add(source);
+        if (added)
+            RaiseNodeEffectsChanged();
+    }
+
+    /// <summary>
+    /// Removes an effect contribution from a given source.
+    /// If this was the last source and there is no timed expiry keeping it alive, the effect is removed.
+    /// </summary>
+    public void RemoveNodeEffectFromSource(StatusEffectData effect, Object source)
+    {
+        if (effect == null || source == null) return;
+
+        if (_effectSources.TryGetValue(effect, out var set) && set != null)
+        {
+            bool removed = set.Remove(source);
+
+            if (set.Count == 0)
+                _effectSources.Remove(effect);
+
+            if (removed)
+            {
+                // If no more sources AND no active timed expiry -> remove entirely
+                bool hasTimed = _effectExpiryTime.ContainsKey(effect);
+                bool hasSources = _effectSources.ContainsKey(effect);
+
+                if (!hasTimed && !hasSources)
+                    RemoveNodeEffect(effect);
+                else
+                    RaiseNodeEffectsChanged();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Fully removes an effect from this node (used by timed expiry, cleanup, etc).
+    /// </summary>
+    public void RemoveNodeEffect(StatusEffectData effect)
+    {
+        if (effect == null) return;
+
+        // Stop expiry coroutine if any
+        if (_effectExpiryRoutine.TryGetValue(effect, out var routine) && routine != null)
+            StopCoroutine(routine);
+
+        _effectExpiryRoutine.Remove(effect);
+        _effectExpiryTime.Remove(effect);
+        _effectSources.Remove(effect);
+
+        activeNodeEffects.Remove(effect);
+        RaiseNodeEffectsChanged();
+    }
+
+    // --- Compatibility with your existing radiation API ---
+    // RadiationEmitter currently calls these.
+    public void IrradiateNode(StatusEffectData radiationStatusEffect)
+    {
+        AddNodeEffectFromSource(radiationStatusEffect, null); // will be overridden by emitter call update below if you use it
+        HighlightCellPath();
+    }
+
+    public void RemoveRadiation()
+    {
+        // Legacy method; emitter will call RemoveNodeEffectFromSource after we update it.
+        // Keep this safe.
+        UnhighlightCell();
+        RaiseNodeEffectsChanged();
+    }
+
+    // --------------------
+    void AddNodeEffectInternal(StatusEffectData effect)
+    {
+        if (!activeNodeEffects.Contains(effect))
+            activeNodeEffects.Add(effect);
+    }
+
+    System.Collections.IEnumerator ExpireEffectAfterTime(StatusEffectData effect)
+    {
+        while (true)
+        {
+            if (!_effectExpiryTime.TryGetValue(effect, out float expiry))
+                yield break;
+
+            float remaining = expiry - Time.time;
+            if (remaining <= 0f)
+                break;
+
+            yield return null;
+        }
+
+        // Only remove if no sources are keeping it alive
+        bool hasSources = _effectSources.TryGetValue(effect, out var set) && set != null && set.Count > 0;
+        if (!hasSources)
+            RemoveNodeEffect(effect);
+        else
+            RaiseNodeEffectsChanged();
+    }
+
+    void RaiseNodeEffectsChanged()
+    {
+        onNodeEffectsChanged?.Invoke(this);
+    }
+
 }

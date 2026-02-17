@@ -13,8 +13,8 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
     [SerializeField] int maxHealth;
     [SerializeField] int currentHealth;
 
-    [Header("Status Effects")]
-    Dictionary<StatusEffectType, Coroutine> activeStatusEffects = new Dictionary<StatusEffectType, Coroutine>();
+    //[Header("Status Effects")]
+    //Dictionary<StatusEffectData, Coroutine> activeStatusEffects = new Dictionary<StatusEffectData, Coroutine>();
 
     [Header("Stats")]
     [SerializeField] int currentEvasion;
@@ -29,9 +29,6 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public static event Action<CharacterData, float> onMaxHealthUpdated;
     public static event Action<CharacterData, float> onCurrentHealthUpdated;
-    public static event Action<StatusEffect> onStatusEffectAdded;
-    public static event Action<StatusEffectType> onStatusEffectReset;
-    public static event Action<StatusEffectType> onStatusEffectEnded;
 
     [SerializeField] AudioClip[] damageTakenSFx;
     [SerializeField] float damageTakenSFXVolume;
@@ -79,7 +76,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         TryDamage(damageToTake);
     }
 
-    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard, bool isCrit = false)
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Physical, bool isCrit = false)
     {
         if (!PlayerController.isPlayerAlive)
             return;
@@ -234,60 +231,24 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         return new DamageData(currentHealth, currentArmour, currentEvasion);
     }
 
-    public void AddStatusEffect(StatusEffect statusEffectToAdd)
+    public void TryDamageOverTime(int damageTaken, DamageType damageType = DamageType.Physical)
     {
-        if (activeStatusEffects.ContainsKey(statusEffectToAdd.effectType))
-        {
-            ResetStatusEffect(statusEffectToAdd);
+        if (!PlayerController.isPlayerAlive)
             return;
-        }
 
-        activeStatusEffects.TryAdd(statusEffectToAdd.effectType, StartCoroutine(StartStatusEffect(statusEffectToAdd)));
+        // DoTs should not roll evasion. Armour still reduces damage via TakeDamage().
+        TakeDamage(damageTaken);
     }
 
-    public void RemoveStatusEffect(StatusEffectType statusEffectToRemove)
+    public void AddStatusEffect(StatusEffectData statusEffectToAdd)
     {
-        if (activeStatusEffects.ContainsKey(statusEffectToRemove))
+        if (statusEffectToAdd == null) return;
+
+        // Prefer the dedicated manager (handles node + direct effects)
+        if (playerController.playerStatusEffectManager != null)
         {
-            StopStatusEffect(statusEffectToRemove);
-            return;
-        }
-
-        activeStatusEffects.Remove(statusEffectToRemove);
-    }
-
-    IEnumerator StartStatusEffect(StatusEffect statusEffectToAdd)
-    {
-        onStatusEffectAdded?.Invoke(statusEffectToAdd);
-        if (statusEffectToAdd.dealsDOT)
-        {
-            StartCoroutine(HelperFunctions.DamageOverTime(this, statusEffectToAdd));
-        }
-
-        yield return new WaitForSeconds(statusEffectToAdd.effectLength);
-        onStatusEffectEnded?.Invoke(statusEffectToAdd.effectType);
-    }
-
-    void ResetStatusEffect(StatusEffect statusEffectToReset)
-    {
-        if(activeStatusEffects.TryGetValue(statusEffectToReset.effectType, out Coroutine effectRoutine))
-        {
-            if(effectRoutine != null)
-                StopCoroutine(effectRoutine);
-
-            effectRoutine = StartCoroutine(StartStatusEffect(statusEffectToReset));
-            onStatusEffectReset?.Invoke(statusEffectToReset.effectType);
+            playerController.playerStatusEffectManager.ApplyStatusEffect(statusEffectToAdd, source: null, refreshDuration: true);
         }
     }
 
-    void StopStatusEffect(StatusEffectType statusEffectToStop)
-    {
-        if (activeStatusEffects.TryGetValue(statusEffectToStop, out Coroutine effectRoutine))
-        {
-            if (effectRoutine != null)
-                StopCoroutine(effectRoutine);
-        }
-
-        activeStatusEffects.Remove(statusEffectToStop);
-    }
 }

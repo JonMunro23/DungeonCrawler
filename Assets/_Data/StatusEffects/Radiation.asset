@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 289241c823e9dd34bbda66ba19ba29e4, type: 3}
-  m_Name: Fire
+  m_Name: Radiation
   m_EditorClassIdentifier: 
   effectType: 0
-  damageType: 1
-  effectSprite: {fileID: 21300000, guid: 0d55fddba11004fe5b4947f0591be235, type: 3}
-  effectLength: 4
+  damageType: 4
+  effectSprite: {fileID: 21300000, guid: dcea3ec3cc0754daeb619a6111927468, type: 3}
+  effectLength: 2
   damage: 3
   damageInterval: 0.5
   armourReduction: 0
   canAffectNodes: 1
-  nodeEffectLength: 5
-  nodeDamage: 20
-  nodeDamageInterval: 3
+  nodeEffectLength: 2
+  nodeDamage: 3
+  nodeDamageInterval: 0.5

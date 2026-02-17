@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   maxDistanceNodes: 5
-  baseIntensity: 10
   includeDiagonals: 0
-  blockedByUnwalkable: 1
+  radiationStatusEffectData: {fileID: 11400000, guid: c4bf710495e5c2c4fa9824db5fecf29e,
+    type: 2}
   rebuildIfEmitterMovesBetweenNodes: 0

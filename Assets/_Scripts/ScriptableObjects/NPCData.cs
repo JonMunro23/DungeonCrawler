@@ -20,6 +20,8 @@ public class NPCData : ScriptableObject
     public float delayBeforeDamageDealt;
     public bool isRanged;
     public int attackRange;
+    public float statusEffectApplicationChance;
+    public StatusEffectData statusEffectOnHit;
 
     [Header("Movement")]
     public float moveDuration = 1;

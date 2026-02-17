@@ -5,16 +5,17 @@ using UnityEngine;
 public class RadiationEmitter : MonoBehaviour
 {
     [Header("Radiation")]
+    [SerializeField] StatusEffectData radiationStatusEffectData;
     [SerializeField] int maxDistanceNodes = 5;
     [SerializeField] bool includeDiagonals = false;
 
     [Header("Rebuild Triggers")]
     [SerializeField] bool rebuildIfEmitterMovesBetweenNodes = true;
 
-    // Cache of nodes this emitter irradiated last time (so we can undo cleanly)
+    // Cache of nodes this emitter irradiated last time
     readonly List<GridNode> previousIrradiated = new List<GridNode>(256);
 
-    // BFS buffers (reused, no allocations after resize)
+    // BFS buffers
     int[] dist;
     int[] stamp;
     int currentStamp = 1;
@@ -36,7 +37,7 @@ public class RadiationEmitter : MonoBehaviour
         GridController.onLevelFinishedGenerating -= OnLevelFinishedGenerating;
 
         // Remove ONLY this emitter's contribution
-        ClearPreviousContribution();
+        DisableEmitter();
     }
 
     void OnLevelFinishedGenerating()
@@ -49,6 +50,11 @@ public class RadiationEmitter : MonoBehaviour
     {
         cachedSourceNode = spawnNode;
         this.maxDistanceNodes = maxDistanceNodes;
+    }
+
+    public void DisableEmitter()
+    {
+        ClearPreviousContribution();
     }
 
     void Update()
@@ -102,10 +108,11 @@ public class RadiationEmitter : MonoBehaviour
         {
             var node = previousIrradiated[i];
             if (node != null)
-                node.RemoveIrradiationSource();
+                node.RemoveNodeEffectFromSource(radiationStatusEffectData, this);
         }
         previousIrradiated.Clear();
     }
+
 
     void RunBfsAndApply(GridNode startNode)
     {
@@ -171,13 +178,14 @@ public class RadiationEmitter : MonoBehaviour
 
     void ApplyNode(GridNode node)
     {
-        // Safety (in case called elsewhere)
         if (!IsRadiationPassable(node))
             return;
 
-        node.AddIrradiationSource();
+        node.AddNodeEffectFromSource(radiationStatusEffectData, this);
+        node.HighlightCellPath();
         previousIrradiated.Add(node);
     }
+
 
     // ✅ NEW: One place to define "wall" / "passable"
     bool IsRadiationPassable(GridNode node)

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -6,9 +5,11 @@ using System;
 public class NPCHealthController : MonoBehaviour, IDamageable
 {
     NPCController controller;
+    NPCStatusEffectManager statusEffectManager;
 
     [SerializeField] float currentHealth;
     public float CurrentHealth => currentHealth;
+    int baseArmourRating;
 
     [SerializeField] float maxHealth;
     [SerializeField] int currentArmourRating;
@@ -19,24 +20,29 @@ public class NPCHealthController : MonoBehaviour, IDamageable
     public List<ItemData> guaranteedDrops = new List<ItemData>();
     public List<ItemData> randomDrops = new List<ItemData>();
 
-    // NEW: lets movement/AI react immediately when this NPC takes damage
     public event Action<int, DamageType, bool> onDamaged;
 
     public void Init(NPCController controller)
     {
         this.controller = controller;
+        statusEffectManager = GetComponent<NPCStatusEffectManager>();
+
         maxHealth = controller.npcData.maxHealth;
         currentHealth = maxHealth;
-        currentArmourRating = controller.npcData.baseArmourRating;
+
+        baseArmourRating = controller.npcData.baseArmourRating;
+        currentArmourRating = baseArmourRating;
+
         currentEvasionRating = controller.npcData.baseEvasionRating;
     }
+
 
     public void SetHealth(int newHealthValue)
     {
         currentHealth = newHealthValue;
     }
 
-    public void TryDamage(int damage, DamageType damageType = DamageType.Standard, bool isCrit = false)
+    public void TryDamage(int damage, DamageType damageType = DamageType.Physical, bool isCrit = false)
     {
         if (isDead) return;
 
@@ -66,49 +72,9 @@ public class NPCHealthController : MonoBehaviour, IDamageable
         }
     }
 
-    public void AddStatusEffect(StatusEffect statusEffectToAdd)
-    {
-        //switch (statusEffectToAdd.effectType)
-        //{
-        //    case StatusEffectType.Fire:
-        //        if(fireDamageCoroutine != null)
-        //            StopCoroutine(fireDamageCoroutine);
-
-        //        fireDamageCoroutine = StartCoroutine(HelperFunctions.TakeDamageOverTime(this, statusEffectToAdd));
-        //        break;
-        //    case StatusEffectType.Acid:
-        //        int acidArmourReduction = 20;
-        //        if (armourReductionCoroutine != null)
-        //        {
-        //            StopCoroutine(armourReductionCoroutine);
-        //            currentArmourRating = NPCData.baseArmourRating;
-        //        }
-
-        //        armourReductionCoroutine = StartCoroutine(ReduceArmourRating(statusEffectToAdd.effectLength, acidArmourReduction));
-
-        //        if(acidDamageCoroutine != null)
-        //            StopCoroutine(acidDamageCoroutine);
-
-        //        acidDamageCoroutine = StartCoroutine(HelperFunctions.TakeDamageOverTime(this, statusEffectToAdd));
-        //        break;
-        //}
-        //statusEffectToAdd.ApplyStatusEffect(this);
-    }
-
     public DamageData GetDamageData()
     {
         return new DamageData(Mathf.RoundToInt(currentHealth), currentArmourRating, currentEvasionRating);
-    }
-
-    IEnumerator ReduceArmourRating(float duration, int reductionAmount)
-    {
-        currentArmourRating -= reductionAmount;
-        if (currentArmourRating < 0)
-            currentArmourRating = 0;
-
-        yield return new WaitForSeconds(duration);
-
-        currentArmourRating = controller.npcData.baseArmourRating;
     }
 
     public void PlayHitReaction()
@@ -116,4 +82,21 @@ public class NPCHealthController : MonoBehaviour, IDamageable
         //pause movement?
         controller.animController.PlayAnimation("HitReaction", 0);
     }
+
+    public void AddStatusEffect(StatusEffectData statusEffectToAdd)
+    {
+        if (statusEffectToAdd == null) return;
+
+        if (statusEffectManager != null)
+            statusEffectManager.ApplyStatusEffect(statusEffectToAdd, refreshDuration: true);
+
+    }
+
+    public void SetArmourFromDebuffs(int totalArmourReduction)
+    {
+        int reduction = Mathf.Max(0, totalArmourReduction);
+        currentArmourRating = Mathf.Max(0, baseArmourRating - reduction);
+    }
+
+
 }

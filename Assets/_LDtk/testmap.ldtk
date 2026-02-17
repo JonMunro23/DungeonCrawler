@@ -4338,6 +4338,28 @@
 							"fieldInstances": [{ "__identifier": "Radiation_Distance", "__type": "Int", "__value": 6, "__tile": null, "defUid": 161, "realEditorValues": [{ "id": "V_Int", "params": [6] }] }],
 							"__worldX": 360,
 							"__worldY": -456
+						},
+						{
+							"__identifier": "NPC_Zombie",
+							"__grid": [28,8],
+							"__pivot": [0.5,0.5],
+							"__tags": [ "NPC", "Triggerable" ],
+							"__tile": { "tilesetUid": 3, "x": 96, "y": 0, "w": 16, "h": 16 },
+							"__smartColor": "#C8001B",
+							"iid": "0c4f9d30-fa90-11f0-b299-f18978754ef4",
+							"width": 16,
+							"height": 16,
+							"defUid": 7,
+							"px": [456,136],
+							"fieldInstances": [
+								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Idle", "__tile": null, "defUid": 154, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Idle"]
+								}] }
+							],
+							"__worldX": 456,
+							"__worldY": -376
 						}
 					]
 				},

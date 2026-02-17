@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerMovementManager playerMovementManager;
     [HideInInspector] public WorldInteractionManager itemPickupManager;
     [HideInInspector] public PlayerHealthManager playerHealthManager;
+    [HideInInspector] public PlayerStatusEffectManager playerStatusEffectManager;
     [HideInInspector] public PlayerInventoryManager playerInventoryManager;
     [HideInInspector] public PlayerEquipmentManager playerEquipmentManager;
     [HideInInspector] public PlayerWeaponManager playerWeaponManager;
@@ -71,6 +72,7 @@ public class PlayerController : MonoBehaviour
         //advGridMovement = GetComponent<AdvancedGridMovement>();
         playerMovementManager = GetComponent<PlayerMovementManager>();
         playerHealthManager = GetComponent<PlayerHealthManager>();
+        playerStatusEffectManager = GetComponent<PlayerStatusEffectManager>();
         playerInventoryManager = GetComponent<PlayerInventoryManager>();
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();

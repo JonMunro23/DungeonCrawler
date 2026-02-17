@@ -19,19 +19,13 @@ public enum AmmoType
     Acid
 }
 
-public enum StatusEffectType
-{
-    None,
-    Fire,
-    Acid
-}
-
 public enum DamageType
 {
-    Standard,
+    Physical,
     Fire,
     Acid,
-    Explosive
+    Explosive,
+    Radiation
 }
 
 

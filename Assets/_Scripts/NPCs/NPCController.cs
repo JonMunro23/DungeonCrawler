@@ -18,7 +18,6 @@ public class NPCController : MonoBehaviour
     public GridNode currentlyOccupiedGridnode;
 
     public static event Action<NPCController> onNPCDeath;
-    Coroutine fireDamageCoroutine, acidDamageCoroutine, armourReductionCoroutine;
 
     private void OnEnable()
     {

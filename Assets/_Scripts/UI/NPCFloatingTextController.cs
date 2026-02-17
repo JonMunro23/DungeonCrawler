@@ -20,8 +20,9 @@ public class NPCFloatingTextController : MonoBehaviour
     [SerializeField] Color critDamageTextColour;
     [SerializeField] Color fireDamageTextColour;
     [SerializeField] Color acidDamageTextColour;
+    [SerializeField] Color radiationDamageTextColour;
 
-    public void SpawnDamageText(int damage, DamageType damageType = DamageType.Standard, bool isCrit = false)
+    public void SpawnDamageText(int damage, DamageType damageType = DamageType.Physical, bool isCrit = false)
     {
         GameObject textClone = Instantiate(damageTakenFloatingText, RandomiseFloatingTextSpawnLocation(), transform.rotation);
         textClone.GetComponent<FloatingDamageText>().SetUpwardsSpeed(textSpeed);
@@ -35,6 +36,9 @@ public class NPCFloatingTextController : MonoBehaviour
                 break;
             case DamageType.Acid:
                 cloneTextComponent.color = acidDamageTextColour;
+                break;
+            case DamageType.Radiation:
+                cloneTextComponent.color = radiationDamageTextColour;
                 break;
         }
 

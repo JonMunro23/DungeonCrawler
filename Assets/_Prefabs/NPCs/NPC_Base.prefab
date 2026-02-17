@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 6081286361461124586}
   - component: {fileID: 8651504595935704073}
   - component: {fileID: 6484077099610081580}
+  - component: {fileID: -2277669754247390270}
   - component: {fileID: 6982671803869812587}
   - component: {fileID: 4431687199735034610}
   - component: {fileID: -8501469825846804241}
@@ -229,6 +230,20 @@ MonoBehaviour:
   currentEvasionRating: 0
   guaranteedDrops: []
   randomDrops: []
+--- !u!114 &-2277669754247390270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7625538934605927937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 804a1d2c1e77ab2429c65ae3e147967f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  overlapRule: 0
+  enableNodeLinger: 1
 --- !u!114 &6982671803869812587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,6 +269,7 @@ MonoBehaviour:
   critDamageTextColour: {r: 1, g: 0, b: 0, a: 1}
   fireDamageTextColour: {r: 1, g: 0.4369752, b: 0, a: 1}
   acidDamageTextColour: {r: 0.04023647, g: 1, b: 0, a: 1}
+  radiationDamageTextColour: {r: 0.061502695, g: 0.53333336, b: 0, a: 1}
 --- !u!114 &4431687199735034610
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,39 +5,39 @@ public class PlayerStatusEffectsUIController : MonoBehaviour
 {
     [SerializeField] Transform statusIndicatorSpawnParent;
     [SerializeField] StatusEffectIndicator statusEffectIndicatorPrefab;
-    Dictionary<StatusEffectType, StatusEffectIndicator> activeIndicators = new Dictionary<StatusEffectType, StatusEffectIndicator>();
+    Dictionary<StatusEffectData, StatusEffectIndicator> activeIndicators = new Dictionary<StatusEffectData, StatusEffectIndicator>();
 
     private void OnEnable()
     {
-        PlayerHealthManager.onStatusEffectAdded += OnStatusEffectAdded;
-        PlayerHealthManager.onStatusEffectEnded += OnStatusEffectEnded;
+        PlayerStatusEffectManager.onStatusEffectAdded += OnStatusEffectAdded;
+        PlayerStatusEffectManager.onStatusEffectEnded += OnStatusEffectEnded;
     }
 
     private void OnDisable()
     {
-        PlayerHealthManager.onStatusEffectAdded -= OnStatusEffectAdded;
-        PlayerHealthManager.onStatusEffectEnded -= OnStatusEffectEnded;
+        PlayerStatusEffectManager.onStatusEffectAdded -= OnStatusEffectAdded;
+        PlayerStatusEffectManager.onStatusEffectEnded -= OnStatusEffectEnded;
     }
 
-    void OnStatusEffectAdded(StatusEffect addedStatusEffect)
+
+    void OnStatusEffectAdded(StatusEffectData addedStatusEffect)
     {
         SpawnStatusIndicator(addedStatusEffect);
     }
-    void OnStatusEffectEnded(StatusEffectType endedStatusEffect)
+    void OnStatusEffectEnded(StatusEffectData endedStatusEffect)
     {
-        if(activeIndicators.TryGetValue(endedStatusEffect, out StatusEffectIndicator indicator))
-        {
+        if (activeIndicators.TryGetValue(endedStatusEffect, out StatusEffectIndicator indicator))
             Destroy(indicator.gameObject);
-        }
 
         activeIndicators.Remove(endedStatusEffect);
     }
-    void SpawnStatusIndicator(StatusEffect effectToIndicate)
+
+    void SpawnStatusIndicator(StatusEffectData effectToIndicate)
     {
-        if (activeIndicators.ContainsKey(effectToIndicate.effectType)) return;
+        if (activeIndicators.ContainsKey(effectToIndicate)) return;
 
         StatusEffectIndicator clone = Instantiate(statusEffectIndicatorPrefab, statusIndicatorSpawnParent);
-        activeIndicators.TryAdd(effectToIndicate.effectType, clone);
+        activeIndicators.TryAdd(effectToIndicate, clone);
         clone.Init(effectToIndicate);
     }
 

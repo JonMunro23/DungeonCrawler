@@ -19,7 +19,7 @@ public class HelperFunctions
         }
     }
 
-    public static IEnumerator DamageOverTime(IDamageable affectedEntity, StatusEffect statusEffect)
+    public static IEnumerator DamageOverTime(IDamageable affectedEntity, StatusEffectData statusEffect)
     {
         if (affectedEntity == null || statusEffect == null)
             yield break;

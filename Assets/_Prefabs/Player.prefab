@@ -544,6 +544,7 @@ GameObject:
   - component: {fileID: 3878609313964255762}
   - component: {fileID: 2246600626564427077}
   - component: {fileID: 5689203347496627508}
+  - component: {fileID: 4986141511892776361}
   - component: {fileID: 5301202906750780191}
   - component: {fileID: 1969104955076474302}
   - component: {fileID: 4072594988189052085}
@@ -587,12 +588,14 @@ MonoBehaviour:
   playerMovementManager: {fileID: 0}
   itemPickupManager: {fileID: 0}
   playerHealthManager: {fileID: 0}
+  playerStatusEffectManager: {fileID: 0}
   playerInventoryManager: {fileID: 5977534421063011795}
   playerEquipmentManager: {fileID: 6917960533262647579}
   playerWeaponManager: {fileID: 4808936625142989322}
   playerThrowableManager: {fileID: 0}
   playerStatsManager: {fileID: 5301202906750780191}
   playerSkillsManager: {fileID: 0}
+  playerLevelManager: {fileID: 0}
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
   currentOccupiedNode: {fileID: 0}
@@ -984,7 +987,7 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
     itemAmount: 1
     loadedAmmo: 30
-  - itemData: {fileID: 11400000, guid: c38aca0848b687440981d6016d8fdeae, type: 2}
+  - itemData: {fileID: 11400000, guid: 9b4387b63c26100479530fe8b8e80114, type: 2}
     itemAmount: 45
     loadedAmmo: 0
   - itemData: {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1, type: 2}
@@ -1147,6 +1150,20 @@ MonoBehaviour:
   damageTakenSFx:
   - {fileID: 8300000, guid: d8a90167a4af0114882ae42aff1110af, type: 3}
   damageTakenSFXVolume: 0.3
+--- !u!114 &4986141511892776361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6206634459118426657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b913b49af4cd4049b12d9c3a7665cdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  overlapRule: 0
+  enableNodeLinger: 1
 --- !u!114 &5301202906750780191
 MonoBehaviour:
   m_ObjectHideFlags: 0

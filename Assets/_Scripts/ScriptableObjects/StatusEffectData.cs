@@ -1,16 +1,26 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "NewStatusEffect", menuName = "New Status Effect")]
-public class StatusEffect : ScriptableObject
+public enum StatusEffectType
+{
+    DamageOverTime,
+    Debuff
+}
+
+[CreateAssetMenu(fileName = "NewStatusEffectData", menuName = "New Status Effect Data")]
+public class StatusEffectData : ScriptableObject
 {
     [Header("Basic Properties")]
     public StatusEffectType effectType;
     public DamageType damageType;
     public Sprite effectSprite;
     public float effectLength;
-    public bool dealsDOT;
+
+    [Header("Damage Properties")]
     public float damage;
     public float damageInterval;
+
+    [Header("Debuff Properties")]
+    public int armourReduction;
 
     [Header("GridNode Properties")]
     public bool canAffectNodes;
@@ -18,8 +28,6 @@ public class StatusEffect : ScriptableObject
     public float nodeDamage;
     public float nodeDamageInterval;
 
-    [Header("Special Properties")]
-    public int armourReduction;
 
     
 }

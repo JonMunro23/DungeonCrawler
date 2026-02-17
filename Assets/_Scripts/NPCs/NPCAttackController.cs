@@ -49,6 +49,12 @@ public class NPCAttackController : MonoBehaviour
                 if(player.TryGetComponent(out IDamageable damageable))
                 {
                     damageable.TryDamage(GetRandomDamageValue());
+
+                    if(npcController.npcData.statusEffectOnHit != null)
+                    {
+                        //Roll to see if status effect is applied based on npcController.npcData.statusEffectApplicationChance
+                        //damageable.AddStatusEffect(npcController.npcData.statusEffectOnHit);
+                    }
                 }
             }
         }

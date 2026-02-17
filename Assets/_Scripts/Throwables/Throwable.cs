@@ -54,15 +54,13 @@ public class Throwable : MonoBehaviour
         {
             switch (itemData.statusEffect.effectType)
             {
-                case StatusEffectType.None:
-                    break;
-                case StatusEffectType.Fire:
+                case StatusEffectType.DamageOverTime:
                     foreach (GridNode node in nodesInBlastRadius)
                     {
-                        node.ApplyEffectToNode(itemData.statusEffect);
+                        //node.ApplyEffectToNode(itemData.statusEffect);
                     }
                     break;
-                case StatusEffectType.Acid:
+                case StatusEffectType.Debuff:
                     break;
                 default:
                     break;

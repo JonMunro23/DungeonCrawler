@@ -8,14 +8,8 @@ public class Destructable : MonoBehaviour, IDamageable, IGridNode
     [SerializeField] int health;
     [SerializeField] int armourRating;
 
-
     GridNode occupyingNode;
     int levelIndex;
-
-    public void AddStatusEffect(StatusEffect statusEffectToAdd)
-    {
-        //Cannot have status effects applied
-    }
 
     public Vector2 GetCoords()
     {
@@ -42,7 +36,7 @@ public class Destructable : MonoBehaviour, IDamageable, IGridNode
         this.occupyingNode = occupyingNode;
     }
 
-    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Standard, bool isCrit = false)
+    public void TryDamage(int damageTaken, DamageType damageType = DamageType.Physical, bool isCrit = false)
     {
         if (!susceptibleDamageTypes.Contains(damageType))
             return;
