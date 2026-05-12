@@ -59,7 +59,7 @@ public class SecretsManager : MonoBehaviour
     void PlaySecretJingle()
     {
         if(secretJingle != null)
-            AudioManager.Instance.Play2DClip(secretJingle, .5f);
+            AudioManager.Instance.Play2DClip(secretJingle, .25f);
     }
 
     #endregion

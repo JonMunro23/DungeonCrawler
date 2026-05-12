@@ -229,7 +229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6378987d61c40494884b31c35c7e0acb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  secretJingle: {fileID: 0}
+  secretJingle: {fileID: 8300000, guid: ee41744cbae9ab346a5306b0c62c2f0e, type: 3}
 --- !u!4 &406179519
 Transform:
   m_ObjectHideFlags: 0

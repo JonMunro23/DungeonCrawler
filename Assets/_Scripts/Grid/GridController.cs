@@ -449,8 +449,8 @@ public class GridController : MonoBehaviour
                         spawnedDestructable = Instantiate(destructableWallPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                         spawnedDestructable.SetOccupyingNode(spawnNode);
                         spawnedDestructable.SetLevelIndex(levelIndex);
-                        GridNodeOccupant occupant = new GridNodeOccupant(spawnedDestructable.gameObject, GridNodeOccupantType.Obstacle);
-                        spawnNode.SetOccupant(occupant);
+                        newOccupant = new GridNodeOccupant(spawnedDestructable.gameObject, GridNodeOccupantType.Obstacle);
+                        spawnNode.SetOccupant(newOccupant);
                         break;
                     case "Sign":
                         Sign sign = Instantiate(signPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
@@ -467,6 +467,8 @@ public class GridController : MonoBehaviour
                         break;
                     case "Radiation_Emitter":
                         RadiationEmitter radEmitter = Instantiate(radEmitterPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
+                        newOccupant = new GridNodeOccupant(radEmitter.gameObject, GridNodeOccupantType.RadiationEmitter);
+                        spawnNode.SetOccupant(newOccupant);
                         radEmitter.Init(spawnNode, LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[0].Value));
                         break;
 

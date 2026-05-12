@@ -12,7 +12,8 @@ public enum GridNodeOccupantType
     Player,
     LevelTransition,
     PressurePlate,
-    NPCInaccessible
+    NPCInaccessible,
+    RadiationEmitter
 }
 
 [System.Serializable]

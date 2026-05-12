@@ -364,6 +364,7 @@ public class PlayerMovementManager : MonoBehaviour
 
         var occ = node.GetOccupantType();
         if (occ == GridNodeOccupantType.Obstacle ||
+            occ == GridNodeOccupantType.RadiationEmitter ||
             occ == GridNodeOccupantType.NPC)
             return false;
 
