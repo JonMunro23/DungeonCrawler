@@ -71,8 +71,11 @@ public class AudioEmitter
 
         m_Source.clip = clip;
         m_Source.volume = GetVolume(volume);
+        m_Source.loop = false;
         m_Source.Play();
     }
+
+
 
     /// <summary>
     /// Forces the AudioEmitter to stop playing the current AudioClip and play immediately the requested sound.
@@ -88,6 +91,28 @@ public class AudioEmitter
 
         m_Source.clip = clip;
         m_Source.volume = GetVolume(volume);
+        m_Source.loop = false;
+        m_Source.Play();
+    }
+
+    /// <summary>
+    /// Plays and loops an AudioClip in the AudioEmitter if it's not being already used.
+    /// </summary>
+    /// <param name="clip">The AudioClip to be played.</param>
+    /// <param name="volume">The AudioEmitter volume.</param>
+    public void PlayLooped(AudioClip clip, float volume)
+    {
+        if (!clip)
+        {
+            throw new ArgumentException("AudioManager: AudioClip '" + clip + "' was not found.");
+        }
+
+        if (m_Source.isPlaying && m_Source.clip == clip)
+            return;
+
+        m_Source.clip = clip;
+        m_Source.volume = GetVolume(volume);
+        m_Source.loop = true;
         m_Source.Play();
     }
 

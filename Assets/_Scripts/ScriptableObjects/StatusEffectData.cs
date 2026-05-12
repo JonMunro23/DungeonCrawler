@@ -14,6 +14,8 @@ public class StatusEffectData : ScriptableObject
     public StatusEffectType effectType;
     public DamageType damageType;
     public Sprite effectSprite;
+    [Tooltip("The sound effect to play whilst affected by this status effect")]
+    public AudioClip effectSFX;
     public float effectLength;
 
     [Header("Damage Properties")]

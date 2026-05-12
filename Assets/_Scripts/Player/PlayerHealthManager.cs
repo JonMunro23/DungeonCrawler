@@ -93,9 +93,11 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     private void TakeDamage(int damageTaken, bool isDOT = false)
     {
-        audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
         if(!isDOT)
+        {
+            audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
             playerController.ShakeScreen();
+        }
         currentHealth -= damageTaken;
         if (currentHealth < 0)
             currentHealth = 0;
