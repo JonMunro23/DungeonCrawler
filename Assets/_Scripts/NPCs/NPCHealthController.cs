@@ -13,7 +13,6 @@ public class NPCHealthController : MonoBehaviour, IDamageable
 
     [SerializeField] float maxHealth;
     [SerializeField] int currentArmourRating;
-    [SerializeField] int currentEvasionRating;
     bool isDead;
 
     [Header("Item Dropping")]
@@ -32,8 +31,6 @@ public class NPCHealthController : MonoBehaviour, IDamageable
 
         baseArmourRating = controller.npcData.baseArmourRating;
         currentArmourRating = baseArmourRating;
-
-        currentEvasionRating = controller.npcData.baseEvasionRating;
     }
 
 
@@ -74,7 +71,7 @@ public class NPCHealthController : MonoBehaviour, IDamageable
 
     public DamageData GetDamageData()
     {
-        return new DamageData(Mathf.RoundToInt(currentHealth), currentArmourRating, currentEvasionRating);
+        return new DamageData(Mathf.RoundToInt(currentHealth), currentArmourRating, 0);
     }
 
     public void PlayHitReaction()

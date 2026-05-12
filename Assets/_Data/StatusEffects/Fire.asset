@@ -18,8 +18,8 @@ MonoBehaviour:
   effectLength: 4
   damage: 3
   damageInterval: 0.5
-  armourReduction: 0
+  statsToDebuff: []
   canAffectNodes: 1
   nodeEffectLength: 5
-  nodeDamage: 20
-  nodeDamageInterval: 3
+  nodeDamage: 5
+  nodeDamageInterval: 0.5

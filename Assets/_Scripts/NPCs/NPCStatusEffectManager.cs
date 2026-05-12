@@ -27,8 +27,9 @@ public class NPCStatusEffectManager : MonoBehaviour
             enableNodeLinger: enableNodeLinger
         );
 
-        // Debuffs (armourReduction) -> NPC armour
-        runner.onTotalArmourReductionChanged += health.SetArmourFromDebuffs;
+        // Debuffs
+        //runner.onTotalArmourReductionChanged += health.SetArmourFromDebuffs;
+        //runner.debuffStat += stats.DebuffStat();
     }
 
     void OnEnable()
@@ -40,8 +41,8 @@ public class NPCStatusEffectManager : MonoBehaviour
     {
         GridNode.onNodeEffectsChanged -= OnAnyNodeEffectsChanged;
 
-        if (runner != null && health != null)
-            runner.onTotalArmourReductionChanged -= health.SetArmourFromDebuffs;
+        //if (runner != null && health != null)
+        //    runner.onTotalArmourReductionChanged -= health.SetArmourFromDebuffs;
     }
 
     void Update()

@@ -74,7 +74,7 @@ public class PlayerStatsUIController : MonoBehaviour
         this.playerStatsManager = playerController.playerStatsManager;
 
         //UpdateMaxHealthValue(playerCh arData.GetStat(ModifiableCharacterStats.MaxHealth).GetBaseStatValue());
-        UpdateMaxHealthValue(playerStatsManager.GetPlayerStat(ModifiableCharacterStats.MaxHealth).GetCurrentStatValue());
+        UpdateMaxHealthValue(playerStatsManager.GetPlayerStat(CharacterStats.MaxHealth).GetCurrentStatValue());
         UpdateCurrentHealthValue(maxHealth);
     }
 
@@ -138,8 +138,8 @@ public class PlayerStatsUIController : MonoBehaviour
         //CHARACTER STATS
         statsMenuHealthText.text = $"{currentHealth} / {maxHealth}";
         statsMenuExperienceText.text = $"{currentExperience} / {requiredExperience}";
-        statsMenuArmourRatingText.text = $"{playerStatsManager.GetPlayerStat(ModifiableCharacterStats.Armour).GetCurrentStatValue()}";
-        statsMenuEvasionRatingText.text = $"{playerStatsManager.GetPlayerStat(ModifiableCharacterStats.Evasion).GetCurrentStatValue()}";
+        statsMenuArmourRatingText.text = $"{playerStatsManager.GetPlayerStat(CharacterStats.Armour).GetCurrentStatValue()}";
+        statsMenuEvasionRatingText.text = $"{playerStatsManager.GetPlayerStat(CharacterStats.Evasion).GetCurrentStatValue()}";
 
         //WEAPON SLOT 1 STATS
         IWeapon slot1Weapon = playerController.playerWeaponManager.spawnedWeaponSlots[0].GetWeapon();

@@ -193,6 +193,7 @@ public class RadiationEmitter : MonoBehaviour
         if (node == null) return false;
         //if (node.GetIsVoid()) return false;
         if (node.nodeData == null) return false;
+        if (node.currentOccupant.occupantType == GridNodeOccupantType.Obstacle) return false;
 
         // Walls in your project are simply non-walkable nodes
         if (!node.nodeData.isWalkable) return false;

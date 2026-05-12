@@ -472,23 +472,6 @@ public class GridNode : MonoBehaviour
         RaiseNodeEffectsChanged();
     }
 
-    // --- Compatibility with your existing radiation API ---
-    // RadiationEmitter currently calls these.
-    public void IrradiateNode(StatusEffectData radiationStatusEffect)
-    {
-        AddNodeEffectFromSource(radiationStatusEffect, null); // will be overridden by emitter call update below if you use it
-        HighlightCellPath();
-    }
-
-    public void RemoveRadiation()
-    {
-        // Legacy method; emitter will call RemoveNodeEffectFromSource after we update it.
-        // Keep this safe.
-        UnhighlightCell();
-        RaiseNodeEffectsChanged();
-    }
-
-    // --------------------
     void AddNodeEffectInternal(StatusEffectData effect)
     {
         if (!activeNodeEffects.Contains(effect))
@@ -520,6 +503,11 @@ public class GridNode : MonoBehaviour
     void RaiseNodeEffectsChanged()
     {
         onNodeEffectsChanged?.Invoke(this);
+    }
+
+    void SetNodeEffectParticlesActive(StatusEffectData effect, bool isActive)
+    {
+
     }
 
 }

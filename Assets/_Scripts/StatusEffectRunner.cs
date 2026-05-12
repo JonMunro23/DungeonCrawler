@@ -8,7 +8,8 @@ public sealed class StatusEffectRunner
 
     public event Action<StatusEffectData> onEffectBecameActive;
     public event Action<StatusEffectData> onEffectEnded;
-    public event Action<int> onTotalArmourReductionChanged;
+    //public event Action<int> onTotalArmourReductionChanged;
+    public event Action<StatusEffectData, StatModifier> debuffStat;
 
     readonly OverlapRule overlapRule;
     readonly bool enableNodeLinger;
@@ -388,25 +389,28 @@ public sealed class StatusEffectRunner
 
     void RecomputeDebuffs()
     {
-        int total = 0;
+        //int total = 0;
 
-        foreach (var kvp in effects)
+        foreach (KeyValuePair<StatusEffectData, RuntimeState> kvp in effects)
         {
-            var e = kvp.Key;
-            var s = kvp.Value;
+            StatusEffectData e = kvp.Key;
+            RuntimeState s = kvp.Value;
 
             if (e == null) continue;
             if (!IsAnyActive(s)) continue;
 
-            if (e.effectType == StatusEffectType.Debuff && e.armourReduction > 0)
-                total += e.armourReduction;
+            if (e.effectType == StatusEffectType.Debuff && e.statsToDebuff.Count > 0)
+                foreach (StatModifier stat in e.statsToDebuff)
+                {
+                    debuffStat?.Invoke(e, stat);
+                }
         }
 
-        if (total != lastArmourReduction)
-        {
-            lastArmourReduction = total;
-            onTotalArmourReductionChanged?.Invoke(total);
-        }
+        //if (total != lastArmourReduction)
+        //{
+        //    lastArmourReduction = total;
+        //    onTotalArmourReductionChanged?.Invoke(total);
+        //}
     }
 
     // --------------------------

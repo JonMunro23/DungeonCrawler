@@ -17,13 +17,14 @@ MonoBehaviour:
   experienceValue: 75
   maxHealth: 100
   baseArmourRating: 0
-  baseEvasionRating: 0
   minMaxDamage: {x: 15, y: 40}
   attackCooldown: 3
   delayBetweenAttacks: 1
   delayBeforeDamageDealt: 1.5
   isRanged: 0
   attackRange: 0
+  statusEffectApplicationChance: 0
+  statusEffectOnHit: {fileID: 0}
   moveDuration: 3.3
   minDelayBetweenMovement: 0
   turnDuration: 0.6

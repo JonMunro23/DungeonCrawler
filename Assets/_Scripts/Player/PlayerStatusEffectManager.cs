@@ -20,7 +20,6 @@ public class PlayerStatusEffectManager : MonoBehaviour
     {
         health = GetComponent<PlayerHealthManager>();
 
-        // IMPORTANT: PlayerHealthManager must have TryDamageOverTime(int, DamageType)
         runner = new StatusEffectRunner(
             isAlive: () => PlayerController.isPlayerAlive,
             applyDamage: (amount, type) => health.TryDamageOverTime(amount, type),

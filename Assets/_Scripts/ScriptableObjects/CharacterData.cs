@@ -14,7 +14,7 @@ public class CharacterData : ScriptableObject
     public List<StatData> baseCharStats = new List<StatData>();
     public List<PlayerSkillData> classSpecificSkills = new List<PlayerSkillData>();
 
-    public StatData GetStat(ModifiableCharacterStats statToGet)
+    public StatData GetStat(CharacterStats statToGet)
     {
         StatData statToReturn = null;
         foreach (StatData stat in baseCharStats)

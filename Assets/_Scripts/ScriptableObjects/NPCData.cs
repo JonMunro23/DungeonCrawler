@@ -11,7 +11,7 @@ public class NPCData : ScriptableObject
     public int experienceValue;
     public int maxHealth = 100;
     public int baseArmourRating;
-    public int baseEvasionRating;
+    //public int baseEvasionRating;
 
     [Header("Attacking")]
     public Vector2 minMaxDamage = new Vector2(25, 50);
@@ -20,6 +20,9 @@ public class NPCData : ScriptableObject
     public float delayBeforeDamageDealt;
     public bool isRanged;
     public int attackRange;
+
+    [Header("Status Effects")]
+    [Range(0, 100)]
     public float statusEffectApplicationChance;
     public StatusEffectData statusEffectOnHit;
 

@@ -3,20 +3,16 @@ using System;
 using Random = UnityEngine.Random;
 using System.Collections;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 public class PlayerHealthManager : MonoBehaviour, IDamageable
 {
     PlayerController playerController;
     CharacterData characterData;
     [SerializeField] GameObject syringeArms;
-    [SerializeField] int maxHealth;
-    [SerializeField] int currentHealth;
-
-    //[Header("Status Effects")]
-    //Dictionary<StatusEffectData, Coroutine> activeStatusEffects = new Dictionary<StatusEffectData, Coroutine>();
 
     [Header("Stats")]
+    [SerializeField] int maxHealth;
+    [SerializeField] int currentHealth;
     [SerializeField] int currentEvasion;
     [SerializeField] int currentArmour;
 
@@ -46,7 +42,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     void OnStatUpdated(StatData updatedStat)
     {
-        if(updatedStat.stat == ModifiableCharacterStats.MaxHealth)
+        if(updatedStat.stat == CharacterStats.MaxHealth)
         {
             UpdateMaxHealth(updatedStat.GetCurrentStatValue());
         }
@@ -63,7 +59,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         playerController = newPlayerController;
         characterData = playerController.playerCharacterData;
 
-        UpdateMaxHealth(Mathf.CeilToInt(characterData.GetStat(ModifiableCharacterStats.MaxHealth).GetBaseStatValue()));
+        UpdateMaxHealth(Mathf.CeilToInt(characterData.GetStat(CharacterStats.MaxHealth).GetBaseStatValue()));
 
         currentHealth = maxHealth;
         canUseSyringe = true;
@@ -87,15 +83,20 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
             return;
         }
 
-        TakeDamage(damageTaken);
+        damageTaken = ApplyDamageResistances(damageTaken, damageType);
+
+        if(damageTaken > 0)
+            TakeDamage(damageTaken);
     }
 
-    private void TakeDamage(int damageTaken)
+
+
+    private void TakeDamage(int damageTaken, bool isDOT = false)
     {
-        int damageToTake = damageTaken - currentArmour;
         audioEmitter.ForcePlay(GetRandomAudioClip(), damageTakenSFXVolume);
-        playerController.ShakeScreen();
-        currentHealth -= damageToTake;
+        if(!isDOT)
+            playerController.ShakeScreen();
+        currentHealth -= damageTaken;
         if (currentHealth < 0)
             currentHealth = 0;
 
@@ -201,18 +202,11 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
     }
 
+
     bool RollForDodge()
     {
-        bool dodged = false;
-        if (currentEvasion > 0)
-        {
-            float rand = Random.Range(0, 101);
-            if (rand <= currentEvasion)
-            {
-                dodged = true;
-            }
-        }
-        return dodged;
+        float evasionChance = Mathf.Clamp01(currentEvasion * 0.01f);
+        return Random.value < evasionChance;
     }
 
     public void Save(ref PlayerSaveData data)
@@ -236,8 +230,12 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         if (!PlayerController.isPlayerAlive)
             return;
 
+        damageTaken = ApplyDamageResistances(damageTaken, damageType);
+
         // DoTs should not roll evasion. Armour still reduces damage via TakeDamage().
-        TakeDamage(damageTaken);
+
+        if(damageTaken > 0)
+            TakeDamage(damageTaken, true);
     }
 
     public void AddStatusEffect(StatusEffectData statusEffectToAdd)
@@ -251,4 +249,57 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         }
     }
 
-}
+    int ApplyDamageResistances(int damageTaken, DamageType damageType)
+    {
+        switch (damageType)
+        {
+            case DamageType.Physical:
+                {
+                    float armour = playerController.playerStatsManager
+                        .GetPlayerStat(CharacterStats.Armour)
+                        .GetCurrentStatValue();
+
+                    damageTaken = Mathf.RoundToInt(damageTaken - armour);
+                    break;
+                }
+
+            case DamageType.Radiation:
+                {
+                    float radiationResistance = playerController.playerStatsManager
+                        .GetPlayerStat(CharacterStats.RadiationResistance)
+                        .GetCurrentStatValue();
+
+                    radiationResistance = Mathf.Clamp01(radiationResistance);
+
+                    damageTaken = Mathf.RoundToInt(damageTaken * (1f - radiationResistance));
+                    break;
+                }
+
+            case DamageType.Fire:
+                {
+                    float fireResistance = playerController.playerStatsManager
+                        .GetPlayerStat(CharacterStats.FireResistance)
+                        .GetCurrentStatValue();
+
+                    fireResistance = Mathf.Clamp01(fireResistance);
+
+                    damageTaken = Mathf.RoundToInt(damageTaken * (1f - fireResistance));
+                    break;
+                }
+
+            case DamageType.Acid:
+                {
+                    float acidResistance = playerController.playerStatsManager
+                        .GetPlayerStat(CharacterStats.AcidResistance)
+                        .GetCurrentStatValue();
+
+                    acidResistance = Mathf.Clamp01(acidResistance);
+
+                    damageTaken = Mathf.RoundToInt(damageTaken * (1f - acidResistance));
+                    break;
+                }
+        }
+
+        return damageTaken;
+    }
+} 

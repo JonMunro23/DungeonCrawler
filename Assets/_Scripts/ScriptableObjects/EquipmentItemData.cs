@@ -15,7 +15,7 @@ public enum EquipmentSlotType
     weaponSlot
 };
 
-public enum ModifiableCharacterStats
+public enum CharacterStats
 {
     MaxHealth,
     Armour,
@@ -24,7 +24,10 @@ public enum ModifiableCharacterStats
     CritChance,
     CritMultiplier,
     BonusBurstCount,
-    WeaponAccuracy
+    WeaponAccuracy,
+    RadiationResistance,
+    FireResistance,
+    AcidResistance
 }
 
 public enum ModifyOperation
@@ -38,7 +41,7 @@ public enum ModifyOperation
 [System.Serializable]
 public class StatModifier
 {
-    public ModifiableCharacterStats statToModify;
+    public CharacterStats statToModify;
     public ModifyOperation modifyOperation;
     public float modifyAmount;
 }

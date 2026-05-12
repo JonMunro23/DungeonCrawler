@@ -33,6 +33,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 447d605a20175084e8b6fed12b4d99c6, type: 2}
   - {fileID: 11400000, guid: 08bb6ab52fe4a8842980544472333318, type: 2}
   - {fileID: 11400000, guid: a9a9d4f6cadceef40b231026bd874165, type: 2}
+  - {fileID: 11400000, guid: a184caeec6fe7d54892ddfd0afd2a33d, type: 2}
   consumableItemData:
   - {fileID: 11400000, guid: a7b9b17bcb65e79499ddd4bde54d02d7, type: 2}
   - {fileID: 11400000, guid: e06847091251c5141896a30305911b8d, type: 2}

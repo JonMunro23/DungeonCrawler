@@ -52,8 +52,9 @@ public class NPCAttackController : MonoBehaviour
 
                     if(npcController.npcData.statusEffectOnHit != null)
                     {
-                        //Roll to see if status effect is applied based on npcController.npcData.statusEffectApplicationChance
-                        //damageable.AddStatusEffect(npcController.npcData.statusEffectOnHit);
+                        float applicationChance = Mathf.Clamp01(npcController.npcData.statusEffectApplicationChance * 0.01f);
+                        if(Random.value < applicationChance)
+                            damageable.AddStatusEffect(npcController.npcData.statusEffectOnHit);
                     }
                 }
             }

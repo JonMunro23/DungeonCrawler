@@ -57,10 +57,8 @@ public class Throwable : MonoBehaviour
                 case StatusEffectType.DamageOverTime:
                     foreach (GridNode node in nodesInBlastRadius)
                     {
-                        //node.ApplyEffectToNode(itemData.statusEffect);
+                        node.AddTimedNodeEffect(itemData.statusEffect);
                     }
-                    break;
-                case StatusEffectType.Debuff:
                     break;
                 default:
                     break;

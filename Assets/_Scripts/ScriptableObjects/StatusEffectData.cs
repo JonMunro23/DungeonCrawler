@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum StatusEffectType
@@ -19,14 +20,14 @@ public class StatusEffectData : ScriptableObject
     public float damage;
     public float damageInterval;
 
-    [Header("Debuff Properties")]
-    public int armourReduction;
-
-    [Header("GridNode Properties")]
+    [Header("Node Properties")]
     public bool canAffectNodes;
     public float nodeEffectLength;
     public float nodeDamage;
     public float nodeDamageInterval;
+
+    [Header("Debuff Properties")]
+    public List<StatModifier> statsToDebuff;
 
 
     

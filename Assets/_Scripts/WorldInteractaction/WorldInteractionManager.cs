@@ -149,7 +149,7 @@ public class WorldInteractionManager : MonoBehaviour
     }
     void AttachItemToMouseCursor(ItemStack itemToAttach, WorldItem worldItem = null)
     {
-        Debug.Log("Meme");
+        //Debug.Log("Item attached to cursor");
         currentGrabbedItem = new ItemStack(itemToAttach.itemData, itemToAttach.itemAmount, itemToAttach.loadedAmmo);
 
         onNewItemAttachedToCursor?.Invoke(currentGrabbedItem);
