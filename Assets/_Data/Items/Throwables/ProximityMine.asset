@@ -32,10 +32,9 @@ MonoBehaviour:
   proximityDetectionRadius: 4.5
   damageType: 3
   damage: 250
-  inflictedStatusEffect: 0
-  statusEffectLength: 0
-  minThrowVelocity: 2
-  maxThrowVelocity: 14
+  statusEffect: {fileID: 0}
+  minThrowVelocity: 4
+  maxThrowVelocity: 12
   timeToMaxVelocity: 3
   explosionVFX: {fileID: 198969382488698180, guid: 4c61a5c87840e904494e62da5a53bb0b,
     type: 3}

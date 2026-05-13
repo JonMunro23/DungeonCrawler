@@ -34,7 +34,7 @@ MonoBehaviour:
   damage: 25
   statusEffect: {fileID: 11400000, guid: 35c746f7dbcefe74186cf20afa358e5f, type: 2}
   minThrowVelocity: 4
-  maxThrowVelocity: 25
+  maxThrowVelocity: 12
   timeToMaxVelocity: 3
   explosionVFX: {fileID: 198969382488698180, guid: 4c61a5c87840e904494e62da5a53bb0b,
     type: 3}

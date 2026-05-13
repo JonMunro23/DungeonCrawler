@@ -23,6 +23,7 @@ public class PlayerThrowableManager : MonoBehaviour
     public static event Action<int> onCurrentlySelectedThrowableAmountUpdated;
 
     [Header("Charging")]
+    [SerializeField] bool enableCharging;
     [SerializeField] AnimationCurve chargeCurve = null;    // optional easing; null = linear
 
     float readyStartTime;     // when charging began
@@ -66,8 +67,6 @@ public class PlayerThrowableManager : MonoBehaviour
         ThrowableSelectionButton.onThrowableSelected -= OnThrowableSelected;
 
         PlayerInventoryManager.onThrowableRemoved -= OnThrowableRemoved;
-
-
     }
 
     async void OnThrowableSelected(ThrowableItemData selectedThrowable, int throwableAmount)
@@ -84,7 +83,10 @@ public class PlayerThrowableManager : MonoBehaviour
     {
         if (removedThrowable == currentlySelectedThrowable)
             if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
-                await UnequipThrowable();
+            {
+                await HolsterThrowable();
+                await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+            }
     }
 
     void Awake()
@@ -104,16 +106,19 @@ public class PlayerThrowableManager : MonoBehaviour
         if (isThrowInProgress) return;
         if (!isThrowableReadied) return;
 
-        // Update charge 0..1 over timeToMaxVelocity
-        float raw = Mathf.Clamp01((Time.time - readyStartTime) / Mathf.Max(0.0001f, currentlySelectedThrowable.timeToMaxVelocity));
-        float eased = (chargeCurve != null) ? chargeCurve.Evaluate(raw) : raw;
+        if(enableCharging)
+        {
+            // Update charge 0..1 over timeToMaxVelocity
+            float raw = Mathf.Clamp01((Time.time - readyStartTime) / Mathf.Max(0.0001f, currentlySelectedThrowable.timeToMaxVelocity));
+            float eased = (chargeCurve != null) ? chargeCurve.Evaluate(raw) : raw;
 
-        currentCharge01 = eased;
-        currentThrowSpeed = Mathf.Lerp(
-            Mathf.Min(currentlySelectedThrowable.minThrowVelocity, currentlySelectedThrowable.maxThrowVelocity),
-            currentlySelectedThrowable.maxThrowVelocity,
-            currentCharge01
-        );
+            currentCharge01 = eased;
+            currentThrowSpeed = Mathf.Lerp(
+                Mathf.Min(currentlySelectedThrowable.minThrowVelocity, currentlySelectedThrowable.maxThrowVelocity),
+                currentlySelectedThrowable.maxThrowVelocity,
+                currentCharge01
+            );
+        }
 
         // World-space start pose & velocity
         Vector3 startPos = currentThrowableThrowLocation.position
@@ -158,7 +163,11 @@ public class PlayerThrowableManager : MonoBehaviour
             onCurrentlySelectedThrowableAmountUpdated?.Invoke(availableThrowables[throwableToRemove]);
             if(IsThrowableActive())
                 if (GetRemainingAmountOfThrowable(throwableToRemove) == 0 && (currentlySelectedThrowable.detonationType != DetonationType.Remote && manuallyDetonatedThrowables.Count == 0))
-                    await UnequipThrowable();
+                {
+                    await HolsterThrowable();
+                    await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+                }
+
         }
     }
 
@@ -194,7 +203,10 @@ public class PlayerThrowableManager : MonoBehaviour
         if (!IsThrowableActive())
             await EquipThrowable();
         else
-            await UnequipThrowable();
+        {
+            await HolsterThrowable();
+            await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+        }
     }
 
     async Task EquipThrowable()
@@ -206,18 +218,18 @@ public class PlayerThrowableManager : MonoBehaviour
             return;
 
         await playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
-        SetCurrentThrowableActive(true);
+        SetCurrentThrowableGameObjectActive(true);
     }
 
-    public async Task UnequipThrowable()
+    public async Task HolsterThrowable()
     {
-        isThrowableReadied = false;
-        SetTrajectoryLineActive(false);
         isCurrentThrowableActive = false; //set inactive early to prevent further readying
+        isThrowableReadied = false;
+        CloseThrowableSelectionMenu();
+        SetTrajectoryLineActive(false);
         currentThrowableAnimator.Play("Holster");
         await Task.Delay((int)(currentlySelectedThrowable.holsterLength * 1000));
-        SetCurrentThrowableActive(false);
-        await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+        SetCurrentThrowableGameObjectActive(false);
     }
 
 
@@ -228,9 +240,9 @@ public class PlayerThrowableManager : MonoBehaviour
         isCurrentThrowableActive = false; //set inactive early to prevent further readying
         currentThrowableAnimator.Play("Holster");
         await Task.Delay((int)(currentlySelectedThrowable.holsterLength * 1000));
-        SetCurrentThrowableActive(false);
+        SetCurrentThrowableGameObjectActive(false);
         SetCurrentlySelectedThrowable(throwableToSwapTo);
-        SetCurrentThrowableActive(true);
+        SetCurrentThrowableGameObjectActive(true);
 
     }
     #endregion
@@ -240,19 +252,22 @@ public class PlayerThrowableManager : MonoBehaviour
     {
         if (!IsThrowableActive()) return;
         if (isThrowableReadied) return;
-
-        // Block ready if a throw is in progress or still cooling down
         if (isThrowInProgress) return;
-
         if (currentlySelectedThrowable == null) return;
         if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0) return;
+        if (PlayerInventoryManager.isInContainer) return;
 
         isThrowableReadied = true;
 
-        // start charging
-        readyStartTime = Time.time;
-        currentCharge01 = 0f;
-        currentThrowSpeed = Mathf.Min(currentlySelectedThrowable.minThrowVelocity, currentlySelectedThrowable.maxThrowVelocity);
+        if(enableCharging)
+        {
+            //start charging
+            readyStartTime = Time.time;
+            currentCharge01 = 0f;
+            currentThrowSpeed = Mathf.Min(currentlySelectedThrowable.minThrowVelocity, currentlySelectedThrowable.maxThrowVelocity);
+        }
+
+        currentThrowSpeed = currentlySelectedThrowable.maxThrowVelocity;
 
         currentThrowableAnimator.Play("Pull_Pin");
         SetTrajectoryLineActive(true);
@@ -261,7 +276,7 @@ public class PlayerThrowableManager : MonoBehaviour
     public void UnreadyThrowable()
     {
         if (!isThrowableReadied) return;
-        _ = UseThrowable();
+        _ = UseThrowable(); // Currently just yeets throwable instead of dearming
     }
     #endregion
 
@@ -307,7 +322,9 @@ public class PlayerThrowableManager : MonoBehaviour
             {
                 //holster remoteexplosives
                 await Task.Delay((int)(0.7f * 1000));
-                await UnequipThrowable();
+                await HolsterThrowable();
+                await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+
             }
 
             return;
@@ -346,13 +363,14 @@ public class PlayerThrowableManager : MonoBehaviour
         else
         {
             await Task.Delay((int)(0.7f * 1000));
-            await UnequipThrowable();
+            await HolsterThrowable();
+            await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
         }
 
         isThrowInProgress = false;   // unlock
     }
 
-    void SetCurrentThrowableActive(bool isActive)
+    void SetCurrentThrowableGameObjectActive(bool isActive)
     {
         if (currentlySelectedThrowable == null)
             return;

@@ -30,9 +30,11 @@ MonoBehaviour:
   fuseLength: 0
   blastRadius: 0
   proximityDetectionRadius: 0
+  damageType: 0
   damage: 0
+  statusEffect: {fileID: 0}
   minThrowVelocity: 4
-  maxThrowVelocity: 25
+  maxThrowVelocity: 12
   timeToMaxVelocity: 3
   explosionVFX: {fileID: 0}
   explosionSFX: {fileID: 0}
