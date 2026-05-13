@@ -1,6 +1,4 @@
-﻿//=========== Copyright (c) GameBuilders, All rights reserved. ================//
-
-using System;
+﻿using System;
 using UnityEngine;
 
 

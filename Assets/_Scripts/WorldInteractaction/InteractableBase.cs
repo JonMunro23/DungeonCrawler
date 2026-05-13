@@ -99,8 +99,6 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
         return node.Coords.Pos;
     }
 
-    public virtual void SetRequiredKeycardType(string keycardType) { }
-
     public void LoadData(SaveableLevelData.InteractableSaveData interactableSaveData)
     {
         SetStartingActivationState(interactableSaveData.isActivated);

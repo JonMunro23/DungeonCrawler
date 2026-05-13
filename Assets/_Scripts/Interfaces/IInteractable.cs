@@ -12,7 +12,6 @@ public interface IInteractable : IHighlightable, IGridNode
     public void SetInteractableType(string interactableType);
     public InteractableType GetInteractableType();
     public void SetStartingActivationState(bool activatedState);
-    public void SetRequiredKeycardType(string keycardType);
     public void SetTriggerOperation(string triggerOperation);
 
     /// <summary>

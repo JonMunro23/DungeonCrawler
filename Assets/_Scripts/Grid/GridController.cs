@@ -540,8 +540,9 @@ public class GridController : MonoBehaviour
                         interactable = Instantiate(buttonPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                         break;
                     case "Keycard_Reader":
-                        interactable = Instantiate(keycardReaderPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        interactable.SetRequiredKeycardType(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
+                        KeycardReader keycardReader = Instantiate(keycardReaderPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        keycardReader.SetRequiredKeycardType(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
+                        interactable = keycardReader;
                         break;
                     case "Pressure_Plate":
                         PressurePlate plate = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);

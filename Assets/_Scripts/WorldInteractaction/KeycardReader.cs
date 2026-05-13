@@ -35,6 +35,9 @@ public class KeycardReader : InteractableBase
         if (isReadingCard)
             return;
 
+        if(item == null)
+            return;
+
         KeyItemData keyData = item as KeyItemData;
         if (!keyData)
             return;
@@ -42,7 +45,7 @@ public class KeycardReader : InteractableBase
         TryUseKeycard(keyData);
     }
 
-    public override void SetRequiredKeycardType(string requiredType)
+    public void SetRequiredKeycardType(string requiredType)
     {
         requiredKeycard = HelperFunctions.ToEnum<KeycardType>(requiredType);
     }
