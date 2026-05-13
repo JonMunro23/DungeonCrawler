@@ -177,27 +177,17 @@ public class PlayerController : MonoBehaviour
 
     public void TryReadyCurrentWeapon()
     {
-        if(PlayerInventoryManager.isInContainer)
-        {
-            WorldInteractionManager.CloseCurrentOpenContainer();
-        }
+        if (PlayerInventoryManager.isInContainer) return;
+        if (WorldInteractionManager.hasGrabbedItem) return;
+        if (CharacterMenuUIController.isCharacterMenuOpen) return;
 
-        if(WorldInteractionManager.hasGrabbedItem)
-        {
-            RemoveGrabbedItem();
-            return;
-        }
-
-        if(playerThrowableManager.IsThrowableActive())
+        if (playerThrowableManager.IsThrowableActive())
         {
             playerThrowableManager.ReadyThrowable();
             return;
         }
 
-        if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer)
-        {
-            playerWeaponManager.ReadyWeapon();
-        }
+        playerWeaponManager.ReadyWeapon();
     }
 
     public void TryUnreadyCurrentWeapon()

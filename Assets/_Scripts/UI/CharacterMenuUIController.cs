@@ -72,7 +72,8 @@ public class CharacterMenuUIController : MonoBehaviour
         if(PlayerInventoryManager.isInContainer)
             WorldInteractionManager.CloseCurrentOpenContainer();
         //HelperFunctions.SetCursorActive(false);
-        CrosshairController.SetCrosshairLocked(true);
+        if(!WorldInteractionManager.hasGrabbedItem)
+            CrosshairController.SetCrosshairLocked(true);
     }
 
     void ShowCurrentOpenPanel()

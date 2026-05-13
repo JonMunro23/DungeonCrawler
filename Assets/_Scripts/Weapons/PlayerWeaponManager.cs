@@ -164,7 +164,8 @@ public class PlayerWeaponManager : MonoBehaviour
                 }
             }
 
-            slot.AddItem(spawnedWeaponSlots[0].SwapItem(slot.GetItemStack()));
+            //slot.AddItem(spawnedWeaponSlots[0].SwapItem(slot.GetItemStack()));
+            slot.AddItem(spawnedWeaponSlots[0].SwapItem(slot.TakeItem())); // unsure if this breaks anything compared to above
 
         }
     }
@@ -263,10 +264,17 @@ public class PlayerWeaponManager : MonoBehaviour
 
         if (!spawnedWeaponSlots[slotIndex].IsSlotEmpty())
         {
+            
             if (activeSlotIndex == slotIndex)
             {
-                await spawnedWeaponSlots[slotIndex].HolsterWeapon();
+                if (playerController.playerThrowableManager.IsThrowableActive())
+                {
+                    await playerController.playerThrowableManager.HolsterThrowable();
+                }
+                else
+                    await spawnedWeaponSlots[slotIndex].HolsterWeapon();
             }
+            
 
             if (!spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon())
             {
@@ -372,7 +380,7 @@ public class PlayerWeaponManager : MonoBehaviour
     {
         if(playerController.playerThrowableManager.IsThrowableActive())
         {
-            await playerController.playerThrowableManager.UnequipThrowable();
+            await playerController.playerThrowableManager.HolsterThrowable();
         }
         else
         {

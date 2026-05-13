@@ -44,8 +44,8 @@ public class WeaponSlot : InventorySlot
 
     public override ItemStack SwapItem(ItemStack itemToSwap)
     {
-        var meme = itemToSwap.itemData as WeaponItemData;
-        if (meme)
+        WeaponItemData weaponItemData = itemToSwap.itemData as WeaponItemData;
+        if (weaponItemData)
         { 
             ItemStack itemToReturn = base.SwapItem(itemToSwap);
             onWeaponSwappedInSlot?.Invoke(slotIndex, itemToSwap.itemData as WeaponItemData, itemToSwap.loadedAmmo);

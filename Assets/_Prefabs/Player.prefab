@@ -930,7 +930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementManager
   baseMoveDuration: 0.5
-  weaponReadiedMoveDurationMultiplier: 1.575
+  weaponReadiedMoveDurationMultiplier: 1.25
   allowContinuousHold: 1
   forwardKey: 119
   backwardKey: 115
