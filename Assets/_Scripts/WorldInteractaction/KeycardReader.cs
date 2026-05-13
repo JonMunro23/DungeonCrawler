@@ -1,6 +1,6 @@
 using DG.Tweening;
-using System;
 using System.Collections;
+using System.Security.Policy;
 using UnityEngine;
 
 public enum KeycardType
@@ -27,22 +27,22 @@ public class KeycardReader : InteractableBase
         defaultMat = indicatorMesh.material;
     }
 
-    public override void InteractWithItem(ItemData item)
+    public override bool TryInteractWithItem(ItemData item)
     {
         if (!canUse)
-            return;
+            return false;
 
         if (isReadingCard)
-            return;
+            return false;
 
         if(item == null)
-            return;
+            return false;
 
-        KeyItemData keyData = item as KeyItemData;
-        if (!keyData)
-            return;
+        KeycardItemData keycardData = item as KeycardItemData;
+        if (!keycardData)
+            return false;
 
-        TryUseKeycard(keyData);
+        return TryUseKeycard(keycardData);
     }
 
     public void SetRequiredKeycardType(string requiredType)
@@ -50,15 +50,16 @@ public class KeycardReader : InteractableBase
         requiredKeycard = HelperFunctions.ToEnum<KeycardType>(requiredType);
     }
 
-    void TryUseKeycard(KeyItemData keyData)
+    bool TryUseKeycard(KeycardItemData keyData)
     {
         if (keyData.keycardType == requiredKeycard)
         {
             StartCoroutine(ReadCard());
-            return;
+            return true;
         }
 
         StartCoroutine(Error());
+        return false;
     }
 
     void SetIndicatorMaterial(Material newMat)
@@ -70,18 +71,21 @@ public class KeycardReader : InteractableBase
     {
         isReadingCard = true;
         card.gameObject.SetActive(true);
-        card.DOLocalMoveZ(-0.058f, 1).OnComplete(() =>
+        card.DOLocalMoveZ(-0.058f, .2f).OnComplete(() =>
         {
             SetIndicatorMaterial(inProgressMat);
-            card.DOLocalMoveZ(-0.383f, 1).SetDelay(3).OnComplete(() =>
-            {
-                card.gameObject.SetActive(false);
-            });
         });
+
         yield return new WaitForSeconds(cardReadingDuration);
+
         SetIndicatorMaterial(successMat);
         isReadingCard = false;
         TriggerObjects();
+
+        card.DOLocalMoveZ(-0.383f, .2f).SetDelay(.2f).OnComplete(() =>
+        {
+            card.gameObject.SetActive(false);
+        });
     }
 
     IEnumerator Error()
