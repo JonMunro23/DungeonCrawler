@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 704f0444503b3d64ba9be9fcd414189b, type: 3}
   m_Name: ItemDataContainer
   m_EditorClassIdentifier: 
-  itemData:
-  - {fileID: 11400000, guid: 1fa9d84123439c04488523ce042f0b2d, type: 2}
-  - {fileID: 11400000, guid: f65187d1c2445de4db2565953f1906c4, type: 2}
+  invalidItem: {fileID: 11400000, guid: 0874dd5fb31932c48bfccc275553a38f, type: 2}
+  itemData: []
   weaponItemData:
   - {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
   - {fileID: 11400000, guid: 6db1391fd6b91d84996e4464914a9cee, type: 2}
@@ -42,3 +41,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 68fd85449d15d4941a2563384e596920, type: 2}
   - {fileID: 11400000, guid: 4b857d58b203b4142a2e11c092a6b78a, type: 2}
   - {fileID: 11400000, guid: 0f3df50b275ae684b95b28ed128197d7, type: 2}
+  keycardItemData:
+  - {fileID: 11400000, guid: 1fa9d84123439c04488523ce042f0b2d, type: 2}
+  - {fileID: 11400000, guid: f65187d1c2445de4db2565953f1906c4, type: 2}
+  keyItemData:
+  - {fileID: 11400000, guid: 2779c247e39081c45bc6ca1e17f7fc9d, type: 2}
+  - {fileID: 11400000, guid: 292456d1c506a32429cc4f2a7c08c66e, type: 2}
