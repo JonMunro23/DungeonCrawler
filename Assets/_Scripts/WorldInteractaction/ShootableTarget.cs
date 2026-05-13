@@ -11,11 +11,6 @@ public class ShootableTarget : InteractableBase
         SetStartingActivationState(true);
     }
 
-    public override void InteractWithItem(ItemData item)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public override void SetStartingActivationState(bool activatedState)
     {
         if(activatedState)

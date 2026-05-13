@@ -41,7 +41,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     }
 
     public virtual void Interact() { }
-    public virtual void InteractWithItem(ItemData item) { }
+    public virtual bool TryInteractWithItem(ItemData item) { return false; }
 
     public void AddObjectToTrigger(ITriggerable objectToTrigger)
     {
@@ -152,4 +152,6 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     {
         node = occupyingNode;
     }
+
+    public virtual bool ConsumesItem() { return false; }
 }

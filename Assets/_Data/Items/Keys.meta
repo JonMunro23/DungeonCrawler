@@ -1,12 +1,3 @@
 fileFormatVersion: 2
 <<<<<<<< HEAD:Assets/Scenes/MapGenerationTestingScene.unity.meta
-guid: 49ca0de247370574b83c678e3c694a11
-========
-guid: f0e858d7699a26540931cce29669af79
-folderAsset: yes
->>>>>>>> setting-up-triggerables:Assets/Data/Items/Keys.meta
-DefaultImporter:
-  externalObjects: {}
-  userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+guid: 0a97339f85e8c2842adb785e13d4aca7

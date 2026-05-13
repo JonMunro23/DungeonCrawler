@@ -47,11 +47,6 @@ public class Tripwire : InteractableBase
         throw new System.NotImplementedException();
     }
 
-    public override void InteractWithItem(ItemData item)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public override void SetStartingActivationState(bool activatedState)
     {
         if(activatedState)

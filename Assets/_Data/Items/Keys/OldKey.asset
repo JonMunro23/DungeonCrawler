@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acc7586856acd8a4b842c9647ddb2567, type: 3}
+  m_Name: OldKey
+  m_EditorClassIdentifier: Assembly-CSharp::KeyItemData
+  itemName: Old Key
+  itemIdentifier: old_key
+  itemDescription: An old key.
+  itemSprite: {fileID: 21300000, guid: c2983eacc051f4f50a03f26289922f36, type: 3}
+  itemWorldModel: {fileID: 2279790967817906372, guid: bc452a15411658946905e56152bc955c,
+    type: 3}
+  itemWeight: 0
+  isItemStackable: 0
+  maxItemStackSize: 1
+  keyType: 0

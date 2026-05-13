@@ -270,8 +270,20 @@ public class WorldInteractionManager : MonoBehaviour
                 }
                 else if(hit.transform.TryGetComponent(out IInteractable interactable))
                 {
-                    interactable.InteractWithItem(currentGrabbedItem.itemData);
-                    PlayGrabAnim();
+                    if (hasGrabbedItem)
+                        if(interactable.TryInteractWithItem(currentGrabbedItem.itemData))
+                        {
+                            if(interactable.ConsumesItem())
+                                DetachItemFromMouseCursor();
+
+                            PlayGrabAnim();
+                        }
+                    else
+                    {
+                        interactable.Interact();
+                        PlayGrabAnim();
+                    }
+
                 }
             }
         }
@@ -288,58 +300,58 @@ public class WorldInteractionManager : MonoBehaviour
     }
 
 
-    /// <summary>
-    /// Called from InputHandler on key press
-    /// </summary>
-    public void Interact()
-    {
-        if (groundItems.Count > 0)
-        {
-            PickupItem(groundItems[0]);
-            return;
-        }
+    ///// <summary>
+    ///// Called from InputHandler on key press
+    ///// </summary>
+    //public void Interact()
+    //{
+    //    if (groundItems.Count > 0)
+    //    {
+    //        PickupItem(groundItems[0]);
+    //        return;
+    //    }
 
-        if(nearbyContainer != null)
-        {
-            //playerWeaponManager.currentWeapon.HolsterWeapon();
-            PlayGrabAnim();
-            nearbyContainer.ToggleContainer();
-        }
+    //    if(nearbyContainer != null)
+    //    {
+    //        //playerWeaponManager.currentWeapon.HolsterWeapon();
+    //        PlayGrabAnim();
+    //        nearbyContainer.ToggleContainer();
+    //    }
 
-        if(nearbyInteractable != null)
-        {
-            PlayGrabAnim();
-            if (currentGrabbedItem != null)
-                nearbyInteractable.InteractWithItem(currentGrabbedItem.itemData);
-            else
-                nearbyInteractable.Interact();
-        }
-    }
+    //    if(nearbyInteractable != null)
+    //    {
+    //        PlayGrabAnim();
+    //        if (currentGrabbedItem != null)
+    //            nearbyInteractable.TryInteractWithItem(currentGrabbedItem);
+    //        else
+    //            nearbyInteractable.Interact();
+    //    }
+    //}
 
-    void PickupItem(WorldItem itemToPickup)
-    {
-        int remainingItems = controller.playerInventoryManager.TryAddItem(itemToPickup.item);
-        if(remainingItems != itemToPickup.item.itemAmount)
-        {
-            PlayGrabAnim();
+    //void PickupItem(WorldItem itemToPickup)
+    //{
+    //    int remainingItems = controller.playerInventoryManager.TryAddItem(itemToPickup.item);
+    //    if(remainingItems != itemToPickup.item.itemAmount)
+    //    {
+    //        PlayGrabAnim();
 
-            if (remainingItems == 0)
-            {
-                IPickup pickupInterface = itemToPickup;
-                pickupInterface.Pickup();
+    //        if (remainingItems == 0)
+    //        {
+    //            IPickup pickupInterface = itemToPickup;
+    //            pickupInterface.Pickup();
 
-                groundItems.Remove(itemToPickup);
-                Destroy(itemToPickup.gameObject);
-                UpdatePickupItemUI();
-            }
-            else
-            {
-                itemToPickup.item.itemAmount = remainingItems;
+    //            groundItems.Remove(itemToPickup);
+    //            Destroy(itemToPickup.gameObject);
+    //            UpdatePickupItemUI();
+    //        }
+    //        else
+    //        {
+    //            itemToPickup.item.itemAmount = remainingItems;
 
-            }
-        }
+    //        }
+    //    }
 
-    }
+    //}
 
     private void PlayGrabAnim()
     {

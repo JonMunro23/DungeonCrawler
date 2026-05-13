@@ -75,6 +75,7 @@ public class GridController : MonoBehaviour
     [SerializeField] Lever leverPrefab;
     [SerializeField] Button buttonPrefab;
     [SerializeField] KeycardReader keycardReaderPrefab;
+    [SerializeField] Lock lockPrefab;
     [SerializeField] PressurePlate pressurePlatePrefab;
     [SerializeField] Tripwire tripwirePrefab;
     [SerializeField] ShootableTarget shootableTargetPrefab;
@@ -315,7 +316,6 @@ public class GridController : MonoBehaviour
         Vector2 spawnCoords = Vector2.zero;
         Transform nodeParent = levelParents[levelIndex];
 
-        // allocate once per level
         GridNode[] levelNodesByIndex = new GridNode[intGridLayer.IntGridCsv.Length];
 
         for (int i = 0; i < intGridLayer.CWid; i++)
@@ -344,7 +344,6 @@ public class GridController : MonoBehaviour
 
                 clone.InitNode(sqCoords, nodeIndex);
 
-                // ✅ fill the per-level array
                 levelNodesByIndex[nodeIndex] = clone;
 
                 activeNodes.Add(spawnCoords, clone);
@@ -356,7 +355,6 @@ public class GridController : MonoBehaviour
             }
         }
 
-        // ✅ store this level’s node lookup
         nodesByIndexPerLevel[levelIndex] = levelNodesByIndex;
     }
 
@@ -543,6 +541,11 @@ public class GridController : MonoBehaviour
                         KeycardReader keycardReader = Instantiate(keycardReaderPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                         keycardReader.SetRequiredKeycardType(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
                         interactable = keycardReader;
+                        break;
+                    case "Lock":
+                        Lock @lock = Instantiate(lockPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        @lock.SetRequiredKeyType(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
+                        interactable = @lock;
                         break;
                     case "Pressure_Plate":
                         PressurePlate plate = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);

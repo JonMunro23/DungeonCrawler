@@ -12,9 +12,11 @@ public class Button : InteractableBase
         PushButton();
     }
 
-    public override void InteractWithItem(ItemData item)
+    public override bool TryInteractWithItem(ItemData item)
     {
         PushButton();
+
+        return true;
     }
 
     void PushButton()

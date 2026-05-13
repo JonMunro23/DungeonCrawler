@@ -4,7 +4,8 @@ using UnityEngine;
 public interface IInteractable : IHighlightable, IGridNode
 {
     public void Interact();  
-    public void InteractWithItem(ItemData item);
+    public bool TryInteractWithItem(ItemData item);
+    public bool ConsumesItem();
     public void AddObjectToTrigger(ITriggerable objectToTrigger);
     public void AddEntityRefToTrigger(Dictionary<string, object> entityRefToTrigger);
     public List<string> GetEntityRefsToTrigger();

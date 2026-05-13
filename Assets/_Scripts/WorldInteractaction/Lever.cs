@@ -13,9 +13,11 @@ public class Lever : InteractableBase
     {
         TryFlipLever();
     }
-    public override void InteractWithItem(ItemData item)
+    public override bool TryInteractWithItem(ItemData item)
     {
         TryFlipLever();
+
+        return true;
     }
 
     private void TryFlipLever()

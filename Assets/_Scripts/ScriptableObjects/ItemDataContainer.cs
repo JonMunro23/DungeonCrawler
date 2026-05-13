@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-[CreateAssetMenu(fileName = "ItemDataContainer", menuName = "Items/New ItemData Container")]
 
+[CreateAssetMenu(fileName = "ItemDataContainer", menuName = "Items/New ItemData Container")]
 public class ItemDataContainer : ScriptableObject
 {
+    public ItemData invalidItem;
+
     [Header("Items")]
     public List<ItemData> itemData = new List<ItemData>();
     [Header("Weapons")]
@@ -16,52 +18,39 @@ public class ItemDataContainer : ScriptableObject
     public List<ConsumableItemData> consumableItemData = new List<ConsumableItemData>();
     [Header("Throwables")]
     public List<ThrowableItemData> throwableItemData = new List<ThrowableItemData>();
+    [Header("Keycards")]
+    public List<KeycardItemData> keycardItemData = new List<KeycardItemData>();
+    [Header("Keys")]
+    public List<KeyItemData> keyItemData = new List<KeyItemData>();
 
     public ItemData GetDataFromIdentifier(string identifier)
     {
         foreach (ItemData item in itemData)
-        {
-            if(item.itemIdentifier == identifier)
-            {
-                return item;
-            }
-        }
+            if (item.itemIdentifier == identifier) return item;
+
         foreach (ItemData item in weaponItemData)
-        {
-            if (item.itemIdentifier == identifier)
-            {
-                return item;
-            }
-        }
+            if (item.itemIdentifier == identifier) return item;
+
         foreach (ItemData item in ammoItemData)
-        {
-            if (item.itemIdentifier == identifier)
-            {
-                return item;
-            }
-        }
+            if (item.itemIdentifier == identifier) return item;
+
         foreach (ItemData item in equipmentItemData)
-        {
-            if (item.itemIdentifier == identifier)
-            {
-                return item;
-            }
-        }
+            if (item.itemIdentifier == identifier) return item;
+
         foreach (ItemData item in consumableItemData)
-        {
-            if (item.itemIdentifier == identifier)
-            {
-                return item;
-            }
-        }
+            if (item.itemIdentifier == identifier) return item;
+
         foreach (ItemData item in throwableItemData)
-        {
-            if (item.itemIdentifier == identifier)
-            {
-                return item;
-            }
-        }
+            if (item.itemIdentifier == identifier) return item;
+
+        foreach (ItemData item in keycardItemData)
+            if (item.itemIdentifier == identifier) return item;
+
+        foreach (ItemData item in keyItemData)
+            if (item.itemIdentifier == identifier) return item;
+
+
         Debug.Log($"Cant find {identifier}");
-        return null;
+        return invalidItem;
     }
 }
