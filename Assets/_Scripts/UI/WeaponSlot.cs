@@ -34,7 +34,10 @@ public class WeaponSlot : InventorySlot
     public override void AddItem(ItemStack itemToAdd)
     {
         base.AddItem(itemToAdd);
-        InitialiseWeaponItem(itemToAdd.itemData as WeaponItemData, itemToAdd.loadedAmmo);
+        WeaponItem weaponItemToAdd = itemToAdd.Item as WeaponItem;
+        if(weaponItemToAdd != null)
+            InitialiseWeaponItem(weaponItemToAdd.WeaponItemData, weaponItemToAdd.LoadedAmmo);
+
     }
 
     void InitialiseWeaponItem(WeaponItemData itemDataToInitialise, int loadedAmmo)
@@ -44,11 +47,11 @@ public class WeaponSlot : InventorySlot
 
     public override ItemStack SwapItem(ItemStack itemToSwap)
     {
-        WeaponItemData weaponItemData = itemToSwap.itemData as WeaponItemData;
-        if (weaponItemData)
-        { 
+        WeaponItem weaponItemToSwap = itemToSwap.Item as WeaponItem;
+        if (weaponItemToSwap != null)
+        {
             ItemStack itemToReturn = base.SwapItem(itemToSwap);
-            onWeaponSwappedInSlot?.Invoke(slotIndex, itemToSwap.itemData as WeaponItemData, itemToSwap.loadedAmmo);
+            onWeaponSwappedInSlot?.Invoke(slotIndex, weaponItemToSwap.WeaponItemData, weaponItemToSwap.LoadedAmmo);
             return itemToReturn;
         }
 
@@ -58,9 +61,15 @@ public class WeaponSlot : InventorySlot
     public override ItemStack TakeItem()
     {
         ItemStack itemToTake = base.TakeItem();
-        itemToTake.loadedAmmo = currentWeapon.GetRangedWeapon() != null ? currentWeapon.GetRangedWeapon().GetLoadedAmmo() : 0;
-        DeinitialiseWeaponItem();
-        slotImage.sprite = defaultWeapon.GetWeaponData().itemSprite;
+
+        WeaponItem weaponItemToTake = itemToTake.Item as WeaponItem;
+        if (weaponItemToTake != null)
+        {
+            weaponItemToTake.SetLoadedAmmo(currentWeapon.GetRangedWeapon() != null ? currentWeapon.GetRangedWeapon().GetLoadedAmmo() : 0);
+            DeinitialiseWeaponItem();
+            slotImage.sprite = defaultWeapon.GetWeaponData().itemSprite;
+        }
+
         return itemToTake;
 
     }
@@ -136,8 +145,23 @@ public class WeaponSlot : InventorySlot
         }
     }
 
-    public void SetItemStackLoadedAmmo(int newLoadedAmmo)
+    public void SetLoadedAmmo(int newLoadedAmmo)
     {
-        GetItemStack().loadedAmmo = newLoadedAmmo;
+        WeaponItem weaponItem = GetItemStack().Item as WeaponItem;
+        if (weaponItem != null)
+        {
+            weaponItem.SetLoadedAmmo(newLoadedAmmo);
+            UpdateTooltipData();
+        }
+    }
+
+    public void SetLoadedAmmoType(AmmoItemData newLoadedAmmoType)
+    {
+        WeaponItem weaponItem = GetItemStack().Item as WeaponItem;
+        if (weaponItem != null)
+        {
+            weaponItem.SetLoadedAmmoType(newLoadedAmmoType);
+            UpdateTooltipData();
+        }
     }
 }

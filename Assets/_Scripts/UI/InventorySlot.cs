@@ -58,28 +58,28 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     public virtual void AddItem(ItemStack itemToAdd)
     {
-        currentSlotItemStack = new ItemStack(itemToAdd.itemData, itemToAdd.itemAmount, itemToAdd.loadedAmmo);
+        currentSlotItemStack = new ItemStack(itemToAdd.Item, itemToAdd.ItemAmount);
 
-        ConsumableItemData consumableData = GetDataAsConsumable(itemToAdd.itemData);
+        ConsumableItemData consumableData = GetDataAsConsumable(itemToAdd.Item.ItemData);
         if (consumableData)
         {
             if (consumableData.consumableType == ConsumableType.HealSyringe)
             {
-                playerInventoryManager.AddHealthSyringe(itemToAdd.itemAmount);
+                playerInventoryManager.AddHealthSyringe(itemToAdd.ItemAmount);
             }
             
         }
 
-        AmmoItemData ammoData = GetDataAsAmmo(itemToAdd.itemData);
+        AmmoItemData ammoData = GetDataAsAmmo(itemToAdd.Item.ItemData);
         if (ammoData)
         {
             playerInventoryManager.AddAmmo(ammoData);
         }
 
-        ThrowableItemData throwableData = itemToAdd.itemData as ThrowableItemData;
+        ThrowableItemData throwableData = itemToAdd.Item.ItemData as ThrowableItemData;
         if(throwableData != null)
         {
-            playerInventoryManager.playerController.playerThrowableManager.AddThrowableToAvailable(throwableData, itemToAdd.itemAmount);
+            playerInventoryManager.playerController.playerThrowableManager.AddThrowableToAvailable(throwableData, itemToAdd.ItemAmount);
         }
 
         SetTooltipTriggerActive(true);
@@ -89,7 +89,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public int AddToCurrentItemStack(int amountToAdd)
     {
         int remainder = 0;
-        int availableSpace = currentSlotItemStack.itemData.maxItemStackSize - currentSlotItemStack.itemAmount;
+        int availableSpace = currentSlotItemStack.Item.ItemData.maxItemStackSize - currentSlotItemStack.ItemAmount;
         if (availableSpace < amountToAdd)
         {
             AddToSlotStack(availableSpace);
@@ -107,9 +107,9 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     void AddToSlotStack(int amountToAdd)
     {
-        currentSlotItemStack.itemAmount += amountToAdd;
+        currentSlotItemStack.AddToStack(amountToAdd);
 
-        ConsumableItemData consumableData = GetDataAsConsumable(currentSlotItemStack.itemData);
+        ConsumableItemData consumableData = GetDataAsConsumable(currentSlotItemStack.Item.ItemData);
         if (consumableData)
         {
             if (consumableData.consumableType == ConsumableType.HealSyringe)
@@ -118,13 +118,13 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             }
         }
 
-        AmmoItemData ammoData = GetDataAsAmmo(currentSlotItemStack.itemData);
+        AmmoItemData ammoData = GetDataAsAmmo(currentSlotItemStack.Item.ItemData);
         if (ammoData)
         {
             playerInventoryManager.AddAmmo(ammoData);
         }
 
-        ThrowableItemData throwableData = currentSlotItemStack.itemData as ThrowableItemData;
+        ThrowableItemData throwableData = currentSlotItemStack.Item.ItemData as ThrowableItemData;
         if (throwableData != null)
         {
             playerInventoryManager.playerController.playerThrowableManager.AddThrowableToAvailable(throwableData, amountToAdd);
@@ -135,15 +135,15 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public int RemoveFromExistingStack(int amountToRemove)
     {
         int remainder = 0;
-        if (currentSlotItemStack.itemAmount <= amountToRemove)
+        if (currentSlotItemStack.ItemAmount <= amountToRemove)
         {
-            amountToRemove -= currentSlotItemStack.itemAmount;
+            amountToRemove -= currentSlotItemStack.ItemAmount;
             RemoveItem();
             remainder = amountToRemove;
         }
-        else if (currentSlotItemStack.itemAmount >= amountToRemove)
+        else if (currentSlotItemStack.ItemAmount >= amountToRemove)
         {
-            currentSlotItemStack.itemAmount -= amountToRemove;
+            currentSlotItemStack.RemoveFromStack(amountToRemove);
         }
 
         UpdateSlotUI();
@@ -163,11 +163,11 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     public virtual ItemStack TakeItem()
     {
-        ItemStack itemToTake = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount, currentSlotItemStack.loadedAmmo);
-        ThrowableItemData throwableTaken = itemToTake.itemData as ThrowableItemData;
+        ItemStack itemToTake = new ItemStack(currentSlotItemStack.Item, currentSlotItemStack.ItemAmount);
+        ThrowableItemData throwableTaken = itemToTake.Item.ItemData as ThrowableItemData;
         if (throwableTaken != null)
         {
-            playerInventoryManager.playerController.playerThrowableManager.RemoveThrowableFromAvailable(throwableTaken, itemToTake.itemAmount);
+            playerInventoryManager.playerController.playerThrowableManager.RemoveThrowableFromAvailable(throwableTaken, itemToTake.ItemAmount);
         }
         RemoveItem();
         return itemToTake;
@@ -180,7 +180,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     public virtual ItemStack SwapItem(ItemStack itemToSwap)
     {
-        ItemStack oldItem = new ItemStack(currentSlotItemStack.itemData, currentSlotItemStack.itemAmount, currentSlotItemStack.loadedAmmo);
+        ItemStack oldItem = new ItemStack(currentSlotItemStack.Item, currentSlotItemStack.ItemAmount);
 
         currentSlotItemStack = itemToSwap;
         UpdateSlotUI();
@@ -192,9 +192,9 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     {
         if (currentSlotItemStack != null)
         {
-            currentSlotItemStack.itemAmount--;
+            currentSlotItemStack.RemoveFromStack(1);
             UpdateSlotUI();
-            if (currentSlotItemStack.itemAmount == 0)
+            if (currentSlotItemStack.ItemAmount == 0)
                 RemoveItem();
         }
     }
@@ -207,7 +207,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         WeaponSlot weaponSlot = this as WeaponSlot;
 
 
-        if (currentSlotItemStack.itemData == null)
+        if (currentSlotItemStack == null)
         {
             if (!equipmentSlot && !weaponSlot)
             {
@@ -217,31 +217,39 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
             return;
         }
         slotImage.color = Color.white;
-        slotImage.sprite = currentSlotItemStack.itemData.itemSprite;
+        slotImage.sprite = currentSlotItemStack.Item.ItemData.itemSprite;
         slotImage.enabled = true;
-        if (currentSlotItemStack.itemAmount > 1)
-            SlotAmountText.text = currentSlotItemStack.itemAmount.ToString();
+        if (currentSlotItemStack.ItemAmount > 1)
+            SlotAmountText.text = currentSlotItemStack.ItemAmount.ToString();
         else
             SlotAmountText.text = "";
     }
 
-    void UpdateTooltipData()
+    public void UpdateTooltipData()
     {
         if (!tooltipTrigger)
             return;
 
-        if (currentSlotItemStack.itemData == null)
+        if (currentSlotItemStack == null)
             return;
 
-        tooltipTrigger.SetImage("ItemImage", currentSlotItemStack.itemData.itemSprite);
-        tooltipTrigger.SetText("TitleText", currentSlotItemStack.itemData.itemName);
-        tooltipTrigger.SetText("Description", currentSlotItemStack.itemData.itemDescription);
+        tooltipTrigger.SetImage("ItemImage", currentSlotItemStack.Item.ItemData.itemSprite);
+        tooltipTrigger.SetText("TitleText", currentSlotItemStack.Item.ItemData.itemName);
+        tooltipTrigger.SetText("Description", currentSlotItemStack.Item.ItemData.itemDescription);
         tooltipTrigger.SetText("Stats", string.Empty);
 
-        EquipmentItemData equipmentItem = currentSlotItemStack.itemData as EquipmentItemData;
+        WeaponItem weaponItem = currentSlotItemStack.Item as WeaponItem;
+
+        EquipmentItemData equipmentItem = currentSlotItemStack.Item.ItemData as EquipmentItemData;
         if(equipmentItem)
         {
             StringBuilder statsText = new StringBuilder();
+            if(weaponItem != null)
+            {
+                statsText.AppendLine($"Loaded Ammo: {weaponItem.LoadedAmmo}");
+                statsText.AppendLine($"Loaded Ammo Type: " +
+                    $"{(weaponItem.LoadedAmmoData != null ? weaponItem.LoadedAmmoData.ammoType : "None")}");
+            }
             if(equipmentItem.statModifiers.Count > 0)
             {
                 tooltipTrigger.TurnSectionOn("Stats");
@@ -276,18 +284,17 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         }
 
     }
-
     
 
     public void RemoveItem()
     {
-        ConsumableItemData consumableItemData = GetDataAsConsumable(currentSlotItemStack.itemData);
+        ConsumableItemData consumableItemData = GetDataAsConsumable(currentSlotItemStack.Item.ItemData);
         if (consumableItemData)
         {
             switch (consumableItemData.consumableType)
             {
                 case ConsumableType.HealSyringe:
-                    playerInventoryManager.RemoveHealthSyringe(currentSlotItemStack.itemAmount);
+                    playerInventoryManager.RemoveHealthSyringe(currentSlotItemStack.ItemAmount);
                     break;
             }
         }
@@ -306,8 +313,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         //    playerInventoryManager.RemoveAmmo(ammoData.ammoWeaponType, currentSlotItemStack.itemAmount);
         //}
 
-        currentSlotItemStack.itemData = null;
-        currentSlotItemStack.itemAmount = 0;
+        currentSlotItemStack = null;
         SetTooltipTriggerActive(false);
         UpdateSlotUI();
     }
@@ -326,7 +332,8 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     public bool IsSlotEmpty()
     {
-        return currentSlotItemStack.itemData ? false : true;
+        //Debug.Log(currentSlotItemStack);
+        return currentSlotItemStack != null ? false : true;
     }
 
     public int GetSlotIndex() => slotIndex;
@@ -348,16 +355,16 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     public int UnloadAmmo()
     {
-        WeaponSlot weaponSlot = this as WeaponSlot;
-        if (weaponSlot)
+        WeaponItem weaponItem = GetItemStack().Item as WeaponItem;
+        if (weaponItem != null)
         {
-            return weaponSlot.GetWeapon().UnloadAmmo();
-        }
-        else
-        {
-            int loadedAmmo = GetItemStack().loadedAmmo;
-            GetItemStack().loadedAmmo = 0;
+            int loadedAmmo = weaponItem.LoadedAmmo;
+            weaponItem.SetLoadedAmmo(0);
+            weaponItem.SetLoadedAmmoType(null);
+            UpdateTooltipData();
             return loadedAmmo;
         }
+        else
+            return 0;
     }
 }

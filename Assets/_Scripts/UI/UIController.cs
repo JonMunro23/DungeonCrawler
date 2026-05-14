@@ -182,14 +182,14 @@ public class UIController : MonoBehaviour
 
     void OnNewItemAttachedToCursor(ItemStack item)
     {
-        WeaponItemData handItemData = item.itemData as WeaponItemData;
+        WeaponItemData handItemData = item.Item.ItemData as WeaponItemData;
         if (handItemData != null)
         {
             PlayerEquipmentUIManager.DisableAllSlots();
             return;
         }
 
-        EquipmentItemData equipItemData = item.itemData as EquipmentItemData;
+        EquipmentItemData equipItemData = item.Item.ItemData as EquipmentItemData;
         if (equipItemData != null)
         {
             PlayerEquipmentUIManager.DisableSlotsNotOfType(equipItemData.EquipmentSlotType);

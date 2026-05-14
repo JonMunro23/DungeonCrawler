@@ -28,8 +28,16 @@ public class AmmoSelectionManager : MonoBehaviour
 
     public void OnAmmoSelected(AmmoItemData ammoTypeSelected)
     {
-        CloseAmmoSelectionMenu();
-
+        //CloseAmmoSelectionMenu();
+        foreach (AmmoSelectionButton button in spawnedAmmoSelectionButtons)
+        {
+            if (button.ammoItemData == ammoTypeSelected)
+            {
+                button.button.interactable = false;
+            }
+            else
+                button.button.interactable = true;
+        }
     }
 
     public void OpenAmmoSelectionMenu(IWeapon currentHeldWeapon)
@@ -42,6 +50,8 @@ public class AmmoSelectionManager : MonoBehaviour
         }
     }
 
+
+    // need to close menu when current weapon has been swapped or throwable has been equipped
     public void CloseAmmoSelectionMenu()
     {
         HelperFunctions.SetCursorActive(false);

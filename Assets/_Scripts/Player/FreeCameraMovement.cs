@@ -6,6 +6,30 @@ public class FreeCameraMovement : MonoBehaviour
     public Transform playerBody;
     private float xRotation = 0f;
 
+    bool isWeaponAmmoSelectionMenuOpen;
+
+    private void OnEnable()
+    {
+        PlayerWeaponManager.onWeaponAmmoSelectionMenuOpened += OnWeaponAmmoSelectionMenuOpened;
+        PlayerWeaponManager.onWeaponAmmoSelectionMenuClosed += OnWeaponAmmoSelectionMenuClosed;
+    }
+
+    private void OnDisable()
+    {
+        PlayerWeaponManager.onWeaponAmmoSelectionMenuOpened -= OnWeaponAmmoSelectionMenuOpened;
+        PlayerWeaponManager.onWeaponAmmoSelectionMenuClosed -= OnWeaponAmmoSelectionMenuClosed;
+    }
+
+    void OnWeaponAmmoSelectionMenuOpened(IWeapon equippedWeapon)
+    {
+        isWeaponAmmoSelectionMenuOpen = true;
+    }
+
+    void OnWeaponAmmoSelectionMenuClosed()
+    {
+        isWeaponAmmoSelectionMenuOpen = false;
+    }
+
     void Start()
     {
         // Lock the cursor to the center of the screen
@@ -14,7 +38,11 @@ public class FreeCameraMovement : MonoBehaviour
 
     void Update()
     {
-        if (PauseMenu.isPaused || CharacterMenuUIController.isCharacterMenuOpen || MapController.isMapOpen || ThrowableSelectionManager.isThrowableSelectionMenuOpen)
+        if (PauseMenu.isPaused || 
+            CharacterMenuUIController.isCharacterMenuOpen || 
+            MapController.isMapOpen || 
+            ThrowableSelectionManager.isThrowableSelectionMenuOpen || 
+            isWeaponAmmoSelectionMenuOpen)
             return;
 
         // Get mouse input

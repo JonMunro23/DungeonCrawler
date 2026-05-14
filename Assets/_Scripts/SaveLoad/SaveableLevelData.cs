@@ -163,7 +163,7 @@ public class SaveableLevelData
         foreach (WorldItem worldItem in spawnedWorldItems)
         {
             if (worldItem.levelIndex == levelIndex)
-                worldItemSaveData.Add(new WorldItemSaveData(worldItem.coords, worldItem.transform.rotation.eulerAngles.y, worldItem.item));
+                worldItemSaveData.Add(new WorldItemSaveData(worldItem.coords, worldItem.transform.rotation.eulerAngles.y, worldItem.itemStack));
         }
 
         return worldItemSaveData;

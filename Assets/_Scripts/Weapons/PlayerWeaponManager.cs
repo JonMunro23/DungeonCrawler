@@ -152,7 +152,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
     void OnInventorySlotWeaponItemEquipped(ISlot slot)
     {
-        WeaponItemData weaponItemData = slot.GetItemStack().itemData as WeaponItemData;
+        WeaponItemData weaponItemData = slot.GetItemStack().Item.ItemData as WeaponItemData;
         if (weaponItemData)
         {
             foreach (WeaponSlot weaponSlot in spawnedWeaponSlots)
@@ -305,7 +305,12 @@ public class PlayerWeaponManager : MonoBehaviour
 
         if (activeSlotIndex == slotIndex)
         {
-            await spawnedWeaponSlots[slotIndex].HolsterWeapon();
+            if (playerController.playerThrowableManager.IsThrowableActive())
+            {
+                await playerController.playerThrowableManager.HolsterThrowable();
+            }
+            else
+                await spawnedWeaponSlots[slotIndex].HolsterWeapon();
         }
 
         if (!spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon())
@@ -324,7 +329,12 @@ public class PlayerWeaponManager : MonoBehaviour
         spawnedWeaponSlots[slotIndex].SetInteractable(false);
         if (activeSlotIndex == slotIndex)
         {
-            await spawnedWeaponSlots[slotIndex].HolsterWeapon();
+            if (playerController.playerThrowableManager.IsThrowableActive())
+            {
+                await playerController.playerThrowableManager.HolsterThrowable();
+            }
+            else
+                await spawnedWeaponSlots[slotIndex].HolsterWeapon();
         }
         if (!spawnedWeaponSlots[slotIndex].GetWeapon().IsDefaultWeapon())
             spawnedWeaponSlots[slotIndex].RemoveWeapon();
@@ -543,10 +553,11 @@ public class PlayerWeaponManager : MonoBehaviour
             slot.UnloadSlot();
         }
         activeSlotIndex = data.activeWeaponSlotIndex;
-
+        WeaponItem weaponItem;
         for (int i = 0; i < data.weaponSlotData.Count; i++)
         {
-            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(data.weaponSlotData[i].heldWeaponData, 1, data.weaponSlotData[i].heldWeaponLoadedAmmo));
+            weaponItem = new WeaponItem(data.weaponSlotData[i].heldWeaponData, data.weaponSlotData[i].currentWeaponLoadedAmmoData, data.weaponSlotData[i].heldWeaponLoadedAmmo);
+            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(weaponItem, 1));
             spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].GetWeapon().GetRangedWeapon().SetCurrentLoadedAmmoData(data.weaponSlotData[i].currentWeaponLoadedAmmoData);
         }
 

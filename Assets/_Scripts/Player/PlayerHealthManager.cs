@@ -138,13 +138,13 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public async void UseSyringeInSlot(ISlot slot)
     {
-        ConsumableItemData consumableData = slot.GetItemStack().itemData as ConsumableItemData;
+        ConsumableItemData consumableData = slot.GetItemStack().Item.ItemData as ConsumableItemData;
         if (consumableData == null)
             return;
 
         canUseSyringe = false;
         playerController.playerInventoryManager.RemoveHealthSyringe(1);
-        ConsumableItemData syringeItemData = slot.GetItemStack().itemData as ConsumableItemData;
+        ConsumableItemData syringeItemData = slot.GetItemStack().Item.ItemData as ConsumableItemData;
         slot.RemoveFromExistingStack(1);
         await InjectSyringe(syringeItemData);
     }

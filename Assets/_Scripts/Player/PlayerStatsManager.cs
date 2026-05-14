@@ -119,7 +119,7 @@ public class PlayerStatsManager : MonoBehaviour
 
     void OnBoosterUsed(ISlot slot)
     {
-        ConsumableItemData consumableItemData = slot.GetItemStack().itemData as ConsumableItemData;
+        ConsumableItemData consumableItemData = slot.GetItemStack().Item.ItemData as ConsumableItemData;
         if (consumableItemData)
         {
             foreach(StatModifier statModifier in consumableItemData.statModifiers)

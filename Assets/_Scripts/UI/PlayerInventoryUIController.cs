@@ -54,7 +54,7 @@ public class PlayerInventoryUIController : MonoBehaviour
 
     void OnNewGroundItemDetected(ItemStack detectedItem)
     {
-        pickupItemText.text = $"F: Pickup {(detectedItem.itemAmount > 0 ? detectedItem.itemAmount : "")} {detectedItem.itemData.itemName}.";
+        pickupItemText.text = $"F: Pickup {(detectedItem.ItemAmount > 0 ? detectedItem.ItemAmount : "")} {detectedItem.Item.ItemData.itemName}.";
     }
 
     //void OnNearbyContainerUpdated(IContainer container)

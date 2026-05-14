@@ -41,10 +41,11 @@ public class InventoryContextMenu : MonoBehaviour
         EquipButton.gameObject.SetActive(false);
         EquipButton.onClick.RemoveAllListeners();
 
-        WeaponItemData weaponItemData = slot.GetItemStack().itemData as WeaponItemData;
-        if (weaponItemData)
+        WeaponItem weaponItem = slot.GetItemStack().Item as WeaponItem;
+        if (weaponItem != null)
         {
-            if (slot.GetItemStack().loadedAmmo > 0)
+            WeaponSlot weaponSlot = slot as WeaponSlot;
+            if (weaponSlot == null && weaponItem.LoadedAmmo > 0)
             {
                 UnloadAmmoButton.gameObject.SetActive(true);
                 UnloadAmmoButton.GetComponentInChildren<TMP_Text>().text = "UNLOAD";
@@ -61,8 +62,6 @@ public class InventoryContextMenu : MonoBehaviour
             //        OpenLoadAmmoMenu();
             //    });
             //}
-
-            WeaponSlot weaponSlot = slot.GetSlot() as WeaponSlot;
             if (weaponSlot)
             {
                 if(!weaponSlot.IsSlotEmpty())
@@ -87,7 +86,7 @@ public class InventoryContextMenu : MonoBehaviour
         }
 
 
-        EquipmentItemData equipmentItemData = slot.GetItemStack().itemData as EquipmentItemData;
+        EquipmentItemData equipmentItemData = slot.GetItemStack().Item.ItemData as EquipmentItemData;
         if (equipmentItemData)
         {
             EquipmentSlot equipmentSlot = slot.GetSlot() as EquipmentSlot;
@@ -114,7 +113,7 @@ public class InventoryContextMenu : MonoBehaviour
             return;
         }
 
-        ConsumableItemData consumableItemData = slot.GetItemStack().itemData as ConsumableItemData;
+        ConsumableItemData consumableItemData = slot.GetItemStack().Item.ItemData as ConsumableItemData;
         if (consumableItemData)
         {
             UseButton.gameObject.SetActive(true);
@@ -148,7 +147,7 @@ public class InventoryContextMenu : MonoBehaviour
 
     public void Equip()
     {
-        WeaponItemData weaponItemData = slot.GetItemStack().itemData as WeaponItemData;
+        WeaponItemData weaponItemData = slot.GetItemStack().Item.ItemData as WeaponItemData;
         if(weaponItemData)
         {
             //add to weapon slot
@@ -157,7 +156,7 @@ public class InventoryContextMenu : MonoBehaviour
             return;
         }
 
-        EquipmentItemData equipmentItemData = slot.GetItemStack().itemData as EquipmentItemData;
+        EquipmentItemData equipmentItemData = slot.GetItemStack().Item.ItemData as EquipmentItemData;
         if(equipmentItemData)
         {
             //add to appropraite equipment slot
@@ -169,7 +168,7 @@ public class InventoryContextMenu : MonoBehaviour
 
     public void Unequip()
     {
-        WeaponItemData weaponItemData = slot.GetItemStack().itemData as WeaponItemData;
+        WeaponItemData weaponItemData = slot.GetItemStack().Item.ItemData as WeaponItemData;
         if (weaponItemData)
         {
             //remove from weapon slot
@@ -178,7 +177,7 @@ public class InventoryContextMenu : MonoBehaviour
             return;
         }
 
-        EquipmentItemData equipmentItemData = slot.GetItemStack().itemData as EquipmentItemData;
+        EquipmentItemData equipmentItemData = slot.GetItemStack().Item.ItemData as EquipmentItemData;
         if (equipmentItemData)
         {
             //remove from appropraite equipment slot

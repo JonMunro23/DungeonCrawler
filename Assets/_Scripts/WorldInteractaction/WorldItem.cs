@@ -2,32 +2,12 @@ using HighlightPlus;
 using System;
 using UnityEngine;
 
-[System.Serializable]
-public class ItemStack
-{
-    public ItemData itemData;
-    public int itemAmount = 1;
-    public int loadedAmmo = 0;
-
-    public ItemStack(ItemData itemData, int itemAmount = 1, int loadedAmmo = 0)
-    {
-        this.itemData = itemData;
-        this.itemAmount = itemAmount;
-        this.loadedAmmo = loadedAmmo;
-    }
-
-    public int GetRemainingSpaceInStack()
-    {
-        return itemData.maxItemStackSize - itemAmount;
-    }
-}
-
 [SelectionBase]
 public class WorldItem : MonoBehaviour, IPickup
 {
     public int levelIndex;
 
-    public ItemStack item;
+    public ItemStack itemStack;
     public Vector2 coords;
     public PressurePlate occupiedPressurePlate;
     public static event Action<WorldItem> onWorldItemGrabbed;
@@ -43,27 +23,31 @@ public class WorldItem : MonoBehaviour, IPickup
         levelIndex = _levelIndex;
         coords = _coords;
 
-        item.itemData = itemToInitialise.itemData;
-        item.itemAmount = itemToInitialise.itemAmount;
-        item.loadedAmmo = itemToInitialise.loadedAmmo;
+        //itemStack.Item = itemToInitialise.Item;
+        //itemStack.itemAmount = itemToInitialise.itemAmount;
+        //itemStack.loadedAmmo = itemToInitialise.loadedAmmo;
+
+        itemStack = itemToInitialise;
 
         SpawnMesh();
     }
 
-    public void InitContainerWorldItem(ItemStack stackToInitialise, ContainerSlot occupiedContainerSlot)
+    public void InitContainerWorldItem(ItemStack itemToInitialise, ContainerSlot occupiedContainerSlot)
     {
         isInContainer = true;
         this.occupiedContainerSlot = occupiedContainerSlot;
 
-        item.itemData = stackToInitialise.itemData;
-        item.itemAmount = stackToInitialise.itemAmount;
-        item.loadedAmmo = stackToInitialise.loadedAmmo;
+        //itemStack.item = stackToInitialise.item;
+        //itemStack.itemAmount = stackToInitialise.itemAmount;
+        //itemStack.loadedAmmo = stackToInitialise.loadedAmmo;
+
+        itemStack = itemToInitialise;
 
         SpawnMesh();
     }
     void SpawnMesh()
     {
-        GameObject clone = Instantiate(item.itemData.itemWorldModel, transform);
+        GameObject clone = Instantiate(itemStack.Item.ItemData.itemWorldModel, transform);
         clone.transform.localPosition = new Vector3(0, 0, isInContainer ? 0 : 1.3f);
         
         if(isInContainer)
@@ -100,7 +84,7 @@ public class WorldItem : MonoBehaviour, IPickup
 
     public void AddToInventory(IInventory inventoryToAddTo)
     {
-        int remainingItems = inventoryToAddTo.TryAddItem(item);
+        int remainingItems = inventoryToAddTo.TryAddItem(itemStack);
         if(remainingItems == 0)
         {
             if (occupiedPressurePlate != null)

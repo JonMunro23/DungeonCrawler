@@ -406,6 +406,7 @@ public class RangedWeapon : Weapon
         }
 
         int heldAmmo = playerInventory.TryGetRemainingAmmoOfType(currentLoadedAmmoData);
+        //Debug.Log("held ammo: " + heldAmmo);
         if (heldAmmo == 0)
             return;
 
@@ -522,6 +523,7 @@ public class RangedWeapon : Weapon
     public void SetCurrentLoadedAmmoData(AmmoItemData newAmmoItemData)
     {
         currentLoadedAmmoData = newAmmoItemData;
+        occupyingSlot.SetLoadedAmmoType(currentLoadedAmmoData);
     }
 
     public AmmoItemData GetCurrentLoadedAmmoData()
@@ -537,7 +539,8 @@ public class RangedWeapon : Weapon
     public void UpdateLoadedAmmo(int loadedAmmo)
     {
         this.loadedAmmo = loadedAmmo;
-        occupyingSlot.SetItemStackLoadedAmmo(this.loadedAmmo);
+        occupyingSlot.SetLoadedAmmo(this.loadedAmmo);
+        occupyingSlot.SetLoadedAmmoType(currentLoadedAmmoData);
         onLoadedAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), this.loadedAmmo);
     }
 

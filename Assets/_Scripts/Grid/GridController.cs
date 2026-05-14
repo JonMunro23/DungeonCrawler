@@ -362,6 +362,8 @@ public class GridController : MonoBehaviour
     void GenerateEntities(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
     {
         GridNodeOccupant newOccupant;
+        Item newItem;
+        WeaponItemData weaponItemData;
         levelSecrets = 0;
         for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
         {
@@ -377,7 +379,14 @@ public class GridController : MonoBehaviour
                         WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                         spawnedWorldItems.Add(spawnedWorldItem);
                         ItemData worldItemData = itemDataContainer.GetDataFromIdentifier(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString());
-                        spawnedWorldItem.InitWorldItem(levelIndex, spawnCoords, new ItemStack(worldItemData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value), Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value)));
+
+                        weaponItemData = worldItemData as WeaponItemData;
+                        if (weaponItemData)
+                            newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value));
+                        else
+                            newItem = new Item(worldItemData);
+
+                        spawnedWorldItem.InitWorldItem(levelIndex, spawnCoords, new ItemStack(newItem, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value)));
                         break;
                     case "Level_Transition":
                         LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0, 1.5f, 0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
@@ -403,7 +412,14 @@ public class GridController : MonoBehaviour
                                 {
                                     ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
                                     int itemAmount = Convert.ToInt32(itemAmounts[l]);
-                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
+
+                                    weaponItemData = itemData as WeaponItemData;
+                                    if (weaponItemData)
+                                        newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value));
+                                    else
+                                        newItem = new Item(itemData);
+
+                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(newItem, itemAmount)));
                                 }
                                 break;
                             case "Desk":
@@ -415,7 +431,14 @@ public class GridController : MonoBehaviour
                                 {
                                     ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
                                     int itemAmount = Convert.ToInt32(itemAmounts[l]);
-                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
+
+                                    weaponItemData = itemData as WeaponItemData;
+                                    if (weaponItemData)
+                                        newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value));
+                                    else
+                                        newItem = new Item(itemData);
+
+                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(newItem, itemAmount)));
 
                                 }
                                 break;
@@ -428,7 +451,14 @@ public class GridController : MonoBehaviour
                                 {
                                     ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
                                     int itemAmount = Convert.ToInt32(itemAmounts[l]);
-                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(itemData, itemAmount)));
+
+                                    weaponItemData = itemData as WeaponItemData;
+                                    if (weaponItemData)
+                                        newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value));
+                                    else
+                                        newItem = new Item(itemData);
+
+                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(newItem, itemAmount)));
 
                                 }
                                 break;

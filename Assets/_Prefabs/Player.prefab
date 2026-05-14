@@ -972,10 +972,6 @@ MonoBehaviour:
     type: 3}
   itemDropLocation: {fileID: 3106928982722646368}
   mousePos: {x: 0, y: 0, z: 0}
-  currentGrabbedItem:
-    itemData: {fileID: 0}
-    itemAmount: 0
-    loadedAmmo: 0
   canPickUpItem: 1
   grabSFX: {fileID: 8300000, guid: 39a9b6d6cf0e72143af0fb793abf0ac5, type: 3}
   grabSFXVolume: 0.6
@@ -993,19 +989,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
-  startingItemStacks:
-  - itemData: {fileID: 11400000, guid: 14db0e06fa609464497f009f5ba17670, type: 2}
-    itemAmount: 1
-    loadedAmmo: 15
-  - itemData: {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
-    itemAmount: 1
-    loadedAmmo: 30
-  - itemData: {fileID: 11400000, guid: 9b4387b63c26100479530fe8b8e80114, type: 2}
-    itemAmount: 45
-    loadedAmmo: 0
-  - itemData: {fileID: 11400000, guid: 0930f643f722bc0428f3907f8db07cd1, type: 2}
-    itemAmount: 45
-    loadedAmmo: 0
+  startingItemStacks: []
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   totalNumInventorySlots: 30
@@ -1068,6 +1052,7 @@ MonoBehaviour:
   throwableArmsSpawnTransform: {fileID: 677067965771730991}
   currentlySelectedThrowableArms: {fileID: 0}
   manuallyDetonatedThrowables: []
+  enableCharging: 0
   chargeCurve:
     serializedVersion: 2
     m_Curve:

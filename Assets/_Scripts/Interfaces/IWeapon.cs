@@ -17,7 +17,6 @@ public interface IWeapon : IUseable
     public Task HolsterWeapon();
     //public Task ReadyWeapon();
     //public Task UnreadyWeapon();
-
     public Task Grab();
     public void RemoveWeapon();
     public int UnloadAmmo();

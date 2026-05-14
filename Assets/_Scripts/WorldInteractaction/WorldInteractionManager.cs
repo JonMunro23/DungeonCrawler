@@ -87,7 +87,7 @@ public class WorldInteractionManager : MonoBehaviour
         groundItems.Remove(worldItemGrabbed);
         UpdatePickupItemUI();
 
-        AttachItemToMouseCursor(worldItemGrabbed.item, worldItemGrabbed);
+        AttachItemToMouseCursor(worldItemGrabbed.itemStack, worldItemGrabbed);
     }
 
     //void OnContainerItemGrabbed(ContainerSlot slotGrabbedFrom)
@@ -125,13 +125,13 @@ public class WorldInteractionManager : MonoBehaviour
             }
             else
             {
-                if(slotClicked.GetItemStack().itemData == currentGrabbedItem.itemData)
+                if(slotClicked.GetItemStack().Item == currentGrabbedItem.Item)
                 {
-                    int remainder = slotClicked.AddToCurrentItemStack(currentGrabbedItem.itemAmount);
+                    int remainder = slotClicked.AddToCurrentItemStack(currentGrabbedItem.ItemAmount);
                     if (remainder > 0)
                     {
                         DetachItemFromMouseCursor();
-                        AttachItemToMouseCursor(new ItemStack(slotClicked.GetItemStack().itemData, remainder, slotClicked.GetItemStack().loadedAmmo));
+                        AttachItemToMouseCursor(new ItemStack(slotClicked.GetItemStack().Item, remainder));
                     }
                     else
                         DetachItemFromMouseCursor();
@@ -150,7 +150,7 @@ public class WorldInteractionManager : MonoBehaviour
     void AttachItemToMouseCursor(ItemStack itemToAttach, WorldItem worldItem = null)
     {
         //Debug.Log("Item attached to cursor");
-        currentGrabbedItem = new ItemStack(itemToAttach.itemData, itemToAttach.itemAmount, itemToAttach.loadedAmmo);
+        currentGrabbedItem = new ItemStack(itemToAttach.Item, itemToAttach.ItemAmount);
 
         onNewItemAttachedToCursor?.Invoke(currentGrabbedItem);
         
@@ -163,9 +163,7 @@ public class WorldInteractionManager : MonoBehaviour
     public void DetachItemFromMouseCursor()
     {
         onCurrentItemDettachedFromCursor?.Invoke();
-
-        currentGrabbedItem.itemData = null;
-        currentGrabbedItem.itemAmount = 0;
+        currentGrabbedItem = null;
         hasGrabbedItem = false;
     }
 
@@ -271,7 +269,7 @@ public class WorldInteractionManager : MonoBehaviour
                 else if(hit.transform.TryGetComponent(out IInteractable interactable))
                 {
                     if (hasGrabbedItem)
-                        if(interactable.TryInteractWithItem(currentGrabbedItem.itemData))
+                        if(interactable.TryInteractWithItem(currentGrabbedItem.Item.ItemData))
                         {
                             if(interactable.ConsumesItem())
                                 DetachItemFromMouseCursor();
@@ -372,7 +370,7 @@ public class WorldInteractionManager : MonoBehaviour
     private void UpdatePickupItemUI()
     {
         if (groundItems.Count > 0)
-            onGroundItemsUpdated?.Invoke(groundItems[0].item);
+            onGroundItemsUpdated?.Invoke(groundItems[0].itemStack);
         else
             onLastGroundItemRemoved?.Invoke();
     }

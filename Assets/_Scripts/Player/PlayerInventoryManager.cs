@@ -91,12 +91,24 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     void OnInventorySlotWeaponUnloaded(ISlot slot)
     {
-        WeaponSlot weaponSlot = slot as WeaponSlot;
-        if (!weaponSlot)
-            return;
+        // Add ability to unload whilst weapon is within a weapon slot, need to add an animation for unloading the weapon
+        //WeaponSlot weaponSlot = slot as WeaponSlot;
+        //if(weaponSlot != null )
+        //{
+        //    weaponSlot.GetWeapon().GetRangedWeapon().UnloadWeapon();
+        //}
 
-        ItemStack slotAmmo = new ItemStack(weaponSlot.GetWeapon().GetRangedWeapon().GetCurrentLoadedAmmoData(), slot.UnloadAmmo());
-        TryAddItem(slotAmmo);
+        int unloadedAmmoAmount = 0;
+        AmmoItemData unloadedAmmoType = null;
+        WeaponItem slotWeaponItem = slot.GetItemStack().Item as WeaponItem;
+        if(slotWeaponItem != null)
+        {
+            unloadedAmmoType = slotWeaponItem.LoadedAmmoData;
+            unloadedAmmoAmount = slot.UnloadAmmo();
+        }
+        ItemStack unloadedAmmoItemStack = new ItemStack(new Item(unloadedAmmoType), unloadedAmmoAmount);
+
+        TryAddItem(unloadedAmmoItemStack);
 
     }
 
@@ -207,7 +219,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
             ItemStack slotItemStack = slot.GetItemStack();
 
-            ThrowableItemData throwableItemData = slotItemStack.itemData as ThrowableItemData;
+            ThrowableItemData throwableItemData = slotItemStack.Item.ItemData as ThrowableItemData;
             if (!throwableItemData)
                 continue;
 
@@ -223,10 +235,14 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
-            if (!slot.GetItemStack().itemData)
+            Item item = slot.GetItemStack().Item;
+            if (item == null)
                 continue;
 
-            ConsumableItemData consumableData = slot.GetItemStack().itemData as ConsumableItemData;
+            if (!item.ItemData)
+                continue;
+
+            ConsumableItemData consumableData = item.ItemData as ConsumableItemData;
             if (!consumableData)
                 continue;
 
@@ -258,7 +274,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (slot.IsSlotEmpty())
                 continue;
 
-            if(slot.GetItemStack().itemData == itemData)
+            if(slot.GetItemStack().Item.ItemData == itemData)
             {
                 if(slot.GetItemStack().GetRemainingSpaceInStack() > 0)
                 {
@@ -275,10 +291,10 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public int TryAddItem(ItemStack itemToAdd)
     {
-        InventorySlot[] slotsWithSpace = GetSlotWithItemWithSpace(itemToAdd.itemData);
+        InventorySlot[] slotsWithSpace = GetSlotWithItemWithSpace(itemToAdd.Item.ItemData);
         if(slotsWithSpace != null && slotsWithSpace.Length > 0)
         {
-            int remainingAmountToAdd = itemToAdd.itemAmount;
+            int remainingAmountToAdd = itemToAdd.ItemAmount;
             foreach (InventorySlot slot in slotsWithSpace)
             {
                 int spaceInSlot = slot.GetItemStack().GetRemainingSpaceInStack();
@@ -299,7 +315,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
                 InventorySlot freeSlot = GetNextFreeSlot();
                 if (freeSlot)
                 {
-                    freeSlot.AddItem(new ItemStack(itemToAdd.itemData, remainingAmountToAdd, itemToAdd.loadedAmmo));
+                     freeSlot.AddItem(new ItemStack(itemToAdd.Item, remainingAmountToAdd));
+
                     return 0;
                 }
 
@@ -318,7 +335,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
                 return 0;
             }
 
-            return itemToAdd.itemAmount;
+            return itemToAdd.ItemAmount;
         }
     }
 
@@ -335,14 +352,14 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
             ItemStack slotItemStack = slot.GetItemStack();
 
-            AmmoItemData ammoItemData = slotItemStack.itemData as AmmoItemData;
+            AmmoItemData ammoItemData = slotItemStack.Item.ItemData as AmmoItemData;
             if (!ammoItemData)
                 continue;
 
             if (ammoItemData != ammoTypeToGet)
                 continue;
 
-            ammoToReturn += slotItemStack.itemAmount;
+            ammoToReturn += slotItemStack.ItemAmount;
             //Debug.Log(ammoToReturn);
         }
         return ammoToReturn;
@@ -352,7 +369,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         //reverse list so it takes from the last slot first 
         List<InventorySlot> slotsReversed = new List<InventorySlot>(spawnedInventorySlots.Reverse());
-
+        int remainingAmountToRemove = amountToRemove;
         foreach (ISlot slot in slotsReversed)
         {
             if (slot.IsSlotEmpty())
@@ -360,24 +377,25 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
             ItemStack slotItemStack = slot.GetItemStack();
 
-            AmmoItemData ammoItemData = slotItemStack.itemData as AmmoItemData;
+            AmmoItemData ammoItemData = slotItemStack.Item.ItemData as AmmoItemData;
             if (!ammoItemData)
                 continue;
 
             if (ammoItemData != ammoTypeToRemove)
                 continue;
 
-            int remainingAmountToRemove = slot.RemoveFromExistingStack(amountToRemove);
+            remainingAmountToRemove = slot.RemoveFromExistingStack(remainingAmountToRemove);
 
             if (remainingAmountToRemove == 0)
                 return;
 
-            amountToRemove = remainingAmountToRemove;
+            //amountToRemove = remainingAmountToRemove;
         }
     }
 
     public void IncreaseAmmoOfType(AmmoItemData ammoTypeToAdd, int amountToAdd)
     {
+        int remainingAmountToAdd = amountToAdd;
         foreach (ISlot slot in spawnedInventorySlots)
         {
             if (slot.IsSlotEmpty())
@@ -385,27 +403,29 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
             ItemStack slotItemStack = slot.GetItemStack();
 
-            AmmoItemData ammoItemData = slotItemStack.itemData as AmmoItemData;
+            AmmoItemData ammoItemData = slotItemStack.Item.ItemData as AmmoItemData;
             if (!ammoItemData)
                 continue;
 
             if (ammoItemData != ammoTypeToAdd)
                 continue;
 
-            int remainingAmountToAdd = slot.AddToCurrentItemStack(amountToAdd);
-            if (remainingAmountToAdd > 0)
+            remainingAmountToAdd = slot.AddToCurrentItemStack(amountToAdd);
+            if (remainingAmountToAdd == 0)
+                return;
+        }
+
+        if(remainingAmountToAdd > 0)
+        {
+            InventorySlot freeSlot = GetNextFreeSlot();
+            if (freeSlot)
             {
-                InventorySlot freeSlot = GetNextFreeSlot();
-                if (freeSlot)
-                {
-                    freeSlot.AddItem(new ItemStack(ammoItemData, remainingAmountToAdd, 0));
-                }
+                freeSlot.AddItem(new ItemStack(new Item(ammoTypeToAdd), remainingAmountToAdd));
             }
-            return;
         }
     }
 
-    public static int GetRemainingAmountOfItem(ItemData item)
+    public static int GetRemainingAmountOfItem(ItemData itemData)
     {
         int itemAmount = 0;
         foreach (ISlot slot in spawnedInventorySlots)
@@ -413,10 +433,14 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (slot.IsSlotEmpty())
                 continue;
 
-            if (slot.GetItemStack().itemData != item)
+            Item slotItem = slot.GetItemStack().Item;
+            if (slotItem == null)
                 continue;
 
-            itemAmount += slot.GetItemStack().itemAmount;
+            if (slotItem.ItemData != itemData)
+                continue;
+
+            itemAmount += slot.GetItemStack().ItemAmount;
         }
 
         return itemAmount;
@@ -429,7 +453,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (slot.IsSlotEmpty())
                 continue;
 
-            AmmoItemData ammoItemData = slot.GetItemStack().itemData as AmmoItemData;
+            AmmoItemData ammoItemData = slot.GetItemStack().Item.ItemData as AmmoItemData;
             if (!ammoItemData)
                 continue;
 
@@ -446,7 +470,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (slot.IsSlotEmpty())
                 continue;
 
-            AmmoItemData ammoItemData = slot.GetItemStack().itemData as AmmoItemData;
+            AmmoItemData ammoItemData = slot.GetItemStack().Item.ItemData as AmmoItemData;
             if (!ammoItemData)
                 continue;
 
@@ -521,7 +545,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (slot.IsSlotEmpty())
                 continue;
 
-            ThrowableItemData throwableItemData = slot.GetItemStack().itemData as ThrowableItemData;
+            ThrowableItemData throwableItemData = slot.GetItemStack().Item.ItemData as ThrowableItemData;
             if (!throwableItemData)
                 continue;
 

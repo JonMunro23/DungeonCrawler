@@ -46,7 +46,7 @@ public class EquipmentSlot : InventorySlot
 
     public void InitialiseEquipmentItem(ItemStack itemToInitialise)
     {
-        onNewEquipmentItem?.Invoke(slotType, itemToInitialise.itemData as EquipmentItemData);
+        onNewEquipmentItem?.Invoke(slotType, itemToInitialise.Item.ItemData as EquipmentItemData);
     }
 
     public void DeinitialiseEquipmentItem(ItemStack item)

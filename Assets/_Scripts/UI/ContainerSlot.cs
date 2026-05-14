@@ -32,10 +32,7 @@ public class ContainerSlot : MonoBehaviour
     public void ClearSlot()
     {
         spawnedWorldItem = null;
-
-        storedStack.itemData = null;
-        storedStack.itemAmount = 0;
-        storedStack.loadedAmmo = 0;
+        storedStack = null;
 
         parentContainer.RemoveStoredItemFromSlot(slotIndex);
     }

@@ -61,7 +61,7 @@ public class PlayerEquipmentManager : MonoBehaviour
 
     void OnInventorySlotEquipmentItemEquipped(ISlot slot)
     {
-        EquipmentItemData equipmentItemData = slot.GetItemStack().itemData as EquipmentItemData;
+        EquipmentItemData equipmentItemData = slot.GetItemStack().Item.ItemData as EquipmentItemData;
         if (equipmentItemData)
         {
             EquippedItem currentlyEquippedItem = GetEquippedItemInSlot(equipmentItemData.EquipmentSlotType);
@@ -186,8 +186,8 @@ public class PlayerEquipmentManager : MonoBehaviour
             if (!slot.IsSlotEmpty())
                 slot.RemoveItem();
 
-
-            slot.AddItem(new ItemStack(item.equipmentItemData, 1));
+            Item newItem = new Item(item.equipmentItemData);
+            slot.AddItem(new ItemStack(newItem, 1));
         }
     }
 
