@@ -160,11 +160,11 @@ public class SaveableLevelData
     List<WorldItemSaveData> GetWorldItemSaveData(List<WorldItem> spawnedWorldItems)
     {
         List<WorldItemSaveData> worldItemSaveData = new List<WorldItemSaveData>();
-        foreach (WorldItem worldItem in spawnedWorldItems)
-        {
-            if (worldItem.levelIndex == levelIndex)
-                worldItemSaveData.Add(new WorldItemSaveData(worldItem.coords, worldItem.transform.rotation.eulerAngles.y, worldItem.itemStack));
-        }
+        //foreach (WorldItem worldItem in spawnedWorldItems)
+        //{
+        //    if (worldItem.levelIndex == levelIndex)
+        //        worldItemSaveData.Add(new WorldItemSaveData(worldItem.coords, worldItem.transform.rotation.eulerAngles.y, worldItem.itemStack));
+        //}
 
         return worldItemSaveData;
     }

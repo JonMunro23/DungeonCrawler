@@ -376,7 +376,7 @@ public class GridController : MonoBehaviour
                         playerSpawnCoords = spawnCoords;
                         break;
                     case "WorldItem":
-                        WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
+                        WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + (Vector3.up * .5f), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
                         spawnedWorldItems.Add(spawnedWorldItem);
                         ItemData worldItemData = itemDataContainer.GetDataFromIdentifier(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString());
 
@@ -386,7 +386,7 @@ public class GridController : MonoBehaviour
                         else
                             newItem = new Item(worldItemData);
 
-                        spawnedWorldItem.InitWorldItem(levelIndex, spawnCoords, new ItemStack(newItem, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value)));
+                        spawnedWorldItem.InitWorldItem(levelIndex, new ItemStack(newItem, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value)));
                         break;
                     case "Level_Transition":
                         LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0, 1.5f, 0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
@@ -776,7 +776,7 @@ public class GridController : MonoBehaviour
             {
                 GridNode spawnNode = GetNodeAtCoords(savedWorldItem.coords);
                 WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedWorldItem.rotation, 0)), spawnNode.transform);
-                spawnedWorldItem.InitWorldItem(levelIndex, savedWorldItem.coords, savedWorldItem.itemStack);
+                spawnedWorldItem.InitWorldItem(levelIndex, savedWorldItem.itemStack);
                 spawnedWorldItems.Add(spawnedWorldItem);
             }
         }

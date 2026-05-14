@@ -8,7 +8,6 @@ public class WorldItem : MonoBehaviour, IPickup
     public int levelIndex;
 
     public ItemStack itemStack;
-    public Vector2 coords;
     public PressurePlate occupiedPressurePlate;
     public static event Action<WorldItem> onWorldItemGrabbed;
     public static event Action<WorldItem> onWorldItemPickedUp;
@@ -18,10 +17,9 @@ public class WorldItem : MonoBehaviour, IPickup
 
     [SerializeField] HighlightEffect highlightEffect;
 
-    public void InitWorldItem(int _levelIndex, Vector2 _coords, ItemStack itemToInitialise)
+    public void InitWorldItem(int _levelIndex, ItemStack itemToInitialise)
     {
         levelIndex = _levelIndex;
-        coords = _coords;
 
         //itemStack.Item = itemToInitialise.Item;
         //itemStack.itemAmount = itemToInitialise.itemAmount;
@@ -36,7 +34,7 @@ public class WorldItem : MonoBehaviour, IPickup
     {
         isInContainer = true;
         this.occupiedContainerSlot = occupiedContainerSlot;
-
+        GetComponent<Rigidbody>().isKinematic = true;
         //itemStack.item = stackToInitialise.item;
         //itemStack.itemAmount = stackToInitialise.itemAmount;
         //itemStack.loadedAmmo = stackToInitialise.loadedAmmo;

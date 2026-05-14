@@ -54,7 +54,7 @@ public class WorldInteractionManager : MonoBehaviour
         InventorySlot.onInventorySlotLeftClicked -= OnInventorySlotClicked;
         //ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
 
-        InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
+        InventoryContextMenu.onInventorySlotItemDropped -= DropItemFromInventoryIntoWorld;
     }
 
     public static bool IsLookingAtInteractable() => highlightedTarget != null;
@@ -167,23 +167,23 @@ public class WorldInteractionManager : MonoBehaviour
         hasGrabbedItem = false;
     }
 
-    void PlaceGrabbedItemInWorld(GridNode nodePlacedIn, Vector3 placementLocation)
+    void PlaceGrabbedItemInWorld(Vector3 placementLocation)
     {
         if (!hasGrabbedItem)
             return;
 
-        SpawnWorldItem(currentGrabbedItem, nodePlacedIn, placementLocation);
+        SpawnWorldItem(currentGrabbedItem, placementLocation);
     }
 
     void DropItemFromInventoryIntoWorld(ISlot slot)
     {
-        SpawnWorldItem(slot.TakeItem(), controller.currentOccupiedNode, itemDropLocation.position);
+        SpawnWorldItem(slot.TakeItem(), itemDropLocation.position);
     }
 
-    void SpawnWorldItem(ItemStack itemStackToSpawn, GridNode nodePlacedIn, Vector3 placementLocation)
+    void SpawnWorldItem(ItemStack itemStackToSpawn, Vector3 placementLocation)
     {
         WorldItem worldItem = Instantiate(worldItemPrefab, placementLocation, Quaternion.Euler(new Vector3(0, controller.transform.localEulerAngles.y, 0)));
-        worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), nodePlacedIn.Coords.Pos, itemStackToSpawn);
+        worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), itemStackToSpawn);
         worldItem.transform.GetChild(0).localPosition = new Vector3(worldItem.transform.GetChild(0).localPosition.x, worldItem.transform.GetChild(0).localPosition.y, 0);
         worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
         DetachItemFromMouseCursor();
@@ -248,11 +248,7 @@ public class WorldInteractionManager : MonoBehaviour
             {
                 if (hasGrabbedItem && hit.transform.CompareTag("Ground"))
                 {
-                    GridNode node = hit.transform.GetComponentInParent<GridNode>();
-                    if (!node)
-                        return;
-
-                    PlaceGrabbedItemInWorld(node, hit.point);
+                    PlaceGrabbedItemInWorld(hit.point);
                     return;
                 }
                 else if(hit.transform.TryGetComponent(out IPickup pickup))
