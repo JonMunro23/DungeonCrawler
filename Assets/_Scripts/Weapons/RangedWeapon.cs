@@ -405,8 +405,8 @@ public class RangedWeapon : Weapon
             currentLoadedAmmoData = newAmmoTypeToLoad;
         }
 
-        int heldAmmo = playerInventory.TryGetRemainingAmmoOfType(currentLoadedAmmoData);
-        //Debug.Log("held ammo: " + heldAmmo);
+        //inital fetch to see if we have any reserve ammo and if not cancel reload
+        int heldAmmo = GetReserveAmmo();
         if (heldAmmo == 0)
             return;
 
@@ -419,7 +419,8 @@ public class RangedWeapon : Weapon
             else
                 playerInventory.IncreaseAmmoOfType(currentLoadedAmmoData, loadedAmmo);
 
-            heldAmmo += loadedAmmo;
+            // fetch again after yield loaded ammo to pool to get final amount
+            heldAmmo = GetReserveAmmo();
 
             UpdateLoadedAmmo(0);
             UpdateReserveAmmo();
@@ -460,7 +461,7 @@ public class RangedWeapon : Weapon
         weaponAudioEmitter.ForcePlay(weaponItemData.reloadSFX, weaponItemData.reloadVolume);
         await Task.Delay((int)(weaponItemData.reloadAnimDuration * 1000));
         isReloading = false;
-
+        //Debug.Log("reload amount = " + reloadAmount);
         UpdateLoadedAmmo(reloadAmount);
         playerInventory.DecreaseAmmoOfType(currentLoadedAmmoData, reloadAmount);
         UpdateReserveAmmo();
@@ -533,7 +534,7 @@ public class RangedWeapon : Weapon
 
     public List<AmmoItemData> GetAllUseableHeldAmmo()
     {
-        return playerInventory.GetAllUseableAmmoForWeapon(this);
+        return playerInventory.GetAllUseableAmmoTypesForWeapon(this);
     }
 
     public void UpdateLoadedAmmo(int loadedAmmo)

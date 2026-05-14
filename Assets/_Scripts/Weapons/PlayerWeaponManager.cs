@@ -196,12 +196,19 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void OpenWeaponAmmoSelectionMenu()
     {
+        if (isAmmoSelectionMenuOpen || 
+            !playerController.playerWeaponManager.currentWeapon.CanUse() || 
+            playerController.playerThrowableManager.IsThrowableActive() ||
+            playerController.playerWeaponManager.currentWeapon.GetRangedWeapon().GetAllUseableHeldAmmo().Count == 1) return;
+
         isAmmoSelectionMenuOpen = true;
         onWeaponAmmoSelectionMenuOpened?.Invoke(currentWeapon);
     }
 
     public void CloseWeaponAmmoSelectionMenu()
     {
+        if (!isAmmoSelectionMenuOpen) return;
+
         isAmmoSelectionMenuOpen = false;
         onWeaponAmmoSelectionMenuClosed?.Invoke();
     }
@@ -388,6 +395,8 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public async void SwitchWeaponSets()
     {
+        CloseWeaponAmmoSelectionMenu();
+
         if(playerController.playerThrowableManager.IsThrowableActive())
         {
             await playerController.playerThrowableManager.HolsterThrowable();
@@ -398,9 +407,10 @@ public class PlayerWeaponManager : MonoBehaviour
             if (!currentWeapon.CanUse())
                 return;
 
-            if (isAmmoSelectionMenuOpen)
-                return;
+            //if (isAmmoSelectionMenuOpen)
+            //    return;
         }
+
 
         if (activeSlotIndex == 0)
         {

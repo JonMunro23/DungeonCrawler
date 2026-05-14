@@ -216,7 +216,7 @@ public class PlayerThrowableManager : MonoBehaviour
 
         if ((currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count == 0) && PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
             return;
-
+        playerController.playerWeaponManager.CloseWeaponAmmoSelectionMenu();
         await playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
         SetCurrentThrowableGameObjectActive(true);
     }

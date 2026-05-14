@@ -462,9 +462,10 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
-    public List<AmmoItemData> GetAllUseableAmmoForWeapon(IWeapon weapon)
+    public List<AmmoItemData> GetAllUseableAmmoTypesForWeapon(IWeapon weapon)
     {
-        List<AmmoItemData> heldAmmo = new List<AmmoItemData>();
+        List<AmmoItemData> heldAmmoTypes = new List<AmmoItemData>();
+        
         foreach (ISlot slot in spawnedInventorySlots)
         {
             if (slot.IsSlotEmpty())
@@ -476,11 +477,16 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
             if (ammoItemData.weaponTypes.Contains(weapon.GetWeaponData().weaponType))
             {
-                if(!heldAmmo.Contains(ammoItemData))
-                    heldAmmo.Add(ammoItemData);
+                if(!heldAmmoTypes.Contains(ammoItemData))
+                    heldAmmoTypes.Add(ammoItemData);
             }
         }
-        return heldAmmo;
+
+        AmmoItemData loadedAmmoData = playerController.playerWeaponManager.currentWeapon.GetRangedWeapon().GetCurrentLoadedAmmoData();
+        if (!heldAmmoTypes.Contains(loadedAmmoData))
+            heldAmmoTypes.Add(loadedAmmoData);
+
+        return heldAmmoTypes;
     }
 
     public void UnlockSlots()

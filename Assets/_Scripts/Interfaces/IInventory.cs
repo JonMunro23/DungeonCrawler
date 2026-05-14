@@ -6,7 +6,7 @@ public interface IInventory
     public void DecreaseAmmoOfType(AmmoItemData ammoTypeToRemove, int amountToRemove);
     public void IncreaseAmmoOfType(AmmoItemData ammoTypeToAdd, int amountToAdd);
     public void LockSlotsWithAmmoOfType(AmmoItemData ammoTypeToLock);
-    public List<AmmoItemData> GetAllUseableAmmoForWeapon(IWeapon weapon);
+    public List<AmmoItemData> GetAllUseableAmmoTypesForWeapon(IWeapon weapon);
     public List<ThrowableItemData> GetAllAvailableThrowables();
     public void UnlockSlots();
     public int TryAddItem(ItemStack itemToAdd);
