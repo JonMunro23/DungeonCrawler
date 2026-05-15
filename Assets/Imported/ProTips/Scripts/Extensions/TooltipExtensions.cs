@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 //#if ENABLE_INPUT_SYSTEM
 //using UnityEngine.InputSystem;
@@ -191,8 +192,8 @@ namespace ModelShark
         private static Vector3 GetMousePosition(Canvas canvas, Camera camera)
         {
             Vector3 mousePos;
-            mousePos = Input.mousePosition;
-            //mousePos = Mouse.current.position.ReadValue();
+            //mousePos = Input.mousePosition;
+            mousePos = Mouse.current.position.ReadValue();
             if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
             {
                 mousePos.z = canvas.planeDistance;

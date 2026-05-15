@@ -336,22 +336,22 @@ public class PlayerMovementManager : MonoBehaviour
         dir = Vector3.zero;
         key = KeyCode.None;
 
-        if (Input.GetKey(forwardKey))
+        if (controls.Player.MoveForward.IsPressed())
         {
             dir = transform.forward;
             key = forwardKey;
         }
-        else if (Input.GetKey(backwardKey))
+        else if (controls.Player.MoveBackward.IsPressed())
         {
             dir = -transform.forward;
             key = backwardKey;
         }
-        else if (Input.GetKey(strafeLeftKey))
+        else if (controls.Player.MoveLeft.IsPressed())
         {
             dir = -transform.right;
             key = strafeLeftKey;
         }
-        else if (Input.GetKey(strafeRightKey))
+        else if (controls.Player.MoveRight.IsPressed())
         {
             dir = transform.right;
             key = strafeRightKey;

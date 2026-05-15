@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerStatsManager playerStatsManager;
     [HideInInspector] public PlayerSkillsManager playerSkillsManager;
     [HideInInspector] public PlayerLevelManager playerLevelManager;
+    [HideInInspector] public FreeCameraMovement cameraMovement;
     [HideInInspector] public Camera playerCamera;
     PlayerControls playerControls;
 
@@ -84,6 +85,7 @@ public class PlayerController : MonoBehaviour
         playerStatsManager = GetComponent<PlayerStatsManager>();
         playerSkillsManager = GetComponent<PlayerSkillsManager>();
         playerLevelManager = GetComponent<PlayerLevelManager>();
+        cameraMovement = GetComponentInChildren<FreeCameraMovement>();
         playerCamera = GetComponentInChildren<Camera>();
 
         rb = GetComponent<Rigidbody>();
@@ -178,7 +180,7 @@ public class PlayerController : MonoBehaviour
         playerHealthManager.Init(this);
         playerSkillsManager.Init(playerCharacterData);
         playerMovementManager.Init(this);
-
+        cameraMovement.Init(this);
         onPlayerInitialised?.Invoke(this);
     }
 

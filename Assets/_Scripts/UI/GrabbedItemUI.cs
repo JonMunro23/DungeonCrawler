@@ -7,16 +7,27 @@ public class GrabbedItemUI : MonoBehaviour
     [SerializeField] Image grabbedItemImg;
     [SerializeField] TMP_Text grabbedItemAmount;
     bool hasGrabbedItem;
+
+    PlayerControls controls;
     private void OnEnable()
     {
         WorldInteractionManager.onNewItemAttachedToCursor += InitGrabbedItem;
         WorldInteractionManager.onCurrentItemDettachedFromCursor += ClearGrabbedItem;
+
+        PlayerInputHandler.OnPlayerControlsInitialised += OnPlayerControlsInitialised;
     }
 
     private void OnDisable()
     {
         WorldInteractionManager.onNewItemAttachedToCursor -= InitGrabbedItem;
         WorldInteractionManager.onCurrentItemDettachedFromCursor -= ClearGrabbedItem;
+
+        PlayerInputHandler.OnPlayerControlsInitialised -= OnPlayerControlsInitialised;
+    }
+
+    void OnPlayerControlsInitialised(PlayerControls controls)
+    {
+        this.controls = controls;
     }
 
     private void Start()
@@ -27,7 +38,7 @@ public class GrabbedItemUI : MonoBehaviour
     private void Update()
     {
         if (hasGrabbedItem)
-            transform.position = Input.mousePosition;
+            transform.position = controls.Player.MousePos.ReadValue<Vector2>();
     }
 
     public void InitGrabbedItem(ItemStack grabbedItem)

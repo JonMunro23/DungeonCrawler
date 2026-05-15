@@ -22,6 +22,8 @@ public class PlayerInventoryUIManager : MonoBehaviour
 
     public static bool isContextMenuOpen;
 
+    PlayerControls controls;
+
     private void OnEnable()
     {
         //PlayerInventoryManager.onInventoryOpened += OpenInventory;
@@ -101,13 +103,18 @@ public class PlayerInventoryUIManager : MonoBehaviour
         CloseInventory();
     }
 
+    public void Init(PlayerControls controls)
+    {
+        this.controls = controls;
+    }
+
     private void Update()
     {
-        if(Input.GetKeyUp(KeyCode.Mouse0))
-        {
-            if (contextMenu.gameObject.activeSelf)
-                HideContextMenu();
-        }
+        //if(Input.GetKeyUp(KeyCode.Mouse0))
+        //{
+        //    if (contextMenu.gameObject.activeSelf)
+        //        HideContextMenu();
+        //}
     }
 
     public void OpenInventory()
@@ -144,7 +151,7 @@ public class PlayerInventoryUIManager : MonoBehaviour
     {
         slot.HideTooltip();
         contextMenu.gameObject.SetActive(true);
-        contextMenu.transform.position = Input.mousePosition;
+        contextMenu.transform.position = controls.Player.MousePos.ReadValue<Vector2>();
         contextMenu.Init(slot);
     }
 

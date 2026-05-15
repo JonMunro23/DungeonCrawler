@@ -29,7 +29,7 @@ public class CrosshairController : MonoBehaviour
     static Image crosshairImage;
     static bool isCrosshairLocked = true;
 
-
+    PlayerControls controls;
     private void OnEnable()
     {
         WorldInteractionManager.onLookAtTargetChanged += CurrentLookAtTargetChanged;
@@ -66,6 +66,11 @@ public class CrosshairController : MonoBehaviour
         SetCrosshairToDefault();
     }
 
+    public void Init(PlayerControls controls)
+    {
+        this.controls = controls;
+    }
+
     private void Update()
     {
         // Only spread if we have a weapon
@@ -79,7 +84,7 @@ public class CrosshairController : MonoBehaviour
         if (isCrosshairLocked)
             return;
 
-        crosshairImage.rectTransform.position = Input.mousePosition;
+        crosshairImage.rectTransform.position = controls.Player.MousePos.ReadValue<Vector2>();
     }
 
     void OnRangedWeaponReadied(bool isReadied)

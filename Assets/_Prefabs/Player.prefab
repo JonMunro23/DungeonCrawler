@@ -331,7 +331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30612c9928b70104d9c90d2928bd7111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 600
+  mouseSensitivity: 0.1
   playerBody: {fileID: 3180298802843086112}
 --- !u!114 &2525538965871708300
 MonoBehaviour:
@@ -609,6 +609,7 @@ MonoBehaviour:
   playerStatsManager: {fileID: 5301202906750780191}
   playerSkillsManager: {fileID: 0}
   playerLevelManager: {fileID: 0}
+  cameraMovement: {fileID: 0}
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
   currentOccupiedNode: {fileID: 0}
@@ -625,298 +626,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3783f92fc170b304388670df3032e52b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventMappings:
-  - key: 119
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3234492359194327294}
-          m_TargetAssemblyTypeName: PlayerMovementManager, Assembly-CSharp
-          m_MethodName: TryMoveForward
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 115
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3234492359194327294}
-          m_TargetAssemblyTypeName: PlayerMovementManager, Assembly-CSharp
-          m_MethodName: TryMoveBackward
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 97
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3234492359194327294}
-          m_TargetAssemblyTypeName: PlayerMovementManager, Assembly-CSharp
-          m_MethodName: TryStrafeLeft
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 100
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3234492359194327294}
-          m_TargetAssemblyTypeName: PlayerMovementManager, Assembly-CSharp
-          m_MethodName: TryStrafeRight
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 324
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4750780804372824305}
-          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: TryReadyCurrentWeapon
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  eventMappingsKeyDown:
-  - key: 116
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 2763730868098078949}
-          m_TargetAssemblyTypeName: Flashlight, Assembly-CSharp
-          m_MethodName: ToggleFlashlight
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 102
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7813209075847040319}
-          m_TargetAssemblyTypeName: WorldInteractionManager, Assembly-CSharp
-          m_MethodName: Interact
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 118
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4750780804372824305}
-          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: HealthSyringeHotkey
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 276
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5689203347496627508}
-          m_TargetAssemblyTypeName: PlayerHealthManager, Assembly-CSharp
-          m_MethodName: TakeDamageCheat
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 100
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 120
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4808936625142989322}
-          m_TargetAssemblyTypeName: PlayerWeaponManager, Assembly-CSharp
-          m_MethodName: SwitchWeaponSets
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 323
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4750780804372824305}
-          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: TryUseCurrentWeapon
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  eventMappingsKeyUp:
-  - key: 114
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4750780804372824305}
-          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: TryReloadCurrentWeapon
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 324
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4750780804372824305}
-          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: TryUnreadyCurrentWeapon
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 103
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4750780804372824305}
-          m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-          m_MethodName: EquipThrowableHotkey
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  eventMappingsHold:
-  - key: 114
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4808936625142989322}
-          m_TargetAssemblyTypeName: PlayerWeaponManager, Assembly-CSharp
-          m_MethodName: OpenWeaponAmmoSelectionMenu
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    minHoldDuration: 0.375
-    keyReleaseCallback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 4808936625142989322}
-          m_TargetAssemblyTypeName: PlayerWeaponManager, Assembly-CSharp
-          m_MethodName: CloseWeaponAmmoSelectionMenu
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - key: 103
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7316973756976472174}
-          m_TargetAssemblyTypeName: PlayerThrowableManager, Assembly-CSharp
-          m_MethodName: OpenThrowableSelectionMenu
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 50
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    minHoldDuration: 0.375
-    keyReleaseCallback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 7316973756976472174}
-          m_TargetAssemblyTypeName: PlayerThrowableManager, Assembly-CSharp
-          m_MethodName: CloseThrowableSelectionMenu
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &3234492359194327294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1039,6 +748,7 @@ MonoBehaviour:
   weaponSpawnParent: {fileID: 6183601309913987406}
   spawnedWeaponSlots: []
   activeSlotIndex: 0
+  isAmmoSelectionMenuOpen: 0
 --- !u!114 &7316973756976472174
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1053,6 +763,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   throwableArmsSpawnTransform: {fileID: 677067965771730991}
   currentlySelectedThrowableArms: {fileID: 0}
+  isThrowableSelectionMenuOpen: 0
   manuallyDetonatedThrowables: []
   enableCharging: 0
   chargeCurve:

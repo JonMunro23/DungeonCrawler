@@ -8,6 +8,9 @@ public class FreeCameraMovement : MonoBehaviour
 
     bool isWeaponAmmoSelectionMenuOpen;
 
+    PlayerController controller;
+    PlayerControls controls;
+
     private void OnEnable()
     {
         PlayerWeaponManager.onWeaponAmmoSelectionMenuOpened += OnWeaponAmmoSelectionMenuOpened;
@@ -30,31 +33,40 @@ public class FreeCameraMovement : MonoBehaviour
         isWeaponAmmoSelectionMenuOpen = false;
     }
 
+    public void Init(PlayerController controller)
+    {
+        this.controller = controller;
+        controls = controller.GetPlayerControls();
+    }
+
     void Start()
     {
         // Lock the cursor to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update()
+    private void Update()
     {
-        if (PauseMenu.isPaused || 
-            CharacterMenuUIController.isCharacterMenuOpen || 
-            MapController.isMapOpen || 
-            ThrowableSelectionManager.isThrowableSelectionMenuOpen || 
+        if (PauseMenu.isPaused ||
+            CharacterMenuUIController.isCharacterMenuOpen ||
+            MapController.isMapOpen ||
+            ThrowableSelectionManager.isThrowableSelectionMenuOpen ||
             isWeaponAmmoSelectionMenuOpen)
             return;
 
-        // Get mouse input
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        Vector2 lookInput = controls.Player.Look.ReadValue<Vector2>();
 
-        // Adjust vertical rotation (looking up and down)
+        float mouseX = lookInput.x * mouseSensitivity;
+        float mouseY = lookInput.y * mouseSensitivity;
+
+        // Vertical rotation
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -80, 80f);
+        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
-        // Apply rotation
+        // Camera rotation
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+
+        // Player body rotation
         playerBody.Rotate(Vector3.up * mouseX);
     }
 }

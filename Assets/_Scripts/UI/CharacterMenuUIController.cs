@@ -12,7 +12,7 @@ public class CharacterMenuUIController : MonoBehaviour
     [Header("References")]
     [SerializeField] GameObject characterMenuPanelsParent;
     PlayerStatsUIManager playerStatsUIController;
-    PlayerInventoryUIManager playerInventoryUIController;
+    PlayerInventoryUIManager playerInventoryUIManager;
     PlayerSkillsUIManager playerSkillsUIManager;
     PlayerEquipmentUIManager PlayerEquipmentUIManager;
     PlayerWeaponUIManager playerWeaponUIManager;
@@ -66,7 +66,7 @@ public class CharacterMenuUIController : MonoBehaviour
     private void Awake()
     {
         playerStatsUIController = GetComponent<PlayerStatsUIManager>();
-        playerInventoryUIController = GetComponent<PlayerInventoryUIManager>();
+        playerInventoryUIManager = GetComponent<PlayerInventoryUIManager>();
         playerSkillsUIManager = GetComponent<PlayerSkillsUIManager>();
         PlayerEquipmentUIManager = GetComponent<PlayerEquipmentUIManager>();
         playerWeaponUIManager = GetComponent<PlayerWeaponUIManager>();
@@ -145,9 +145,10 @@ public class CharacterMenuUIController : MonoBehaviour
     }
 
 
-    public void InitMenus(PlayerController player)
+    public void InitMenus(PlayerController player, PlayerControls controls)
     {
         playerStatsUIController.InitStatsUI(player);
+        playerInventoryUIManager.Init(controls);
     }
 
     public void ToggleCharacterMenu()
@@ -168,7 +169,6 @@ public class CharacterMenuUIController : MonoBehaviour
 
     void CloseCharacterMenu()
     {
-        Debug.Log("Closing menu...");
         isCharacterMenuOpen = false;
         SetPanelsInactive();
         characterMenuPanelsParent.SetActive(false);
@@ -241,7 +241,7 @@ public class CharacterMenuUIController : MonoBehaviour
         switch (panelToSetActive)
         {
             case InventoryPanel.Inventory:
-                playerInventoryUIController.OpenInventory();
+                playerInventoryUIManager.OpenInventory();
                 break;
             case InventoryPanel.Skills:
                 playerSkillsUIManager.OpenSkillsMenu();
@@ -255,7 +255,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     void SetPanelsInactive()
     {
-        playerInventoryUIController.CloseInventory();
+        playerInventoryUIManager.CloseInventory();
         playerSkillsUIManager.CloseSkillsMenu();
         playerStatsUIController.CloseStatsMenu();
     }

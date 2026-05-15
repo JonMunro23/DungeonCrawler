@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class WorldInteractionManager : MonoBehaviour
 {
@@ -198,7 +199,7 @@ public class WorldInteractionManager : MonoBehaviour
     void Update()
     {
         RaycastHit hit;
-        Ray ray = playerController.playerCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = playerController.playerCamera.ScreenPointToRay(controls.Player.MousePos.ReadValue<Vector2>());
         if (Physics.Raycast(ray, out hit, maxItemGrabDistance))
         {
             //Debug.DrawLine(ray.origin, hit.point, Color.yellow);

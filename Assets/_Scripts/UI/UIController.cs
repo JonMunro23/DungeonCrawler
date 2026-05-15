@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
@@ -129,7 +128,7 @@ public class UIController : MonoBehaviour
         //Ensure that name of save is only submitted when pressing ENTER or when the button is pressed
         saveNameInputField.onEndEdit.AddListener(val =>
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            if (controls.UIControls.Enter.WasPressedThisFrame())
                 SubmitName();
         });
         gameOverScreen.SetActive(false);
@@ -186,7 +185,8 @@ public class UIController : MonoBehaviour
     {
         initialisedPlayer = playerInitialised;
 
-        characterMenuUIController.InitMenus(playerInitialised);
+        characterMenuUIController.InitMenus(playerInitialised, controls);
+        crosshairController.Init(controls);
 
         _ = FadeInScreen();
     }

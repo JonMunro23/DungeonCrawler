@@ -220,14 +220,14 @@ public class GridController : MonoBehaviour
 
         gameTime += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            QuickSave();
-        }
-        else if (Input.GetKeyDown(KeyCode.F6))
-        {
-            QuickLoad();
-        }
+        //if (Input.GetKeyDown(KeyCode.F5))
+        //{
+        //    QuickSave();
+        //}
+        //else if (Input.GetKeyDown(KeyCode.F6))
+        //{
+        //    QuickLoad();
+        //}
     }
 
     public void QuickSave()
