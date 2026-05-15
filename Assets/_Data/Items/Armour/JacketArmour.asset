@@ -16,7 +16,7 @@ MonoBehaviour:
   itemIdentifier: jacket_armour
   itemDescription: A super heavy duty armoured chest plate.
   itemSprite: {fileID: 21300000, guid: bd54fb36e8734b44f85bb149b42c2850, type: 3}
-  itemWorldModel: {fileID: 5030101105682670932, guid: 8bbd8752b394a0444b798d59bf6c597d,
+  itemWorldModel: {fileID: 5030101105682670932, guid: 943b9088feb9297419669c6c034ec2f4,
     type: 3}
   itemWeight: 12
   isItemStackable: 0

@@ -17,7 +17,7 @@ MonoBehaviour:
   itemDescription: A box of incendiary pistol ammo. Set's targets on fire dealing
     damage over time.
   itemSprite: {fileID: 21300000, guid: 1c5d26d2e4222344183ae19052943b3b, type: 3}
-  itemWorldModel: {fileID: 919132149155446097, guid: 5cef851b8c9964744a53d2d51276f452,
+  itemWorldModel: {fileID: 4615792610215021782, guid: dbcff775d9dddc848a85bb1f7d7da3bc,
     type: 3}
   itemWeight: 0.012
   isItemStackable: 1

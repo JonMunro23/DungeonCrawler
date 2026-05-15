@@ -17,7 +17,7 @@ MonoBehaviour:
   itemDescription: An old gas mask, provides resistances to radiation and airborne
     contaminants
   itemSprite: {fileID: 21300000, guid: 9d08b42c233a3204eb145dbf80bfeb73, type: 3}
-  itemWorldModel: {fileID: 919132149155446097, guid: ab41134cdc4b0db47a0d3e4e1e4a874f,
+  itemWorldModel: {fileID: 6412805854375278233, guid: f3bd7ffeb79d07d4899e1aba11e04421,
     type: 3}
   itemWeight: 5
   isItemStackable: 0

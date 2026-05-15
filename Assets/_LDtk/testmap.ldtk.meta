@@ -64,6 +64,8 @@ ScriptedImporter:
     _asset: {instanceID: 0}
   - _key: Keycard_Reader
     _asset: {instanceID: 0}
+  - _key: Lock
+    _asset: {instanceID: 0}
   - _key: Pressure_Plate
     _asset: {instanceID: 0}
   - _key: NPC_Spawner

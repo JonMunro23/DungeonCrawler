@@ -2908,10 +2908,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
+      propertyPath: spawnNPCs
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
+      propertyPath: lockPrefab
+      value: 
+      objectReference: {fileID: 197687860980759959, guid: d8deb9f49afa93640a48c486ce29279c,
+        type: 3}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
       propertyPath: radEmitterPrefab
       value: 
       objectReference: {fileID: 2134314235215186587, guid: af20d71484eac744588f1e76ebf10b4e,
         type: 3}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
+      propertyPath: centeredEntitySpawnOffset.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7918361601237953702, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
       propertyPath: m_LocalPosition.x

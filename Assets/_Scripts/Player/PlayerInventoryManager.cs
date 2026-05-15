@@ -8,7 +8,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 {
     public PlayerController playerController;
     [SerializeField]
-    List<ItemStack> startingItemStacks = new List<ItemStack>(); 
+    List<ItemData> startingItems = new List<ItemData>(); 
 
     [SerializeField] InventorySlot inventorySlotPrefab;
     static InventorySlot[] spawnedInventorySlots;
@@ -148,9 +148,16 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     private void AddStartingItems()
     {
-        for (int i = 0; i < startingItemStacks.Count; i++)
+        for (int i = 0; i < startingItems.Count; i++)
         {
-            spawnedInventorySlots[i].AddItem(startingItemStacks[i]);
+            ItemData itemData = startingItems[i];
+            if (itemData == null) return;
+
+            WeaponItemData weaponItemData = itemData as WeaponItemData;
+            if(weaponItemData != null)
+                spawnedInventorySlots[i].AddItem(new ItemStack(new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, weaponItemData.magSize), itemData.maxItemStackSize));
+            else
+                spawnedInventorySlots[i].AddItem(new ItemStack(new Item(itemData), itemData.maxItemStackSize));
         }
     }
 

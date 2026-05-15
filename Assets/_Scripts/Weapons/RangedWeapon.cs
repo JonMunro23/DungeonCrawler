@@ -80,7 +80,7 @@ public class RangedWeapon : Weapon
         if (isPlayerMoving) return;
 
         if (bulletSpreadMultiplier <= weaponItemData.minWeaponSpreadAmount) return;
-
+        //maybe wait a fraction of a second before reducing spread amount?
         bulletSpreadMultiplier -= weaponItemData.spreadReductionSpeed * Time.deltaTime;
         bulletSpreadMultiplier = Mathf.Clamp(bulletSpreadMultiplier, weaponItemData.minWeaponSpreadAmount, weaponItemData.maxWeaponSpreadAmount);
     }

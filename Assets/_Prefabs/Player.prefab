@@ -989,6 +989,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
+  startingItems:
+  - {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
+  - {fileID: 11400000, guid: 7fe1bceb4ffb0234da2bd4fdd98e2829, type: 2}
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   totalNumInventorySlots: 30
