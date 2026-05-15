@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public struct PlayerSaveData
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerSkillsManager playerSkillsManager;
     [HideInInspector] public PlayerLevelManager playerLevelManager;
     [HideInInspector] public Camera playerCamera;
+    PlayerControls playerControls;
 
     [Header("Player Data")]
     public CharacterData playerCharacterData;
@@ -60,16 +62,17 @@ public class PlayerController : MonoBehaviour
     private void OnEnable()
     {
         InventoryContextMenu.onHealSyringeUsedFromContextMenu += OnHealSyringeUsedFromContextMenu;
+        PlayerInputHandler.OnPlayerControlsInitialised += OnPlayerControlsInitialised;
     }
 
     private void OnDisable()
     {
         InventoryContextMenu.onHealSyringeUsedFromContextMenu -= OnHealSyringeUsedFromContextMenu;
+        PlayerInputHandler.OnPlayerControlsInitialised -= OnPlayerControlsInitialised;
     }
 
     private void Awake()
     {
-        //advGridMovement = GetComponent<AdvancedGridMovement>();
         playerMovementManager = GetComponent<PlayerMovementManager>();
         playerHealthManager = GetComponent<PlayerHealthManager>();
         playerStatusEffectManager = GetComponent<PlayerStatusEffectManager>();
@@ -91,9 +94,73 @@ public class PlayerController : MonoBehaviour
         defaultCamPos = playerCamera.transform.localPosition;
     }
 
+    private void Update()
+    {
+        InputHandling();
+    }
+
+    void InputHandling()
+    {
+        if (playerControls.Player.LeftClick.IsPressed())
+            TryUseCurrentWeapon();
+
+        if (playerControls.Player.RightClick.WasPressedThisFrame())
+            TryReadyCurrentWeapon();
+        else if (playerControls.Player.RightClick.WasReleasedThisFrame())
+            TryUnreadyCurrentWeapon();
+
+        if (playerControls.Player.Heal.WasPressedThisFrame())
+            TryUseHealthSyringe(playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe));
+
+        if (playerControls.Player.EquipThrowable.WasPressedThisFrame())
+            TryEquipThrowable();
+
+        if (playerControls.Player.SwapWeapon.WasPressedThisFrame())
+            TrySwapWeapons();
+
+        if (playerControls.Player.Reload.WasPerformedThisFrame())
+        {
+            TryOpenAmmoSelectionMenu();
+        }
+        else if (playerControls.Player.Reload.WasReleasedThisFrame())
+        {
+            if (playerWeaponManager.isAmmoSelectionMenuOpen)
+            {
+                TryCloseAmmoSelectionMenu();
+            }
+            else
+                TryReloadCurrentWeapon();
+        }
+
+        if (playerControls.Player.EquipThrowable.WasPerformedThisFrame())
+        {
+            TryOpenThrowableSelectionMenu();
+        }
+        else if (playerControls.Player.EquipThrowable.WasReleasedThisFrame())
+        {
+            if (playerThrowableManager.isThrowableSelectionMenuOpen)
+            {
+                TryCloseThrowableSelectionMenu();
+            }
+            else
+                TryEquipThrowable();
+        }
+    }
+
+    void OnPlayerControlsInitialised(PlayerControls controls)
+    {
+        playerControls = controls;
+    }
+
     void OnHealSyringeUsedFromContextMenu(ISlot slot)
     {
         TryUseHealthSyringe(slot);
+    }
+
+    public void OnDeath()
+    {
+        isPlayerAlive = false;
+        onPlayerDeath?.Invoke();
     }
 
     public void InitPlayer(CharacterData playerCharData)
@@ -115,12 +182,6 @@ public class PlayerController : MonoBehaviour
         onPlayerInitialised?.Invoke(this);
     }
 
-    public void OnDeath()
-    {
-        isPlayerAlive = false;
-        onPlayerDeath?.Invoke();
-    }
-
     public void MoveToCoords(Vector2 newCoords)
     {
         //Debug.Log("Moving player to " + newCoords);
@@ -133,17 +194,12 @@ public class PlayerController : MonoBehaviour
         playerMovementManager.Teleport(nodeToMoveTo.moveToTransform.position);
     }
 
-    public void HealthSyringeHotkey()
-    {
-        TryUseHealthSyringe(playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe));
-    }
-
-    public async void EquipThrowableHotkey()
+    async void TryEquipThrowable()
     {
         await playerThrowableManager.ToggleEquipThrowable();
     }
 
-    public async void TryUseHealthSyringe(ISlot slotToUse)
+    async void TryUseHealthSyringe(ISlot slotToUse)
     {
         if (playerHealthManager.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
@@ -161,7 +217,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void TryUseCurrentWeapon()
+    void TryUseCurrentWeapon()
     {
         if (playerThrowableManager.IsThrowableActive())
         {
@@ -175,7 +231,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void TryReadyCurrentWeapon()
+    void TryReadyCurrentWeapon()
     {
         if (PlayerInventoryManager.isInContainer) return;
         if (WorldInteractionManager.hasGrabbedItem) return;
@@ -190,7 +246,7 @@ public class PlayerController : MonoBehaviour
         playerWeaponManager.ReadyWeapon();
     }
 
-    public void TryUnreadyCurrentWeapon()
+    void TryUnreadyCurrentWeapon()
     {
         if (playerThrowableManager.IsThrowableActive())
         {
@@ -201,18 +257,41 @@ public class PlayerController : MonoBehaviour
         playerWeaponManager.UnreadyWeapon();
     }
 
+    void TryReloadCurrentWeapon()
+    {
+        playerWeaponManager.ReloadCurrentWeapon();
+    }
+
+    void TryOpenAmmoSelectionMenu()
+    {
+        playerWeaponManager.OpenAmmoSelectionMenu();
+    }
+
+    void TryCloseAmmoSelectionMenu()
+    {
+        playerWeaponManager.CloseAmmoSelectionMenu();
+    }
+    void TrySwapWeapons()
+    {
+        playerWeaponManager.SwapWeapons();
+    }
+
+    void TryOpenThrowableSelectionMenu()
+    {
+        playerThrowableManager.OpenThrowableSelectionMenu();
+    }
+
+    void TryCloseThrowableSelectionMenu()
+    {
+        playerThrowableManager.CloseThrowableSelectionMenu();
+    }
+
     void RemoveGrabbedItem()
     {
         playerInventoryManager.TryAddItem(itemPickupManager.currentGrabbedItem);
         itemPickupManager.DetachItemFromMouseCursor();
         HelperFunctions.SetCursorActive(false);
     }
-
-    public void TryReloadCurrentWeapon()
-    {
-        playerWeaponManager.ReloadCurrentWeapon();
-    }
-
 
     public void SetCurrentOccupiedNode(GridNode newGridNode)
     {
@@ -249,6 +328,8 @@ public class PlayerController : MonoBehaviour
     {
         return transform.localEulerAngles.y;
     }
+
+    public PlayerControls GetPlayerControls() => playerControls;
 
     public void RemoveAudioSources()
     {

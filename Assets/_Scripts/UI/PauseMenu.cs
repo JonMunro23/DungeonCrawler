@@ -5,7 +5,6 @@ public class PauseMenu : MonoBehaviour
 {
     UIController uiController;
 
-    [SerializeField] KeyCode pauseKey = KeyCode.P;
     public static bool isPaused = false;
 
     [Header("Pause Menu")]
@@ -24,52 +23,8 @@ public class PauseMenu : MonoBehaviour
         ResumeGame();
     }
 
-    public void HandleEscapePressed()
-    {
-        if (Input.GetKeyDown(pauseKey))
-        {
-            if (uiController.deleteSaveConfirmPopup.activeSelf)
-            {
-                uiController.CloseDeleteSaveConfirmation();
-                return;
-            }
-
-            if (uiController.loadGameConfrimPopup.activeSelf)
-            {
-                uiController.CloseLoadGameConfirmation();
-                return;
-            }
-
-            if (uiController.overwriteSaveConfrimPopup.activeSelf)
-            {
-                uiController.CloseSaveOverwriteConfirmation();
-                return;
-            }
-
-            if (uiController.isInputtingName)
-            {
-                uiController.HideSaveNamePopup();
-                return;
-            }
-
-            if (uiController.saveMenu.activeSelf)
-            {
-                uiController.CloseSaveMenu();
-                return;
-            }
-
-            if (uiController.loadMenu.activeSelf)
-            {
-                uiController.CloseLoadMenu();
-                return;
-            }
-
-            TogglePauseMenu();
-        }
-    }
-
     #region Pause Menu
-    void TogglePauseMenu()
+    public void TogglePauseMenu()
     {
         if (!isPaused)
         {

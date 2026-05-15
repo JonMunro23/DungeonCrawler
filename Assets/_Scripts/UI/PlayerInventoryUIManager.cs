@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerInventoryUIController : MonoBehaviour
+public class PlayerInventoryUIManager : MonoBehaviour
 {
     //[SerializeField] GameObject InventoryParentObject;
     [SerializeField] GameObject InventoryObject;

@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerStatsUIController : MonoBehaviour
+public class PlayerStatsUIManager : MonoBehaviour
 {
     //CharacterData playerCharData;
     PlayerController playerController;

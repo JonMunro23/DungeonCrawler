@@ -4,18 +4,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
     [Header("References")]
-    public PlayerStatsUIController playerStatsUIController;
-    public PlayerInventoryUIController playerInventoryUIController;
-    [SerializeField] PlayerEquipmentUIManager PlayerEquipmentUIManager;
-    [SerializeField] PlayerWeaponUIManager playerWeaponUIManager;
-    public PlayerSkillsUIManager playerSkillsUIManager;
+    [SerializeField] CharacterMenuUIController characterMenuUIController;
     [SerializeField] MapController mapController;
     [SerializeField] CrosshairController crosshairController;
+    PlayerControls controls;
 
     [Header("Secrets")]
     [SerializeField] SecretDiscoveryUI secretDiscoveryUI;
@@ -80,8 +79,6 @@ public class UIController : MonoBehaviour
 
     Coroutine levelTextLifetime;
 
-    WeaponItemData defaultWeaponData;
-
     public static bool isTransitioningLevel;
 
     // ==========================
@@ -89,21 +86,10 @@ public class UIController : MonoBehaviour
 
     private void OnEnable()
     {
+        PlayerInputHandler.OnPlayerControlsInitialised += OnPlayerControlsInitialised;
+
         PlayerController.onPlayerInitialised += OnPlayerInitialised;
         PlayerController.onPlayerDeath += OnPlayerDeath;
-
-        WorldInteractionManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
-        WorldInteractionManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
-
-        WeaponSlot.onWeaponRemovedFromSlot += OnWeaponRemovedFromSlot;
-        WeaponSlot.onWeaponSwappedInSlot += OnWeaponSwappedInSlot;
-        WeaponSlot.onWeaponSetToDefault += OnWeaponSetToDefault;
-
-        RangedWeapon.onLoadedAmmoUpdated += OnWeaponLoadedAmmoUpdated;
-        RangedWeapon.onReserveAmmoUpdated += OnWeaponReserveAmmoUpdated;
-
-        PlayerWeaponManager.onWeaponSlotSetActive += OnWeaponSlotSetActive;
-        PlayerWeaponManager.onNewWeaponInitialised += OnNewWeaponInitialised;
 
         LevelTransition.onLevelTransitionEntered += OnLevelTransitionEntered;
 
@@ -116,21 +102,16 @@ public class UIController : MonoBehaviour
 
     private void OnDisable()
     {
+        PlayerInputHandler.OnPlayerControlsInitialised -= OnPlayerControlsInitialised;
+
+        controls.UIControls.Inventory.performed -= OnInventoryButtonPressed;
+        controls.UIControls.Skills.performed -= OnSkillsButtonPressed;
+        controls.UIControls.Stats.performed -= OnStatsButtonPressed;
+        controls.UIControls.Map.performed -= OnMapButtonPressed;
+        controls.UIControls.Pause.performed -= OnPauseButtonPressed;
+
         PlayerController.onPlayerInitialised -= OnPlayerInitialised;
         PlayerController.onPlayerDeath -= OnPlayerDeath;
-
-        WorldInteractionManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
-        WorldInteractionManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
-
-        WeaponSlot.onWeaponRemovedFromSlot -= OnWeaponRemovedFromSlot;
-        WeaponSlot.onWeaponSwappedInSlot -= OnWeaponSwappedInSlot;
-        WeaponSlot.onWeaponSetToDefault -= OnWeaponSetToDefault;
-
-        RangedWeapon.onLoadedAmmoUpdated -= OnWeaponLoadedAmmoUpdated;
-        RangedWeapon.onReserveAmmoUpdated -= OnWeaponReserveAmmoUpdated;
-
-        PlayerWeaponManager.onNewWeaponInitialised -= OnNewWeaponInitialised;
-        PlayerWeaponManager.onWeaponSlotSetActive -= OnWeaponSlotSetActive;
 
         LevelTransition.onLevelTransitionEntered -= OnLevelTransitionEntered;
 
@@ -166,11 +147,46 @@ public class UIController : MonoBehaviour
     // ==========================
     #region Event Handlers
 
+    void OnInventoryButtonPressed(InputAction.CallbackContext ctx)
+    {
+        characterMenuUIController.ToggleInventoryPanel();
+    }
+
+    void OnSkillsButtonPressed(InputAction.CallbackContext ctx)
+    {
+        characterMenuUIController.ToggleSkillsPanel();
+    }
+
+    void OnStatsButtonPressed(InputAction.CallbackContext ctx)
+    {
+        characterMenuUIController.ToggleStatsPanel();
+    }
+
+    void OnMapButtonPressed(InputAction.CallbackContext ctx)
+    {
+        mapController.ToggleMap();
+    }
+
+    void OnPauseButtonPressed(InputAction.CallbackContext ctx)
+    {
+        HandlePauseButtonPressed();
+    }
+
+    void OnPlayerControlsInitialised(PlayerControls controls)
+    {
+        this.controls = controls;
+        this.controls.UIControls.Inventory.performed += OnInventoryButtonPressed;
+        this.controls.UIControls.Skills.performed += OnSkillsButtonPressed;
+        this.controls.UIControls.Stats.performed += OnStatsButtonPressed;
+        this.controls.UIControls.Map.performed += OnMapButtonPressed;
+        this.controls.UIControls.Pause.performed += OnPauseButtonPressed;
+    }
+
     void OnPlayerInitialised(PlayerController playerInitialised)
     {
         initialisedPlayer = playerInitialised;
 
-        playerStatsUIController.InitStatsUI(initialisedPlayer);
+        characterMenuUIController.InitMenus(playerInitialised);
 
         _ = FadeInScreen();
     }
@@ -178,68 +194,6 @@ public class UIController : MonoBehaviour
     void OnPlayerDeath()
     {
         ShowGameOverScreen();
-    }
-
-    void OnNewItemAttachedToCursor(ItemStack item)
-    {
-        WeaponItemData handItemData = item.Item.ItemData as WeaponItemData;
-        if (handItemData != null)
-        {
-            PlayerEquipmentUIManager.DisableAllSlots();
-            return;
-        }
-
-        EquipmentItemData equipItemData = item.Item.ItemData as EquipmentItemData;
-        if (equipItemData != null)
-        {
-            PlayerEquipmentUIManager.DisableSlotsNotOfType(equipItemData.EquipmentSlotType);
-            playerWeaponUIManager.DisableSlots();
-            return;
-        }
-
-        playerWeaponUIManager.DisableSlots();
-        PlayerEquipmentUIManager.DisableAllSlots();
-    }
-
-    void OnCurrentItemRemovedFromCursor()
-    {
-        PlayerEquipmentUIManager.RenableSlots();
-        playerWeaponUIManager.RenableSlots();
-    }
-
-    void OnNewWeaponInitialised(int slotIndex, WeaponItemData newItemData)
-    {
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, newItemData);
-    }
-
-    void OnWeaponSwappedInSlot(int slotIndex, WeaponItemData dataToSwapTo, int loadedAmmo)
-    {
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, dataToSwapTo);
-    }
-
-    void OnWeaponRemovedFromSlot(int slotIndex)
-    {
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, defaultWeaponData);
-    }
-
-    void OnWeaponSetToDefault(int slotIndex, WeaponItemData _defaultWeaponData)
-    {
-        defaultWeaponData = _defaultWeaponData;
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, _defaultWeaponData);
-    }
-
-    void OnWeaponReserveAmmoUpdated(int slotIndex, int reserve)
-    {
-        playerWeaponUIManager.UpdateWeaponDisplayReserveAmmoCount(slotIndex, reserve);
-    }
-    void OnWeaponLoadedAmmoUpdated(int slotIndex, int loaded)
-    {
-        playerWeaponUIManager.UpdateWeaponDisplayLoadedAmmoCount(slotIndex, loaded);
-    }
-
-    void OnWeaponSlotSetActive(WeaponSlot activeSlot)
-    {
-        playerWeaponUIManager.SetSlotActive(activeSlot.slotIndex);
     }
 
     async void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)
@@ -267,6 +221,9 @@ public class UIController : MonoBehaviour
     #endregion
     // ==========================
 
+    public PlayerControls GetControls() => controls;
+
+
     // ==========================
     #region Secret Discovery
 
@@ -278,6 +235,46 @@ public class UIController : MonoBehaviour
     #endregion
     // ==========================
 
+    public void HandlePauseButtonPressed()
+    {
+        if (deleteSaveConfirmPopup.activeSelf)
+        {
+            CloseDeleteSaveConfirmation();
+            return;
+        }
+
+        if (loadGameConfrimPopup.activeSelf)
+        {
+            CloseLoadGameConfirmation();
+            return;
+        }
+
+        if (overwriteSaveConfrimPopup.activeSelf)
+        {
+            CloseSaveOverwriteConfirmation();
+            return;
+        }
+
+        if (isInputtingName)
+        {
+            HideSaveNamePopup();
+            return;
+        }
+
+        if (saveMenu.activeSelf)
+        {
+            CloseSaveMenu();
+            return;
+        }
+
+        if (loadMenu.activeSelf)
+        {
+            CloseLoadMenu();
+            return;
+        }
+
+        pauseMenu.TogglePauseMenu();
+    }
 
     #region Level Transition
     void ShowLevelName(int levelIndex)

@@ -23,7 +23,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 7963
+  controlID: 1874
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -154,7 +154,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 7964
+  controlID: 1875
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 112}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 7971
+  controlID: 1876
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -1294,7 +1294,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 112}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 8025
+  controlID: 1948
   draggingID: 0
 --- !u!114 &15
 MonoBehaviour:
@@ -1364,14 +1364,17 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: []
+      m_SelectedIDs:
+      - m_Data: 43642
       m_LastClickedID:
         m_Data: 0
       m_ExpandedIDs:
-      - m_Data: -531674
-      - m_Data: -527360
-      - m_Data: -525910
-      - m_Data: -1340
+      - m_Data: -3684
+      - m_Data: -3594
+      - m_Data: -3574
+      - m_Data: -3564
+      - m_Data: -3292
+      - m_Data: -1344
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1473,7 +1476,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/_Data/Items/Armour
+    - Packages/com.unity.2d.sprite/Editor/AIIntegration
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -1495,24 +1498,20 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 63066
-    - m_Data: 63070
-    - m_Data: 63074
-    - m_Data: 63076
-    - m_Data: 63080
-    - m_Data: 63082
-    - m_Data: 63084
-    - m_Data: 63086
-    - m_Data: 63088
-    - m_Data: 63094
-    - m_Data: 63096
-    - m_Data: 63098
-    - m_Data: 63304
-    - m_Data: 72476
-    - m_Data: 72478
-    - m_Data: 72480
-    - m_Data: 72490
-    - m_Data: 93540
+    - m_Data: 64896
+    - m_Data: 64898
+    - m_Data: 64900
+    - m_Data: 64902
+    - m_Data: 64904
+    - m_Data: 64906
+    - m_Data: 64908
+    - m_Data: 64910
+    - m_Data: 64912
+    - m_Data: 64914
+    - m_Data: 65074
+    - m_Data: 65124
+    - m_Data: 65126
+    - m_Data: 2147483647
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1539,34 +1538,27 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 300}
+    scrollPos: {x: 0, y: 1687}
     m_SelectedIDs:
-    - m_Data: 44720
+    - m_Data: 43642
     m_LastClickedID:
-      m_Data: 44720
+      m_Data: 43642
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 63066
-    - m_Data: 63068
-    - m_Data: 63070
-    - m_Data: 63074
-    - m_Data: 63076
-    - m_Data: 63080
-    - m_Data: 63082
-    - m_Data: 63084
-    - m_Data: 63086
-    - m_Data: 63088
-    - m_Data: 63090
-    - m_Data: 63094
-    - m_Data: 63096
-    - m_Data: 63098
-    - m_Data: 63100
-    - m_Data: 63272
-    - m_Data: 72476
-    - m_Data: 72478
-    - m_Data: 72480
-    - m_Data: 72490
-    - m_Data: 93540
+    - m_Data: 64896
+    - m_Data: 64898
+    - m_Data: 64900
+    - m_Data: 64902
+    - m_Data: 64904
+    - m_Data: 64906
+    - m_Data: 64908
+    - m_Data: 64910
+    - m_Data: 64912
+    - m_Data: 64914
+    - m_Data: 65074
+    - m_Data: 65124
+    - m_Data: 65126
+    - m_Data: 2147483647
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1594,9 +1586,9 @@ MonoBehaviour:
       m_ResourceFile: 
   m_ListAreaState:
     m_SelectedInstanceIDs:
-    - m_Data: 44720
-    m_LastClickedInstanceID: 44720
-    m_HadKeyboardFocusLastEvent: 0
+    - m_Data: 43642
+    m_LastClickedInstanceID: 43642
+    m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: []
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -1696,10 +1688,10 @@ MonoBehaviour:
   m_ObjectsLockedBeforeSerialization: []
   m_InstanceIDsLockedBeforeSerialization: 
   m_PreviewResizer:
-    m_CachedPref: -491
+    m_CachedPref: 359
     m_ControlHash: 1412526313
     m_PrefName: Preview_InspectorPreview
-  m_LastInspectedObjectInstanceID: 44720
+  m_LastInspectedObjectInstanceID: 43642
   m_LastVerticalScrollValue: 0
   m_GlobalObjectId: 
   m_InspectorMode: 0

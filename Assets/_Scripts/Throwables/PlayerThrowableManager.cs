@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class PlayerThrowableManager : MonoBehaviour
 {
-    PlayerController playerController;
+    [Header("References")]
     [SerializeField] Transform throwableArmsSpawnTransform;
+    [SerializeField] ThrowableArms currentlySelectedThrowableArms;
+    PlayerController playerController;
 
     ThrowableItemData currentlySelectedThrowable;
-    [SerializeField] ThrowableArms currentlySelectedThrowableArms;
     Animator currentThrowableAnimator;
     Transform currentThrowableThrowLocation;
     bool isCurrentThrowableActive, isThrowableReadied, isThrowInProgress;
+    public bool isThrowableSelectionMenuOpen;
 
     [SerializeField] Dictionary<ThrowableItemData, int> availableThrowables = new Dictionary<ThrowableItemData, int>();
     [SerializeField] List<Throwable> manuallyDetonatedThrowables = new List<Throwable>();
@@ -184,13 +186,17 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public void OpenThrowableSelectionMenu()
     {
-        if(isThrowableReadied) return;
+        if(isThrowableReadied || isThrowableSelectionMenuOpen) return;
 
+        isThrowableSelectionMenuOpen = true;
         onThrowableSelectionMenuOpened?.Invoke(availableThrowables, currentlySelectedThrowable);
     }
 
     public void CloseThrowableSelectionMenu()
     {
+        if (!isThrowableSelectionMenuOpen) return;
+
+        isThrowableSelectionMenuOpen = false;
         onThrowableSelectionMenuClosed?.Invoke();
     }
 
@@ -216,7 +222,7 @@ public class PlayerThrowableManager : MonoBehaviour
 
         if ((currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count == 0) && PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
             return;
-        playerController.playerWeaponManager.CloseWeaponAmmoSelectionMenu();
+        playerController.playerWeaponManager.CloseAmmoSelectionMenu();
         await playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
         SetCurrentThrowableGameObjectActive(true);
     }

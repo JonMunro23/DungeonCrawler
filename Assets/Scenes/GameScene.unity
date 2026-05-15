@@ -448,6 +448,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &1692918999 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2845514043723406665, guid: e6ee789cac96f2946b95ebffdd9b2643,
+    type: 3}
+  m_PrefabInstance: {fileID: 1360849054806025784}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c155d2c1f9332746bf7d30d6ea5a17e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1829667011 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7918361601237953702, guid: 5561bb32ab597074f893e819f7c68ad0,
@@ -603,6 +615,11 @@ PrefabInstance:
         type: 3}
       propertyPath: fadeOutDuration
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1061984433129457774, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1271230174974079899, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
@@ -1104,6 +1121,11 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 62463
       objectReference: {fileID: 0}
+    - target: {fileID: 4313526163585213159, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: characterMenuUIController
+      value: 
+      objectReference: {fileID: 1692918999}
     - target: {fileID: 4377263726694792847, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.y

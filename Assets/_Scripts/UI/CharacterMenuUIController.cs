@@ -9,12 +9,16 @@ public class CharacterMenuUIController : MonoBehaviour
         Stats
     }
 
-    InventoryPanel currentOpenInventoryPanel = InventoryPanel.Inventory;
-
-    UIController uiController;
-
+    [Header("References")]
     [SerializeField] GameObject characterMenuPanelsParent;
+    PlayerStatsUIManager playerStatsUIController;
+    PlayerInventoryUIManager playerInventoryUIController;
+    PlayerSkillsUIManager playerSkillsUIManager;
+    PlayerEquipmentUIManager PlayerEquipmentUIManager;
+    PlayerWeaponUIManager playerWeaponUIManager;
 
+    InventoryPanel currentOpenInventoryPanel = InventoryPanel.Inventory;
+    WeaponItemData defaultWeaponData;
     public static bool isCharacterMenuOpen = false;
 
     private void OnEnable()
@@ -23,6 +27,19 @@ public class CharacterMenuUIController : MonoBehaviour
         PlayerInventoryManager.onInventoryClosed += CloseCharacterMenu;
 
         Container.onContainerClosed += OnContainerClosed;
+
+        WorldInteractionManager.onNewItemAttachedToCursor += OnNewItemAttachedToCursor;
+        WorldInteractionManager.onCurrentItemDettachedFromCursor += OnCurrentItemRemovedFromCursor;
+
+        WeaponSlot.onWeaponRemovedFromSlot += OnWeaponRemovedFromSlot;
+        WeaponSlot.onWeaponSwappedInSlot += OnWeaponSwappedInSlot;
+        WeaponSlot.onWeaponSetToDefault += OnWeaponSetToDefault;
+
+        RangedWeapon.onLoadedAmmoUpdated += OnWeaponLoadedAmmoUpdated;
+        RangedWeapon.onReserveAmmoUpdated += OnWeaponReserveAmmoUpdated;
+
+        PlayerWeaponManager.onWeaponSlotSetActive += OnWeaponSlotSetActive;
+        PlayerWeaponManager.onNewWeaponInitialised += OnNewWeaponInitialised;
     }
 
     private void OnDisable()
@@ -31,6 +48,33 @@ public class CharacterMenuUIController : MonoBehaviour
         PlayerInventoryManager.onInventoryClosed -= CloseCharacterMenu;
 
         Container.onContainerClosed -= OnContainerClosed;
+
+        WorldInteractionManager.onNewItemAttachedToCursor -= OnNewItemAttachedToCursor;
+        WorldInteractionManager.onCurrentItemDettachedFromCursor -= OnCurrentItemRemovedFromCursor;
+
+        WeaponSlot.onWeaponRemovedFromSlot -= OnWeaponRemovedFromSlot;
+        WeaponSlot.onWeaponSwappedInSlot -= OnWeaponSwappedInSlot;
+        WeaponSlot.onWeaponSetToDefault -= OnWeaponSetToDefault;
+
+        RangedWeapon.onLoadedAmmoUpdated -= OnWeaponLoadedAmmoUpdated;
+        RangedWeapon.onReserveAmmoUpdated -= OnWeaponReserveAmmoUpdated;
+
+        PlayerWeaponManager.onNewWeaponInitialised -= OnNewWeaponInitialised;
+        PlayerWeaponManager.onWeaponSlotSetActive -= OnWeaponSlotSetActive;
+    }
+
+    private void Awake()
+    {
+        playerStatsUIController = GetComponent<PlayerStatsUIManager>();
+        playerInventoryUIController = GetComponent<PlayerInventoryUIManager>();
+        playerSkillsUIManager = GetComponent<PlayerSkillsUIManager>();
+        PlayerEquipmentUIManager = GetComponent<PlayerEquipmentUIManager>();
+        playerWeaponUIManager = GetComponent<PlayerWeaponUIManager>();
+    }
+
+    private void Start()
+    {
+        CloseCharacterMenu();
     }
 
     void OnContainerClosed()
@@ -38,14 +82,72 @@ public class CharacterMenuUIController : MonoBehaviour
         CloseCharacterMenu();
     }
 
-    private void Awake()
+    void OnNewItemAttachedToCursor(ItemStack item)
     {
-        uiController = GetComponentInParent<UIController>();
+        WeaponItemData handItemData = item.Item.ItemData as WeaponItemData;
+        if (handItemData != null)
+        {
+            PlayerEquipmentUIManager.DisableAllSlots();
+            return;
+        }
+
+        EquipmentItemData equipItemData = item.Item.ItemData as EquipmentItemData;
+        if (equipItemData != null)
+        {
+            PlayerEquipmentUIManager.DisableSlotsNotOfType(equipItemData.EquipmentSlotType);
+            playerWeaponUIManager.DisableSlots();
+            return;
+        }
+
+        playerWeaponUIManager.DisableSlots();
+        PlayerEquipmentUIManager.DisableAllSlots();
     }
 
-    private void Start()
+    void OnCurrentItemRemovedFromCursor()
     {
-        CloseCharacterMenu();
+        PlayerEquipmentUIManager.RenableSlots();
+        playerWeaponUIManager.RenableSlots();
+    }
+
+    void OnNewWeaponInitialised(int slotIndex, WeaponItemData newItemData)
+    {
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, newItemData);
+    }
+
+    void OnWeaponSwappedInSlot(int slotIndex, WeaponItemData dataToSwapTo, int loadedAmmo)
+    {
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, dataToSwapTo);
+    }
+
+    void OnWeaponRemovedFromSlot(int slotIndex)
+    {
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, defaultWeaponData);
+    }
+
+    void OnWeaponSetToDefault(int slotIndex, WeaponItemData _defaultWeaponData)
+    {
+        defaultWeaponData = _defaultWeaponData;
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, _defaultWeaponData);
+    }
+
+    void OnWeaponReserveAmmoUpdated(int slotIndex, int reserve)
+    {
+        playerWeaponUIManager.UpdateWeaponDisplayReserveAmmoCount(slotIndex, reserve);
+    }
+    void OnWeaponLoadedAmmoUpdated(int slotIndex, int loaded)
+    {
+        playerWeaponUIManager.UpdateWeaponDisplayLoadedAmmoCount(slotIndex, loaded);
+    }
+
+    void OnWeaponSlotSetActive(WeaponSlot activeSlot)
+    {
+        playerWeaponUIManager.SetSlotActive(activeSlot.slotIndex);
+    }
+
+
+    public void InitMenus(PlayerController player)
+    {
+        playerStatsUIController.InitStatsUI(player);
     }
 
     public void ToggleCharacterMenu()
@@ -66,6 +168,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     void CloseCharacterMenu()
     {
+        Debug.Log("Closing menu...");
         isCharacterMenuOpen = false;
         SetPanelsInactive();
         characterMenuPanelsParent.SetActive(false);
@@ -92,7 +195,7 @@ public class CharacterMenuUIController : MonoBehaviour
             ShowInventoryMenu();
     }
 
-    public void ShowInventoryMenu()
+    void ShowInventoryMenu()
     {
         SetPanelsInactive();
         SetPanelActive(InventoryPanel.Inventory);
@@ -108,7 +211,7 @@ public class CharacterMenuUIController : MonoBehaviour
             ShowSkillsMenu();
     }
 
-    public void ShowSkillsMenu()
+    void ShowSkillsMenu()
     {
         SetPanelsInactive();
         SetPanelActive(InventoryPanel.Skills);
@@ -124,7 +227,7 @@ public class CharacterMenuUIController : MonoBehaviour
             ShowStatsMenu();
     }
 
-    public void ShowStatsMenu()
+    void ShowStatsMenu()
     {
         SetPanelsInactive();
         SetPanelActive(InventoryPanel.Stats);
@@ -138,13 +241,13 @@ public class CharacterMenuUIController : MonoBehaviour
         switch (panelToSetActive)
         {
             case InventoryPanel.Inventory:
-                uiController.playerInventoryUIController.OpenInventory();
+                playerInventoryUIController.OpenInventory();
                 break;
             case InventoryPanel.Skills:
-                uiController.playerSkillsUIManager.OpenSkillsMenu();
+                playerSkillsUIManager.OpenSkillsMenu();
                 break;
             case InventoryPanel.Stats:
-                uiController.playerStatsUIController.OpenStatsMenu();
+                playerStatsUIController.OpenStatsMenu();
                 break;
         }
         currentOpenInventoryPanel = panelToSetActive;
@@ -152,8 +255,8 @@ public class CharacterMenuUIController : MonoBehaviour
 
     void SetPanelsInactive()
     {
-        uiController.playerInventoryUIController.CloseInventory();
-        uiController.playerSkillsUIManager.CloseSkillsMenu();
-        uiController.playerStatsUIController.CloseStatsMenu();
+        playerInventoryUIController.CloseInventory();
+        playerSkillsUIManager.CloseSkillsMenu();
+        playerStatsUIController.CloseStatsMenu();
     }
 }

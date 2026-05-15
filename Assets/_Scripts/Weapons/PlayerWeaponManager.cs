@@ -43,7 +43,8 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public WeaponSlot[] spawnedWeaponSlots;
     [SerializeField] int activeSlotIndex = 0;
-    bool isAmmoSelectionMenuOpen, isLookingAtTarget;
+    public bool isAmmoSelectionMenuOpen;
+    bool isLookingAtTarget;
 
     [Header("Bonus Weapon Stats")]
     public static int bonusDamage;
@@ -194,18 +195,20 @@ public class PlayerWeaponManager : MonoBehaviour
         await SetSlotActive(activeSlotIndex);
     }
 
-    public void OpenWeaponAmmoSelectionMenu()
+    public void OpenAmmoSelectionMenu()
     {
         if (isAmmoSelectionMenuOpen || 
+            playerController.playerWeaponManager.currentWeapon == null ||
             !playerController.playerWeaponManager.currentWeapon.CanUse() || 
             playerController.playerThrowableManager.IsThrowableActive() ||
+            playerController.playerWeaponManager.currentWeapon.GetRangedWeapon() == null ||
             playerController.playerWeaponManager.currentWeapon.GetRangedWeapon().GetAllUseableHeldAmmo().Count == 1) return;
 
         isAmmoSelectionMenuOpen = true;
         onWeaponAmmoSelectionMenuOpened?.Invoke(currentWeapon);
     }
 
-    public void CloseWeaponAmmoSelectionMenu()
+    public void CloseAmmoSelectionMenu()
     {
         if (!isAmmoSelectionMenuOpen) return;
 
@@ -393,9 +396,9 @@ public class PlayerWeaponManager : MonoBehaviour
         }
     }
 
-    public async void SwitchWeaponSets()
+    public async void SwapWeapons()
     {
-        CloseWeaponAmmoSelectionMenu();
+        CloseAmmoSelectionMenu();
 
         if(playerController.playerThrowableManager.IsThrowableActive())
         {

@@ -64,7 +64,7 @@ public class PlayerMovementManager : MonoBehaviour
     // ----------------------------------------
 
     private PlayerController playerController;
-
+    PlayerControls controls;
     public static event Action onPlayerMoveStarted;
     public static event Action onPlayerMoveEnded;
 
@@ -103,21 +103,31 @@ public class PlayerMovementManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (controls.Player.MoveForward.IsPressed())
+            TryMoveForward();
+
+        if (controls.Player.MoveBackward.IsPressed())
+            TryMoveBackward();
+
+        if (controls.Player.MoveLeft.IsPressed())
+            TryStrafeLeft();
+
+        if (controls.Player.MoveRight.IsPressed())
+            TryStrafeRight();
+    }
+
     public void Init(PlayerController playerController)
     {
         this.playerController = playerController;
+
+        controls = playerController.GetPlayerControls();
         cameraInitialLocalPos = cameraTransform.localPosition;
     }
 
-    public void Teleport(Vector3 destination)
-    {
-        transform.position = destination;
-        isBusy = false;
-        ResetHeadbob();
-        onPlayerMoveEnded?.Invoke();
-    }
 
-    // These are called from PlayerInputHandler (usually on key down)
+
     public void TryMoveForward()
     {
         TryStartContinuousMove(transform.forward, forwardKey);
@@ -136,6 +146,14 @@ public class PlayerMovementManager : MonoBehaviour
     public void TryStrafeRight()
     {
         TryStartContinuousMove(transform.right, strafeRightKey);
+    }
+
+    public void Teleport(Vector3 destination)
+    {
+        transform.position = destination;
+        isBusy = false;
+        ResetHeadbob();
+        onPlayerMoveEnded?.Invoke();
     }
 
     /// <summary>
