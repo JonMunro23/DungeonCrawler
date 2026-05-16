@@ -1,0 +1,17 @@
+Additions
+-------------------
+- Add level/game statistics to pause menu
+
+Bugs / Fixes
+--------------------
+- Fix stuck in ready state if just tapping ready button
+- Repair Save/Load system (write down what needs to be saved then go from there)
+
+Critical but aids
+---------------------
+- change awaits to coroutines
+- change pause to IPausable (sweep & clear)
+
+Maybes
+---------------------
+- Have radiation go through destructible walls when they've been destroyed? (Undecided if this is necessary, can just not have these walls near radiation emitters?)
