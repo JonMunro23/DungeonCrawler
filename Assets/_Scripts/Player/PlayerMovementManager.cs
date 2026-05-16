@@ -103,7 +103,7 @@ public class PlayerMovementManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    public void HandleMovementInput()
     {
         if (controls.Player.MoveForward.IsPressed())
             TryMoveForward();

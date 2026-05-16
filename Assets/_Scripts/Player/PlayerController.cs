@@ -103,6 +103,10 @@ public class PlayerController : MonoBehaviour
 
     void InputHandling()
     {
+        if (MapController.isMapOpen) return;
+
+        playerMovementManager.HandleMovementInput();
+
         if (playerControls.Player.LeftClick.IsPressed())
             TryUseCurrentWeapon();
 
