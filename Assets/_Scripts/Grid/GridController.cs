@@ -1,6 +1,7 @@
 ﻿using LDtkUnity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ public class GridController : MonoBehaviour
     [SerializeField] Dictionary<Vector2, GridNode> activeNodes = new Dictionary<Vector2, GridNode>();
     Grid grid;
     const float GRID_SIZE = 3;
-    // Per-level index lookup (fast + correct)
+
     Dictionary<int, GridNode[]> nodesByIndexPerLevel = new Dictionary<int, GridNode[]>();
 
 
@@ -104,7 +105,8 @@ public class GridController : MonoBehaviour
 
 
     public static event Action onQuickSave;
-    public static event Action onLevelFinishedGenerating;
+    public static event Action OnFinishedGeneratingLevel;
+    public static event Action<int> OnLevelGenerated;
 
     public struct SquareCoords : ICoords
     {
@@ -120,7 +122,7 @@ public class GridController : MonoBehaviour
             return lowest * 14 + horizontalMovesRequired * 10;
         }
 
-        public Vector2 Pos { get; set; }
+        public Vector2Int Pos { get; set; }
     }
 
     private void OnEnable()
@@ -198,7 +200,13 @@ public class GridController : MonoBehaviour
 
     public int GetCurrentLevelIndex() => currentLevelIndex;
 
-    public Dictionary<Vector2, GridNode> GetCurrentActiveNodes() => activeNodes;
+    public List<GridNode> GetCurrentNodesForLevel(int levelIndex)
+    {
+        if (nodesByIndexPerLevel.TryGetValue(levelIndex, out var arr))
+            return arr.ToList();
+        else
+            return null;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -259,7 +267,7 @@ public class GridController : MonoBehaviour
 
         MovePlayer(playerSpawnCoords);
 
-        onLevelFinishedGenerating?.Invoke();
+        OnFinishedGeneratingLevel?.Invoke();
     }
 
     void InstantiateLevels()
@@ -306,6 +314,8 @@ public class GridController : MonoBehaviour
 
         GenerateLevel(levelIndex);
 
+        OnLevelGenerated?.Invoke(levelIndex);
+
         LinkInteractablesToTriggerables();
         CacheGridNodeNeighbours();
     }
@@ -313,7 +323,8 @@ public class GridController : MonoBehaviour
     void GenerateLevel(int levelIndex)
     {
         int nodeIndex = 0;
-        Vector2 spawnCoords = Vector2.zero;
+        Vector2Int spawnCoords = Vector2Int.zero;
+        Vector3Int cellPos = Vector3Int.zero;
         Transform nodeParent = levelParents[levelIndex];
 
         GridNode[] levelNodesByIndex = new GridNode[intGridLayer.IntGridCsv.Length];
@@ -324,20 +335,22 @@ public class GridController : MonoBehaviour
             {
                 GridNode clone = null;
 
-                spawnCoords = new Vector2(-i, j);
-                SquareCoords sqCoords = new SquareCoords { Pos = new Vector2(-i, j) };
+                spawnCoords = new Vector2Int(-i, j);
+                cellPos = new Vector3Int(spawnCoords.x, spawnCoords.y, 0);
+
+                SquareCoords sqCoords = new SquareCoords { Pos = spawnCoords };
 
                 switch (intGridLayer.IntGridCsv[nodeIndex])
                 {
                     case 1:
-                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
+                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, nodeParent);
                         clone.transform.localPosition += new Vector3(-1.5f, 1.5f, -1.5f);
                         break;
                     case 2:
-                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
+                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, nodeParent);
                         break;
                     case 3:
-                        clone = Instantiate(voidPrefab, grid.GetCellCenterLocal(new Vector3Int(-i, j)), Quaternion.identity, nodeParent);
+                        clone = Instantiate(voidPrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, nodeParent);
                         clone.SetIsVoid(true);
                         break;
                 }
@@ -880,7 +893,6 @@ public class GridController : MonoBehaviour
 
         currentLevelIndex = levelIndex;
 
-        // switch lookup to this level
         if (nodesByIndexPerLevel.TryGetValue(levelIndex, out var arr))
             nodesByIndex = arr;
         else

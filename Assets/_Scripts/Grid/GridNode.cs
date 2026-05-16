@@ -32,7 +32,7 @@ public class GridNodeOccupant
 public interface ICoords
 {
     public float GetDistance(ICoords other);
-    public Vector2 Pos { get; set; }
+    public Vector2Int Pos { get; set; }
 }
 
 [System.Serializable]

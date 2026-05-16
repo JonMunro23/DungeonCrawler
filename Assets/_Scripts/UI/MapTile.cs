@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class MapTile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    [SerializeField] bool isExplored;
+
     [Header("Floors")]
     [SerializeField] Image floorImage;
     [SerializeField] Sprite floorSprite, voidSprite;
@@ -29,22 +31,24 @@ public class MapTile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 
     [Header("Map Pin")]
     [SerializeField] TMP_InputField pinTextInputField;
+
     bool hasPinPlaced;
     GridNode tileNode;
     Vector2 tileCoords;
-
+    
 
     public void InitTile(GridNode nodeToInit)
     {
         tileNode = nodeToInit;
-        tileCoords = new Vector2(tileNode.Coords.Pos.y, -tileNode.Coords.Pos.x);
+        tileCoords = tileNode.Coords.Pos;
 
         RefreshTile();
     }
 
     public void RefreshTile()
     {
-        if (!tileNode.GetIsExplored())
+        isExplored = tileNode.GetIsExplored();
+        if (!isExplored)
             return;
 
         if (tileNode.nodeData.isWalkable)

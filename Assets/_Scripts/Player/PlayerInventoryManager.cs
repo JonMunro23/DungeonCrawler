@@ -242,6 +242,9 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     {
         foreach (InventorySlot slot in spawnedInventorySlots)
         {
+            if (slot.IsSlotEmpty())
+                continue;
+
             Item item = slot.GetItemStack().Item;
             if (item == null)
                 continue;

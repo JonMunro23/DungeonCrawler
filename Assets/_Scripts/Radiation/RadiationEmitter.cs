@@ -29,12 +29,12 @@ public class RadiationEmitter : MonoBehaviour
 
     void OnEnable()
     {
-        GridController.onLevelFinishedGenerating += OnLevelFinishedGenerating;
+        GridController.OnFinishedGeneratingLevel += OnLevelFinishedGenerating;
     }
 
     void OnDisable()
     {
-        GridController.onLevelFinishedGenerating -= OnLevelFinishedGenerating;
+        GridController.OnFinishedGeneratingLevel -= OnLevelFinishedGenerating;
 
         // Remove ONLY this emitter's contribution
         DisableEmitter();

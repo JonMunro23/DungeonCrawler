@@ -11,11 +11,27 @@ public class MapController : MonoBehaviour
     [SerializeField] Transform mapContainerTransform;
     [SerializeField] TMP_Text currentLevelText;
 
+    List<GameObject> mapParents = new List<GameObject>();
     Dictionary<int, List<MapTile>> generatedMaps = new Dictionary<int, List<MapTile>>();
-    List<MapTile> currentActiveMap = new List<MapTile>();
     int currentLevelIndex;
 
     public static bool isMapOpen;
+
+    private void OnEnable()
+    {
+        GridController.OnLevelGenerated += OnLevelGenerated;
+    }
+
+    private void OnDisable()
+    {
+        GridController.OnLevelGenerated -= OnLevelGenerated;
+    }
+
+    void OnLevelGenerated(int levelIndex)
+    {
+        GenerateMap(levelIndex);
+    }
+
     public void ToggleMap()
     {
         if (PauseMenu.isPaused || UIController.isTransitioningLevel) return;
@@ -32,7 +48,7 @@ public class MapController : MonoBehaviour
         mapBackground.SetActive(false);
         HelperFunctions.SetCursorActive(false);
 
-        HideMap();
+        HideMap(currentLevelIndex);
     }
 
     void OpenMap()
@@ -40,28 +56,26 @@ public class MapController : MonoBehaviour
         isMapOpen = true;
         mapBackground.SetActive(true);
         HelperFunctions.SetCursorActive(true);
-        currentLevelIndex = GridController.Instance.GetCurrentLevelIndex();
-        if(generatedMaps.TryGetValue(currentLevelIndex, out List<MapTile> map))
-        {
-            ShowMap(map);
-        }
-        else
-        {
-            GenerateMap();
-        }
-
+        currentLevelIndex = GridController.Instance.GetCurrentLevelIndex(); //change this to only update on level transition
+        ShowMap(currentLevelIndex);
     }
 
-    void GenerateMap()
+    void GenerateMap(int levelIndex)
     {
-        currentLevelText.text = GridController.Instance.GetCurrentLevelName().ToUpper();
+        List<GridNode> levelNodes = GridController.Instance.GetCurrentNodesForLevel(levelIndex);
+        GridNode[] nodes = levelNodes.ToArray();
+        Vector2Int[] coords = new Vector2Int[nodes.Length];
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            coords[i] = nodes[i].Coords.Pos;
+        }
 
-        Dictionary<Vector2, GridNode> activeNodes = GridController.Instance.GetCurrentActiveNodes();
-        GridNode[] nodes = activeNodes.Values.ToArray();
-        Vector2[] coords = activeNodes.Keys.ToArray();
-
-        if (activeNodes.Count == 0)
+        if (levelNodes.Count == 0)
             return;
+
+        GameObject mapParent = new GameObject($"Level{levelIndex} Map");
+        mapParent.transform.SetParent(mapBackground.transform, true);
+        mapParents.Add(mapParent);
 
         float minX = coords.Min(c => c.y);
         float maxX = coords.Max(c => c.y);
@@ -75,44 +89,54 @@ public class MapController : MonoBehaviour
         Vector2 centerOffset = new Vector2(totalWidth / 2f, -totalHeight / 2f);
 
         List<MapTile> map = new List<MapTile>();
-        for (int i = 0; i < activeNodes.Count; i++)
+
+        for (int i = 0; i < nodes.Length; i++)
         {
             GridNode node = nodes[i];
-            Vector2 coord = coords[i];
+            Vector2Int coord = coords[i];
+
             MapTile clone = Instantiate(mapTile, Vector2.zero, Quaternion.identity, mapContainerTransform);
             clone.InitTile(node);
-            map.Add(clone);
 
             Vector2 localPos = new Vector2(coord.y * tileSize, coord.x * tileSize);
             localPos -= centerOffset;
             clone.transform.localPosition = localPos;
+
+            clone.transform.SetParent(mapParent.transform, true);
+
+            map.Add(clone);
         }
 
-        generatedMaps.Add(currentLevelIndex, map);
-        currentActiveMap = map;
+        generatedMaps.TryAdd(levelIndex, map);
+
+        HideMap(levelIndex);
     }
 
-    void ShowMap(List<MapTile> mapToShow)
+    void ShowMap(int levelIndex)
     {
-        foreach (MapTile tile in mapToShow)
+        currentLevelText.text = GridController.Instance.GetCurrentLevelName().ToUpper();
+
+        mapParents[levelIndex].gameObject.SetActive(true);
+
+        if(generatedMaps.TryGetValue(levelIndex, out var map))
         {
-            tile.gameObject.SetActive(true);
-            tile.RefreshTile();
+            foreach (MapTile mapTile in map)
+            {
+                mapTile.RefreshTile();
+            }
         }
-        currentActiveMap = mapToShow;
     }
 
-    void HideMap()
+    void HideMap(int levelIndex)
     {
-        foreach (MapTile tile in currentActiveMap)
-        {
-            tile.gameObject.SetActive(false);
-        }   
+        mapParents[levelIndex].gameObject.SetActive(false);
+
+        currentLevelText.text = "";
     }
 
     void DestroyAllMaps()
     {
-        for (int i = 0; i < generatedMaps.Count; i++)
+        for (int i = 0; i < mapParents.Count; i++)
         {
             DestroyMap(i);
         }
@@ -120,14 +144,7 @@ public class MapController : MonoBehaviour
 
     void DestroyMap(int mapIndexToDestroy)
     {
-        if(generatedMaps.TryGetValue(mapIndexToDestroy, out List<MapTile> mapToDestroy))
-        {
-            foreach(MapTile tile in mapToDestroy)
-            {
-                Destroy(tile.gameObject);
-            }
-            generatedMaps.Remove(mapIndexToDestroy);
-        }
-
+        Destroy(mapParents[mapIndexToDestroy].gameObject);
+        mapParents.RemoveAt(mapIndexToDestroy);
     }
 }

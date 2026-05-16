@@ -21,12 +21,12 @@ public class NPCController : MonoBehaviour
 
     private void OnEnable()
     {
-        GridController.onLevelFinishedGenerating += OnLevelFinishedGenerating;
+        GridController.OnFinishedGeneratingLevel += OnLevelFinishedGenerating;
     }
 
     private void OnDisable()
     {
-        GridController.onLevelFinishedGenerating -= OnLevelFinishedGenerating;
+        GridController.OnFinishedGeneratingLevel -= OnLevelFinishedGenerating;
     }
 
     private void Awake()
