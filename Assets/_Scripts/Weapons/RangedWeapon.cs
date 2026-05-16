@@ -25,6 +25,9 @@ public class RangedWeapon : Weapon
     [SerializeField] ParticleSystem shellEjectionParticleEffect;
     [SerializeField] Vector2 ejectionSpeed = new Vector2(1, 3);
     ParticleSystem[] cachedParticleEffect;
+    Tween bulletSpreadTween;
+    Tween weaponReadyTween;
+
 
     [Header("Ammo")]
     [SerializeField] AmmoItemData currentLoadedAmmoData;
@@ -347,7 +350,7 @@ public class RangedWeapon : Weapon
             return;
 
         isReadyingWeapon = true;
-        transform.DOLocalRotate(new Vector3(0, 90, 0), weaponItemData.readyAnimDuration).OnComplete(() =>
+        weaponReadyTween = transform.DOLocalRotate(new Vector3(0, 90, 0), weaponItemData.readyAnimDuration).OnComplete(() =>
         {
             isReadyingWeapon = false;
             isWeaponReady = true;
@@ -356,7 +359,15 @@ public class RangedWeapon : Weapon
         });
     }
 
-    private Tween bulletSpreadTween;
+    public void UnreadyWeapon()
+    {
+        isWeaponReady = false;
+        isReadyingWeapon = false;
+        weaponReadyTween?.Kill();
+        onRangedWeaponReadied?.Invoke(isWeaponReady);
+        transform.DOLocalRotate(new Vector3(0, 90, 15), weaponItemData.readyAnimDuration);
+    }
+
     private void IncreaseBulletSpreadMultiplierOverTime(float increaseAmount, float timeToIncrease)
     {
         bulletSpreadTween?.Kill();
@@ -380,15 +391,7 @@ public class RangedWeapon : Weapon
         bulletSpreadMultiplier = Mathf.Clamp(bulletSpreadMultiplier, weaponItemData.minWeaponSpreadAmount, weaponItemData.maxWeaponSpreadAmount);
     }
 
-    public void UnreadyWeapon()
-    {
-        if (IsMeleeWeapon())
-            return;
 
-        isWeaponReady = false;
-        onRangedWeaponReadied?.Invoke(isWeaponReady);
-        transform.DOLocalRotate(new Vector3(0, 90, 15), weaponItemData.readyAnimDuration);
-    }
 
     public async Task TryReload(AmmoItemData newAmmoTypeToLoad)
     {

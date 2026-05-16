@@ -221,16 +221,19 @@ public class PlayerController : MonoBehaviour
 
     void TryUseCurrentWeapon()
     {
+        if (CharacterMenuUIController.isCharacterMenuOpen ||
+            PlayerInventoryManager.isInContainer ||
+            WorldInteractionManager.hasGrabbedItem ||
+            ThrowableSelectionManager.isThrowableSelectionMenuOpen)
+            return;
+
         if (playerThrowableManager.IsThrowableActive())
         {
             _ = playerThrowableManager.UseThrowable();
             return;
         }
 
-        if (!CharacterMenuUIController.isCharacterMenuOpen && !PlayerInventoryManager.isInContainer && !WorldInteractionManager.hasGrabbedItem && !ThrowableSelectionManager.isThrowableSelectionMenuOpen)
-        {
-            playerWeaponManager.UseCurrentWeapon();
-        }
+         playerWeaponManager.UseCurrentWeapon();
     }
 
     void TryReadyCurrentWeapon()
@@ -238,6 +241,7 @@ public class PlayerController : MonoBehaviour
         if (PlayerInventoryManager.isInContainer) return;
         if (WorldInteractionManager.hasGrabbedItem) return;
         if (CharacterMenuUIController.isCharacterMenuOpen) return;
+        //Return if map is open
 
         if (playerThrowableManager.IsThrowableActive())
         {
