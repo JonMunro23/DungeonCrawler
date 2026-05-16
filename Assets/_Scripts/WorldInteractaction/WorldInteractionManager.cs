@@ -269,6 +269,7 @@ public class WorldInteractionManager : MonoBehaviour
                 else if(hit.transform.TryGetComponent(out IInteractable interactable))
                 {
                     if (hasGrabbedItem)
+                    {
                         if(interactable.TryInteractWithItem(currentGrabbedItem.Item.ItemData))
                         {
                             if(interactable.ConsumesItem())
@@ -276,6 +277,7 @@ public class WorldInteractionManager : MonoBehaviour
 
                             PlayGrabAnim();
                         }
+                    }
                     else
                     {
                         interactable.Interact();
