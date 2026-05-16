@@ -24,15 +24,15 @@ public class MapTile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     [SerializeField] Image NorthWestCornerImage;
 
     [Header("Icons")]
-    [SerializeField] Image PinIcon;
     [SerializeField] Image PlayerIcon;
     [SerializeField] Image LevelTransitionIcon;
     [SerializeField] Image PressurePlateIcon;
 
     [Header("Map Pin")]
+    [SerializeField] Image PinIcon;
     [SerializeField] TMP_InputField pinTextInputField;
-
     bool hasPinPlaced;
+
     GridNode tileNode;
     Vector2 tileCoords;
     
@@ -48,6 +48,7 @@ public class MapTile : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     public void RefreshTile()
     {
         isExplored = tileNode.GetIsExplored();
+        //isExplored = true; // Purely for map testing purposes, use above for normal gameplay
         if (!isExplored)
             return;
 

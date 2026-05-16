@@ -494,6 +494,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c155d2c1f9332746bf7d30d6ea5a17e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &1767141894 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3360186297050849377, guid: e6ee789cac96f2946b95ebffdd9b2643,
+    type: 3}
+  m_PrefabInstance: {fileID: 1360849054806025784}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1829667011 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7918361601237953702, guid: 5561bb32ab597074f893e819f7c68ad0,
@@ -813,8 +819,44 @@ PrefabInstance:
     - target: {fileID: 2342286666150839676, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: -0.0006713867
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525237427438918035, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: panSpeed
+      value: 1.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525237427438918035, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: zoomSpeed
+      value: 0.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525237427438918035, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: mapTilePrefab
+      value: 
+      objectReference: {fileID: 3062415370665696870, guid: fdb9c8233a449a448ac8ce55a9ced157,
+        type: 3}
+    - target: {fileID: 2525237427438918035, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: clampPadding.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2525237427438918035, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: clampPadding.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525237427438918035, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: showPanClampDebug
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2525237427438918035, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: mapContainerTransform
+      value: 
+      objectReference: {fileID: 1767141894}
     - target: {fileID: 2842516669240827519, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1660,6 +1702,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7709730377874873688, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: m_fontStyle
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7709730377874873688, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7709730377874873688, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: m_fontColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7709730377874873688, guid: e6ee789cac96f2946b95ebffdd9b2643,
+        type: 3}
+      propertyPath: m_fontColor.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7788102642447848191, guid: e6ee789cac96f2946b95ebffdd9b2643,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1887,7 +1949,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1061984433129457774, guid: e6ee789cac96f2946b95ebffdd9b2643, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 1464401011442855609, guid: e6ee789cac96f2946b95ebffdd9b2643, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6ee789cac96f2946b95ebffdd9b2643, type: 3}

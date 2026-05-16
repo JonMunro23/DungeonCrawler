@@ -468,6 +468,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Scroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""ba90f0d4-f130-42b6-830a-63014f028a7e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -536,6 +545,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Enter"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3b58b977-a884-4ec2-aba6-ed8dc023d9dc"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Scroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -593,6 +613,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_UIControls_Map = m_UIControls.FindAction("Map", throwIfNotFound: true);
         m_UIControls_Pause = m_UIControls.FindAction("Pause", throwIfNotFound: true);
         m_UIControls_Enter = m_UIControls.FindAction("Enter", throwIfNotFound: true);
+        m_UIControls_Scroll = m_UIControls.FindAction("Scroll", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -908,6 +929,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_UIControls_Map;
     private readonly InputAction m_UIControls_Pause;
     private readonly InputAction m_UIControls_Enter;
+    private readonly InputAction m_UIControls_Scroll;
     /// <summary>
     /// Provides access to input actions defined in input action map "UIControls".
     /// </summary>
@@ -943,6 +965,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "UIControls/Enter".
         /// </summary>
         public InputAction @Enter => m_Wrapper.m_UIControls_Enter;
+        /// <summary>
+        /// Provides access to the underlying input action "UIControls/Scroll".
+        /// </summary>
+        public InputAction @Scroll => m_Wrapper.m_UIControls_Scroll;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -987,6 +1013,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Enter.started += instance.OnEnter;
             @Enter.performed += instance.OnEnter;
             @Enter.canceled += instance.OnEnter;
+            @Scroll.started += instance.OnScroll;
+            @Scroll.performed += instance.OnScroll;
+            @Scroll.canceled += instance.OnScroll;
         }
 
         /// <summary>
@@ -1016,6 +1045,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Enter.started -= instance.OnEnter;
             @Enter.performed -= instance.OnEnter;
             @Enter.canceled -= instance.OnEnter;
+            @Scroll.started -= instance.OnScroll;
+            @Scroll.performed -= instance.OnScroll;
+            @Scroll.canceled -= instance.OnScroll;
         }
 
         /// <summary>
@@ -1223,5 +1255,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnEnter(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Scroll" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnScroll(InputAction.CallbackContext context);
     }
 }

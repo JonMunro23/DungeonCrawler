@@ -140,6 +140,12 @@ public class UIController : MonoBehaviour
         SetLoadGameButtonsInteractable();
     }
 
+    private void Update()
+    {
+        mapController.HandlePanning();
+        mapController.HandleZoom();
+    }
+
     #endregion
     // ==========================
 
@@ -187,6 +193,7 @@ public class UIController : MonoBehaviour
 
         characterMenuUIController.InitMenus(playerInitialised, controls);
         crosshairController.Init(controls);
+        mapController.Init(controls);
 
         _ = FadeInScreen();
     }
