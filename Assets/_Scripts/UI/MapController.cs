@@ -14,6 +14,7 @@ public class MapController : MonoBehaviour
     [Header("Pan / Zoom")]
     [SerializeField] float minZoom = 0.5f;
     [SerializeField] float maxZoom = 2.5f;
+    [SerializeField] float defaultZoom = .75f;
     [SerializeField] float zoomSpeed = 0.15f;
     [SerializeField] float panSpeed = 1f;
     [SerializeField] bool resetMapViewOnOpen = true;
@@ -59,6 +60,7 @@ public class MapController : MonoBehaviour
     public void Init(PlayerControls controls)
     {
         this.controls = controls;
+        ResetMapView();
     }
 
     void OnLevelGenerated(int levelIndex)
@@ -335,10 +337,10 @@ public class MapController : MonoBehaviour
         if (activeMap == null)
             return;
 
-        currentZoom = 1f;
+        currentZoom = Mathf.Clamp(defaultZoom, minZoom, maxZoom);
         isPanning = false;
 
-        activeMap.localScale = Vector3.one;
+        activeMap.localScale = Vector3.one * currentZoom;
         activeMap.localPosition = Vector3.zero;
 
         ClampMapPosition();
