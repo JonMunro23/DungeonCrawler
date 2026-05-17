@@ -10,7 +10,6 @@ Bugs / Fixes
 
 Critical but aids
 ---------------------
-- change awaits to coroutines
 - change pause to IPausable (sweep & clear)
 
 Maybes

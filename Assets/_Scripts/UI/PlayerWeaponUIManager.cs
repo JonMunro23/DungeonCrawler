@@ -56,10 +56,10 @@ public class PlayerWeaponUIManager : MonoBehaviour
             weaponDisplays[0].SetDisplayAsPrimary(false);
         }
     }
-    public void UpdateWeaponDisplayImages(int slotIndex, WeaponItemData weaponData)
+    public void UpdateWeaponDisplayImages(int slotIndex, WeaponItem weaponItem)
     {
-        if(weaponData)
-            weaponDisplays[slotIndex].UpdateWeaponData(weaponData);
+        if(weaponItem != null)
+            weaponDisplays[slotIndex].UpdateDisplayedWeapon(weaponItem);
     }
     public void UpdateWeaponDisplayLoadedAmmoCount(int slotIndex, int loadedAmmo)
     {

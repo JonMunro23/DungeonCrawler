@@ -10,7 +10,7 @@ public class HUDWeaponDisplay : MonoBehaviour
     [SerializeField] Image mainBackground, weaponImageBackground, weaponCooldownImage, ammoTypeImageBackground, ammoCounterBackground;
     [SerializeField] TMP_Text ammoText;
 
-    WeaponItemData displayedData;
+    WeaponItem displayedWeapon;
 
     [SerializeField] int loadedAmmo, reserveAmmo;
 
@@ -98,13 +98,13 @@ public class HUDWeaponDisplay : MonoBehaviour
         return isPrimaryDisplay;
     }
 
-    public void UpdateWeaponData(WeaponItemData newWeaponData)
+    public void UpdateDisplayedWeapon(WeaponItem weaponItem)
     {
-        if(displayedData == null || displayedData != newWeaponData)
-            displayedData = newWeaponData;
+        if(displayedWeapon == null || displayedWeapon != weaponItem)
+            displayedWeapon = weaponItem;
 
-        UpdateWeaponSprite(displayedData.itemSprite);
-        //UpdateAmmoType(displayedData.ammoWeaponType);
+        UpdateWeaponSprite(displayedWeapon.WeaponItemData.itemSprite);
+        UpdateAmmoType(displayedWeapon.LoadedAmmoData);
     }
 
     void UpdateWeaponSprite(Sprite newSprite)
@@ -131,21 +131,12 @@ public class HUDWeaponDisplay : MonoBehaviour
         ammoText.text = $"{loadedAmmo}/{reserve}";
     }
 
-    //void UpdateAmmoType(AmmoWeaponType newAmmoType)
-    //{
-    //    switch (newAmmoType)
-    //    {
-    //        case AmmoWeaponType.Pistol:
-    //            ammoTypeImage.sprite = pistolAmmoSprite;
-    //            break;
-    //        case AmmoWeaponType.Rifle:
-    //            ammoTypeImage.sprite = rifleAmmoSprite;
-    //            break;
-    //        case AmmoWeaponType.Shells:
-    //            ammoTypeImage.sprite = shellsAmmoSprite;
-    //            break;
-    //    }
-    //}
+    void UpdateAmmoType(AmmoItemData newAmmoData)
+    {
+        if (newAmmoData == null) return;
+
+        ammoTypeImage.sprite = newAmmoData.itemSprite;
+    }
 
     void SetDisplayOnCooldown(float cooldownLength)
     {

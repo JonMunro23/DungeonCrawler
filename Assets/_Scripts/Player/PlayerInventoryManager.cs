@@ -352,7 +352,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
                 continue;
 
             ammoToReturn += slotItemStack.ItemAmount;
-            //Debug.Log(ammoToReturn);
         }
         return ammoToReturn;
     }
@@ -403,6 +402,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
                 continue;
 
             remainingAmountToAdd = slot.AddToCurrentItemStack(amountToAdd);
+            //Debug.Log("Added to existing stack");
             if (remainingAmountToAdd == 0)
                 return;
         }
@@ -413,6 +413,7 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (freeSlot)
             {
                 freeSlot.AddItem(new ItemStack(new Item(ammoTypeToAdd), remainingAmountToAdd));
+                //Debug.Log($"Added item with amount: {remainingAmountToAdd}");
             }
         }
     }

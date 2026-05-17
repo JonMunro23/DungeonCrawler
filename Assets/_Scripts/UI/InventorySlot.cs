@@ -11,7 +11,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     PlayerInventoryManager playerInventoryManager;
 
-    public int slotIndex;
+    int slotIndex;
     bool isInteractable;
 
     [Header("References")]
@@ -336,6 +336,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         return currentSlotItemStack != null ? false : true;
     }
 
+    public void SetSlotIndex(int newIndex) => slotIndex = newIndex;
     public int GetSlotIndex() => slotIndex;
 
     public void HideTooltip()

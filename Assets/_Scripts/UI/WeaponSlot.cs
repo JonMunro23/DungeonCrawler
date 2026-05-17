@@ -7,14 +7,15 @@ public class WeaponSlot : InventorySlot
 
     IWeapon defaultWeapon;
     WeaponItemData defaultWeaponData;
+    WeaponItem defaultWeaponItem;
 
     IInventory playerInventory;
 
-    public static event Action<int, WeaponItemData, int> onWeaponAddedToSlot;
+    public static event Action<int, WeaponItem> onWeaponAddedToSlot;
     public static event Action<int> onWeaponRemovedFromSlot;
-    public static event Action<int, WeaponItemData, int> onWeaponSwappedInSlot;
+    public static event Action<int, WeaponItem> onWeaponSwappedInSlot;
 
-    public static event Action<int, WeaponItemData> onWeaponSetToDefault;
+    public static event Action<int, WeaponItem> onWeaponSetToDefault;
 
     public static event Action<IWeapon> onWeaponDrawn;
 
@@ -22,7 +23,7 @@ public class WeaponSlot : InventorySlot
 
     public void InitWeaponSlot(int newSlotIndex, IInventory _playerInventory, AudioEmitter weaponAudioEmitter)
     {
-        slotIndex = newSlotIndex;
+        SetSlotIndex(newSlotIndex);
         playerInventory = _playerInventory;
         audioEmitter = weaponAudioEmitter;
 
@@ -35,13 +36,13 @@ public class WeaponSlot : InventorySlot
         base.AddItem(itemToAdd);
         WeaponItem weaponItemToAdd = itemToAdd.Item as WeaponItem;
         if(weaponItemToAdd != null)
-            InitialiseWeaponItem(weaponItemToAdd.WeaponItemData, weaponItemToAdd.LoadedAmmo);
+            InitialiseWeaponItem(weaponItemToAdd);
 
     }
 
-    void InitialiseWeaponItem(WeaponItemData itemDataToInitialise, int loadedAmmo)
+    void InitialiseWeaponItem(WeaponItem weaponToInitialise)
     {
-        onWeaponAddedToSlot?.Invoke(slotIndex, itemDataToInitialise, loadedAmmo);
+        onWeaponAddedToSlot?.Invoke(GetSlotIndex(), weaponToInitialise);
     }
 
     public override ItemStack SwapItem(ItemStack itemToSwap)
@@ -50,7 +51,7 @@ public class WeaponSlot : InventorySlot
         if (weaponItemToSwap != null)
         {
             ItemStack itemToReturn = base.SwapItem(itemToSwap);
-            onWeaponSwappedInSlot?.Invoke(slotIndex, weaponItemToSwap.WeaponItemData, weaponItemToSwap.LoadedAmmo);
+            onWeaponSwappedInSlot?.Invoke(GetSlotIndex(), weaponItemToSwap);
             return itemToReturn;
         }
 
@@ -75,7 +76,7 @@ public class WeaponSlot : InventorySlot
 
     void DeinitialiseWeaponItem()
     {
-        onWeaponRemovedFromSlot?.Invoke(slotIndex);
+        onWeaponRemovedFromSlot?.Invoke(GetSlotIndex());
     }
 
     public void SetSlotWeaponActive(bool isActive)
@@ -103,7 +104,7 @@ public class WeaponSlot : InventorySlot
     {
         currentWeapon = newWeapon;
         currentWeapon.SetDefaultWeapon(false);
-        currentWeapon.InitWeapon(this, newWeapon.GetWeaponData(), audioEmitter, playerInventory);     
+        currentWeapon.InitWeapon(this, newWeapon.GetWeaponItem(), audioEmitter, playerInventory);     
 
         //UpdateSlotUI();
     }
@@ -111,14 +112,16 @@ public class WeaponSlot : InventorySlot
     {
         defaultWeapon = _defaultWeapon;
         defaultWeaponData = defaultWeapon.GetWeaponData();
+
+        defaultWeaponItem = new WeaponItem(defaultWeaponData, defaultWeaponData.defaultLoadedAmmoData, defaultWeaponData.magSize);
     }
 
     public void SetWeaponToDefault()
     {
         currentWeapon = defaultWeapon;
         currentWeapon.SetDefaultWeapon(true);
-        currentWeapon.InitWeapon(this, defaultWeaponData, audioEmitter, playerInventory);
-        onWeaponSetToDefault?.Invoke(slotIndex, defaultWeaponData);
+        currentWeapon.InitWeapon(this, defaultWeaponItem, audioEmitter, playerInventory);
+        onWeaponSetToDefault?.Invoke(GetSlotIndex(), defaultWeaponItem);
     }
 
     public IWeapon GetWeapon()

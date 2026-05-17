@@ -19,6 +19,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
     InventoryPanel currentOpenInventoryPanel = InventoryPanel.Inventory;
     WeaponItemData defaultWeaponData;
+    WeaponItem defaultWeaponItem;
     public static bool isCharacterMenuOpen = false;
 
     private void OnEnable()
@@ -37,6 +38,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
         RangedWeapon.onLoadedAmmoUpdated += OnWeaponLoadedAmmoUpdated;
         RangedWeapon.onReserveAmmoUpdated += OnWeaponReserveAmmoUpdated;
+        RangedWeapon.onNewAmmoTypeLoaded += OnNewAmmoTypeLoaded;
 
         PlayerWeaponManager.onWeaponSlotSetActive += OnWeaponSlotSetActive;
         PlayerWeaponManager.onNewWeaponInitialised += OnNewWeaponInitialised;
@@ -58,6 +60,7 @@ public class CharacterMenuUIController : MonoBehaviour
 
         RangedWeapon.onLoadedAmmoUpdated -= OnWeaponLoadedAmmoUpdated;
         RangedWeapon.onReserveAmmoUpdated -= OnWeaponReserveAmmoUpdated;
+        RangedWeapon.onNewAmmoTypeLoaded -= OnNewAmmoTypeLoaded;
 
         PlayerWeaponManager.onNewWeaponInitialised -= OnNewWeaponInitialised;
         PlayerWeaponManager.onWeaponSlotSetActive -= OnWeaponSlotSetActive;
@@ -109,25 +112,26 @@ public class CharacterMenuUIController : MonoBehaviour
         playerWeaponUIManager.RenableSlots();
     }
 
-    void OnNewWeaponInitialised(int slotIndex, WeaponItemData newItemData)
+    void OnNewWeaponInitialised(int slotIndex, WeaponItem newWeapon)
     {
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, newItemData);
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, newWeapon);
     }
 
-    void OnWeaponSwappedInSlot(int slotIndex, WeaponItemData dataToSwapTo, int loadedAmmo)
+    void OnWeaponSwappedInSlot(int slotIndex, WeaponItem weaponToSwapTo)
     {
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, dataToSwapTo);
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, weaponToSwapTo);
     }
 
     void OnWeaponRemovedFromSlot(int slotIndex)
     {
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, defaultWeaponData);
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, defaultWeaponItem);
     }
 
-    void OnWeaponSetToDefault(int slotIndex, WeaponItemData _defaultWeaponData)
+    void OnWeaponSetToDefault(int slotIndex, WeaponItem defaultWeapon)
     {
-        defaultWeaponData = _defaultWeaponData;
-        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, _defaultWeaponData);
+        defaultWeaponItem = defaultWeapon;
+        defaultWeaponData = defaultWeapon.WeaponItemData;
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, defaultWeapon);
     }
 
     void OnWeaponReserveAmmoUpdated(int slotIndex, int reserve)
@@ -141,9 +145,13 @@ public class CharacterMenuUIController : MonoBehaviour
 
     void OnWeaponSlotSetActive(WeaponSlot activeSlot)
     {
-        playerWeaponUIManager.SetSlotActive(activeSlot.slotIndex);
+        playerWeaponUIManager.SetSlotActive(activeSlot.GetSlotIndex());
     }
 
+    void OnNewAmmoTypeLoaded(int slotIndex, WeaponItem weaponLoaded)
+    {
+        playerWeaponUIManager.UpdateWeaponDisplayImages(slotIndex, weaponLoaded);
+    }
 
     public void InitMenus(PlayerController player, PlayerControls controls)
     {

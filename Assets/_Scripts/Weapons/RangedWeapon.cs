@@ -14,6 +14,7 @@ public class RangedWeapon : Weapon
     bool canShootBurstShot = true;
     bool isReadyingWeapon;
     bool isPlayerMoving = false;
+    bool isLoadingNewAmmoType = false;
 
     public bool infinteAmmo = false;
     public bool isWeaponReady;
@@ -48,6 +49,7 @@ public class RangedWeapon : Weapon
     public static event Action<int, int> onReserveAmmoUpdated;
     public static event Action<WeaponItemData> onRangedWeaponFired;
     public static event Action<bool> onRangedWeaponReadied;
+    public static event Action<int, WeaponItem> onNewAmmoTypeLoaded;
 
     private void OnEnable()
     {
@@ -92,9 +94,9 @@ public class RangedWeapon : Weapon
         return base.CanUse() && !IsReloading();
     }
 
-    public override void InitWeapon(WeaponSlot occupyingSlot, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory)
+    public override void InitWeapon(WeaponSlot occupyingSlot, WeaponItem weaponToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory)
     {
-        base.InitWeapon(occupyingSlot, dataToInit, _weaponAudioEmitter, playerInventory);
+        base.InitWeapon(occupyingSlot, weaponToInit, _weaponAudioEmitter, playerInventory);
 
         if (!shellEjectionParticleEffect)
             return;
@@ -102,9 +104,9 @@ public class RangedWeapon : Weapon
         if (cachedParticleEffect == null || cachedParticleEffect.Length == 0)
             cachedParticleEffect = shellEjectionParticleEffect.GetComponentsInChildren<ParticleSystem>();
 
-        currentLoadedAmmoData = dataToInit.defaultLoadedAmmoData;
+        currentLoadedAmmoData = weaponToInit.LoadedAmmoData;
 
-        UpdateReserveAmmo();
+        //UpdateReserveAmmo();
     }
 
     public override IEnumerator DrawWeapon()
@@ -397,29 +399,29 @@ public class RangedWeapon : Weapon
         if (loadedAmmo == weaponItemData.magSize && (newAmmoTypeToLoad == null || newAmmoTypeToLoad == currentLoadedAmmoData))
             yield break;
 
-        AmmoItemData oldAmmoType = null;
+
+        //AmmoItemData oldAmmoType = null;
         if (newAmmoTypeToLoad != null)
         {
-            oldAmmoType = currentLoadedAmmoData;
-            currentLoadedAmmoData = newAmmoTypeToLoad;
+            //oldAmmoType = currentLoadedAmmoData;
+            //currentLoadedAmmoData = newAmmoTypeToLoad;
+            isLoadingNewAmmoType = true;
         }
+        AmmoItemData ammoTypeToDealWith = isLoadingNewAmmoType ? newAmmoTypeToLoad : currentLoadedAmmoData;
 
         //inital fetch to see if we have any reserve ammo and if not cancel reload
-        int heldAmmo = GetReserveAmmo();
+        int heldAmmo = GetRemainingAmmoOfType(ammoTypeToDealWith);
         if (heldAmmo == 0)
             yield break;
 
-        playerInventory.LockSlotsWithAmmoOfType(currentLoadedAmmoData);
+        playerInventory.LockSlotsWithAmmoOfType(ammoTypeToDealWith);
 
         if (!weaponItemData.bulletByBulletReload)
         {
-            if (oldAmmoType != null)
-                playerInventory.IncreaseAmmoOfType(oldAmmoType, loadedAmmo);
-            else
-                playerInventory.IncreaseAmmoOfType(currentLoadedAmmoData, loadedAmmo);
+            playerInventory.IncreaseAmmoOfType(currentLoadedAmmoData, loadedAmmo);
 
             // fetch again after yield loaded ammo to pool to get final amount
-            heldAmmo = GetReserveAmmo();
+            heldAmmo = GetRemainingAmmoOfType(ammoTypeToDealWith);
 
             UpdateLoadedAmmo(0);
             UpdateReserveAmmo();
@@ -428,8 +430,8 @@ public class RangedWeapon : Weapon
         }
         else if (weaponItemData.bulletByBulletReload)
         {
-            if (oldAmmoType != newAmmoTypeToLoad && loadedAmmo > 0)
-                yield return EjectLoadedShells(oldAmmoType);
+            if (ammoTypeToDealWith != currentLoadedAmmoData && loadedAmmo > 0)
+                yield return EjectLoadedShells(currentLoadedAmmoData);
         }
 
         int amountToReload = 0;
@@ -442,7 +444,11 @@ public class RangedWeapon : Weapon
             amountToReload = heldAmmo;
         }
 
+        currentLoadedAmmoData = ammoTypeToDealWith;
+
         yield return PerformReloadAnim(amountToReload);
+
+        isLoadingNewAmmoType = false;
 
         playerInventory.UnlockSlots();
     }
@@ -464,6 +470,9 @@ public class RangedWeapon : Weapon
         UpdateLoadedAmmo(reloadAmount);
         playerInventory.DecreaseAmmoOfType(currentLoadedAmmoData, reloadAmount);
         UpdateReserveAmmo();
+
+        if (isLoadingNewAmmoType)
+            onNewAmmoTypeLoaded?.Invoke(occupyingSlot.GetSlotIndex(), weaponItem);
     }
 
     IEnumerator BulletByBulletReload()
@@ -479,6 +488,9 @@ public class RangedWeapon : Weapon
             UpdateLoadedAmmo(loadedAmmo + 1);
             playerInventory.DecreaseAmmoOfType(currentLoadedAmmoData, 1);
             UpdateReserveAmmo();
+
+            if (isLoadingNewAmmoType)
+                onNewAmmoTypeLoaded?.Invoke(occupyingSlot.GetSlotIndex(), weaponItem);
         }
         else
         {
@@ -550,13 +562,18 @@ public class RangedWeapon : Weapon
 
     public void UpdateReserveAmmo()
     {
-        reserveAmmo = GetReserveAmmo();
+        reserveAmmo = GetReserveAmmoOfCurrentType();
         onReserveAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), reserveAmmo);
     }
 
-    public int GetReserveAmmo()
+    public int GetReserveAmmoOfCurrentType()
     {
-        return playerInventory.TryGetRemainingAmmoOfType(currentLoadedAmmoData);
+        return GetRemainingAmmoOfType(currentLoadedAmmoData);
+    }
+
+    public int GetRemainingAmmoOfType(AmmoItemData typeToCheck)
+    {
+        return playerInventory.TryGetRemainingAmmoOfType(typeToCheck);
     }
 
     public override MeleeWeapon GetMeleeWeapon()

@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 public abstract class Weapon : MonoBehaviour, IWeapon
 {
     [Header("References")]
+    public WeaponItem weaponItem;
     public WeaponItemData weaponItemData;
     public Animator weaponAnimator;
     public AudioEmitter weaponAudioEmitter;
@@ -38,14 +39,16 @@ public abstract class Weapon : MonoBehaviour, IWeapon
     {
         isDefaultWeapon = isDefault;
     }
-    public WeaponItemData GetWeaponData() => weaponItemData;
+    public WeaponItemData GetWeaponData() => weaponItem.WeaponItemData;
+    public WeaponItem GetWeaponItem() => weaponItem;
     public abstract MeleeWeapon GetMeleeWeapon();
     public abstract RangedWeapon GetRangedWeapon();
-    public virtual void InitWeapon(WeaponSlot occupyingSlot, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory _playerInventory)
+    public virtual void InitWeapon(WeaponSlot occupyingSlot, WeaponItem weaponToInit, AudioEmitter _weaponAudioEmitter, IInventory _playerInventory)
     {
         playerInventory = _playerInventory;
         this.occupyingSlot = occupyingSlot;
-        weaponItemData = dataToInit;
+        weaponItem = weaponToInit;
+        weaponItemData = weaponItem.WeaponItemData;
         canUse = true;
         weaponAnimator = GetComponent<Animator>();
 
