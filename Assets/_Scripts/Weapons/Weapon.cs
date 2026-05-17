@@ -1,7 +1,5 @@
-using DG.Tweening;
 using System;
 using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -53,35 +51,39 @@ public abstract class Weapon : MonoBehaviour, IWeapon
 
         weaponAudioEmitter = _weaponAudioEmitter;
     }
-    public virtual async Task DrawWeapon()
+    public virtual IEnumerator DrawWeapon()
     {
         weaponAnimator.enabled = true;
         weaponAnimator.Play("Draw");
         weaponAudioEmitter.ForcePlay(weaponItemData.drawSFX, weaponItemData.drawVolume);
-        await Task.Delay((int)(weaponItemData.drawAnimDuration * 1000));
+
+        yield return new WaitForSeconds(weaponItemData.drawAnimDuration);
+
         if (!IsMeleeWeapon())
             GetRangedWeapon().UnreadyWeapon();
         isWeaponDrawn = true;
         canUse = true;
     }
     
-    public async Task HolsterWeapon()
+    public IEnumerator HolsterWeapon()
     {
         isWeaponDrawn = false;
         if(weaponAnimator.gameObject.activeSelf && weaponAnimator.enabled)
         {
             weaponAnimator.Play("Hide");
             weaponAudioEmitter.ForcePlay(weaponItemData.hideSFX, weaponItemData.hideVolume);
-            await Task.Delay((int)(weaponItemData.hideAnimDuration * 1000));
+
+            yield return new WaitForSeconds(weaponItemData.hideAnimDuration);
+
             if(weaponAnimator)
                 weaponAnimator.enabled = false;
         }
     }
-    public async Task Grab()
+    public IEnumerator Grab()
     {
         canUse = false;
         weaponAnimator.Play("Interact");
-        await Task.Delay((int)(weaponItemData.grabAnimDuration * 1000));
+        yield return new WaitForSeconds(weaponItemData.grabAnimDuration);
         canUse = true;
     }
     public virtual void RemoveWeapon()

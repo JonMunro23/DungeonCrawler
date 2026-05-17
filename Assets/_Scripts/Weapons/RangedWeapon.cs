@@ -2,7 +2,6 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -108,7 +107,7 @@ public class RangedWeapon : Weapon
         UpdateReserveAmmo();
     }
 
-    public override Task DrawWeapon()
+    public override IEnumerator DrawWeapon()
     {
         UpdateReserveAmmo();
         canShootBurst = true;
@@ -174,7 +173,6 @@ public class RangedWeapon : Weapon
         onRangedWeaponFired?.Invoke(weaponItemData);
         IncreaseBulletSpreadMultiplierinstantly(weaponItemData.perShotSpreadIncrease);
 
-        // PATCH: apply status effect only once per target per shot
         HashSet<IDamageable> statusEffectAppliedTargets = null;
         bool shouldApplyAmmoStatusEffect =
             currentLoadedAmmoData != null &&
@@ -196,7 +194,6 @@ public class RangedWeapon : Weapon
                 if (hit.transform.TryGetComponent(out ShootableTarget target))
                 {
                     target.Interact();
-                    // PATCH: do not abort the whole shot (important for projectileCount / burst)
                     continue;
                 }
 
@@ -235,7 +232,6 @@ public class RangedWeapon : Weapon
                             break;
                     }
 
-                    // PATCH: Apply status effect once per target per shot (shotgun-safe)
                     if (shouldApplyAmmoStatusEffect && statusEffectAppliedTargets != null)
                     {
                         if (!statusEffectAppliedTargets.Contains(damageable))
@@ -393,13 +389,13 @@ public class RangedWeapon : Weapon
 
 
 
-    public async Task TryReload(AmmoItemData newAmmoTypeToLoad)
+    public IEnumerator TryReload(AmmoItemData newAmmoTypeToLoad)
     {
         if (isReloading || !isWeaponDrawn)
-            return;
+            yield break;
 
         if (loadedAmmo == weaponItemData.magSize && (newAmmoTypeToLoad == null || newAmmoTypeToLoad == currentLoadedAmmoData))
-            return;
+            yield break;
 
         AmmoItemData oldAmmoType = null;
         if (newAmmoTypeToLoad != null)
@@ -411,7 +407,7 @@ public class RangedWeapon : Weapon
         //inital fetch to see if we have any reserve ammo and if not cancel reload
         int heldAmmo = GetReserveAmmo();
         if (heldAmmo == 0)
-            return;
+            yield break;
 
         playerInventory.LockSlotsWithAmmoOfType(currentLoadedAmmoData);
 
@@ -433,7 +429,7 @@ public class RangedWeapon : Weapon
         else if (weaponItemData.bulletByBulletReload)
         {
             if (oldAmmoType != newAmmoTypeToLoad && loadedAmmo > 0)
-                await EjectLoadedShells(oldAmmoType);
+                yield return EjectLoadedShells(oldAmmoType);
         }
 
         int amountToReload = 0;
@@ -446,23 +442,23 @@ public class RangedWeapon : Weapon
             amountToReload = heldAmmo;
         }
 
-        await PerformReloadAnim(amountToReload);
+        yield return PerformReloadAnim(amountToReload);
 
         playerInventory.UnlockSlots();
     }
 
-    public async Task PerformReloadAnim(int reloadAmount)
+    IEnumerator PerformReloadAnim(int reloadAmount)
     {
         if (weaponItemData.bulletByBulletReload)
         {
-            await BulletByBulletReload();
-            return;
+            yield return BulletByBulletReload();
+            yield break;
         }
 
         isReloading = true;
         weaponAnimator.Play("Reload");
         weaponAudioEmitter.ForcePlay(weaponItemData.reloadSFX, weaponItemData.reloadVolume);
-        await Task.Delay((int)(weaponItemData.reloadAnimDuration * 1000));
+        yield return new WaitForSeconds(weaponItemData.reloadAnimDuration);
         isReloading = false;
         //Debug.Log("reload amount = " + reloadAmount);
         UpdateLoadedAmmo(reloadAmount);
@@ -470,49 +466,53 @@ public class RangedWeapon : Weapon
         UpdateReserveAmmo();
     }
 
-    private async Task BulletByBulletReload()
+    IEnumerator BulletByBulletReload()
     {
+        //Debug.Log("Starting bullet by bullet reload...");
         isReloading = true;
         if (loadedAmmo == 0)
         {
+            //Debug.Log("Inserting into chamber...");
             weaponAnimator.Play("InsertInChamber");
             weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertInChamberSFX, weaponItemData.reloadInsertInChamberVolume);
-            await Task.Delay((int)(weaponItemData.reloadInsertInChamberAnimDuration * 1000));
+            yield return new WaitForSeconds(weaponItemData.reloadInsertInChamberAnimDuration);
             UpdateLoadedAmmo(loadedAmmo + 1);
             playerInventory.DecreaseAmmoOfType(currentLoadedAmmoData, 1);
             UpdateReserveAmmo();
         }
         else
         {
+            //Debug.Log("Starting reload...");
             weaponAnimator.Play("StartReload");
             weaponAudioEmitter.ForcePlay(weaponItemData.reloadStartSFX, weaponItemData.reloadStartVolume);
-            await Task.Delay((int)(weaponItemData.reloadStartAnimDuration * 1000));
+            yield return new WaitForSeconds(weaponItemData.reloadStartAnimDuration);
         }
 
         while (loadedAmmo < weaponItemData.magSize && reserveAmmo > 0)
         {
+            //Debug.Log($"Inserting round {loadedAmmo}...");
             weaponAnimator.CrossFadeInFixedTime("Insert", .1f);
             weaponAudioEmitter.ForcePlay(weaponItemData.reloadInsertSFX, weaponItemData.reloadInsertVolume);
-            await Task.Delay((int)(weaponItemData.reloadInsertAnimDuration * 1000));
+            yield return new WaitForSeconds(weaponItemData.reloadInsertAnimDuration);
             UpdateLoadedAmmo(loadedAmmo + 1);
             playerInventory.DecreaseAmmoOfType(currentLoadedAmmoData, 1);
             UpdateReserveAmmo();
         }
 
+        //Debug.Log("Stopping reload...");
         weaponAnimator.Play("StopReload");
         weaponAudioEmitter.ForcePlay(weaponItemData.reloadStopSFX, weaponItemData.reloadStopVolume);
-        await Task.Delay((int)(weaponItemData.reloadEndAnimDuration * 1000));
+        yield return new WaitForSeconds(weaponItemData.reloadEndAnimDuration);
         isReloading = false;
-        return;
     }
 
-    async Task EjectLoadedShells(AmmoItemData ammoToEject)
+    IEnumerator EjectLoadedShells(AmmoItemData ammoToEject)
     {
         while (loadedAmmo != 0)
         {
             weaponAnimator.Play("Pump");
             weaponAudioEmitter.ForcePlay(weaponItemData.ejectShellSFX, weaponItemData.ejectShellVolume);
-            await Task.Delay((int)(weaponItemData.ejectShellAnimDuration * 1000));
+            yield return new WaitForSeconds(weaponItemData.ejectShellAnimDuration);
             EjectCartridge(0);
             UpdateLoadedAmmo(loadedAmmo - 1);
             playerInventory.IncreaseAmmoOfType(ammoToEject, 1);

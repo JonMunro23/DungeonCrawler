@@ -1,5 +1,5 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class Throwable : MonoBehaviour
@@ -20,20 +20,20 @@ public class Throwable : MonoBehaviour
     {
         rb.linearVelocity = launchVelocity;
         if (itemData.isExplosive && itemData.detonationType == DetonationType.Timed)
-            Prime();
+            StartCoroutine(Prime());
     }
 
-    public async void Prime()
+    public IEnumerator Prime()
     {
-        await Task.Delay((int)(itemData.fuseLength * 1000));
+        yield return new WaitForSeconds(itemData.fuseLength);
 
         Explode();
     }
 
-    public async void Arm()
+    public IEnumerator Arm()
     {
         isArming = true;
-        await Task.Delay((int)(itemData.fuseLength * 1000));
+        yield return new WaitForSeconds(itemData.fuseLength);
         isArmed = true;
     }
 
@@ -86,7 +86,7 @@ public class Throwable : MonoBehaviour
             return;
         }
         else if (!isArming && (itemData.detonationType == DetonationType.Proximity || itemData.detonationType == DetonationType.Remote))
-            Arm();
+            StartCoroutine(Arm());
 
          if (other.CompareTag("Enemy")) return;
 

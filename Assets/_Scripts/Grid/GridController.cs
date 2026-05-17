@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class GridController : MonoBehaviour
@@ -842,7 +841,7 @@ public class GridController : MonoBehaviour
     }
 
 
-    public async Task BeginLevelTransition(int levelIndex, Vector2 playerMoveToCoords)
+    public void BeginLevelTransition(int levelIndex, Vector2 playerMoveToCoords)
     {
         SaveLevel(currentLevelIndex);
         UnloadCurrentLevel();
@@ -850,8 +849,6 @@ public class GridController : MonoBehaviour
         SetLevelActive(levelIndex);
 
         MovePlayer(playerMoveToCoords);
-
-        await Task.Yield();
     }
 
     private void MovePlayer(Vector2 coordsToMoveTo)

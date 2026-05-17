@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +24,8 @@ public class HUDWeaponDisplay : MonoBehaviour
     [SerializeField] Vector2 primaryPos, secondaryPos;
     [SerializeField] Color primaryColour, primaryMainBackgroundColour, secondaryColour, secondaryMainBackgroundColour;
 
+    Coroutine displayAnimationCoroutine;
+
     private void OnEnable()
     {
         Weapon.onWeaponCooldownActive += SetDisplayOnCooldown;
@@ -41,11 +42,22 @@ public class HUDWeaponDisplay : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    public async void SetDisplayAsPrimary(bool _isPrimary)
+    public void SetDisplayAsPrimary(bool _isPrimary)
     {
         isPrimaryDisplay = _isPrimary;
         animator.enabled = true;
 
+        if(displayAnimationCoroutine != null)
+        {
+            StopCoroutine(displayAnimationCoroutine);
+            displayAnimationCoroutine = null;
+        }
+
+        displayAnimationCoroutine = StartCoroutine(AnimateDisplays());
+    }
+
+    private IEnumerator AnimateDisplays()
+    {
         if (isPrimaryDisplay)
         {
             animator.Play("ToFront");
@@ -53,9 +65,9 @@ public class HUDWeaponDisplay : MonoBehaviour
             weaponImageBackground.color = secondaryColour;
             ammoTypeImageBackground.color = secondaryColour;
             ammoCounterBackground.color = secondaryColour;
-            await Task.Delay((int)(delayBeforeSiblingShift * 1000));
+            yield return new WaitForSeconds(delayBeforeSiblingShift);
             transform.SetAsLastSibling();
-            await Task.Delay((int)((animationDuration - delayBeforeSiblingShift) * 1000));
+            yield return new WaitForSeconds(animationDuration - delayBeforeSiblingShift);
             animator.enabled = false;
             rectTransfrom.anchoredPosition = primaryPos;
             mainBackground.color = primaryMainBackgroundColour;
@@ -70,13 +82,15 @@ public class HUDWeaponDisplay : MonoBehaviour
             weaponImageBackground.color = secondaryColour;
             ammoTypeImageBackground.color = secondaryColour;
             ammoCounterBackground.color = secondaryColour;
-            await Task.Delay((int)(delayBeforeSiblingShift * 1000)); 
+            yield return new WaitForSeconds(delayBeforeSiblingShift);
             transform.SetAsFirstSibling();
-            await Task.Delay((int)((animationDuration - delayBeforeSiblingShift) * 1000));
+            yield return new WaitForSeconds(animationDuration - delayBeforeSiblingShift);
             animator.enabled = false;
             rectTransfrom.anchoredPosition = secondaryPos;
-            
+
         }
+
+        displayAnimationCoroutine = null;
     }
 
     public bool GetDisplayActive()

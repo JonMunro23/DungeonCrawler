@@ -26,6 +26,8 @@ public class WorldInteractionManager : MonoBehaviour
     IContainer nearbyContainer;
     //IInteractable nearbyInteractable;
 
+    Coroutine grabCoroutine;
+
     static IHighlightable highlightedTarget;
     public static IContainer currentOpenContainer;
     //bool isLookingAtPickup, isLookingAtInteractable, isLookingAtContainer;
@@ -36,16 +38,12 @@ public class WorldInteractionManager : MonoBehaviour
     public static event Action<ItemStack> onGroundItemsUpdated;
     public static event Action onLastGroundItemRemoved;
 
-    //public static event Action<IContainer> onNearbyContainerUpdated;
-   // public static event Action<IInteractable> onNearbyInteractableUpdated;
-
     public static event Action<LookAtTarget> onLookAtTargetChanged;
 
     private void OnEnable()
     {
         WorldItem.onWorldItemGrabbed += OnWorldItemGrabbed;
         InventorySlot.onInventorySlotLeftClicked += OnInventorySlotClicked;
-        //ContainerSlot.onContainerItemGrabbed += OnContainerItemGrabbed;
 
         InventoryContextMenu.onInventorySlotItemDropped += DropItemFromInventoryIntoWorld;
     }
@@ -54,7 +52,6 @@ public class WorldInteractionManager : MonoBehaviour
     {
         WorldItem.onWorldItemGrabbed -= OnWorldItemGrabbed;
         InventorySlot.onInventorySlotLeftClicked -= OnInventorySlotClicked;
-        //ContainerSlot.onContainerItemGrabbed -= OnContainerItemGrabbed;
 
         InventoryContextMenu.onInventorySlotItemDropped -= DropItemFromInventoryIntoWorld;
     }
@@ -92,18 +89,6 @@ public class WorldInteractionManager : MonoBehaviour
 
         AttachItemToMouseCursor(worldItemGrabbed.itemStack, worldItemGrabbed);
     }
-
-    //void OnContainerItemGrabbed(ContainerSlot slotGrabbedFrom)
-    //{
-    //    if (hasGrabbedItem)
-    //        return;
-
-    //    PlayGrabAnim();
-    //    ItemStack slotItem = slotGrabbedFrom.storedStack;
-    //    AttachItemToMouseCursor(slotItem);
-    //    slotGrabbedFrom.ClearSlot();
-
-    //}
 
     void OnInventorySlotClicked(ISlot slotClicked)
     {
@@ -298,65 +283,15 @@ public class WorldInteractionManager : MonoBehaviour
         }
     }
 
-
-    ///// <summary>
-    ///// Called from InputHandler on key press
-    ///// </summary>
-    //public void Interact()
-    //{
-    //    if (groundItems.Count > 0)
-    //    {
-    //        PickupItem(groundItems[0]);
-    //        return;
-    //    }
-
-    //    if(nearbyContainer != null)
-    //    {
-    //        //playerWeaponManager.currentWeapon.HolsterWeapon();
-    //        PlayGrabAnim();
-    //        nearbyContainer.ToggleContainer();
-    //    }
-
-    //    if(nearbyInteractable != null)
-    //    {
-    //        PlayGrabAnim();
-    //        if (currentGrabbedItem != null)
-    //            nearbyInteractable.TryInteractWithItem(currentGrabbedItem);
-    //        else
-    //            nearbyInteractable.Interact();
-    //    }
-    //}
-
-    //void PickupItem(WorldItem itemToPickup)
-    //{
-    //    int remainingItems = controller.playerInventoryManager.TryAddItem(itemToPickup.item);
-    //    if(remainingItems != itemToPickup.item.itemAmount)
-    //    {
-    //        PlayGrabAnim();
-
-    //        if (remainingItems == 0)
-    //        {
-    //            IPickup pickupInterface = itemToPickup;
-    //            pickupInterface.Pickup();
-
-    //            groundItems.Remove(itemToPickup);
-    //            Destroy(itemToPickup.gameObject);
-    //            UpdatePickupItemUI();
-    //        }
-    //        else
-    //        {
-    //            itemToPickup.item.itemAmount = remainingItems;
-
-    //        }
-    //    }
-
-    //}
-
     private void PlayGrabAnim()
     {
         if (playerController.playerWeaponManager.currentWeapon != null && playerController.playerWeaponManager.currentWeapon.CanUse())
         {
-            playerController.playerWeaponManager.currentWeapon.Grab();
+            if (grabCoroutine != null)
+                StopCoroutine(grabCoroutine);
+
+            grabCoroutine = StartCoroutine(playerController.playerWeaponManager.currentWeapon.Grab());
+
             if(grabSFX != null)
                 itemPickupAudioEmitter.ForcePlay(grabSFX, grabSFXVolume);
         }
@@ -375,131 +310,4 @@ public class WorldInteractionManager : MonoBehaviour
         else
             onLastGroundItemRemoved?.Invoke();
     }
-
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if(other.TryGetComponent(out WorldItem worldItem))
-    //    {
-    //        if (worldItem.isInContainer) return;
-
-    //        groundItems.Add(worldItem);
-    //        worldItem.SetHighlighted(true);
-    //        onGroundItemsUpdated?.Invoke(groundItems[0].item);
-    //        return;
-    //    }
-
-    //    if(other.TryGetComponent(out IContainer nearbyContainer))
-    //    {
-    //        if(transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
-    //        {
-    //            this.nearbyContainer = nearbyContainer;
-    //            nearbyContainer.SetHighlighted(true);
-    //            onNearbyContainerUpdated?.Invoke(nearbyContainer);
-    //        }
-    //    }
-
-    //    if(other.TryGetComponent(out IInteractable nearbyInteractable))
-    //    {
-    //        if (nearbyInteractable.GetInteractableType() == InteractableType.Pressure_Plate) return;
-
-    //        if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
-    //        {
-    //            this.nearbyInteractable = nearbyInteractable;
-    //            if(nearbyInteractable.GetInteractableType() == InteractableType.Lever || nearbyInteractable.GetInteractableType() == InteractableType.Keycard_Reader)
-    //                nearbyInteractable.SetHighlighted(true);
-    //            onNearbyInteractableUpdated?.Invoke(nearbyInteractable);
-    //        }
-    //    }
-    //}
-
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    if (other.TryGetComponent(out IContainer container))
-    //    {
-    //        if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
-    //        {
-    //            nearbyContainer = container;
-    //            if(!nearbyContainer.IsOpen())
-    //                nearbyContainer.SetHighlighted(true);
-    //        }
-    //        else
-    //        {
-    //            if(nearbyContainer != null)
-    //                nearbyContainer.SetHighlighted(false);
-
-    //            nearbyContainer = null;
-    //        }
-
-    //        onNearbyContainerUpdated?.Invoke(nearbyContainer);
-    //    }
-
-    //    if (other.TryGetComponent(out IInteractable nearbyInteractable))
-    //    {
-    //        if (nearbyInteractable.GetInteractableType() == InteractableType.Pressure_Plate) return;
-
-    //        if (transform.root.localRotation.eulerAngles.y == other.transform.localRotation.eulerAngles.y)
-    //        {
-    //            this.nearbyInteractable = nearbyInteractable;
-    //            if (nearbyInteractable.GetInteractableType() == InteractableType.Lever || nearbyInteractable.GetInteractableType() == InteractableType.Keycard_Reader)
-    //                nearbyInteractable.SetHighlighted(true);
-    //        }
-    //        else
-    //        {
-    //            if (nearbyInteractable != null && (nearbyInteractable.GetInteractableType() == InteractableType.Lever || nearbyInteractable.GetInteractableType() == InteractableType.Keycard_Reader))
-    //                nearbyInteractable.SetHighlighted(false);
-
-    //            this.nearbyInteractable = null;
-    //        }
-
-    //        onNearbyInteractableUpdated?.Invoke(this.nearbyInteractable);
-    //    }
-    //}
-
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (groundItems.Count > 0)
-    //    {
-    //        if (other.TryGetComponent(out WorldItem worldItem))
-    //        {
-    //            if(groundItems.Contains(worldItem))
-    //            {
-    //                worldItem.SetHighlighted(false);
-    //                groundItems.Remove(worldItem);
-    //            }
-    //        }
-
-    //        if (groundItems.Count == 0)
-    //            onLastGroundItemRemoved?.Invoke();
-    //    }
-
-    //    if(nearbyContainer != null)
-    //    {
-    //        if (other.TryGetComponent(out IContainer container))
-    //            if (container == nearbyContainer)
-    //            {
-    //                nearbyContainer.CloseContainer();
-    //                nearbyContainer.SetHighlighted(false);
-    //                nearbyContainer = null;
-    //                onNearbyContainerUpdated?.Invoke(nearbyContainer);
-    //            }
-    //    }
-
-    //    if(nearbyInteractable != null)
-    //    {
-    //        if(other.TryGetComponent(out IInteractable interactable))
-    //        {
-    //            Debug.Log(nearbyInteractable.GetInteractableType());
-    //            if (nearbyInteractable.GetInteractableType() == InteractableType.Pressure_Plate) return;
-
-    //            if (interactable == nearbyInteractable)
-    //            {
-    //                if (nearbyInteractable.GetInteractableType() == InteractableType.Lever || nearbyInteractable.GetInteractableType() == InteractableType.Keycard_Reader)
-    //                    nearbyInteractable.SetHighlighted(false);
-
-    //                nearbyInteractable = null;
-    //                onNearbyInteractableUpdated?.Invoke(nearbyInteractable);
-    //            }
-    //        }
-    //    }
-    //}
 }

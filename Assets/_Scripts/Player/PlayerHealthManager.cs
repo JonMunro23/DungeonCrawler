@@ -2,7 +2,6 @@
 using System;
 using Random = UnityEngine.Random;
 using System.Collections;
-using System.Threading.Tasks;
 
 public class PlayerHealthManager : MonoBehaviour, IDamageable
 {
@@ -136,17 +135,17 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
 
     public bool CanUseSyringe() => canUseSyringe && currentHealth != maxHealth;
 
-    public async void UseSyringeInSlot(ISlot slot)
+    public IEnumerator UseSyringeInSlot(ISlot slot)
     {
         ConsumableItemData consumableData = slot.GetItemStack().Item.ItemData as ConsumableItemData;
         if (consumableData == null)
-            return;
+            yield break;
 
         canUseSyringe = false;
         playerController.playerInventoryManager.RemoveHealthSyringe(1);
         ConsumableItemData syringeItemData = slot.GetItemStack().Item.ItemData as ConsumableItemData;
         slot.RemoveFromExistingStack(1);
-        await InjectSyringe(syringeItemData);
+        yield return InjectSyringe(syringeItemData);
     }
 
     void EnableSyringeArms()
@@ -189,19 +188,19 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         //Debug.Log("Cooldown ended");
     }
 
-    async Task InjectSyringe(ConsumableItemData syringeData)
+    IEnumerator InjectSyringe(ConsumableItemData syringeData)
     {
         //Debug.Log("Injecting...");
         EnableSyringeArms();
         StartCoroutine(SyringeUseCooldown());
-        await Task.Delay((int)(delayBeforeRegen * 1000));
+        yield return new WaitForSeconds(delayBeforeRegen);
 
         StartCoroutine(RegenHealth(currentHealth, currentHealth + syringeData.totalRegenAmount, syringeData.regenDuration));
 
-        await Task.Delay((int)((syringeData.useAnimationLength - delayBeforeRegen) * 1000));
+        yield return new WaitForSeconds(syringeData.useAnimationLength - delayBeforeRegen);
         DisableSyringeArms();
 
-        await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+        yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
     }
 
 

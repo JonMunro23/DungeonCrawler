@@ -1,7 +1,6 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -73,6 +72,7 @@ public class UIController : MonoBehaviour
     [SerializeField] float levelTextLifetimeDuration = 5;
     [SerializeField] Image levelTransitionFadeOverlay;
     [SerializeField] float fadeOutDuration, fadeInDuration;
+    Coroutine transitionLevelCoroutine;
 
     PlayerController initialisedPlayer;
 
@@ -195,7 +195,7 @@ public class UIController : MonoBehaviour
         crosshairController.Init(controls);
         mapController.Init(controls);
 
-        _ = FadeInScreen();
+        StartCoroutine(FadeInScreen());
     }
 
     void OnPlayerDeath()
@@ -203,15 +203,28 @@ public class UIController : MonoBehaviour
         ShowGameOverScreen();
     }
 
-    async void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)
+    void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)
+    {
+        if (transitionLevelCoroutine != null)
+        {
+            StopCoroutine(transitionLevelCoroutine);
+            transitionLevelCoroutine = null;
+        }
+
+
+        transitionLevelCoroutine = StartCoroutine(TransitionLevel(levelIndex, playerMoveToCoords));
+    }
+
+    IEnumerator TransitionLevel(int levelIndex, Vector2 playerMoveToCoords)
     {
         isTransitioningLevel = true;
         mapController.CloseMap();
-        await FadeOutScreen();
-        await GridController.Instance.BeginLevelTransition(levelIndex, playerMoveToCoords);
-        await FadeInScreen();
+        yield return FadeOutScreen();
+        GridController.Instance.BeginLevelTransition(levelIndex, playerMoveToCoords);
+        yield return FadeInScreen();
         ShowLevelName(levelIndex);
         isTransitioningLevel = false;
+        transitionLevelCoroutine = null;
     }
 
     void OnQuickSave()
@@ -305,16 +318,16 @@ public class UIController : MonoBehaviour
         levelTransitionDividingLine.DOFade(0, 1);
     }
 
-    async Task FadeInScreen()
+    IEnumerator FadeInScreen()
     {
         levelTransitionFadeOverlay.DOFade(0, fadeInDuration);
-        await Task.Delay((int)(fadeInDuration * 1000));
+        yield return new WaitForSeconds(fadeInDuration);
     }
 
-    async Task FadeOutScreen()
+    IEnumerator FadeOutScreen()
     {
         levelTransitionFadeOverlay.DOFade(1, fadeOutDuration);
-        await Task.Delay((int)(fadeOutDuration * 1000));
+        yield return new WaitForSeconds(fadeOutDuration);
     }
 
     IEnumerator LevelNameLifetime()

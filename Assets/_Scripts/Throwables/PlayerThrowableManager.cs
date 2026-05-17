@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerThrowableManager : MonoBehaviour
@@ -13,8 +13,8 @@ public class PlayerThrowableManager : MonoBehaviour
     ThrowableItemData currentlySelectedThrowable;
     Animator currentThrowableAnimator;
     Transform currentThrowableThrowLocation;
-    bool isCurrentThrowableActive, isThrowableReadied, isThrowInProgress;
-    public bool isThrowableSelectionMenuOpen;
+    bool isCurrentThrowableActive;
+    public bool isThrowableSelectionMenuOpen, isThrowableReadied, isThrowInProgress;
 
     [SerializeField] Dictionary<ThrowableItemData, int> availableThrowables = new Dictionary<ThrowableItemData, int>();
     [SerializeField] List<Throwable> manuallyDetonatedThrowables = new List<Throwable>();
@@ -56,6 +56,8 @@ public class PlayerThrowableManager : MonoBehaviour
     public float grenadeRadius = 0.12f;
     public LayerMask collisionMask = ~0;
 
+    Coroutine swapThrowableCoroutine, removeThrowableCoroutine ;
+
 
     private void OnEnable()
     {
@@ -71,25 +73,34 @@ public class PlayerThrowableManager : MonoBehaviour
         PlayerInventoryManager.onThrowableRemoved -= OnThrowableRemoved;
     }
 
-    async void OnThrowableSelected(ThrowableItemData selectedThrowable, int throwableAmount)
+    void OnThrowableSelected(ThrowableItemData selectedThrowable, int throwableAmount)
     {
         if(IsThrowableActive())
         {
-            await SwapThrowable(selectedThrowable);
+            if (swapThrowableCoroutine != null)
+            {
+                StopCoroutine(swapThrowableCoroutine);
+                swapThrowableCoroutine = null;
+            }
+
+            swapThrowableCoroutine =  StartCoroutine(SwapThrowable(selectedThrowable));
         }
         else
             SetCurrentlySelectedThrowable(selectedThrowable);
     }
 
-    async void OnThrowableRemoved(ThrowableItemData removedThrowable)
+    void OnThrowableRemoved(ThrowableItemData removedThrowable)
     {
-        if (removedThrowable == currentlySelectedThrowable)
-            if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
-            {
-                await HolsterThrowable();
-                await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
-            }
+        if (removeThrowableCoroutine != null)
+        {
+            StopCoroutine(removeThrowableCoroutine);
+            removeThrowableCoroutine = null;
+        }
+
+         removeThrowableCoroutine = StartCoroutine(RemoveThrowable(removedThrowable));
     }
+
+
 
     void Awake()
     {
@@ -153,7 +164,7 @@ public class PlayerThrowableManager : MonoBehaviour
             onCurrentlySelectedThrowableAmountUpdated?.Invoke(availableThrowables[throwableToAdd]);
     }
 
-    public async void RemoveThrowableFromAvailable(ThrowableItemData throwableToRemove, int amountToRemove)
+    public IEnumerator RemoveThrowableFromAvailable(ThrowableItemData throwableToRemove, int amountToRemove)
     {
         if (availableThrowables.TryGetValue(throwableToRemove, out int currentAmount))
         {
@@ -163,16 +174,36 @@ public class PlayerThrowableManager : MonoBehaviour
         if (throwableToRemove == currentlySelectedThrowable)
         {
             onCurrentlySelectedThrowableAmountUpdated?.Invoke(availableThrowables[throwableToRemove]);
-            if(IsThrowableActive())
+
+            yield return new WaitForSeconds(0.7f); // wait for throw animation have finished (NEED TO CONVERT TIME TO VARIABLE)
+
+            if (IsThrowableActive())
                 if (GetRemainingAmountOfThrowable(throwableToRemove) == 0 && (currentlySelectedThrowable.detonationType != DetonationType.Remote && manuallyDetonatedThrowables.Count == 0))
                 {
-                    await HolsterThrowable();
-                    await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+                    // remove throwable without playing holster animation
+                    isCurrentThrowableActive = false;
+                    isThrowableReadied = false;
+                    CloseThrowableSelectionMenu();
+                    SetTrajectoryLineActive(false);
+                    SetCurrentThrowableGameObjectActive(false);
+
+                    yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
                 }
 
         }
     }
 
+    IEnumerator RemoveThrowable(ThrowableItemData removedThrowable)
+    {
+        if (removedThrowable == currentlySelectedThrowable)
+            if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
+            {
+                yield return HolsterThrowable();
+                yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+            }
+
+        removeThrowableCoroutine = null;
+    }
 
     public int GetRemainingAmountOfThrowable(ThrowableItemData throwableToCheck)
     {
@@ -204,52 +235,59 @@ public class PlayerThrowableManager : MonoBehaviour
 
     #region Equipping
 
-    public async Task ToggleEquipThrowable()
+    public IEnumerator ToggleEquipThrowable()
     {
         if (!IsThrowableActive())
-            await EquipThrowable();
+            yield return EquipThrowable();
         else
         {
-            await HolsterThrowable();
-            await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+            yield return HolsterThrowable();
+            yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
         }
     }
 
-    async Task EquipThrowable()
+    IEnumerator EquipThrowable()
     {
         if (currentlySelectedThrowable == null)
-            return;
+            yield break;
 
         if ((currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count == 0) && PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
-            return;
+            yield break;
+
         playerController.playerWeaponManager.CloseAmmoSelectionMenu();
-        await playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
+        yield return playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
+
         SetCurrentThrowableGameObjectActive(true);
     }
 
-    public async Task HolsterThrowable()
+    public IEnumerator HolsterThrowable()
     {
         isCurrentThrowableActive = false; //set inactive early to prevent further readying
         isThrowableReadied = false;
         CloseThrowableSelectionMenu();
         SetTrajectoryLineActive(false);
         currentThrowableAnimator.Play("Holster");
-        await Task.Delay((int)(currentlySelectedThrowable.holsterLength * 1000));
+
+        yield return new WaitForSeconds(currentlySelectedThrowable.holsterLength);
+
         SetCurrentThrowableGameObjectActive(false);
     }
 
 
-    public async Task SwapThrowable(ThrowableItemData throwableToSwapTo)
+    public IEnumerator SwapThrowable(ThrowableItemData throwableToSwapTo)
     {
         isThrowableReadied = false;
         SetTrajectoryLineActive(false);
         isCurrentThrowableActive = false; //set inactive early to prevent further readying
         currentThrowableAnimator.Play("Holster");
-        await Task.Delay((int)(currentlySelectedThrowable.holsterLength * 1000));
+
+        yield return new WaitForSeconds(currentlySelectedThrowable.holsterLength);
+
         SetCurrentThrowableGameObjectActive(false);
         SetCurrentlySelectedThrowable(throwableToSwapTo);
         SetCurrentThrowableGameObjectActive(true);
 
+        swapThrowableCoroutine = null;
     }
     #endregion
 
@@ -282,7 +320,8 @@ public class PlayerThrowableManager : MonoBehaviour
     public void UnreadyThrowable()
     {
         if (!isThrowableReadied) return;
-        _ = UseThrowable(); // Currently just yeets throwable instead of dearming
+
+        StartCoroutine(UseThrowable()); // Currently just yeets throwable instead of dearming
     }
     #endregion
 
@@ -296,16 +335,20 @@ public class PlayerThrowableManager : MonoBehaviour
         arms.gameObject.SetActive(false);
     }
 
-    public async Task UseThrowable()
+    public IEnumerator UseThrowable()
     {
-        if (isThrowInProgress || ThrowableSelectionManager.isThrowableSelectionMenuOpen) return;
+        if (isThrowInProgress || ThrowableSelectionManager.isThrowableSelectionMenuOpen)
+            yield break;
+
         if (!isThrowableReadied)
         {
-            if(currentlySelectedThrowable.detonationType != DetonationType.Remote) return;
+            if(currentlySelectedThrowable.detonationType != DetonationType.Remote)
+                yield break;
 
-            if (WorldInteractionManager.IsLookingAtInteractable()) return;
+            if (WorldInteractionManager.IsLookingAtInteractable())
+                yield break;
 
-            if(manuallyDetonatedThrowables.Count > 0)
+            if (manuallyDetonatedThrowables.Count > 0)
             {
                 List<Throwable> detonatedThrowables = new List<Throwable>();
                 foreach(Throwable throwable in manuallyDetonatedThrowables)
@@ -327,13 +370,13 @@ public class PlayerThrowableManager : MonoBehaviour
             if (manuallyDetonatedThrowables.Count == 0 && GetRemainingAmountOfThrowable(currentlySelectedThrowable) == 0)
             {
                 //holster remoteexplosives
-                await Task.Delay((int)(0.7f * 1000));
-                await HolsterThrowable();
-                await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+                yield return new WaitForSeconds(0.7f);
+                yield return HolsterThrowable();
+                yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
 
             }
 
-            return;
+            yield break;
         }
 
         isThrowInProgress = true;   // lock immediately
@@ -346,7 +389,7 @@ public class PlayerThrowableManager : MonoBehaviour
         SetTrajectoryLineActive(false);
 
         currentThrowableAnimator.Play("Throw");
-        await Task.Delay((int)(currentlySelectedThrowable.throwDelay * 1000));
+        yield return new WaitForSeconds(currentlySelectedThrowable.throwDelay);
 
         Throwable clone = Instantiate(
             currentlySelectedThrowable.throwablePrefab,
@@ -358,19 +401,12 @@ public class PlayerThrowableManager : MonoBehaviour
         if(currentlySelectedThrowable.detonationType == DetonationType.Remote)
             manuallyDetonatedThrowables.Add(clone);
 
-        RemoveThrowableFromAvailable(currentlySelectedThrowable, 1);
+        yield return RemoveThrowableFromAvailable(currentlySelectedThrowable, 1);
 
         if (GetRemainingAmountOfThrowable(currentlySelectedThrowable) > 0 || (currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count > 0))
         {
-            await Task.Delay((int)(0.7f * 1000));
             currentThrowableAnimator.Play("Draw");
-            await Task.Delay((int)(0.767f * 1000));
-        }
-        else
-        {
-            await Task.Delay((int)(0.7f * 1000));
-            await HolsterThrowable();
-            await playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+            yield return new WaitForSeconds(0.767f);
         }
 
         isThrowInProgress = false;   // unlock

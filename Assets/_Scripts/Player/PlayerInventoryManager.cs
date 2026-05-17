@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class PlayerInventoryManager : MonoBehaviour, IInventory
@@ -23,8 +22,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
     [SerializeField] float openContainerCamMovementDuration, closeContainerCamMovementDuration;
     public static bool isInContainer { get; private set; }
 
-    bool hasCollectedFirstThrowable;
-
     public static event Action onInventoryOpened;
     public static event Action onInventoryClosed;
     public static event Action<InventorySlot[]> onInventorySlotsSpawned;
@@ -37,8 +34,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         Container.onContainerOpened += OnContainerOpened;
         Container.onContainerClosed += OnContainerClosed;
 
-        //WorldInteractionManager.onNearbyContainerUpdated += OnNearbyContainerUpdated;
-
         InventoryContextMenu.onInventorySlotWeaponUnloaded += OnInventorySlotWeaponUnloaded;
 
         PauseMenu.onQuit += RemoveInventorySlots;
@@ -49,21 +44,10 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         Container.onContainerOpened -= OnContainerOpened;
         Container.onContainerClosed -= OnContainerClosed;
 
-        //WorldInteractionManager.onNearbyContainerUpdated -= OnNearbyContainerUpdated;
-
         InventoryContextMenu.onInventorySlotWeaponUnloaded -= OnInventorySlotWeaponUnloaded;
 
         PauseMenu.onQuit -= RemoveInventorySlots;
     }
-
-    //void OnNearbyContainerUpdated(IContainer nearbyContainer)
-    //{
-    //    if(nearbyContainer == null)
-    //    {
-    //        playerController.MoveCameraPos(defaultCamPos, closeContainerCamMovementDuration);
-    //        playerController.RotCamera(defaultCamRot, closeContainerCamMovementDuration);
-    //    }
-    //}
 
     void OnContainerOpened()
     {
@@ -73,8 +57,6 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         playerController.MoveCameraPos(openContainerCamPos, openContainerCamMovementDuration);
         playerController.RotCamera(openContainerCamRot, openContainerCamMovementDuration);
         isInContainer = true;
-
-        //await Task.Delay((int)((openContainerCamMovementDuration / 2) * 1000));
 
         if (!CharacterMenuUIController.isCharacterMenuOpen)
             OpenInventory();
@@ -161,18 +143,18 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         }
     }
 
-    public void ToggleInventory()
-    {
+    //public void ToggleInventory()
+    //{
 
-        if (CharacterMenuUIController.isCharacterMenuOpen == true)
-        {
-            CloseInventory();
-        }
-        else if (CharacterMenuUIController.isCharacterMenuOpen == false)
-        {
-            OpenInventory();
-        }
-    }
+    //    if (CharacterMenuUIController.isCharacterMenuOpen == true)
+    //    {
+    //        CloseInventory();
+    //    }
+    //    else if (CharacterMenuUIController.isCharacterMenuOpen == false)
+    //    {
+    //        OpenInventory();
+    //    }
+    //}
 
     private void OpenInventory()
     {

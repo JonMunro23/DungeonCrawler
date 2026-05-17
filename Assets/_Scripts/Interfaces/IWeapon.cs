@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using System.Collections;
 using UnityEngine;
 
 public interface IWeapon : IUseable
@@ -13,11 +13,11 @@ public interface IWeapon : IUseable
     public MeleeWeapon GetMeleeWeapon();
     public RangedWeapon GetRangedWeapon();
     public void InitWeapon(WeaponSlot occupyingSlot, WeaponItemData dataToInit, AudioEmitter _weaponAudioEmitter, IInventory playerInventory);
-    public Task DrawWeapon();
-    public Task HolsterWeapon();
+    public IEnumerator DrawWeapon();
+    public IEnumerator HolsterWeapon();
     //public Task ReadyWeapon();
     //public Task UnreadyWeapon();
-    public Task Grab();
+    public IEnumerator Grab();
     public void RemoveWeapon();
     public int UnloadAmmo();
 }

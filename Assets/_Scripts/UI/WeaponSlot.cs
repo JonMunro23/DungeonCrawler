@@ -1,6 +1,5 @@
 using System;
-using System.Threading.Tasks;
-using UnityEngine;
+using System.Collections;
 
 public class WeaponSlot : InventorySlot
 {
@@ -85,17 +84,17 @@ public class WeaponSlot : InventorySlot
             currentWeapon.SetWeaponActive(isActive);           
     }
 
-    public async Task HolsterWeapon()
+    public IEnumerator HolsterWeapon()
     {
         if(currentWeapon != null)
-            await currentWeapon.HolsterWeapon();
+            yield return currentWeapon.HolsterWeapon();
     }
 
-    public async Task DrawWeapon()
+    public IEnumerator DrawWeapon()
     {
         if (currentWeapon != null)
         {
-            await currentWeapon.DrawWeapon();
+            yield return currentWeapon.DrawWeapon();
             onWeaponDrawn?.Invoke(currentWeapon);
         }
     }

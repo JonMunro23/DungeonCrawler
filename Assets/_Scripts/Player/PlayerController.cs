@@ -1,8 +1,8 @@
 using DG.Tweening;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [System.Serializable]
 public struct PlayerSaveData
@@ -55,6 +55,11 @@ public class PlayerController : MonoBehaviour
     public Rigidbody rb;
     public static bool isPlayerAlive;
     Vector3 defaultCamPos;
+
+    Coroutine useThrowableCoroutine, 
+        equipThrowableCoroutine, 
+        useHealthSyringeCoroutine,
+        swapWeaponsCoroutine;
 
     public static event Action<PlayerController> onPlayerInitialised;
     public static event Action onPlayerDeath;
@@ -200,27 +205,45 @@ public class PlayerController : MonoBehaviour
         playerMovementManager.Teleport(nodeToMoveTo.moveToTransform.position);
     }
 
-    async void TryEquipThrowable()
+    void TryEquipThrowable()
     {
-        await playerThrowableManager.ToggleEquipThrowable();
+        if (equipThrowableCoroutine != null)
+        {
+            StopCoroutine(equipThrowableCoroutine);
+            equipThrowableCoroutine = null;
+        }
+
+        equipThrowableCoroutine = StartCoroutine(EquipThrowable());
     }
 
-    async void TryUseHealthSyringe(ISlot slotToUse)
+    void TryUseHealthSyringe(ISlot slotToUse)
     {
         if (playerHealthManager.CanUseSyringe() && playerInventoryManager.HasHealthSyringe())
         {
             if (slotToUse == null)
                 return;
 
-            if(playerWeaponManager.currentWeapon == null)
+            if (playerWeaponManager.currentWeapon == null)
                 return;
 
-            playerHealthManager.canUseSyringe = false;
+            if(useHealthSyringeCoroutine != null)
+            {
+                StopCoroutine(useHealthSyringeCoroutine);
+                useHealthSyringeCoroutine = null;
+            }
 
-            await playerWeaponManager.currentWeapon.HolsterWeapon();
-
-            playerHealthManager.UseSyringeInSlot(slotToUse);
+            useHealthSyringeCoroutine = StartCoroutine(UseHealthSyringe(slotToUse));
         }
+    }
+    IEnumerator UseHealthSyringe(ISlot slotToUse)
+    {
+        playerHealthManager.canUseSyringe = false;
+
+        yield return playerWeaponManager.currentWeapon.HolsterWeapon();
+
+        yield return playerHealthManager.UseSyringeInSlot(slotToUse);
+
+        useHealthSyringeCoroutine = null;
     }
 
     void TryUseCurrentWeapon()
@@ -233,7 +256,7 @@ public class PlayerController : MonoBehaviour
 
         if (playerThrowableManager.IsThrowableActive())
         {
-            _ = playerThrowableManager.UseThrowable();
+            TryUseThrowable();
             return;
         }
 
@@ -269,7 +292,7 @@ public class PlayerController : MonoBehaviour
 
     void TryReloadCurrentWeapon()
     {
-        playerWeaponManager.ReloadCurrentWeapon();
+        playerWeaponManager.TryReloadCurrentWeapon();
     }
 
     void TryOpenAmmoSelectionMenu()
@@ -281,9 +304,25 @@ public class PlayerController : MonoBehaviour
     {
         playerWeaponManager.CloseAmmoSelectionMenu();
     }
+
     void TrySwapWeapons()
     {
-        playerWeaponManager.SwapWeapons();
+        if (!playerWeaponManager.currentWeapon.CanUse()) return;
+
+        if(swapWeaponsCoroutine != null)
+        {
+            StopCoroutine(swapWeaponsCoroutine);
+            swapWeaponsCoroutine = null;
+        }
+
+        swapWeaponsCoroutine =  StartCoroutine(SwapWeapons());
+    }
+    IEnumerator SwapWeapons()
+    {
+        //Debug.Log("Swap weapons coroutine started...");
+
+        yield return playerWeaponManager.SwapWeapons();
+        swapWeaponsCoroutine = null;
     }
 
     void TryOpenThrowableSelectionMenu()
@@ -295,6 +334,32 @@ public class PlayerController : MonoBehaviour
     {
         playerThrowableManager.CloseThrowableSelectionMenu();
     }
+
+    IEnumerator EquipThrowable()
+    {
+        yield return playerThrowableManager.ToggleEquipThrowable();
+        equipThrowableCoroutine = null;
+    }
+
+    void TryUseThrowable()
+    {
+        if (playerThrowableManager.isThrowInProgress) return;
+
+        if (useThrowableCoroutine != null)
+        {
+            StopCoroutine(useThrowableCoroutine);
+            useThrowableCoroutine = null;
+        }
+
+        useThrowableCoroutine = StartCoroutine(UseThrowable());
+    }
+
+    IEnumerator UseThrowable()
+    {
+        yield return playerThrowableManager.UseThrowable();
+        useThrowableCoroutine = null;
+    }
+
 
     void RemoveGrabbedItem()
     {
