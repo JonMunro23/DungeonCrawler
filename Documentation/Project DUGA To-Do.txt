@@ -4,7 +4,6 @@ Additions
 
 Bugs / Fixes
 --------------------
-- Move input handling of WorldInteractionManager into its own method
 
 Critical but aids
 ---------------------
