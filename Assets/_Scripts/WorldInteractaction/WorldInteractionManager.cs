@@ -214,8 +214,10 @@ public class WorldInteractionManager : MonoBehaviour
             }
             else if (hit.transform.TryGetComponent(out IInteractable interactable))
             {
-                if (hasGrabbedItem)
+                if (interactable.RequiresItem())
                 {
+                    if (!hasGrabbedItem) return;
+
                     if (interactable.TryInteractWithItem(currentGrabbedItem.Item.ItemData))
                     {
                         if (interactable.ConsumesItem())

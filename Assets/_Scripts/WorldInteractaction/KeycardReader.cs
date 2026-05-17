@@ -27,6 +27,11 @@ public class KeycardReader : InteractableBase
         defaultMat = indicatorMesh.material;
     }
 
+    public override bool RequiresItem()
+    {
+        return true;
+    }
+
     public override bool TryInteractWithItem(ItemData item)
     {
         if (!canUse)
@@ -93,11 +98,6 @@ public class KeycardReader : InteractableBase
         SetIndicatorMaterial(errorMat);
         yield return new WaitForSeconds(errorIndicatorDuration);
         SetIndicatorMaterial(defaultMat);
-    }
-
-    public override void Interact()
-    {
-        //somehow show player that a keycard is required
     }
 
     public override void SetStartingActivationState(bool _isActivated)

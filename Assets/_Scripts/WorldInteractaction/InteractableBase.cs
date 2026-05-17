@@ -154,4 +154,6 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
     }
 
     public virtual bool ConsumesItem() { return false; }
+
+    public virtual bool RequiresItem() { return false; }
 }

@@ -1,6 +1,3 @@
-using DG.Tweening;
-using System.Collections;
-using System.Security.Policy;
 using UnityEngine;
 
 public class Lock : InteractableBase
@@ -30,6 +27,11 @@ public class Lock : InteractableBase
         return true;
     }
 
+    public override bool RequiresItem()
+    {
+        return true;
+    }
+
     public void SetRequiredKeyType(string requiredType)
     {
         requiredKey = HelperFunctions.ToEnum<KeyType>(requiredType);
@@ -45,13 +47,6 @@ public class Lock : InteractableBase
 
         //show key not going in lock?
         return false;
-    }
-
-    
-
-    public override void Interact()
-    {
-        //somehow show player that a keycard is required
     }
 
     public override void SetStartingActivationState(bool _isActivated)
