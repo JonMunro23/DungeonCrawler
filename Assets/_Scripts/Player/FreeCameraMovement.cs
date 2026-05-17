@@ -45,10 +45,9 @@ public class FreeCameraMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update()
+    public void Tick()
     {
-        if (PauseMenu.isPaused ||
-            CharacterMenuUIController.isCharacterMenuOpen ||
+        if (CharacterMenuUIController.isCharacterMenuOpen ||
             MapController.isMapOpen ||
             ThrowableSelectionManager.isThrowableSelectionMenuOpen ||
             isWeaponAmmoSelectionMenuOpen)

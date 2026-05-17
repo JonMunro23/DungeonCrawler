@@ -179,11 +179,64 @@ public class WorldInteractionManager : MonoBehaviour
         HelperFunctions.SetCursorActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
+    // Acts as update, called from PlayerController
+    public void Tick()
+    {
+        Ray ray = playerController.playerCamera.ScreenPointToRay(controls.Player.MousePos.ReadValue<Vector2>());
+        
+        HighlightObjects(ray);
+
+        if (controls.Player.LeftClick.WasPressedThisFrame())
+        {
+            InteractWithObjects(ray);
+        }
+    }
+
+    void InteractWithObjects(Ray ray)
     {
         RaycastHit hit;
-        Ray ray = playerController.playerCamera.ScreenPointToRay(controls.Player.MousePos.ReadValue<Vector2>());
+        if (Physics.Raycast(ray, out hit, maxItemGrabDistance))
+        {
+            if (hasGrabbedItem && hit.transform.CompareTag("Ground"))
+            {
+                PlaceGrabbedItemInWorld(hit.point);
+            }
+            else if (hit.transform.TryGetComponent(out IPickup pickup))
+            {
+                pickup.AddToInventory(playerController.playerInventoryManager);
+                PlayGrabAnim();
+            }
+            else if (hit.transform.TryGetComponent(out IContainer container))
+            {
+                container.ToggleContainer();
+                currentOpenContainer = container;
+                PlayGrabAnim();
+            }
+            else if (hit.transform.TryGetComponent(out IInteractable interactable))
+            {
+                if (hasGrabbedItem)
+                {
+                    if (interactable.TryInteractWithItem(currentGrabbedItem.Item.ItemData))
+                    {
+                        if (interactable.ConsumesItem())
+                            DetachItemFromMouseCursor();
+
+                        PlayGrabAnim();
+                    }
+                }
+                else
+                {
+                    interactable.Interact();
+                    PlayGrabAnim();
+                }
+
+            }
+        }
+    }
+
+    void HighlightObjects(Ray ray)
+    {
+        RaycastHit hit;
         if (Physics.Raycast(ray, out hit, maxItemGrabDistance))
         {
             //Debug.DrawLine(ray.origin, hit.point, Color.yellow);
@@ -228,48 +281,6 @@ public class WorldInteractionManager : MonoBehaviour
         else
         {
             ResetLookAtTarget();
-        }
-
-        if (controls.Player.LeftClick.WasPressedThisFrame())
-        {
-            if (Physics.Raycast(ray, out hit, maxItemGrabDistance))
-            {
-                if (hasGrabbedItem && hit.transform.CompareTag("Ground"))
-                {
-                    PlaceGrabbedItemInWorld(hit.point);
-                    return;
-                }
-                else if(hit.transform.TryGetComponent(out IPickup pickup))
-                {
-                    pickup.AddToInventory(playerController.playerInventoryManager);
-                    PlayGrabAnim();
-                }
-                else if (hit.transform.TryGetComponent(out IContainer container))
-                {
-                    container.ToggleContainer();
-                    currentOpenContainer = container;
-                    PlayGrabAnim();
-                }
-                else if(hit.transform.TryGetComponent(out IInteractable interactable))
-                {
-                    if (hasGrabbedItem)
-                    {
-                        if(interactable.TryInteractWithItem(currentGrabbedItem.Item.ItemData))
-                        {
-                            if(interactable.ConsumesItem())
-                                DetachItemFromMouseCursor();
-
-                            PlayGrabAnim();
-                        }
-                    }
-                    else
-                    {
-                        interactable.Interact();
-                        PlayGrabAnim();
-                    }
-
-                }
-            }
         }
     }
 

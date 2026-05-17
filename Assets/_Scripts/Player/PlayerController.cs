@@ -33,9 +33,7 @@ public struct PlayerSaveData
 public class PlayerController : MonoBehaviour
 {
     [Header("References")]
-    //[HideInInspector] public AdvancedGridMovement advGridMovement;
     [HideInInspector] public PlayerMovementManager playerMovementManager;
-    [HideInInspector] public WorldInteractionManager itemPickupManager;
     [HideInInspector] public PlayerHealthManager playerHealthManager;
     [HideInInspector] public PlayerStatusEffectManager playerStatusEffectManager;
     [HideInInspector] public PlayerInventoryManager playerInventoryManager;
@@ -45,6 +43,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public PlayerStatsManager playerStatsManager;
     [HideInInspector] public PlayerSkillsManager playerSkillsManager;
     [HideInInspector] public PlayerLevelManager playerLevelManager;
+    [HideInInspector] public WorldInteractionManager worldInteractionManager;
     [HideInInspector] public FreeCameraMovement cameraMovement;
     [HideInInspector] public Camera playerCamera;
     PlayerControls playerControls;
@@ -65,19 +64,19 @@ public class PlayerController : MonoBehaviour
     public static event Action onPlayerDeath;
     public static event Action<GridNode> onPlayerOccupiedNodeUpdated;
 
-    private void OnEnable()
+    void OnEnable()
     {
         InventoryContextMenu.onHealSyringeUsedFromContextMenu += OnHealSyringeUsedFromContextMenu;
         PlayerInputHandler.OnPlayerControlsInitialised += OnPlayerControlsInitialised;
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         InventoryContextMenu.onHealSyringeUsedFromContextMenu -= OnHealSyringeUsedFromContextMenu;
         PlayerInputHandler.OnPlayerControlsInitialised -= OnPlayerControlsInitialised;
     }
 
-    private void Awake()
+    void Awake()
     {
         playerMovementManager = GetComponent<PlayerMovementManager>();
         playerHealthManager = GetComponent<PlayerHealthManager>();
@@ -86,24 +85,35 @@ public class PlayerController : MonoBehaviour
         playerEquipmentManager = GetComponent<PlayerEquipmentManager>();
         playerWeaponManager = GetComponent<PlayerWeaponManager>();
         playerThrowableManager = GetComponent<PlayerThrowableManager>();
-        itemPickupManager = GetComponent<WorldInteractionManager>();
         playerStatsManager = GetComponent<PlayerStatsManager>();
         playerSkillsManager = GetComponent<PlayerSkillsManager>();
         playerLevelManager = GetComponent<PlayerLevelManager>();
+        worldInteractionManager = GetComponent<WorldInteractionManager>();
         cameraMovement = GetComponentInChildren<FreeCameraMovement>();
         playerCamera = GetComponentInChildren<Camera>();
 
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Start()
+    void Start()
     {
         defaultCamPos = playerCamera.transform.localPosition;
     }
 
-    private void Update()
+    void Update()
     {
+        if (PauseMenu.isPaused) return;
+
         InputHandling();
+        TickComponents();
+    }
+
+    void TickComponents()
+    {
+        worldInteractionManager.Tick();
+        playerStatusEffectManager.Tick();
+        playerThrowableManager.Tick();
+        cameraMovement.Tick();
     }
 
     void InputHandling()
@@ -180,7 +190,7 @@ public class PlayerController : MonoBehaviour
 
         playerCharacterData = playerCharData;
         //currentOccupiedNode = spawnGridNode;
-        itemPickupManager.Init(this);
+        worldInteractionManager.Init(this);
         playerInventoryManager.Init(this);
         playerEquipmentManager.Init(this);
         playerWeaponManager.Init(this);
@@ -363,8 +373,8 @@ public class PlayerController : MonoBehaviour
 
     void RemoveGrabbedItem()
     {
-        playerInventoryManager.TryAddItem(itemPickupManager.currentGrabbedItem);
-        itemPickupManager.DetachItemFromMouseCursor();
+        playerInventoryManager.TryAddItem(worldInteractionManager.currentGrabbedItem);
+        worldInteractionManager.DetachItemFromMouseCursor();
         HelperFunctions.SetCursorActive(false);
     }
 

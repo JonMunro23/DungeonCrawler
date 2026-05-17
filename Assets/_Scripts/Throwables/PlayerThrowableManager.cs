@@ -113,7 +113,7 @@ public class PlayerThrowableManager : MonoBehaviour
         }
     }
 
-    void Update()
+    public void Tick()
     {
         // Don’t simulate/preview during an active throw
         if (isThrowInProgress) return;

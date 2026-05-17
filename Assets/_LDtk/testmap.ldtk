@@ -4443,7 +4443,7 @@
 						},
 						{
 							"__identifier": "Radiation_Emitter",
-							"__grid": [22,3],
+							"__grid": [21,2],
 							"__pivot": [0.5,0.5],
 							"__tags": [],
 							"__tile": { "tilesetUid": 3, "x": 256, "y": 256, "w": 16, "h": 16 },
@@ -4452,10 +4452,10 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 159,
-							"px": [360,56],
-							"fieldInstances": [{ "__identifier": "Radiation_Distance", "__type": "Int", "__value": 6, "__tile": null, "defUid": 161, "realEditorValues": [{ "id": "V_Int", "params": [6] }] }],
-							"__worldX": 360,
-							"__worldY": -456
+							"px": [344,40],
+							"fieldInstances": [{ "__identifier": "Radiation_Distance", "__type": "Int", "__value": 1, "__tile": null, "defUid": 161, "realEditorValues": [{ "id": "V_Int", "params": [1] }] }],
+							"__worldX": 344,
+							"__worldY": -472
 						},
 						{
 							"__identifier": "NPC_Zombie",

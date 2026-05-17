@@ -23,7 +23,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 1
-  controlID: 56387
+  controlID: 56627
   draggingID: 0
 --- !u!114 &2
 MonoBehaviour:
@@ -154,7 +154,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 112}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 56388
+  controlID: 56628
   draggingID: 0
 --- !u!114 &4
 MonoBehaviour:
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 112}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 56389
+  controlID: 56629
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -213,7 +213,7 @@ MonoBehaviour:
   - {fileID: 10}
   - {fileID: 11}
   m_Selected: 1
-  m_LastSelected: 3
+  m_LastSelected: 2
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1335,7 +1335,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 112}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 56452
+  controlID: 56692
   draggingID: 0
 --- !u!114 &16
 MonoBehaviour:
@@ -1511,7 +1511,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
     m_DynamicPanelBehavior: 0
   m_SearchFilter:
-    m_NameFilter: 
+    m_NameFilter: weaponmanager
     m_ClassNames: []
     m_AssetLabels: []
     m_AssetBundleNames: []
@@ -1525,7 +1525,7 @@ MonoBehaviour:
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
-    m_OriginalText: 
+    m_OriginalText: weaponmanager
     m_ImportLogFlags: 0
     m_FilterByTypeIntersection: 0
   m_ViewMode: 0
@@ -1594,38 +1594,21 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 1771}
+    scrollPos: {x: 0, y: 0}
     m_SelectedIDs:
     - m_Data: 43642
     m_LastClickedID:
-      m_Data: 43642
+      m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
     - m_Data: 64902
-    - m_Data: 64904
-    - m_Data: 64906
-    - m_Data: 64908
-    - m_Data: 64910
     - m_Data: 64912
     - m_Data: 64914
     - m_Data: 64916
     - m_Data: 64918
     - m_Data: 64920
-    - m_Data: 64922
     - m_Data: 64924
-    - m_Data: 64926
-    - m_Data: 64928
-    - m_Data: 64930
-    - m_Data: 64932
-    - m_Data: 64934
-    - m_Data: 65090
-    - m_Data: 65104
-    - m_Data: 65140
-    - m_Data: 65236
-    - m_Data: 65238
-    - m_Data: 65240
-    - m_Data: 65242
-    - m_Data: 2147483647
+    - m_Data: 65174
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

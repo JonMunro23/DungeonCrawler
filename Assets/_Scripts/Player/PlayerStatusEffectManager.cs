@@ -43,7 +43,7 @@ public class PlayerStatusEffectManager : MonoBehaviour
         GridNode.onNodeEffectsChanged -= OnAnyNodeEffectsChanged;
     }
 
-    void Update()
+    public void Tick()
     {
         runner?.Tick(Time.deltaTime);
     }

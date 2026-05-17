@@ -4,13 +4,12 @@ Additions
 
 Bugs / Fixes
 --------------------
-- Repair Save/Load system (write down what needs to be saved then go from there)
 - Move input handling of WorldInteractionManager into its own method
-- Ensure ammo display sprite changes to new ammo type on switch
 
 Critical but aids
 ---------------------
 - change pause to IPausable (sweep & clear)
+- Repair Save/Load system (write down what needs to be saved then go from there)
 
 Maybes
 ---------------------
