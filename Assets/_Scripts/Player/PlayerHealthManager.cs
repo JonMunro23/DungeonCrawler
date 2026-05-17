@@ -200,7 +200,7 @@ public class PlayerHealthManager : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(syringeData.useAnimationLength - delayBeforeRegen);
         DisableSyringeArms();
 
-        yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+        yield return playerController.playerWeaponManager.DrawCurrentWeapon();
     }
 
 

@@ -133,9 +133,6 @@ public class PlayerController : MonoBehaviour
         if (playerControls.Player.Heal.WasPressedThisFrame())
             TryUseHealthSyringe(playerInventoryManager.FindSlotWithConsumableOfType(ConsumableType.HealSyringe));
 
-        if (playerControls.Player.EquipThrowable.WasPressedThisFrame())
-            TryEquipThrowable();
-
         if (playerControls.Player.SwapWeapon.WasPressedThisFrame())
             TrySwapWeapons();
 
@@ -217,11 +214,8 @@ public class PlayerController : MonoBehaviour
 
     void TryEquipThrowable()
     {
-        if (equipThrowableCoroutine != null)
-        {
-            StopCoroutine(equipThrowableCoroutine);
-            equipThrowableCoroutine = null;
-        }
+
+        if (equipThrowableCoroutine != null) return;
 
         equipThrowableCoroutine = StartCoroutine(EquipThrowable());
     }
@@ -249,7 +243,7 @@ public class PlayerController : MonoBehaviour
     {
         playerHealthManager.canUseSyringe = false;
 
-        yield return playerWeaponManager.currentWeapon.HolsterWeapon();
+        yield return playerWeaponManager.HolsterCurrentWeapon();
 
         yield return playerHealthManager.UseSyringeInSlot(slotToUse);
 
@@ -317,21 +311,14 @@ public class PlayerController : MonoBehaviour
 
     void TrySwapWeapons()
     {
-        if (!playerWeaponManager.currentWeapon.CanUse()) return;
-
-        if(swapWeaponsCoroutine != null)
-        {
-            StopCoroutine(swapWeaponsCoroutine);
-            swapWeaponsCoroutine = null;
-        }
+        if (swapWeaponsCoroutine != null) return;
 
         swapWeaponsCoroutine =  StartCoroutine(SwapWeapons());
     }
     IEnumerator SwapWeapons()
     {
-        //Debug.Log("Swap weapons coroutine started...");
-
         yield return playerWeaponManager.SwapWeapons();
+
         swapWeaponsCoroutine = null;
     }
 
@@ -348,6 +335,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator EquipThrowable()
     {
         yield return playerThrowableManager.ToggleEquipThrowable();
+
         equipThrowableCoroutine = null;
     }
 

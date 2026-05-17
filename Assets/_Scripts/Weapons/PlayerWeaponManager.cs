@@ -265,8 +265,8 @@ public class PlayerWeaponManager : MonoBehaviour
     private IEnumerator SetSlotActive(int slotIndex)
     {
         spawnedWeaponSlots[slotIndex].SetSlotWeaponActive(true);
-        yield return spawnedWeaponSlots[slotIndex].DrawWeapon();
         currentWeapon = spawnedWeaponSlots[slotIndex].GetWeapon();
+        yield return DrawWeaponInSlot(slotIndex);
     }
 
     /// <summary>
@@ -401,6 +401,16 @@ public class PlayerWeaponManager : MonoBehaviour
         addWeaponToSlotCoroutine = null;
     }
 
+    public IEnumerator HolsterCurrentWeapon()
+    {
+        yield return HolsterWeaponInSlot(activeSlotIndex);
+    }
+
+    public IEnumerator DrawCurrentWeapon()
+    {
+        yield return DrawWeaponInSlot(activeSlotIndex);
+    }
+
     IEnumerator HolsterWeaponInSlot(int slotIndex)
     {
         if (playerController.playerThrowableManager.IsThrowableActive())
@@ -409,6 +419,11 @@ public class PlayerWeaponManager : MonoBehaviour
         }
         else
             yield return spawnedWeaponSlots[slotIndex].HolsterWeapon();
+    }
+
+    IEnumerator DrawWeaponInSlot(int slotIndex)
+    {
+        yield return spawnedWeaponSlots[slotIndex].DrawWeapon();
     }
 
     IEnumerator RemoveWeaponFromSlot(int slotIndex)
@@ -437,10 +452,18 @@ public class PlayerWeaponManager : MonoBehaviour
     {
         CloseAmmoSelectionMenu();
 
-        if(playerController.playerThrowableManager.IsThrowableActive())
+        // is we have a throwable out, holster it and requip previous weapon
+        if (playerController.playerThrowableManager.IsThrowableActive())
         {
+            Debug.Log("Throwable is active, holstering...");
             yield return playerController.playerThrowableManager.HolsterThrowable();
+            yield return DrawCurrentWeapon();
+            yield break;
         }
+
+        Debug.Log(currentWeapon.CanUse());
+        if (!currentWeapon.CanUse())
+            yield break;
 
         if (activeSlotIndex == 0)
         {

@@ -14,7 +14,7 @@ public class PlayerThrowableManager : MonoBehaviour
     Animator currentThrowableAnimator;
     Transform currentThrowableThrowLocation;
     bool isCurrentThrowableActive;
-    public bool isThrowableSelectionMenuOpen, isThrowableReadied, isThrowInProgress;
+    public bool isThrowableSelectionMenuOpen, isThrowableReadied, isThrowInProgress, isThrowableDrawn;
 
     [SerializeField] Dictionary<ThrowableItemData, int> availableThrowables = new Dictionary<ThrowableItemData, int>();
     [SerializeField] List<Throwable> manuallyDetonatedThrowables = new List<Throwable>();
@@ -187,7 +187,7 @@ public class PlayerThrowableManager : MonoBehaviour
                     SetTrajectoryLineActive(false);
                     SetCurrentThrowableGameObjectActive(false);
 
-                    yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+                    yield return playerController.playerWeaponManager.DrawCurrentWeapon();
                 }
 
         }
@@ -199,7 +199,7 @@ public class PlayerThrowableManager : MonoBehaviour
             if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
             {
                 yield return HolsterThrowable();
-                yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+                yield return playerController.playerWeaponManager.DrawCurrentWeapon();
             }
 
         removeThrowableCoroutine = null;
@@ -237,31 +237,45 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public IEnumerator ToggleEquipThrowable()
     {
+        if (currentlySelectedThrowable == null)
+            yield break;
+
         if (!IsThrowableActive())
+        {
             yield return EquipThrowable();
+        }
         else
         {
             yield return HolsterThrowable();
-            yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+            yield return playerController.playerWeaponManager.DrawCurrentWeapon();
         }
     }
 
     IEnumerator EquipThrowable()
     {
-        if (currentlySelectedThrowable == null)
-            yield break;
-
         if ((currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count == 0) && PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0)
             yield break;
 
         playerController.playerWeaponManager.CloseAmmoSelectionMenu();
-        yield return playerController.playerWeaponManager.currentWeapon.HolsterWeapon();
+        yield return playerController.playerWeaponManager.HolsterCurrentWeapon();
 
         SetCurrentThrowableGameObjectActive(true);
+
+        yield return DrawThrowable();
+    }
+
+    public IEnumerator DrawThrowable()
+    {
+        currentThrowableAnimator.Play("Draw");
+
+        yield return new WaitForSeconds(currentlySelectedThrowable.holsterLength);
+
+        isThrowableDrawn = true;
     }
 
     public IEnumerator HolsterThrowable()
     {
+        isThrowableDrawn = false;
         isCurrentThrowableActive = false; //set inactive early to prevent further readying
         isThrowableReadied = false;
         CloseThrowableSelectionMenu();
@@ -297,6 +311,7 @@ public class PlayerThrowableManager : MonoBehaviour
         if (!IsThrowableActive()) return;
         if (isThrowableReadied) return;
         if (isThrowInProgress) return;
+        if (!isThrowableDrawn) return;
         if (currentlySelectedThrowable == null) return;
         if (PlayerInventoryManager.GetRemainingAmountOfItem(currentlySelectedThrowable) == 0) return;
         if (PlayerInventoryManager.isInContainer) return;
@@ -372,7 +387,7 @@ public class PlayerThrowableManager : MonoBehaviour
                 //holster remoteexplosives
                 yield return new WaitForSeconds(0.7f);
                 yield return HolsterThrowable();
-                yield return playerController.playerWeaponManager.currentWeapon.DrawWeapon();
+                yield return playerController.playerWeaponManager.DrawCurrentWeapon();
 
             }
 
@@ -405,8 +420,8 @@ public class PlayerThrowableManager : MonoBehaviour
 
         if (GetRemainingAmountOfThrowable(currentlySelectedThrowable) > 0 || (currentlySelectedThrowable.detonationType == DetonationType.Remote && manuallyDetonatedThrowables.Count > 0))
         {
-            currentThrowableAnimator.Play("Draw");
-            yield return new WaitForSeconds(0.767f);
+            yield return DrawThrowable();
+            //yield return new WaitForSeconds(0.767f);
         }
 
         isThrowInProgress = false;   // unlock
