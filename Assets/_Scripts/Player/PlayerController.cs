@@ -9,7 +9,7 @@ public struct PlayerSaveData
 {
     //Movement Data
     public Vector2 coords;
-    public float yRotation;
+    public Vector3 rotation;
 
     //Health data
     public int currentHealth;
@@ -27,6 +27,14 @@ public struct PlayerSaveData
     //Skill Data
     public int availableSkillPoints;
     public List<UnlockedSKillData> unlockedSkills;
+
+    //Level Data
+    public int currentPlayerLevel;
+    public int currentExperiencePoints;
+    public int requiredExperiencePoints;
+
+    //Throwable Data
+    public ThrowableItemData selectedThrowable;
 }
 
 [SelectionBase]
@@ -63,6 +71,7 @@ public class PlayerController : MonoBehaviour
     public static event Action<PlayerController> onPlayerInitialised;
     public static event Action onPlayerDeath;
     public static event Action<GridNode> onPlayerOccupiedNodeUpdated;
+    public static event Action onQuickSave;
 
     void OnEnable()
     {
@@ -102,7 +111,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (PauseMenu.isPaused) return;
+        if (PauseMenu.isPaused || !isPlayerAlive) return;
 
         InputHandling();
         TickComponents();
@@ -118,6 +127,14 @@ public class PlayerController : MonoBehaviour
 
     void InputHandling()
     {
+        if (playerControls.Player.QuickSave.WasPressedThisFrame())
+        {
+            SaveSystem.Save("Quick Save");
+            onQuickSave?.Invoke();
+        }
+        else if (playerControls.Player.QuickLoad.WasPressedThisFrame())
+            SaveSystem.Load("Quick Save");
+
         if (MapController.isMapOpen) return;
 
         playerMovementManager.HandleMovementInput();
@@ -202,7 +219,7 @@ public class PlayerController : MonoBehaviour
 
     public void MoveToCoords(Vector2 newCoords)
     {
-        //Debug.Log("Moving player to " + newCoords);
+        Debug.Log("Moving player to " + newCoords);
 
         GridNode nodeToMoveTo = GridController.Instance.GetNodeAtCoords(newCoords);
         if (!nodeToMoveTo)
@@ -408,12 +425,13 @@ public class PlayerController : MonoBehaviour
     {
         AudioManager.Instance.RemoveSource("[AudioEmitter] Weapon");
         AudioManager.Instance.RemoveSource("[AudioEmitter] CharacterBody");
+        AudioManager.Instance.RemoveSource("[AudioEmitter] StatusEffects");
     }
 
     public void Save(ref PlayerSaveData data)
     {
         data.coords = currentOccupiedNode.Coords.Pos;
-        data.yRotation = transform.localEulerAngles.y;
+        data.rotation = cameraMovement.GetRotation();
 
         if (playerHealthManager)
             playerHealthManager.Save(ref data);
@@ -429,6 +447,12 @@ public class PlayerController : MonoBehaviour
 
         if (playerSkillsManager)
             playerSkillsManager.Save(ref data);
+
+        if (playerLevelManager)
+            playerLevelManager.Save(ref data);
+
+        if(playerThrowableManager)
+            playerThrowableManager.Save(ref data);
     }
 
     public void Load(PlayerSaveData data)
@@ -438,12 +462,15 @@ public class PlayerController : MonoBehaviour
         playerMovementManager.enabled = true;
 
         MoveToCoords(data.coords);
-        //advGridMovement.SetRotation(Mathf.RoundToInt(data.yRotation));
+        cameraMovement.SetRoation(data.rotation);
 
         if(playerStatsManager)
             playerStatsManager.Load();
 
-        if(playerSkillsManager)
+        if (playerLevelManager)
+            playerLevelManager.Load(data);
+
+        if (playerSkillsManager)
             playerSkillsManager.Load(data);
 
         if(playerHealthManager)
@@ -457,6 +484,9 @@ public class PlayerController : MonoBehaviour
 
         if(playerWeaponManager)
             playerWeaponManager.Load(data);
+
+        if(playerThrowableManager)
+            playerThrowableManager.Load(data);
 
     }
 }

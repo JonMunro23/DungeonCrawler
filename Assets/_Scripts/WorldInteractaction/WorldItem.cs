@@ -20,11 +20,6 @@ public class WorldItem : MonoBehaviour, IPickup
     public void InitWorldItem(int _levelIndex, ItemStack itemToInitialise)
     {
         levelIndex = _levelIndex;
-
-        //itemStack.Item = itemToInitialise.Item;
-        //itemStack.itemAmount = itemToInitialise.itemAmount;
-        //itemStack.loadedAmmo = itemToInitialise.loadedAmmo;
-
         itemStack = itemToInitialise;
 
         SpawnMesh();
@@ -35,10 +30,6 @@ public class WorldItem : MonoBehaviour, IPickup
         isInContainer = true;
         this.occupiedContainerSlot = occupiedContainerSlot;
         GetComponent<Rigidbody>().isKinematic = true;
-        //itemStack.item = stackToInitialise.item;
-        //itemStack.itemAmount = stackToInitialise.itemAmount;
-        //itemStack.loadedAmmo = stackToInitialise.loadedAmmo;
-
         itemStack = itemToInitialise;
 
         SpawnMesh();

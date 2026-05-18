@@ -542,4 +542,14 @@ public class PlayerThrowableManager : MonoBehaviour
     }
 
     #endregion
+
+    public void Save(ref PlayerSaveData data)
+    {
+        data.selectedThrowable = currentlySelectedThrowable;
+    }
+
+    public void Load(PlayerSaveData data)
+    {
+        SetCurrentlySelectedThrowable(data.selectedThrowable);
+    }
 }

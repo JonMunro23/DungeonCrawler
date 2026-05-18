@@ -1,6 +1,10 @@
 Additions
 -------------------
 - Add level/game statistics to pause menu
+- Add blood splat when hitting enemies
+- Add hit Sfx for hitting enemies
+- Add ambient music
+- Some form of tutorial
 
 Bugs / Fixes
 --------------------

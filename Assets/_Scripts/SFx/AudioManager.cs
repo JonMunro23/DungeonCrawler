@@ -1,22 +1,14 @@
-﻿//=========== Copyright (c) GameBuilders, All rights reserved. ================
-//
-// Purpose: The Audio Manager Script controls all AudioSources used by the character,
-//          grouping them in different categories, SFx, Music and Voice.
-//
-//=============================================================================
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.UIElements;
 
 #pragma warning disable CS0649
 
 /// <summary>
 /// The Audio Manager Script controls all AudioSources used by the character.
 /// </summary>
-[AddComponentMenu("FPS Builder/Managers/Audio Manager"), DisallowMultipleComponent]
+[AddComponentMenu("Audio Manager"), DisallowMultipleComponent]
 public sealed class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
@@ -54,10 +46,10 @@ public sealed class AudioManager : MonoBehaviour
     private AudioMixerGroup m_SfxMixer;
 
     /// <summary>
-    /// The Music Mixer is not affect by any king of effect, for this reason, it is perfect for all Music Sources in game.
+    /// The Music Mixer is not affect by any kind of effect, for this reason, it is perfect for all Music Sources in game.
     /// </summary>
     [SerializeField]
-    [Tooltip("The Music Mixer is not affect by any king of effect, for this reason, it is perfect for all Music Sources in game.")]
+    [Tooltip("The Music Mixer is not affect by any kind of effect, for this reason, it is perfect for all Music Sources in game.")]
     private AudioMixerGroup m_MusicMixer;
 
     /// <summary>
@@ -121,25 +113,10 @@ public sealed class AudioManager : MonoBehaviour
 
     #endregion
 
-    //private void OnEnable()
-    //{
-    //    PlayerController.onPlayerInitialised += OnPlayerInitialised;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    PlayerController.onPlayerInitialised -= OnPlayerInitialised;
-    //}
-
     private void Awake()
     {
         Instance = this;
     }
-
-    //void OnPlayerInitialised(PlayerController controller)
-    //{
-    //    playerController = controller;
-    //}
 
     /// <summary>
     /// Register a new AudioEmitter and returns its reference.

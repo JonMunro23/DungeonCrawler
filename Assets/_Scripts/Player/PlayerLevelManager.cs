@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerLevelManager : MonoBehaviour
@@ -49,12 +50,36 @@ public class PlayerLevelManager : MonoBehaviour
         }
     }
 
+    public void SetLevel(int newLevel)
+    {
+        currentPlayerLevel = newLevel;
+    }
+
+    public void SetRequiredExperiencePoints(int requiredPoints)
+    {
+        requiredExperiencePoints = requiredPoints;
+    }
+
     void LevelUp()
     {
         currentPlayerLevel++;
-        requiredExperiencePoints = currentExperiencePoints * 2;
+        SetRequiredExperiencePoints(currentExperiencePoints * 2);
         //play level up sound
         onPlayerRequiredExperienceUpdated?.Invoke(requiredExperiencePoints);
         onPlayerLevelUp?.Invoke(currentPlayerLevel);
+    }
+
+    public void Save(ref PlayerSaveData data)
+    {
+        data.currentPlayerLevel = currentPlayerLevel;
+        data.currentExperiencePoints = currentExperiencePoints;
+        data.requiredExperiencePoints = requiredExperiencePoints;
+    }
+
+    public void Load(PlayerSaveData data)
+    {
+        SetLevel(data.currentPlayerLevel);
+        AddExperiencePoints(data.currentExperiencePoints);
+        SetRequiredExperiencePoints(data.requiredExperiencePoints);
     }
 }

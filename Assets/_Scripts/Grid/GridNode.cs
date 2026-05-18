@@ -126,6 +126,8 @@ public class GridNode : MonoBehaviour
         Coords = _coords;
         if (coordText)
             coordText.text = $"({Coords.Pos.x},{Coords.Pos.y})";
+
+        SetActive(false);
     }
 
     public void SetActive(bool isActive)

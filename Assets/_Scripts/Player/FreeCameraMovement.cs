@@ -68,4 +68,12 @@ public class FreeCameraMovement : MonoBehaviour
         // Player body rotation
         playerBody.Rotate(Vector3.up * mouseX);
     }
+
+    public Vector3 GetRotation() { return new Vector3(transform.eulerAngles.x, playerBody.eulerAngles.y, 0); }
+
+    public void SetRoation(Vector3 newRotation)
+    {
+        transform.localRotation = Quaternion.Euler(newRotation.x, 0, 0);
+        playerBody.localRotation = Quaternion.Euler(0, newRotation.y, 0);
+    }
 }

@@ -73,13 +73,13 @@ public class SaveableLevelData
     [System.Serializable]
     public class WorldItemSaveData
     {
-        public Vector2 coords;
-        public float rotation;
+        public Vector3 position;
+        public Vector3 rotation;
         public ItemStack itemStack;
 
-        public WorldItemSaveData(Vector2 coords, float rotation, ItemStack itemStack)
+        public WorldItemSaveData(Vector3 position, Vector3 rotation, ItemStack itemStack)
         {
-            this.coords = coords;
+            this.position = position;
             this.rotation = rotation;
             this.itemStack = itemStack;
         }

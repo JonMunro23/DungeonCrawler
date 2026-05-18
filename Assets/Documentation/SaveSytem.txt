@@ -1,0 +1,17 @@
+What to save
+-----------------
+throwables
+any active status effects
+
+destructables (isDestroyed or not)
+secrets (have been discovered or not)
+
+
+
+
+
+Loading level
+------------------
+
+Generate level as normal
+loop through

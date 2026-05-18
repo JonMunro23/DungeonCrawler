@@ -17,16 +17,12 @@ public class WeaponSlotData
 {
     public int slotIndex;
 
-    public WeaponItemData heldWeaponData;
-    public AmmoItemData currentWeaponLoadedAmmoData;
-    public int heldWeaponLoadedAmmo;
+    public WeaponItem heldWeapon;
 
-    public WeaponSlotData(int slotIndex, WeaponItemData heldWeaponData,  int heldWeaponLoadedAmmo, AmmoItemData currentWeaponLoadedAmmoDate)
+    public WeaponSlotData(int slotIndex, WeaponItem heldWeapon)
     {
         this.slotIndex = slotIndex;
-        this.heldWeaponData = heldWeaponData;
-        this.heldWeaponLoadedAmmo = heldWeaponLoadedAmmo;
-        this.currentWeaponLoadedAmmoData = currentWeaponLoadedAmmoDate;
+        this.heldWeapon = heldWeapon;
     }
 }
 
@@ -609,14 +605,7 @@ public class PlayerWeaponManager : MonoBehaviour
             if (slotWeapon.IsDefaultWeapon())
                 continue;
 
-            int loadedAmmo = 0;
-            RangedWeapon rangedWeapon = slot.GetWeapon() as RangedWeapon;
-            if(rangedWeapon != null)
-            {
-                loadedAmmo = rangedWeapon.GetLoadedAmmo();
-            }
-
-            slotData.Add(new WeaponSlotData(slot.GetSlotIndex(), slotWeapon.GetWeaponData(), loadedAmmo, slotWeapon.GetRangedWeapon().GetCurrentLoadedAmmoData()));
+            slotData.Add(new WeaponSlotData(slot.GetSlotIndex(), slotWeapon.GetWeaponItem()));
         }
         return slotData;
     }
@@ -634,12 +623,13 @@ public class PlayerWeaponManager : MonoBehaviour
             slot.UnloadSlot();
         }
         activeSlotIndex = data.activeWeaponSlotIndex;
+
         WeaponItem weaponItem;
         for (int i = 0; i < data.weaponSlotData.Count; i++)
         {
-            weaponItem = new WeaponItem(data.weaponSlotData[i].heldWeaponData, data.weaponSlotData[i].currentWeaponLoadedAmmoData, data.weaponSlotData[i].heldWeaponLoadedAmmo);
+            weaponItem = data.weaponSlotData[i].heldWeapon;
             spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(weaponItem, 1));
-            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].GetWeapon().GetRangedWeapon().SetCurrentLoadedAmmoData(data.weaponSlotData[i].currentWeaponLoadedAmmoData);
+            //spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].GetWeapon().GetRangedWeapon().SetCurrentLoadedAmmoData(data.weaponSlotData[i].currentWeaponLoadedAmmoData);
         }
 
 

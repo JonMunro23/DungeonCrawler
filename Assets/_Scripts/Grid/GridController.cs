@@ -14,7 +14,7 @@ public class GridController : MonoBehaviour
     [SerializeField] float gameTime;
 
     [SerializeField] LDtkComponentProject project;
-    List<Level> levels = new List<Level>();
+    List<Level> LDtkLevels = new List<Level>();
     LayerInstance entityLayer;
     LayerInstance intGridLayer;
 
@@ -24,11 +24,10 @@ public class GridController : MonoBehaviour
     [SerializeField] GridNode wallPrefab;
     [SerializeField] GridNode walkablePrefab;
     [SerializeField] GridNode voidPrefab;
-    [SerializeField] Dictionary<Vector2, GridNode> activeNodes = new Dictionary<Vector2, GridNode>();
-    Grid grid;
-    const float GRID_SIZE = 3;
-
+    Dictionary<Vector2, GridNode> activeNodes = new Dictionary<Vector2, GridNode>();
     Dictionary<int, GridNode[]> nodesByIndexPerLevel = new Dictionary<int, GridNode[]>();
+    const float GRID_SIZE = 3;
+    Grid grid;
 
 
     [Header("Levels")]
@@ -103,7 +102,6 @@ public class GridController : MonoBehaviour
     public int CurrentNodeCount => nodesByIndex != null ? nodesByIndex.Length : 0;
 
 
-    public static event Action onQuickSave;
     public static event Action OnFinishedGeneratingLevel;
     public static event Action<int> OnLevelGenerated;
 
@@ -123,6 +121,8 @@ public class GridController : MonoBehaviour
 
         public Vector2Int Pos { get; set; }
     }
+
+    #region Unity Lifecycle
 
     private void OnEnable()
     {
@@ -153,12 +153,44 @@ public class GridController : MonoBehaviour
         WorldItem.onWorldItemGrabbed -= OnWorldItemPickedUp;
     }
 
-    private void Awake()
+    void Awake()
     {
         Instance = this;
         grid = GetComponent<Grid>();
     }
 
+    void Start()
+    {
+        GetLevelsFromLDtk();
+
+        //generate nodes for each level but not entities
+        //set levels inactive
+
+        if (skipMainMenu)
+        {
+            playerCharData = defaultPlayerCharData;
+            HelperFunctions.SetCursorActive(false);
+            NewGame();
+        }
+    }
+
+    void Update()
+    {
+        if (PauseMenu.isPaused || !PlayerController.isPlayerAlive) return;
+
+        // change to only start counting game time when level and player have been fully initialised and user can control player
+        gameTime += Time.deltaTime;
+    }
+
+    #endregion
+
+
+    #region Event Handlers
+    void OnCharacterSelected(CharacterData charData)
+    {
+        playerCharData = charData;
+        NewGame();
+    }
     void OnPlayerDeath()
     {
         RestartLevel();
@@ -182,103 +214,6 @@ public class GridController : MonoBehaviour
         if(activeNPCs.Contains(deadNPC))
             activeNPCs.Remove(deadNPC);
     }
-
-    public IEnumerable<GridNode> GetAllActiveNodes()
-    {
-        return activeNodes.Values;
-    }
-
-    void GetLevels()
-    {
-        levels.Clear();
-        foreach (Level level in project.Json.FromJson.Levels)
-        {
-            levels.Add(level);
-        }
-    }
-
-    public int GetCurrentLevelIndex() => currentLevelIndex;
-
-    public List<GridNode> GetCurrentNodesForLevel(int levelIndex)
-    {
-        if (nodesByIndexPerLevel.TryGetValue(levelIndex, out var arr))
-            return arr.ToList();
-        else
-            return null;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        GetLevels();
-
-        if (skipMainMenu)
-        {
-            playerCharData = defaultPlayerCharData;
-            HelperFunctions.SetCursorActive(false);
-            NewGame();
-        }
-    }
-
-    #region QuickSave/Load
-    private void Update()
-    {
-        if(PauseMenu.isPaused || !PlayerController.isPlayerAlive) return;
-
-        gameTime += Time.deltaTime;
-
-        //if (Input.GetKeyDown(KeyCode.F5))
-        //{
-        //    QuickSave();
-        //}
-        //else if (Input.GetKeyDown(KeyCode.F6))
-        //{
-        //    QuickLoad();
-        //}
-    }
-
-    public void QuickSave()
-    {
-        SaveSystem.Save("Quick Save");
-        onQuickSave.Invoke();
-    }
-
-    public void QuickLoad()
-    {
-        SaveSystem.Load("Quick Save");
-    }
-    #endregion
-
-    #region NewGame
-    void OnCharacterSelected(CharacterData charData)
-    {
-        playerCharData = charData;
-        NewGame();
-    }
-
-    void NewGame()
-    {
-        InstantiateLevels();
-
-        SetLevelActive(startingLevelIndex);
-
-        SpawnPlayer();
-
-        MovePlayer(playerSpawnCoords);
-
-        OnFinishedGeneratingLevel?.Invoke();
-    }
-
-    void InstantiateLevels()
-    {
-        for (int i = 0; i < levels.Count; i++)
-        {
-            InstantiateLevel(i);
-            SaveLevel(i);
-            UnloadCurrentLevel();
-        }
-    }
-
     void OnQuit()
     {
         foreach (var level in levelParents)
@@ -301,11 +236,75 @@ public class GridController : MonoBehaviour
         Destroy(playerController.gameObject);
         playerController = null;
     }
+    #endregion
+
+    #region Getters
+    public IEnumerable<GridNode> GetAllActiveNodes()
+    {
+        return activeNodes.Values;
+    }
+    void GetLevelsFromLDtk()
+    {
+        LDtkLevels.Clear();
+        foreach (Level level in project.Json.FromJson.Levels)
+        {
+            LDtkLevels.Add(level);
+        }
+    }
+    public int GetCurrentLevelIndex() => currentLevelIndex;
+    public List<GridNode> GetCurrentNodesForLevel(int levelIndex)
+    {
+        if (nodesByIndexPerLevel.TryGetValue(levelIndex, out GridNode[] nodes))
+            return nodes.ToList();
+        else
+            return null;
+    }
+    public GridNode GetNodeAtCoords(Vector2 coords) => activeNodes.TryGetValue(coords, out var node) ? node : null;
+    public GridNode GetNodeFromWorldPos(Vector3 worldPos) => GetNodeAtCoords(new Vector2(grid.WorldToCell(worldPos).x, grid.WorldToCell(worldPos).y));
+    public string GetLevelNameFromIndex(int levelIndex)
+    {
+        return project.Json.FromJson.Levels[levelIndex].FieldInstances[0].Value.ToString();
+    }
+    public string GetCurrentLevelName()
+    {
+        return project.Json.FromJson.Levels[currentLevelIndex].FieldInstances[0].Value.ToString();
+    }
+    NPCData GetNPCData(object value)
+    {
+        string npcDataIdentifier = value.ToString();
+        //Debug.Log($"Trying to spawn: {npcDataIdentifier}");
+        return NPCDataContainer.GetDataFromIdentifier(npcDataIdentifier);
+    }
+    #endregion
+
+    #region NewGame
+    void NewGame()
+    {
+        InstantiateLevels();
+
+        SetLevelActive(startingLevelIndex);
+
+        SpawnPlayer();
+
+        MovePlayer(playerSpawnCoords);
+
+        OnFinishedGeneratingLevel?.Invoke();
+    }
+
+    void InstantiateLevels()
+    {
+        for (int i = 0; i < LDtkLevels.Count; i++)
+        {
+            InstantiateLevel(i);
+            SaveLevel(i);
+            UnloadCurrentLevel();
+        }
+    }
 
     void InstantiateLevel(int levelIndex)
     {
-        entityLayer = levels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
-        intGridLayer = levels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
+        entityLayer = LDtkLevels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
+        intGridLayer = LDtkLevels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
 
         Transform levelParent = new GameObject($"Level {levelIndex}").transform;
         levelParent.SetParent(transform);
@@ -358,7 +357,7 @@ public class GridController : MonoBehaviour
 
                 levelNodesByIndex[nodeIndex] = clone;
 
-                activeNodes.Add(spawnCoords, clone);
+                //activeNodes.Add(spawnCoords, clone);
 
                 Vector2 loopIndices = new Vector2(i, j);
                 GenerateEntities(levelIndex, loopIndices, spawnCoords);
@@ -389,7 +388,6 @@ public class GridController : MonoBehaviour
                         break;
                     case "WorldItem":
                         WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + (Vector3.up * .5f), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        spawnedWorldItems.Add(spawnedWorldItem);
                         ItemData worldItemData = itemDataContainer.GetDataFromIdentifier(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString());
 
                         weaponItemData = worldItemData as WeaponItemData;
@@ -399,6 +397,7 @@ public class GridController : MonoBehaviour
                             newItem = new Item(worldItemData);
 
                         spawnedWorldItem.InitWorldItem(levelIndex, new ItemStack(newItem, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value)));
+                        spawnedWorldItems.Add(spawnedWorldItem);
                         break;
                     case "Level_Transition":
                         LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0, 1.5f, 0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
@@ -703,6 +702,9 @@ public class GridController : MonoBehaviour
     #region LoadGame
     private void LoadGame(LevelSaveData data)
     {
+        //Generate grid nodes but dont generate entities
+        //loop through grid nodes and generate entities using loaded data
+
         foreach (Transform levelParent in levelParents)
         {
             Destroy(levelParent.gameObject);
@@ -737,7 +739,7 @@ public class GridController : MonoBehaviour
 
     void LoadLevels(List<SaveableLevelData> loadableData)
     {
-        for (int i = 0; i < levels.Count; i++)
+        for (int i = 0; i < LDtkLevels.Count; i++)
         {
             LoadLevel(i, loadableData[i]);
             SaveLevel(i);
@@ -747,8 +749,8 @@ public class GridController : MonoBehaviour
 
     void LoadLevel(int levelIndex, SaveableLevelData levelDataToLoad)
     {
-        entityLayer = levels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
-        intGridLayer = levels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
+        entityLayer = LDtkLevels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
+        intGridLayer = LDtkLevels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
 
         LoadGridNodes(levelIndex, levelDataToLoad);
 
@@ -759,9 +761,7 @@ public class GridController : MonoBehaviour
 
     void LoadGridNodes(int levelIndex, SaveableLevelData levelDataToLoad)
     {
-        GenerateLevel(levelIndex);
-        //GenerateEntities(levelIndex);
-        //GenerateNPCs(levelIndex);
+        InstantiateLevel(levelIndex);
 
         //Load Entities
         LoadNPCs(levelIndex, levelDataToLoad);
@@ -786,8 +786,7 @@ public class GridController : MonoBehaviour
         {
             foreach (SaveableLevelData.WorldItemSaveData savedWorldItem in levelDataToLoad.worldItems)
             {
-                GridNode spawnNode = GetNodeAtCoords(savedWorldItem.coords);
-                WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedWorldItem.rotation, 0)), spawnNode.transform);
+                WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, savedWorldItem.position, Quaternion.Euler(savedWorldItem.rotation));
                 spawnedWorldItem.InitWorldItem(levelIndex, savedWorldItem.itemStack);
                 spawnedWorldItems.Add(spawnedWorldItem);
             }
@@ -839,7 +838,6 @@ public class GridController : MonoBehaviour
         //else
         //    InstantiateLevel(currentLevelIndex);
     }
-
 
     public void BeginLevelTransition(int levelIndex, Vector2 playerMoveToCoords)
     {
@@ -908,13 +906,10 @@ public class GridController : MonoBehaviour
         }
     }
 
-
-
     void UnloadCurrentLevel()
     {
         foreach (NPCController NPC in activeNPCs)
         {
-            NPC.SnapToNode(NPC.movementController.CurrentNavTargetNode);
             NPC.SetActive(false);
         }
         activeNPCs.Clear();
@@ -927,15 +922,6 @@ public class GridController : MonoBehaviour
             node.SetActive(false);
         }
         activeNodes.Clear();
-    }
-
-    
-
-    NPCData GetNPCData(object value)
-    {
-        string npcDataIdentifier = value.ToString();
-        //Debug.Log($"Trying to spawn: {npcDataIdentifier}");
-        return NPCDataContainer.GetDataFromIdentifier(npcDataIdentifier);
     }
 
     void CacheGridNodeNeighbours()
@@ -960,7 +946,6 @@ public class GridController : MonoBehaviour
         playerController.InitPlayer(playerCharData);
     }
 
-
     void LinkInteractablesToTriggerables()
     {
         foreach (IInteractable interactable in spawnedInteractables)
@@ -977,10 +962,6 @@ public class GridController : MonoBehaviour
             }
         }
     }
-
-    public GridNode GetNodeAtCoords(Vector2 coords) => activeNodes.TryGetValue(coords, out var node) ? node : null;
-
-    public GridNode GetNodeFromWorldPos(Vector3 worldPos) => GetNodeAtCoords(new Vector2(grid.WorldToCell(worldPos).x, grid.WorldToCell(worldPos).y));
 
     public float DecideSpawnDir(EntityInstance dir)
     {
@@ -1003,16 +984,6 @@ public class GridController : MonoBehaviour
                 break;
         }
         return returnDir;
-    }
-
-    public string GetLevelNameFromIndex(int levelIndex)
-    {
-        return project.Json.FromJson.Levels[levelIndex].FieldInstances[0].Value.ToString();
-    }
-
-    public string GetCurrentLevelName()
-    {
-        return project.Json.FromJson.Levels[currentLevelIndex].FieldInstances[0].Value.ToString();
     }
 
     private List<SaveableLevelData> GetSaveableLevelData()
@@ -1043,9 +1014,7 @@ public class GridController : MonoBehaviour
 
     public void Load(SaveSystem.SaveData data)
     {
-        gameTime = data.gameTime;
         LoadGame(data.LevelData);
+        gameTime = data.gameTime;
     }
-
-
 }

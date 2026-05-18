@@ -208,6 +208,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSave"",
+                    ""type"": ""Button"",
+                    ""id"": ""e910d7ad-2c42-4322-a7ee-591b2b3b503c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickLoad"",
+                    ""type"": ""Button"",
+                    ""id"": ""0efa5aca-0a34-45ba-b5fa-88a1bab72365"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -408,6 +426,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Swap Weapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""24d7b71f-08ca-4e60-ba0d-5d18032fe4c6"",
+                    ""path"": ""<Keyboard>/f5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickSave"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""651efb00-8af7-423b-8a39-536e643cfd7c"",
+                    ""path"": ""<Keyboard>/f9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""QuickLoad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -605,6 +645,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_SwapWeapon = m_Player.FindAction("Swap Weapon", throwIfNotFound: true);
         m_Player_EquipThrowable = m_Player.FindAction("Equip Throwable", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
+        m_Player_QuickSave = m_Player.FindAction("QuickSave", throwIfNotFound: true);
+        m_Player_QuickLoad = m_Player.FindAction("QuickLoad", throwIfNotFound: true);
         // UIControls
         m_UIControls = asset.FindActionMap("UIControls", throwIfNotFound: true);
         m_UIControls_Inventory = m_UIControls.FindAction("Inventory", throwIfNotFound: true);
@@ -708,6 +750,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SwapWeapon;
     private readonly InputAction m_Player_EquipThrowable;
     private readonly InputAction m_Player_Reload;
+    private readonly InputAction m_Player_QuickSave;
+    private readonly InputAction m_Player_QuickLoad;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -771,6 +815,14 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Reload".
         /// </summary>
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/QuickSave".
+        /// </summary>
+        public InputAction @QuickSave => m_Wrapper.m_Player_QuickSave;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/QuickLoad".
+        /// </summary>
+        public InputAction @QuickLoad => m_Wrapper.m_Player_QuickLoad;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -836,6 +888,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
+            @QuickSave.started += instance.OnQuickSave;
+            @QuickSave.performed += instance.OnQuickSave;
+            @QuickSave.canceled += instance.OnQuickSave;
+            @QuickLoad.started += instance.OnQuickLoad;
+            @QuickLoad.performed += instance.OnQuickLoad;
+            @QuickLoad.canceled += instance.OnQuickLoad;
         }
 
         /// <summary>
@@ -886,6 +944,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
+            @QuickSave.started -= instance.OnQuickSave;
+            @QuickSave.performed -= instance.OnQuickSave;
+            @QuickSave.canceled -= instance.OnQuickSave;
+            @QuickLoad.started -= instance.OnQuickLoad;
+            @QuickLoad.performed -= instance.OnQuickLoad;
+            @QuickLoad.canceled -= instance.OnQuickLoad;
         }
 
         /// <summary>
@@ -1205,6 +1269,20 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnReload(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "QuickSave" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnQuickSave(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "QuickLoad" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnQuickLoad(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UIControls" which allows adding and removing callbacks.

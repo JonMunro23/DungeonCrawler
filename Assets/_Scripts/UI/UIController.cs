@@ -94,7 +94,7 @@ public class UIController : MonoBehaviour
 
         SecretAreaTrigger.onSecretDiscovered += OnSecretDiscovered;
 
-        GridController.onQuickSave += OnQuickSave;
+        PlayerController.onQuickSave += OnQuickSave;
 
         SaveSlot.onCreateNewSaveButtonPressed += DisplaySaveNamePopup;
     }
@@ -116,7 +116,7 @@ public class UIController : MonoBehaviour
 
         SecretAreaTrigger.onSecretDiscovered -= OnSecretDiscovered;
 
-        GridController.onQuickSave -= OnQuickSave;
+        PlayerController.onQuickSave -= OnQuickSave;
 
         SaveSlot.onCreateNewSaveButtonPressed -= DisplaySaveNamePopup;
     }

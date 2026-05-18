@@ -67,6 +67,9 @@ public class NPCController : MonoBehaviour
 
     public void SetActive(bool isActive)
     {
+        if(!isActive)
+            SnapToNode(movementController.CurrentNavTargetNode);
+
         gameObject.SetActive(isActive);
     }
 
