@@ -49,12 +49,12 @@ public class MapController : MonoBehaviour
 
     private void OnEnable()
     {
-        GridController.OnLevelGenerated += OnLevelGenerated;
+        GridController.OnLevelNodesGenerated += OnLevelGenerated;
     }
 
     private void OnDisable()
     {
-        GridController.OnLevelGenerated -= OnLevelGenerated;
+        GridController.OnLevelNodesGenerated -= OnLevelGenerated;
     }
 
     public void Init(PlayerControls controls)
@@ -63,9 +63,9 @@ public class MapController : MonoBehaviour
         ResetMapView();
     }
 
-    void OnLevelGenerated(int levelIndex)
+    void OnLevelGenerated(LevelData levelData)
     {
-        GenerateMap(levelIndex);
+        GenerateMap(levelData);
         currentLevelText.transform.SetAsLastSibling();
     }
 
@@ -100,9 +100,10 @@ public class MapController : MonoBehaviour
             ResetMapView();
     }
 
-    void GenerateMap(int levelIndex)
+    void GenerateMap(LevelData levelData)
     {
-        List<GridNode> levelNodes = GridController.Instance.GetCurrentNodesForLevel(levelIndex);
+        List<GridNode> levelNodes = levelData.GetNodes();
+        int levelIndex = levelData.LevelIndex;
         GridNode[] nodes = levelNodes.ToArray();
         Vector2Int[] coords = new Vector2Int[nodes.Length];
         for (int i = 0; i < nodes.Length; i++)

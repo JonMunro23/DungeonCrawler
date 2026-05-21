@@ -7,6 +7,7 @@ public interface IContainer : IHighlightable
     public void AddNewStoredItemStack(ContainerItemStack itemToAdd);
     public void LoadContainerItemStacks(List<ContainerItemStack> itemStacks);
     public List<ContainerItemStack> GetStoredItems();
+    public List<ItemStackSaveData> GetStoredItemsSaveData();
     public Vector2 GetCoords();
     public int GetLevelIndex();
     public float GetRotation();

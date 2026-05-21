@@ -39,6 +39,8 @@ public interface ICoords
 [SelectionBase]
 public class GridNode : MonoBehaviour
 {
+    LevelData assignedLevel;
+
     [SerializeField] bool showDebugInfo;
     [SerializeField] Canvas debugCanvas;
     public GridNodeData nodeData;
@@ -89,12 +91,12 @@ public class GridNode : MonoBehaviour
     public float H { get; private set; }
     public float F => G + H;
 
-    private static readonly List<Vector2> Dirs = new List<Vector2>() {
-        new Vector2(0, 1), new Vector2(-1, 0), new Vector2(0, -1), new Vector2(1, 0),
+    private static readonly List<Vector2Int> Dirs = new List<Vector2Int>() {
+        new Vector2Int(0, 1), new Vector2Int(-1, 0), new Vector2Int(0, -1), new Vector2Int(1, 0),
     };
 
-    private static readonly List<Vector2> DiagDirs = new List<Vector2>() {
-        new Vector2(1, 1), new Vector2(-1, 1), new Vector2(-1, -1), new Vector2(1, -1),
+    private static readonly List<Vector2Int> DiagDirs = new List<Vector2Int>() {
+        new Vector2Int(1, 1), new Vector2Int(-1, 1), new Vector2Int(-1, -1), new Vector2Int(1, -1),
     };
 
     private void Start()
@@ -119,8 +121,9 @@ public class GridNode : MonoBehaviour
 
     }
 
-    public void InitNode(ICoords _coords, int nodeIndex)
+    public void InitNode(LevelData assignedLevel, ICoords _coords, int nodeIndex)
     {
+        this.assignedLevel = assignedLevel;
         this.nodeIndex = nodeIndex;
         gameObject.name = $"{gameObject.name}_{nodeIndex.ToString()}";
         Coords = _coords;
@@ -257,8 +260,6 @@ public class GridNode : MonoBehaviour
 
     public bool GetIsExplored() => isExplored;
 
-
-
     public void CacheNeighbours()
     {
         neighbouringNodes = GetNeighbouringNodes();
@@ -267,22 +268,22 @@ public class GridNode : MonoBehaviour
 
     public List<GridNode> GetNeighbouringNodes(bool getDiagonals = false)
     {
-        List<GridNode> nodes = new List<GridNode>();
+        List<GridNode> neighbouringNodes = new List<GridNode>();
 
-        foreach (GridNode neighbouringNode in Dirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+        foreach (GridNode node in Dirs.Select(dir => assignedLevel.GetNodeAtCoords(Coords.Pos + dir)).Where(node => node != null))
         {
-            nodes.Add(neighbouringNode);
+            neighbouringNodes.Add(node);
         }
 
-        if(getDiagonals)
+        if (getDiagonals)
         {
-            foreach (GridNode diagNeighbouringNode in DiagDirs.Select(dir => GridController.Instance.GetNodeAtCoords(Coords.Pos + dir)).Where(tile => tile != null))
+            foreach (GridNode diagNode in DiagDirs.Select(dir => assignedLevel.GetNodeAtCoords(Coords.Pos + dir)).Where(node => node != null))
             {
-                nodes.Add(diagNeighbouringNode);
+                neighbouringNodes.Add(diagNode);
             }
         }
 
-        return nodes;
+        return neighbouringNodes;
     }
 
     public GridNode GetNodeInDirection(Vector3 direction)
@@ -298,24 +299,24 @@ public class GridNode : MonoBehaviour
         //Debug.Log($"Rounded Move Direction: {roundedMoveDir}");
 
         // Initialize the offset to zero
-        Vector2 offset = Vector2.zero;
+        Vector2Int offset = Vector2Int.zero;
 
         // Handle cardinal directions
         if (roundedMoveDir == Vector3.forward)
         {
-            offset = new Vector2(1, 0);  // Forward
+            offset = new Vector2Int(1, 0);  // Forward
         }
         else if (roundedMoveDir == Vector3.back)
         {
-            offset = new Vector2(-1, 0); // Backward
+            offset = new Vector2Int(-1, 0); // Backward
         }
         else if (roundedMoveDir == Vector3.left)
         {
-            offset = new Vector2(0, -1); // Left
+            offset = new Vector2Int(0, -1); // Left
         }
         else if (roundedMoveDir == Vector3.right)
         {
-            offset = new Vector2(0, 1);  // Right
+            offset = new Vector2Int(0, 1);  // Right
         }
         else
         {
@@ -326,20 +327,20 @@ public class GridNode : MonoBehaviour
             if (absX > absZ)
             {
                 // Horizontal dominance: use X for horizontal offset (left/right)
-                offset = new Vector2(0, Mathf.RoundToInt(roundedMoveDir.x));
+                offset = new Vector2Int(0, Mathf.RoundToInt(roundedMoveDir.x));
             }
             else
             {
                 // Vertical dominance: use Z for vertical offset (forward/backward)
-                offset = new Vector2(Mathf.RoundToInt(roundedMoveDir.z), 0);
+                offset = new Vector2Int(Mathf.RoundToInt(roundedMoveDir.z), 0);
             }
         }
 
         // Calculate the target position
-        Vector2 targetPosition = Coords.Pos + offset;
+        Vector2Int targetPosition = Coords.Pos + offset;
 
         // Retrieve and return the node at the target position
-        return GridController.Instance.GetNodeAtCoords(targetPosition);
+        return assignedLevel.GetNodeAtCoords(targetPosition);
     }
 
     // ==========================

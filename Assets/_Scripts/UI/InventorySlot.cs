@@ -15,7 +15,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     bool isInteractable;
 
     [Header("References")]
-    [SerializeField] ItemStack currentSlotItemStack = null;
+    [SerializeField] ItemStack currentSlotItemStack;
     [SerializeField] TMP_Text SlotAmountText;
     [SerializeField] TooltipTrigger contextMenu;
     public Image slotImage;
@@ -58,8 +58,8 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     public virtual void AddItem(ItemStack itemToAdd)
     {
-        currentSlotItemStack = new ItemStack(itemToAdd.Item, itemToAdd.ItemAmount);
-
+        currentSlotItemStack = itemToAdd;
+        currentSlotItemStack.SetSlotIndex(slotIndex);
         ConsumableItemData consumableData = GetDataAsConsumable(itemToAdd.Item.ItemData);
         if (consumableData)
         {
@@ -163,7 +163,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     public virtual ItemStack TakeItem()
     {
-        ItemStack itemToTake = new ItemStack(currentSlotItemStack.Item, currentSlotItemStack.ItemAmount);
+        ItemStack itemToTake = currentSlotItemStack;
         ThrowableItemData throwableTaken = itemToTake.Item.ItemData as ThrowableItemData;
         if (throwableTaken != null)
         {
@@ -180,7 +180,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
 
     public virtual ItemStack SwapItem(ItemStack itemToSwap)
     {
-        ItemStack oldItem = new ItemStack(currentSlotItemStack.Item, currentSlotItemStack.ItemAmount);
+        ItemStack oldItem = currentSlotItemStack;
 
         currentSlotItemStack = itemToSwap;
         UpdateSlotUI();
@@ -333,7 +333,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
     public bool IsSlotEmpty()
     {
         //Debug.Log(currentSlotItemStack);
-        return currentSlotItemStack != null ? false : true;
+        return currentSlotItemStack?.Item?.ItemData == null;
     }
 
     public void SetSlotIndex(int newIndex) => slotIndex = newIndex;
@@ -361,7 +361,7 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         {
             int loadedAmmo = weaponItem.LoadedAmmo;
             weaponItem.SetLoadedAmmo(0);
-            weaponItem.SetLoadedAmmoType(null);
+            //weaponItem.SetLoadedAmmoType(null);
             UpdateTooltipData();
             return loadedAmmo;
         }

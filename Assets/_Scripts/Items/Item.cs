@@ -1,9 +1,9 @@
 using UnityEngine;
 
-//[System.Serializable]
+[System.Serializable]
 public class Item
 {
-    ItemData itemData;
+    [SerializeField] ItemData itemData;
     public ItemData ItemData => itemData;
 
     public Item (ItemData itemData)

@@ -103,11 +103,14 @@ public class UIController : MonoBehaviour
     {
         PlayerInputHandler.OnPlayerControlsInitialised -= OnPlayerControlsInitialised;
 
-        controls.UIControls.Inventory.performed -= OnInventoryButtonPressed;
-        controls.UIControls.Skills.performed -= OnSkillsButtonPressed;
-        controls.UIControls.Stats.performed -= OnStatsButtonPressed;
-        controls.UIControls.Map.performed -= OnMapButtonPressed;
-        controls.UIControls.Pause.performed -= OnPauseButtonPressed;
+        if(controls != null)
+        {
+            controls.UIControls.Inventory.performed -= OnInventoryButtonPressed;
+            controls.UIControls.Skills.performed -= OnSkillsButtonPressed;
+            controls.UIControls.Stats.performed -= OnStatsButtonPressed;
+            controls.UIControls.Map.performed -= OnMapButtonPressed;
+            controls.UIControls.Pause.performed -= OnPauseButtonPressed;
+        }
 
         PlayerController.onPlayerInitialised -= OnPlayerInitialised;
         PlayerController.onPlayerDeath -= OnPlayerDeath;
@@ -203,7 +206,7 @@ public class UIController : MonoBehaviour
         ShowGameOverScreen();
     }
 
-    void OnLevelTransitionEntered(int levelIndex, Vector2 playerMoveToCoords)
+    void OnLevelTransitionEntered(int levelIndex, Vector2Int playerMoveToCoords)
     {
         if (transitionLevelCoroutine != null)
         {
@@ -215,7 +218,7 @@ public class UIController : MonoBehaviour
         transitionLevelCoroutine = StartCoroutine(TransitionLevel(levelIndex, playerMoveToCoords));
     }
 
-    IEnumerator TransitionLevel(int levelIndex, Vector2 playerMoveToCoords)
+    IEnumerator TransitionLevel(int levelIndex, Vector2Int playerMoveToCoords)
     {
         isTransitioningLevel = true;
         mapController.CloseMap();

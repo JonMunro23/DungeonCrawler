@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ItemDataContainer", menuName = "Items/New ItemData Container")]
-public class ItemDataContainer : ScriptableObject
+public class ItemDatabase : ScriptableObject
 {
     public ItemData invalidItem;
 
@@ -23,7 +23,7 @@ public class ItemDataContainer : ScriptableObject
     [Header("Keys")]
     public List<KeyItemData> keyItemData = new List<KeyItemData>();
 
-    public ItemData GetDataFromIdentifier(string identifier)
+    public ItemData GetItemDataFromIdentifier(string identifier)
     {
         foreach (ItemData item in itemData)
             if (item.itemIdentifier == identifier) return item;

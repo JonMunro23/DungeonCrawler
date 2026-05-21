@@ -1,0 +1,26 @@
+Additions
+-------------------
+- Add level/game statistics to pause menu
+- Add blood splat when hitting enemies
+- Add hit Sfx for hitting enemies
+- Add ambient music
+- Some form of tutorial
+
+General To-Do
+------------------
+- Ensure pause menu works and everything that needs paused is being paused
+
+Save System
+-------------------
+- Ensure destructible are included in save data
+- Ensure throwables are included in save data
+- Ensure save load UI is working on pause menu and main menu
+
+Bugs / Fixes
+--------------------
+- Throwables not being removed from inventory once used
+
+Considerations
+---------------------
+- Have radiation go through destructible walls when they've been destroyed? (Undecided if this is necessary, can just not have these walls near radiation emitters?)
+- Do we want explosions to interact with world items? (Send them flying?)

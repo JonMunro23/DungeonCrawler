@@ -81,7 +81,15 @@ public class WorldItem : MonoBehaviour, IPickup
                 occupiedPressurePlate.RemoveGameobjectFromPlate(gameObject);
             }
 
+            if (isInContainer)
+                occupiedContainerSlot.ClearSlot();
+
+            onWorldItemPickedUp?.Invoke(this);
+
             Destroy(gameObject);
         }
     }
+
+    public Vector2Int GetCoords() => GridController.Instance.GetNodeFromWorldPos(transform.position).Coords.Pos;
+
 }

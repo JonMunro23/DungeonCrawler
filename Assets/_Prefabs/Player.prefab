@@ -599,7 +599,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMovementManager: {fileID: 0}
-  itemPickupManager: {fileID: 0}
   playerHealthManager: {fileID: 0}
   playerStatusEffectManager: {fileID: 0}
   playerInventoryManager: {fileID: 5977534421063011795}
@@ -609,6 +608,7 @@ MonoBehaviour:
   playerStatsManager: {fileID: 5301202906750780191}
   playerSkillsManager: {fileID: 0}
   playerLevelManager: {fileID: 0}
+  worldInteractionManager: {fileID: 0}
   cameraMovement: {fileID: 0}
   playerCamera: {fileID: 8221614682444330318}
   playerCharacterData: {fileID: 0}
@@ -681,6 +681,11 @@ MonoBehaviour:
     type: 3}
   itemDropLocation: {fileID: 3106928982722646368}
   mousePos: {x: 0, y: 0, z: 0}
+  currentGrabbedItem:
+    slotIndex: 0
+    item:
+      itemData: {fileID: 0}
+    itemAmount: 0
   canPickUpItem: 1
   grabSFX: {fileID: 8300000, guid: 39a9b6d6cf0e72143af0fb793abf0ac5, type: 3}
   grabSFXVolume: 0.6
@@ -700,6 +705,7 @@ MonoBehaviour:
   playerController: {fileID: 0}
   startingItems:
   - {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
+  - {fileID: 11400000, guid: 7fe1bceb4ffb0234da2bd4fdd98e2829, type: 2}
   - {fileID: 11400000, guid: 7fe1bceb4ffb0234da2bd4fdd98e2829, type: 2}
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
@@ -764,6 +770,9 @@ MonoBehaviour:
   throwableArmsSpawnTransform: {fileID: 677067965771730991}
   currentlySelectedThrowableArms: {fileID: 0}
   isThrowableSelectionMenuOpen: 0
+  isThrowableReadied: 0
+  isThrowInProgress: 0
+  isThrowableDrawn: 0
   manuallyDetonatedThrowables: []
   enableCharging: 0
   chargeCurve:

@@ -6,40 +6,11 @@ public struct LevelSaveData
 {
     public int currentLevelIndex;
     public string currentLevelName;
+    public Vector2Int playerCoords;
     public List<SaveableLevelData> levels;
 }
 
 [System.Serializable]
-public class LevelData
-{
-    public Dictionary<Vector2, GridNode> levelNodes = new Dictionary<Vector2, GridNode>();
-    public List<NPCController> spawnedNPCs = new List<NPCController>();
-    public int totalNumSecrets;
-
-    public LevelData(Dictionary<Vector2, GridNode> levelNodes, List<NPCController> spawnedNPCs, int totalNumSecrets)
-    {
-        this.levelNodes = new Dictionary<Vector2, GridNode>(levelNodes);
-        this.spawnedNPCs = new List<NPCController>(spawnedNPCs);
-        this.totalNumSecrets = totalNumSecrets;
-    }
-
-    public void UpdateLevelData(Dictionary<Vector2, GridNode> updatedNodes, List<NPCController> updatedNPCs)
-    {
-        levelNodes.Clear();
-        levelNodes = new Dictionary<Vector2, GridNode>(updatedNodes);
-
-        spawnedNPCs.Clear();
-        spawnedNPCs = new List<NPCController>(updatedNPCs);
-    }
-
-    public Dictionary<Vector2, GridNode> GetNodes() => levelNodes;
-
-    public List<NPCController> GetNPCs() => spawnedNPCs;
-
-    public int GetAmountOfSecrets() => totalNumSecrets;
-}
-
-    [System.Serializable]
 public class SaveableLevelData
 {
     [System.Serializable]
@@ -73,15 +44,17 @@ public class SaveableLevelData
     [System.Serializable]
     public class WorldItemSaveData
     {
+        public Vector2Int coords;
         public Vector3 position;
         public Vector3 rotation;
-        public ItemStack itemStack;
+        public ItemStackSaveData itemStackSaveData;
 
-        public WorldItemSaveData(Vector3 position, Vector3 rotation, ItemStack itemStack)
+        public WorldItemSaveData(Vector2Int coords, Vector3 position, Vector3 rotation, ItemStackSaveData itemStackSaveData)
         {
+            this.coords = coords;
             this.position = position;
             this.rotation = rotation;
-            this.itemStack = itemStack;
+            this.itemStackSaveData = itemStackSaveData;
         }
     }
 
@@ -90,58 +63,61 @@ public class SaveableLevelData
     {
         public Vector2 coords;
         public float rotation;
-        public List<ContainerItemStack> containedItemStacks;
+        public List<ItemStackSaveData> containedItemStackSaveDatas;
 
-        public ContainerSaveData(Vector2 coords, float rotation, List<ContainerItemStack> containedItemStacks)
+        public ContainerSaveData(Vector2 coords, float rotation, List<ItemStackSaveData> containedItemStacks)
         {
             this.coords = coords;
             this.rotation = rotation;
-            this.containedItemStacks = new List<ContainerItemStack>(containedItemStacks);
+            this.containedItemStackSaveDatas = new List<ItemStackSaveData>(containedItemStacks);
         }
     }
 
     [System.Serializable]
     public class NPCSaveData
     {
-        public Vector2 coords;
+        public Vector2Int coords;
         public float rotation;
         public int currentHealth;
         public NPCData npcData;
+        public NPCMovementBehaviour movementBehaviour;
 
-        public NPCSaveData(Vector2 coords, float rotation, int currentHealth, NPCData npcData)
+        public NPCSaveData(Vector2Int coords, float rotation, int currentHealth, NPCData npcData, NPCMovementBehaviour movementBehaviour)
         {
             this.coords = coords;
             this.rotation = rotation;
             this.currentHealth = currentHealth;
             this.npcData = npcData;
+            this.movementBehaviour = movementBehaviour;
         }
     }
 
     public int levelIndex;
-    public int discoveredSecrets;
     public List<InteractableSaveData> interactableSaveData = new List<InteractableSaveData>();
     public List<TriggerableSaveData> triggerableSaveData = new List<TriggerableSaveData>();
-    public List<WorldItemSaveData> worldItems = new List<WorldItemSaveData>();
-    public List<ContainerSaveData> containers = new List<ContainerSaveData>();
-    public List<NPCSaveData> NPCs = new List<NPCSaveData>();
+    public List<WorldItemSaveData> worldItemSaveData = new List<WorldItemSaveData>();
+    public List<ContainerSaveData> containerSaveData = new List<ContainerSaveData>();
+    public List<NPCSaveData> npcSaveData = new List<NPCSaveData>();
 
-    public SaveableLevelData(int levelIndex, List<IInteractable> spawnedInteractables, List<ITriggerable> spawnedTriggerables, List<WorldItem> spawnedWorldItems, List<IContainer> spawnedContainers, List<NPCController> spawnedNPCs)
+    public SaveableLevelData(LevelData levelData)
     {
-        this.levelIndex = levelIndex;
-        interactableSaveData = new List<InteractableSaveData>(GetInteractableSaveData(spawnedInteractables));
-        triggerableSaveData = new List<TriggerableSaveData>(GetTriggerableSaveData(spawnedTriggerables));
-        worldItems = new List<WorldItemSaveData>(GetWorldItemSaveData(spawnedWorldItems));
-        containers = new List<ContainerSaveData>(GetContainerSaveData(spawnedContainers));
-        NPCs = new List<NPCSaveData>(GetNPCSaveData(spawnedNPCs));
+        levelIndex = levelData.LevelIndex;
+
+        interactableSaveData = GetInteractableSaveData(levelData.Interactables);
+        triggerableSaveData = GetTriggerableSaveData(levelData.Triggerables);
+        worldItemSaveData = GetWorldItemSaveData(levelData.WorldItems);
+        containerSaveData = GetContainerSaveData(levelData.Containers);
+        npcSaveData = GetNPCSaveData(levelData.Npcs);
+
     }
 
     List<NPCSaveData> GetNPCSaveData(List<NPCController> spawnedNPCs)
     {
         List<NPCSaveData> NPCSaveData = new List<NPCSaveData>();
+        
         foreach (NPCController npc in spawnedNPCs)
         {
-            if (npc.levelIndex == levelIndex)
-                NPCSaveData.Add(new NPCSaveData(npc.currentlyOccupiedGridnode.Coords.Pos, npc.transform.localRotation.eulerAngles.y, Mathf.RoundToInt(npc.healthController.CurrentHealth), npc.npcData));
+            NPCSaveData.Add(new NPCSaveData(npc.currentlyOccupiedGridnode.Coords.Pos, npc.transform.localRotation.eulerAngles.y, Mathf.RoundToInt(npc.healthController.CurrentHealth), npc.npcData, npc.GetMovementBehaviour()));
         }
 
         return NPCSaveData;
@@ -151,8 +127,9 @@ public class SaveableLevelData
         List<ContainerSaveData> containerSaveData = new List<ContainerSaveData>();
         foreach (IContainer container in spawnedContainers)
         {
-            if (container.GetLevelIndex() == levelIndex)
-                containerSaveData.Add(new ContainerSaveData(container.GetCoords(), container.GetRotation(), container.GetStoredItems()));
+            containerSaveData.Add(new ContainerSaveData(container.GetCoords(), 
+                container.GetRotation(), 
+                container.GetStoredItemsSaveData()));
         }
 
         return containerSaveData;
@@ -160,11 +137,31 @@ public class SaveableLevelData
     List<WorldItemSaveData> GetWorldItemSaveData(List<WorldItem> spawnedWorldItems)
     {
         List<WorldItemSaveData> worldItemSaveData = new List<WorldItemSaveData>();
-        //foreach (WorldItem worldItem in spawnedWorldItems)
-        //{
-        //    if (worldItem.levelIndex == levelIndex)
-        //        worldItemSaveData.Add(new WorldItemSaveData(worldItem.coords, worldItem.transform.rotation.eulerAngles.y, worldItem.itemStack));
-        //}
+
+        foreach (WorldItem worldItem in spawnedWorldItems)
+        {
+            ItemStackSaveData saveData = new ItemStackSaveData
+            {
+                itemID = worldItem.itemStack.Item.ItemData.itemIdentifier,
+                amount = worldItem.itemStack.ItemAmount
+            };
+
+            if (worldItem.itemStack.Item is WeaponItem weaponItem)
+            {
+                saveData.isWeapon = true;
+                saveData.loadedAmmoType = weaponItem.LoadedAmmoData != null
+                    ? weaponItem.LoadedAmmoData.itemIdentifier
+                    : "";
+                saveData.loadedAmmo = weaponItem.LoadedAmmo;
+            }
+
+            worldItemSaveData.Add(new WorldItemSaveData(
+                worldItem.GetCoords(),
+                worldItem.transform.position,
+                worldItem.transform.eulerAngles,
+                saveData
+            ));
+        }
 
         return worldItemSaveData;
     }
@@ -173,8 +170,7 @@ public class SaveableLevelData
         List<TriggerableSaveData> triggerableSaveData = new List<TriggerableSaveData>();
         foreach (ITriggerable triggerable in spawnedTriggerables)
         {
-            if (triggerable.GetLevelIndex() == levelIndex)
-                triggerableSaveData.Add(new TriggerableSaveData(triggerable.GetCoords(), triggerable.GetIsTriggered(), triggerable.GetCurrentNumberOfTriggers()));
+            triggerableSaveData.Add(new TriggerableSaveData(triggerable.GetCoords(), triggerable.GetIsTriggered(), triggerable.GetCurrentNumberOfTriggers()));
         }
 
         return triggerableSaveData;
@@ -184,10 +180,86 @@ public class SaveableLevelData
         List<InteractableSaveData> interactableSaveData = new List<InteractableSaveData>();
         foreach (IInteractable interactable in spawnedInteractables)
         {
-            if (interactable.GetLevelIndex() == levelIndex)
-                interactableSaveData.Add(new InteractableSaveData(interactable.GetCoords(), interactable.GetIsActivated()));
+            interactableSaveData.Add(new InteractableSaveData(interactable.GetCoords(), interactable.GetIsActivated()));
         }
 
         return interactableSaveData;
     }
+
+    public InteractableSaveData FindSavedInteractableData(Vector2Int coords)
+    {
+        foreach (InteractableSaveData interactableData in interactableSaveData)
+        {
+            if (interactableData.coords == coords)
+                return interactableData;
+        }
+
+        return null;
+    }
+
+    public ContainerSaveData FindSavedContainerData(Vector2Int coords)
+    {
+        foreach (ContainerSaveData containerData in containerSaveData)
+        {
+            if (containerData.coords == coords)
+                return containerData;
+        }
+
+        return null;
+    }
+
+    public TriggerableSaveData FindSavedTriggerableData(Vector2Int coords)
+    {
+        foreach (TriggerableSaveData triggerableData in triggerableSaveData)
+        {
+            if (triggerableData.coords == coords)
+                return triggerableData;
+        }
+
+        return null;
+    }
+}
+
+[System.Serializable]
+public class ItemStackSaveData
+{
+    public string itemID;
+    public int amount;
+    public int slotIndex; //Used to determine slot in inventory/container
+    public bool isWeapon;
+    public string loadedAmmoType;
+    public int loadedAmmo;
+}
+
+[System.Serializable]
+public struct PlayerSaveData
+{
+    //Movement Data
+    public Vector2Int coords;
+    public Vector3 rotation;
+
+    //Health data
+    public int currentHealth;
+
+    //Inventory Data
+    public List<ItemStackSaveData> storedItems;
+
+    //Equipment Data
+    public List<EquippedItem> equippedItems;
+
+    //Weapon Data
+    public int activeWeaponSlotIndex;
+    public List<ItemStackSaveData> weaponItems;
+
+    //Skill Data
+    public int availableSkillPoints;
+    public List<UnlockedSKillData> unlockedSkills;
+
+    //Level Data
+    public int currentPlayerLevel;
+    public int currentExperiencePoints;
+    public int requiredExperiencePoints;
+
+    //Throwable Data
+    public ThrowableItemData selectedThrowable;
 }

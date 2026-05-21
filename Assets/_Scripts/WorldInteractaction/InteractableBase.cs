@@ -94,7 +94,7 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
         return levelIndex;
     }
 
-    public Vector2 GetCoords()
+    public Vector2Int GetCoords()
     {
         return node.Coords.Pos;
     }

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class WorldInteractionManager : MonoBehaviour
 {
-    PlayerController playerController;
     [Header("References")]
     [SerializeField] WorldItem worldItemPrefab;
     [SerializeField] Transform itemDropLocation;
+    PlayerController playerController;
     PlayerControls controls;
 
     //[SerializeField] Transform thrownItemSpawnLocation;
@@ -34,6 +34,8 @@ public class WorldInteractionManager : MonoBehaviour
 
     public static event Action<ItemStack> onNewItemAttachedToCursor;
     public static event Action onCurrentItemDettachedFromCursor;
+
+    public static event Action<WorldItem> onNewWorldItemSpawned;
 
     public static event Action<ItemStack> onGroundItemsUpdated;
     public static event Action onLastGroundItemRemoved;
@@ -67,14 +69,6 @@ public class WorldInteractionManager : MonoBehaviour
     {
         this.playerController = playerController;
         controls = playerController.GetPlayerControls();
-    }
-
-    void OnPlayerTurn(int turnDir)
-    {
-        if (nearbyContainer == null)
-            return;
-
-        nearbyContainer.CloseContainer();
     }
 
     void OnWorldItemGrabbed(WorldItem worldItemGrabbed)
@@ -113,7 +107,7 @@ public class WorldInteractionManager : MonoBehaviour
             }
             else
             {
-                if(slotClicked.GetItemStack().Item == currentGrabbedItem.Item)
+                if(slotClicked.GetItemStack()?.Item?.ItemData == currentGrabbedItem?.Item?.ItemData)
                 {
                     int remainder = slotClicked.AddToCurrentItemStack(currentGrabbedItem.ItemAmount);
                     if (remainder > 0)
@@ -138,7 +132,7 @@ public class WorldInteractionManager : MonoBehaviour
     void AttachItemToMouseCursor(ItemStack itemToAttach, WorldItem worldItem = null)
     {
         //Debug.Log("Item attached to cursor");
-        currentGrabbedItem = new ItemStack(itemToAttach.Item, itemToAttach.ItemAmount);
+        currentGrabbedItem = itemToAttach;
 
         onNewItemAttachedToCursor?.Invoke(currentGrabbedItem);
         
@@ -157,10 +151,8 @@ public class WorldInteractionManager : MonoBehaviour
 
     void PlaceGrabbedItemInWorld(Vector3 placementLocation)
     {
-        if (!hasGrabbedItem)
-            return;
-
         SpawnWorldItem(currentGrabbedItem, placementLocation);
+        DetachItemFromMouseCursor();
     }
 
     void DropItemFromInventoryIntoWorld(ISlot slot)
@@ -174,9 +166,11 @@ public class WorldInteractionManager : MonoBehaviour
         worldItem.InitWorldItem(GridController.Instance.GetCurrentLevelIndex(), itemStackToSpawn);
         worldItem.transform.GetChild(0).localPosition = new Vector3(worldItem.transform.GetChild(0).localPosition.x, worldItem.transform.GetChild(0).localPosition.y, 0);
         worldItem.GetComponent<BoxCollider>().center = Vector3.zero;
-        DetachItemFromMouseCursor();
 
-        HelperFunctions.SetCursorActive(false);
+        onNewWorldItemSpawned?.Invoke(worldItem);
+
+        //DetachItemFromMouseCursor();
+        //HelperFunctions.SetCursorActive(false);
     }
 
     // Acts as update, called from PlayerController

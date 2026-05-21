@@ -1,41 +1,7 @@
 using DG.Tweening;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-[System.Serializable]
-public struct PlayerSaveData
-{
-    //Movement Data
-    public Vector2 coords;
-    public Vector3 rotation;
-
-    //Health data
-    public int currentHealth;
-
-    //Inventory Data
-    public List<ItemStack> storedItems;
-
-    //Equipment Data
-    public List<EquippedItem> equippedItems;
-
-    //Weapon Data
-    public int activeWeaponSlotIndex;
-    public List<WeaponSlotData> weaponSlotData;
-
-    //Skill Data
-    public int availableSkillPoints;
-    public List<UnlockedSKillData> unlockedSkills;
-
-    //Level Data
-    public int currentPlayerLevel;
-    public int currentExperiencePoints;
-    public int requiredExperiencePoints;
-
-    //Throwable Data
-    public ThrowableItemData selectedThrowable;
-}
 
 [SelectionBase]
 public class PlayerController : MonoBehaviour
@@ -217,16 +183,15 @@ public class PlayerController : MonoBehaviour
         onPlayerInitialised?.Invoke(this);
     }
 
-    public void MoveToCoords(Vector2 newCoords)
+    public void MoveToNode(GridNode newNode)
     {
-        Debug.Log("Moving player to " + newCoords);
-
-        GridNode nodeToMoveTo = GridController.Instance.GetNodeAtCoords(newCoords);
-        if (!nodeToMoveTo)
+        if (!newNode)
             return;
 
-        SetCurrentOccupiedNode(nodeToMoveTo);
-        playerMovementManager.Teleport(nodeToMoveTo.moveToTransform.position);
+        //Debug.Log("Moving player to " + newNode.Coords.Pos);
+
+        playerMovementManager.Teleport(newNode.moveToTransform.position);
+        SetCurrentOccupiedNode(newNode);
     }
 
     void TryEquipThrowable()
@@ -461,7 +426,7 @@ public class PlayerController : MonoBehaviour
         rb.isKinematic = true;
         playerMovementManager.enabled = true;
 
-        MoveToCoords(data.coords);
+        //MoveToNode(data.coords);
         cameraMovement.SetRoation(data.rotation);
 
         if(playerStatsManager)

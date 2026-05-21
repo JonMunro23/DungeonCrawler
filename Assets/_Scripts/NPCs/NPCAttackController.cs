@@ -78,7 +78,7 @@ public class NPCAttackController : MonoBehaviour
                 //Debug.Log(hit.transform.name);
                 if (hit.transform.CompareTag("Player"))
                 {
-                    playerNode = GridController.Instance.GetNodeFromWorldPos(hit.transform.position);
+                    playerNode = hit.transform.GetComponent<PlayerController>().currentOccupiedNode;
                     return true;
                 }
             }

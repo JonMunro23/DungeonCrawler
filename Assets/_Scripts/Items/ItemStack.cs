@@ -1,12 +1,16 @@
 using UnityEngine;
 
-//[System.Serializable]
+[System.Serializable]
 public class ItemStack
 {
-    Item item;
+
+    [SerializeField] int slotIndex;
+    public int SlotIndex => slotIndex;
+
+    [SerializeField] Item item;
     public Item Item => item;
 
-    int itemAmount = 1;
+    [SerializeField] int itemAmount = 1;
     public int ItemAmount => itemAmount;
 
     public ItemStack(Item item, int itemAmount = 1)
@@ -17,13 +21,18 @@ public class ItemStack
 
     public int GetRemainingSpaceInStack()
     {
-        return Item.ItemData.maxItemStackSize - itemAmount;
+        if (item == null || item.ItemData == null)
+            return 0;
+
+        return item.ItemData.maxItemStackSize - itemAmount;
     }
 
     public void SetAmountInStack(int newValue)
     {
         itemAmount = newValue;
     }
+
+    public void SetSlotIndex(int slotIndex) => this.slotIndex = slotIndex;
 
     public void AddToStack(int amountToAdd)
     {

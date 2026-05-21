@@ -550,6 +550,6 @@ public class PlayerThrowableManager : MonoBehaviour
 
     public void Load(PlayerSaveData data)
     {
-        SetCurrentlySelectedThrowable(data.selectedThrowable);
+        //SetCurrentlySelectedThrowable(data.selectedThrowable);
     }
 }

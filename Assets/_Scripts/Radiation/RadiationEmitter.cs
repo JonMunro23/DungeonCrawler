@@ -9,8 +9,8 @@ public class RadiationEmitter : MonoBehaviour
     [SerializeField] int maxDistanceNodes = 5;
     [SerializeField] bool includeDiagonals = false;
 
-    [Header("Rebuild Triggers")]
-    [SerializeField] bool rebuildIfEmitterMovesBetweenNodes = true;
+    //[Header("Rebuild Triggers")]
+    //[SerializeField] bool rebuildIfEmitterMovesBetweenNodes = true;
 
     // Cache of nodes this emitter irradiated last time
     readonly List<GridNode> previousIrradiated = new List<GridNode>(256);
@@ -29,18 +29,18 @@ public class RadiationEmitter : MonoBehaviour
 
     void OnEnable()
     {
-        GridController.OnFinishedGeneratingLevel += OnLevelFinishedGenerating;
+        GridController.OnFinishedGeneratingLevel += OnFinishedGeneratingLevel;
     }
 
     void OnDisable()
     {
-        GridController.OnFinishedGeneratingLevel -= OnLevelFinishedGenerating;
+        GridController.OnFinishedGeneratingLevel -= OnFinishedGeneratingLevel;
 
         // Remove ONLY this emitter's contribution
         DisableEmitter();
     }
 
-    void OnLevelFinishedGenerating()
+    void OnFinishedGeneratingLevel()
     {
         EnsureBuffersSized();
         RebuildRadiation();
@@ -57,18 +57,18 @@ public class RadiationEmitter : MonoBehaviour
         ClearPreviousContribution();
     }
 
-    void Update()
-    {
-        if (!rebuildIfEmitterMovesBetweenNodes) return;
-        if (GridController.Instance == null) return;
+    //void Update()
+    //{
+    //    if (!rebuildIfEmitterMovesBetweenNodes) return;
+    //    if (GridController.Instance == null) return;
 
-        GridNode now = GridController.Instance.GetNodeFromWorldPos(transform.position);
-        if (now != cachedSourceNode)
-        {
-            cachedSourceNode = now;
-            RebuildRadiation();
-        }
-    }
+    //    GridNode now = GridController.Instance.GetNodeFromWorldPos(transform.position);
+    //    if (now != cachedSourceNode)
+    //    {
+    //        cachedSourceNode = now;
+    //        RebuildRadiation();
+    //    }
+    //}
 
     void OnValidate()
     {
@@ -83,15 +83,13 @@ public class RadiationEmitter : MonoBehaviour
     // -------------------------
     public void RebuildRadiation()
     {
-        if (GridController.Instance == null) return;
-
         EnsureBuffersSized();
 
         // 1) Undo our previous irradiation safely (ref-count decrement)
         ClearPreviousContribution();
 
         // 2) Find source node
-        cachedSourceNode = GridController.Instance.GetNodeFromWorldPos(transform.position);
+        //cachedSourceNode = GridController.Instance.GetNodeFromWorldPos(transform.position);
         if (cachedSourceNode == null) return;
 
         // If the emitter is sitting on a wall/void, do nothing
@@ -146,7 +144,7 @@ public class RadiationEmitter : MonoBehaviour
             if (d >= maxSteps)
                 continue;
 
-            GridNode curNode = GridController.Instance.GetNodeByIndex(curIdx);
+            GridNode curNode = GridController.Instance.GetActiveNodeByIndex(curIdx);
             if (curNode == null) continue;
 
             var neighbours = includeDiagonals ? curNode.allNeighbouringNodes : curNode.neighbouringNodes;
@@ -157,7 +155,6 @@ public class RadiationEmitter : MonoBehaviour
                 GridNode next = neighbours[i];
                 if (next == null) continue;
 
-                // ✅ NEW: can't irradiate or traverse walls/void/unwalkable nodes
                 if (!IsRadiationPassable(next))
                     continue;
 
@@ -208,7 +205,7 @@ public class RadiationEmitter : MonoBehaviour
     {
         if (GridController.Instance == null) return;
 
-        int count = GridController.Instance.CurrentNodeCount;
+        int count = GridController.Instance.CurrentActiveNodeCount;
         if (count <= 0) return;
 
         if (count != cachedNodeCount || queue == null)

@@ -60,7 +60,7 @@ public abstract class TriggerableBase : MonoBehaviour, ITriggerable
 
     public abstract void LoadData(SaveableLevelData.TriggerableSaveData data);
 
-    public Vector2 GetCoords()
+    public Vector2Int GetCoords()
     {
         return occupyingGridNode.Coords.Pos;
     }

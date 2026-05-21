@@ -150,8 +150,7 @@ public class NPCVisionSensor : MonoBehaviour
     // ==========================
     void EnsureBuffersSized()
     {
-        // ✅ must match NodeIndex range for current level
-        int nodeCount = GridController.Instance.CurrentNodeCount;
+        int nodeCount = GridController.Instance.CurrentActiveNodeCount;
         if (nodeCount <= 0) return;
 
         if (dist == null || dist.Length != nodeCount)
@@ -249,8 +248,7 @@ public class NPCVisionSensor : MonoBehaviour
 
     GridNode GetNodeByIndex(int nodeIndex)
     {
-        // ✅ O(1) lookup (requires GridController to swap nodesByIndex for active level)
-        return GridController.Instance.GetNodeByIndex(nodeIndex);
+        return GridController.Instance.GetActiveNodeByIndex(nodeIndex);
     }
 
     // ==========================

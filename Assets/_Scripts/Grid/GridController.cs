@@ -1,11 +1,34 @@
 ﻿using LDtkUnity;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
+    public class LevelGenerationContext
+    {
+        public bool IsLoading { get; private set; }
+        public SaveableLevelData SaveData { get; private set; }
+
+        public static LevelGenerationContext NewGame()
+        {
+            return new LevelGenerationContext
+            {
+                IsLoading = false,
+                SaveData = null
+            };
+        }
+
+        public static LevelGenerationContext Load(SaveableLevelData saveData)
+        {
+            return new LevelGenerationContext
+            {
+                IsLoading = true,
+                SaveData = saveData
+            };
+        }
+    }
+
     public static GridController Instance;
 
     const int ENTITY_LAYER_INDEX = 0;
@@ -15,8 +38,6 @@ public class GridController : MonoBehaviour
 
     [SerializeField] LDtkComponentProject project;
     List<Level> LDtkLevels = new List<Level>();
-    LayerInstance entityLayer;
-    LayerInstance intGridLayer;
 
     [SerializeField] bool skipMainMenu = true;
     
@@ -24,51 +45,38 @@ public class GridController : MonoBehaviour
     [SerializeField] GridNode wallPrefab;
     [SerializeField] GridNode walkablePrefab;
     [SerializeField] GridNode voidPrefab;
-    Dictionary<Vector2, GridNode> activeNodes = new Dictionary<Vector2, GridNode>();
-    Dictionary<int, GridNode[]> nodesByIndexPerLevel = new Dictionary<int, GridNode[]>();
     const float GRID_SIZE = 3;
     Grid grid;
-
 
     [Header("Levels")]
     [SerializeField] int startingLevelIndex;
     [SerializeField] int currentLevelIndex;
-    /// <summary>
-    /// int = levelIndex
-    /// </summary>
     [SerializeField] List<Transform> levelParents = new List<Transform>();
-    Dictionary<int, LevelData> levelDataDictionary = new Dictionary<int, LevelData>();
-    int levelSecrets;
-
+    [SerializeField] LevelData activeLevel;
+    Dictionary<int, LevelData> levelDataByIndex = new Dictionary<int, LevelData>();
 
     [Header("Player")]
     [SerializeField] PlayerController playerPrefab;
     [SerializeField] CharacterData playerCharData, defaultPlayerCharData;
     [SerializeField] PlayerSpawnPoint playerSpawnPointPrefab, spawnedPlayerSpawnPoint;
     public PlayerController playerController;
-    Vector2 playerSpawnCoords = Vector2.zero;
+    Vector2Int playerSpawnCoords = Vector2Int.zero;
 
     [Header("NPCs")]
     [SerializeField] bool spawnNPCs = true;
     [SerializeField] NPCController zombieNpcPrefab;
     [SerializeField] NPCController rangerNpcPrefab;
     [SerializeField] NPCController bugNpcPrefab;
-    [SerializeField] List<NPCController> spawnedNPCs = new List<NPCController>();
-    [SerializeField] List<NPCController> activeNPCs = new List<NPCController>();
-    [SerializeField] NPCDataContainer NPCDataContainer;
 
     [Header("World Items")]
     [SerializeField] WorldItem worldItemPrefab;
-    [SerializeField] ItemDataContainer itemDataContainer;
-    [SerializeField] List<WorldItem> spawnedWorldItems;
+    public ItemDatabase itemDatabase;
 
     [Header("Level Transitions")]
     [SerializeField] LevelTransition levelTransitionPrefab;
-    [SerializeField] List<LevelTransition> spawnedLevelTransitions = new List<LevelTransition>();
 
     [Header("Containers")]
     [SerializeField] Container chestContainerPrefab;
-    [SerializeField] List<IContainer> spawnedContainers = new List<IContainer>();
 
     [Header("Interactables")]
     [SerializeField] Lever leverPrefab;
@@ -81,14 +89,12 @@ public class GridController : MonoBehaviour
     [SerializeField] PlayerTrigger playerTriggerPrefab;
     [SerializeField] SecretAreaTrigger secretAreaTriggerPrefab;
     [SerializeField] Sign signPrefab;
-    List<IInteractable> spawnedInteractables = new List<IInteractable>();
 
     [Header("Triggerables")]
     [SerializeField] Door doorPrefab;
     [SerializeField] Door secretDoorPrefab;
     [SerializeField] NPCSpawner npcSpawnerPrefab;
     [SerializeField] RadiationEmitter radEmitterPrefab;
-    List<ITriggerable> spawnedTriggerables = new List<ITriggerable>();
 
     [Header("Destructables")]
     [SerializeField] Destructable destructableWallPrefab;
@@ -97,13 +103,12 @@ public class GridController : MonoBehaviour
     [SerializeField] Vector3 centeredEntitySpawnOffset;
     [SerializeField] Vector3 worldItemSpawnOffset;
 
-    GridNode[] nodesByIndex;
-    public GridNode GetNodeByIndex(int idx) => (nodesByIndex != null && idx >= 0 && idx < nodesByIndex.Length) ? nodesByIndex[idx] : null;
-    public int CurrentNodeCount => nodesByIndex != null ? nodesByIndex.Length : 0;
+    public GridNode GetActiveNodeByIndex(int index) => activeLevel.GetNodeByIndex(index);
+    public int CurrentActiveNodeCount => activeLevel.GetNodes().Count;
 
 
     public static event Action OnFinishedGeneratingLevel;
-    public static event Action<int> OnLevelGenerated;
+    public static event Action<LevelData> OnLevelNodesGenerated;
 
     public struct SquareCoords : ICoords
     {
@@ -137,6 +142,8 @@ public class GridController : MonoBehaviour
         //Needs changed 
         WorldItem.onWorldItemPickedUp += OnWorldItemPickedUp;
         WorldItem.onWorldItemGrabbed += OnWorldItemPickedUp;
+
+        WorldInteractionManager.onNewWorldItemSpawned += OnNewWorldItemSpawned;
     }
 
     private void OnDisable()
@@ -151,6 +158,8 @@ public class GridController : MonoBehaviour
 
         WorldItem.onWorldItemPickedUp -= OnWorldItemPickedUp;
         WorldItem.onWorldItemGrabbed -= OnWorldItemPickedUp;
+
+        WorldInteractionManager.onNewWorldItemSpawned -= OnNewWorldItemSpawned;
     }
 
     void Awake()
@@ -163,8 +172,18 @@ public class GridController : MonoBehaviour
     {
         GetLevelsFromLDtk();
 
-        //generate nodes for each level but not entities
-        //set levels inactive
+        for (int i = 0; i < LDtkLevels.Count; i++)
+        {
+            LayerInstance intGridLayer = LDtkLevels[i].LayerInstances[INTGRID_LAYER_INDEX];
+            LayerInstance entityLayer = LDtkLevels[i].LayerInstances[ENTITY_LAYER_INDEX];
+
+            LevelData levelData = new LevelData(i, intGridLayer, entityLayer);
+            levelDataByIndex.Add(i, levelData);
+            GenerateLevelNodes(levelData);
+
+            //Used by MapController to generate a map per level
+            OnLevelNodesGenerated?.Invoke(levelData);
+        }
 
         if (skipMainMenu)
         {
@@ -195,24 +214,17 @@ public class GridController : MonoBehaviour
     {
         RestartLevel();
     }
-    void OnWorldItemPickedUp(WorldItem grabbedItem)
+    void OnNewWorldItemSpawned(WorldItem newWorldItem)
     {
-        if(spawnedWorldItems.Contains(grabbedItem))
-            spawnedWorldItems.Remove(grabbedItem);
+        activeLevel.AddWorldItem(newWorldItem);
+    }
+    void OnWorldItemPickedUp(WorldItem pickedUpItem)
+    {
+        activeLevel.RemoveWorldItem(pickedUpItem);
     }
     void OnNPCDeath(NPCController deadNPC)
     {
-        //foreach(LevelData levelData in levelDataDictionary.Values)
-        //{
-        //    if (levelData.spawnedNPCs.Contains(deadNPC))
-        //        levelData.spawnedNPCs.Remove(deadNPC);
-        //}
-
-        //if(spawnedNPCs.Contains(deadNPC))
-        //    spawnedNPCs.Remove(deadNPC);
-
-        if(activeNPCs.Contains(deadNPC))
-            activeNPCs.Remove(deadNPC);
+        activeLevel.RemoveNPC(deadNPC);
     }
     void OnQuit()
     {
@@ -221,16 +233,15 @@ public class GridController : MonoBehaviour
             Destroy(level);
         }
         levelParents.Clear();
-        activeNodes.Clear();
-        spawnedContainers.Clear();
-        spawnedInteractables.Clear();
-        spawnedLevelTransitions.Clear();
-        spawnedNPCs.Clear();
-        activeNPCs.Clear();
-        spawnedTriggerables.Clear();
-        spawnedWorldItems.Clear();
+        //spawnedContainers.Clear();
+        //spawnedInteractables.Clear();
+        //spawnedLevelTransitions.Clear();
+        //spawnedNPCs.Clear();
+        //activeNPCs.Clear();
+        //spawnedTriggerables.Clear();
+        //spawnedWorldItems.Clear();
 
-        levelDataDictionary.Clear();
+        levelDataByIndex.Clear();
 
         playerController.RemoveAudioSources();
         Destroy(playerController.gameObject);
@@ -239,10 +250,6 @@ public class GridController : MonoBehaviour
     #endregion
 
     #region Getters
-    public IEnumerable<GridNode> GetAllActiveNodes()
-    {
-        return activeNodes.Values;
-    }
     void GetLevelsFromLDtk()
     {
         LDtkLevels.Clear();
@@ -252,35 +259,23 @@ public class GridController : MonoBehaviour
         }
     }
     public int GetCurrentLevelIndex() => currentLevelIndex;
-    public List<GridNode> GetCurrentNodesForLevel(int levelIndex)
-    {
-        if (nodesByIndexPerLevel.TryGetValue(levelIndex, out GridNode[] nodes))
-            return nodes.ToList();
-        else
-            return null;
-    }
-    public GridNode GetNodeAtCoords(Vector2 coords) => activeNodes.TryGetValue(coords, out var node) ? node : null;
-    public GridNode GetNodeFromWorldPos(Vector3 worldPos) => GetNodeAtCoords(new Vector2(grid.WorldToCell(worldPos).x, grid.WorldToCell(worldPos).y));
+    public GridNode GetNodeFromWorldPos(Vector3 worldPos) => activeLevel.GetNodeAtCoords(new Vector2Int(grid.WorldToCell(worldPos).x, grid.WorldToCell(worldPos).y));
+    public LevelData GetLevelData(int levelIndex) => levelDataByIndex[levelIndex];
+    public string GetCurrentLevelName() => GetLevelNameFromIndex(currentLevelIndex);
     public string GetLevelNameFromIndex(int levelIndex)
     {
         return project.Json.FromJson.Levels[levelIndex].FieldInstances[0].Value.ToString();
     }
-    public string GetCurrentLevelName()
-    {
-        return project.Json.FromJson.Levels[currentLevelIndex].FieldInstances[0].Value.ToString();
-    }
-    NPCData GetNPCData(object value)
-    {
-        string npcDataIdentifier = value.ToString();
-        //Debug.Log($"Trying to spawn: {npcDataIdentifier}");
-        return NPCDataContainer.GetDataFromIdentifier(npcDataIdentifier);
-    }
     #endregion
 
-    #region NewGame
     void NewGame()
     {
-        InstantiateLevels();
+        LevelGenerationContext context = LevelGenerationContext.NewGame();
+
+        for (int i = 0; i < LDtkLevels.Count; i++)
+        {
+            GenerateEntities(levelDataByIndex[i], context);
+        }
 
         SetLevelActive(startingLevelIndex);
 
@@ -291,543 +286,678 @@ public class GridController : MonoBehaviour
         OnFinishedGeneratingLevel?.Invoke();
     }
 
-    void InstantiateLevels()
+    void GenerateLevelNodes(LevelData levelData)
     {
-        for (int i = 0; i < LDtkLevels.Count; i++)
-        {
-            InstantiateLevel(i);
-            SaveLevel(i);
-            UnloadCurrentLevel();
-        }
-    }
-
-    void InstantiateLevel(int levelIndex)
-    {
-        entityLayer = LDtkLevels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
-        intGridLayer = LDtkLevels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
-
-        Transform levelParent = new GameObject($"Level {levelIndex}").transform;
+        Transform levelParent = new GameObject($"Level {levelData.LevelIndex}").transform;
         levelParent.SetParent(transform);
         levelParents.Add(levelParent);
 
-        GenerateLevel(levelIndex);
-
-        OnLevelGenerated?.Invoke(levelIndex);
-
-        LinkInteractablesToTriggerables();
-        CacheGridNodeNeighbours();
-    }
-
-    void GenerateLevel(int levelIndex)
-    {
         int nodeIndex = 0;
         Vector2Int spawnCoords = Vector2Int.zero;
         Vector3Int cellPos = Vector3Int.zero;
-        Transform nodeParent = levelParents[levelIndex];
 
-        GridNode[] levelNodesByIndex = new GridNode[intGridLayer.IntGridCsv.Length];
+        Dictionary<Vector2Int, GridNode> levelNodes = new Dictionary<Vector2Int, GridNode>();
 
-        for (int i = 0; i < intGridLayer.CWid; i++)
+        for (int i = 0; i < levelData.IntGridLayer.CWid; i++)
         {
-            for (int j = 0; j < intGridLayer.CHei; j++)
+            for (int j = 0; j < levelData.IntGridLayer.CHei; j++)
             {
-                GridNode clone = null;
+                GridNode node = null;
 
                 spawnCoords = new Vector2Int(-i, j);
                 cellPos = new Vector3Int(spawnCoords.x, spawnCoords.y, 0);
 
                 SquareCoords sqCoords = new SquareCoords { Pos = spawnCoords };
 
-                switch (intGridLayer.IntGridCsv[nodeIndex])
+                switch (levelData.IntGridLayer.IntGridCsv[nodeIndex])
                 {
                     case 1:
-                        clone = Instantiate(wallPrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, nodeParent);
-                        clone.transform.localPosition += new Vector3(-1.5f, 1.5f, -1.5f);
+                        node = Instantiate(wallPrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, levelParent);
+                        node.transform.localPosition += new Vector3(-1.5f, 1.5f, -1.5f);
                         break;
                     case 2:
-                        clone = Instantiate(walkablePrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, nodeParent);
+                        node = Instantiate(walkablePrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, levelParent);
                         break;
                     case 3:
-                        clone = Instantiate(voidPrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, nodeParent);
-                        clone.SetIsVoid(true);
+                        node = Instantiate(voidPrefab, grid.GetCellCenterLocal(cellPos), Quaternion.identity, levelParent);
+                        node.SetIsVoid(true);
                         break;
                 }
 
-                clone.InitNode(sqCoords, nodeIndex);
+                node.InitNode(levelData, sqCoords, nodeIndex);
 
-                levelNodesByIndex[nodeIndex] = clone;
-
-                //activeNodes.Add(spawnCoords, clone);
-
-                Vector2 loopIndices = new Vector2(i, j);
-                GenerateEntities(levelIndex, loopIndices, spawnCoords);
-
+                levelNodes.Add(spawnCoords, node);
                 nodeIndex++;
             }
         }
-
-        nodesByIndexPerLevel[levelIndex] = levelNodesByIndex;
+        
+        levelData.AssignNodesToLevel(levelNodes);
+        levelData.CacheNodeNeighbours();
     }
 
-
-    void GenerateEntities(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
+    void GenerateEntities(LevelData levelData, LevelGenerationContext context)
     {
+        GenerateStaticEntities(levelData, context);
+        GenerateRuntimeEntities(levelData, context);
+
+        levelData.LinkInteractablesToTriggerables();
+    }
+
+    void GenerateStaticEntities(LevelData levelData, LevelGenerationContext context)
+    {
+        int levelIndex = levelData.LevelIndex;
         GridNodeOccupant newOccupant;
-        Item newItem;
-        WeaponItemData weaponItemData;
-        levelSecrets = 0;
-        for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
+        EntityInstance entityInstance = null;
+
+        for (int k = 0; k < levelData.EntityLayer.EntityInstances.Length; k++)
         {
-            if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
+            entityInstance = levelData.EntityLayer.EntityInstances[k];
+            List<GridNode> nodes = levelDataByIndex[levelIndex].GetNodes();
+
+            for (int i = 0; i < nodes.Count; i++)
             {
-                GridNode spawnNode = GetNodeAtCoords(spawnCoords);
-                switch (entityLayer.EntityInstances[k].Identifier)
+                GridNode spawnNode = nodes[i];
+                Vector2Int spawnCoords = spawnNode.Coords.Pos;
+
+                if (entityInstance.Grid[1] == -spawnCoords.x && entityInstance.Grid[0] == spawnCoords.y)
                 {
-                    case "Player_Start":
-                        playerSpawnCoords = spawnCoords;
-                        break;
-                    case "WorldItem":
-                        WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + (Vector3.up * .5f), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        ItemData worldItemData = itemDataContainer.GetDataFromIdentifier(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString());
-
-                        weaponItemData = worldItemData as WeaponItemData;
-                        if (weaponItemData)
-                            newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value));
-                        else
-                            newItem = new Item(worldItemData);
-
-                        spawnedWorldItem.InitWorldItem(levelIndex, new ItemStack(newItem, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[2].Value)));
-                        spawnedWorldItems.Add(spawnedWorldItem);
-                        break;
-                    case "Level_Transition":
-                        LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0, 1.5f, 0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        int levelIndexToGoTo = LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[1].Value);
-                        List<object> levelCoords = (List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value;
-                        spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
-                        spawnedLevelTransitions.Add(spawnedLevelTransition);
-                        newOccupant = new GridNodeOccupant(spawnedLevelTransition.gameObject, GridNodeOccupantType.LevelTransition);
-                        spawnNode.SetBaseOccupant(newOccupant);
-                        spawnNode.SetOccupant(newOccupant);
-                        break;
-                    case "Container":
-                        IContainer spawnedContainer = null;
-                        List<object> itemNames = new List<object>();
-                        List<object> itemAmounts = new List<object>();
-                        switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
-                        {
-                            case "Chest":
-                                spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                                itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
-                                itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
-                                for (int l = 0; l < itemNames.Count; l++)
-                                {
-                                    ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
-                                    int itemAmount = Convert.ToInt32(itemAmounts[l]);
-
-                                    weaponItemData = itemData as WeaponItemData;
-                                    if (weaponItemData)
-                                        newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value));
-                                    else
-                                        newItem = new Item(itemData);
-
-                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(newItem, itemAmount)));
-                                }
-                                break;
-                            case "Desk":
-                                //change to Desk prefab
-                                spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                                itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
-                                itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
-                                for (int l = 0; l < itemNames.Count; l++)
-                                {
-                                    ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
-                                    int itemAmount = Convert.ToInt32(itemAmounts[l]);
-
-                                    weaponItemData = itemData as WeaponItemData;
-                                    if (weaponItemData)
-                                        newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value));
-                                    else
-                                        newItem = new Item(itemData);
-
-                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(newItem, itemAmount)));
-
-                                }
-                                break;
-                            case "Filling_Cabinet":
-                                //change to Filling cabinet prefab
-                                spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                                itemNames.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[2].Value);
-                                itemAmounts.AddRange((List<object>)entityLayer.EntityInstances[k].FieldInstances[3].Value);
-                                for (int l = 0; l < itemNames.Count; l++)
-                                {
-                                    ItemData itemData = itemDataContainer.GetDataFromIdentifier(itemNames[l].ToString());
-                                    int itemAmount = Convert.ToInt32(itemAmounts[l]);
-
-                                    weaponItemData = itemData as WeaponItemData;
-                                    if (weaponItemData)
-                                        newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityLayer.EntityInstances[k].FieldInstances[3].Value));
-                                    else
-                                        newItem = new Item(itemData);
-
-                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(newItem, itemAmount)));
-
-                                }
-                                break;
-
-                        }
-                        spawnedContainer.InitContainer(levelIndex, spawnCoords);
-                        spawnedContainers.Add(spawnedContainer);
-                        break;
-                    case "NPC_Invis_Wall":
-                        newOccupant = new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible);
-                        spawnNode.SetBaseOccupant(newOccupant);
-                        spawnNode.SetOccupant(newOccupant);
-                        break;
-                    case "Destructable_Wall":
-                        Destructable spawnedDestructable = null;
-                        spawnedDestructable = Instantiate(destructableWallPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        spawnedDestructable.SetOccupyingNode(spawnNode);
-                        spawnedDestructable.SetLevelIndex(levelIndex);
-                        newOccupant = new GridNodeOccupant(spawnedDestructable.gameObject, GridNodeOccupantType.Obstacle);
-                        spawnNode.SetOccupant(newOccupant);
-                        break;
-                    case "Sign":
-                        Sign sign = Instantiate(signPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        sign.SetSignText(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[1].Value));
-                        //interactable = sign;
-                        break;
-                    case "Secret_Area":
-                        SecretAreaTrigger trigger = Instantiate(secretAreaTriggerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        float width = (entityLayer.EntityInstances[k].Width / 16 * GRID_SIZE);
-                        float height = (entityLayer.EntityInstances[k].Height / 16 * GRID_SIZE);
-                        trigger.SetColliderSize(width, height);
-                        trigger.SetExperienceValue(LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[0].Value));
-                        levelSecrets++;
-                        break;
-                    case "Radiation_Emitter":
-                        RadiationEmitter radEmitter = Instantiate(radEmitterPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        newOccupant = new GridNodeOccupant(radEmitter.gameObject, GridNodeOccupantType.RadiationEmitter);
-                        spawnNode.SetOccupant(newOccupant);
-                        radEmitter.Init(spawnNode, LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[0].Value));
-                        break;
-
-                }
-                GenerateNPCs(levelIndex, loopIndices, spawnCoords);
-                GenerateInteractables(levelIndex, loopIndices, spawnCoords);
-                GenerateTriggerables(levelIndex, loopIndices, spawnCoords);
-            }
-        }
-    }
-
-    void GenerateNPCs(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
-    {
-        for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
-        {
-            if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
-            {
-                GridNode spawnNode = GetNodeAtCoords(spawnCoords);
-                NPCController NPCClone = null;
-                switch (entityLayer.EntityInstances[k].Identifier)
-                {
-                            
-                    case "NPC_Zombie":
-                        if (spawnNPCs)
-                        {
-                            NPCClone = Instantiate(zombieNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        }
-                        break;
-                    case "NPC_Ranger":
-                        if (spawnNPCs)
-                        {
-                            NPCClone = Instantiate(rangerNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        }
-                        break;
-                    case "NPC_Bug":
-                        if (spawnNPCs)
-                        {
-                            NPCClone = Instantiate(bugNpcPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        }
-                        break;
-                }
-
-                if (NPCClone == null)
-                    continue;
-
-                NPCClone.InitNPC(levelIndex, /*spawnData, */spawnNode);
-                NPCClone.SetMovementBehaviour(HelperFunctions.ToEnum<NPCMovementBehaviour>(entityLayer.EntityInstances[k].FieldInstances[1].Value.ToString()));
-                NPCClone.SetActive(false);
-                spawnedNPCs.Add(NPCClone);
-            }
-        }
-    }
-
-    void GenerateInteractables(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
-    {
-        for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
-        {
-            if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
-            {
-                GridNode spawnNode = GetNodeAtCoords(spawnCoords);
-                GridNodeOccupant newOccupant;
-                IInteractable interactable = null;
-                switch (entityLayer.EntityInstances[k].Identifier)
-                {
-                    case "Lever":
-                        interactable = Instantiate(leverPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        break;
-                    case "Button":
-                        interactable = Instantiate(buttonPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        break;
-                    case "Keycard_Reader":
-                        KeycardReader keycardReader = Instantiate(keycardReaderPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        keycardReader.SetRequiredKeycardType(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
-                        interactable = keycardReader;
-                        break;
-                    case "Lock":
-                        Lock @lock = Instantiate(lockPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        @lock.SetRequiredKeyType(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
-                        interactable = @lock;
-                        break;
-                    case "Pressure_Plate":
-                        PressurePlate plate = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                        plate.SetTriggerOnExit(LDtkFieldHelper.GetValue<bool>(entityLayer.EntityInstances[k].FieldInstances[4].Value));
-                        interactable = plate;
-                        newOccupant = new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate);
-                        spawnNode.SetBaseOccupant(newOccupant);
-                        spawnNode.SetOccupant(newOccupant);
-                        break;
-                    case "Tripwire":
-                        Tripwire tripwire = Instantiate(tripwirePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        tripwire.InitTripwire();
-                        interactable = tripwire;
-                        break;
-                    case "Shootable_Target":
-                        interactable = Instantiate(shootableTargetPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        break;
-                    case "Trigger":
-                        interactable = Instantiate(playerTriggerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        break;
-                }
-
-                if (interactable == null)
-                    return;
-
-
-                FieldInstance field = Array.Find(
-                    entityLayer.EntityInstances[k].FieldInstances,
-                    f => f.Identifier == "Entities_To_Trigger"
-                    );
-
-                if (field != null)
-                {
-                    var list = field.Value as List<object>;
-                    foreach (var item in list)
+                    switch (entityInstance.Identifier)
                     {
-                        if (item is Dictionary<string, object> dict)
-                        {
-                            interactable.AddEntityRefToTrigger(dict);
-                        }
-                        else
-                        {
-                            Debug.LogError($"Unexpected element type in EntityRef array: {item?.GetType().FullName}");
-                        }
+                        case "Player_Start":
+                            playerSpawnCoords = spawnCoords;
+                            break;
+                        case "Level_Transition":
+                            LevelTransition spawnedLevelTransition = Instantiate(levelTransitionPrefab, spawnNode.transform.position + centeredEntitySpawnOffset + new Vector3(0, 1.5f, 0), Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                            int levelIndexToGoTo = LDtkFieldHelper.GetValue<int>(entityInstance.FieldInstances[1].Value);
+                            List<object> levelCoords = (List<object>)entityInstance.FieldInstances[2].Value;
+                            spawnedLevelTransition.InitLevelTransition(levelIndexToGoTo, new Vector2Int(-Convert.ToInt32(levelCoords[1]), Convert.ToInt32(levelCoords[0])));
+                            //spawnedLevelTransitions.Add(spawnedLevelTransition);
+                            newOccupant = new GridNodeOccupant(spawnedLevelTransition.gameObject, GridNodeOccupantType.LevelTransition);
+                            spawnNode.SetBaseOccupant(newOccupant);
+                            spawnNode.SetOccupant(newOccupant);
+                            break;
+                        case "Container":
+                            IContainer spawnedContainer = null;
+                            List<object> itemNames = new List<object>();
+                            List<object> itemAmounts = new List<object>();
+                            Item newItem;
+                            WeaponItemData weaponItemData;
+                            switch (entityInstance.FieldInstances[1].Value)
+                            {
+                                case "Chest":
+                                    spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                                    break;
+                                case "Desk":
+                                    //change to Desk prefab
+                                    spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                                    break;
+                                case "Filling_Cabinet":
+                                    //change to Filling cabinet prefab
+                                    spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                                    break;
+
+                            }
+                            if (context.IsLoading)
+                            {
+                                var savedContainerData = context.SaveData.FindSavedContainerData(spawnCoords);
+
+                                List<ContainerItemStack> itemStacks = new List<ContainerItemStack>();
+                                if (savedContainerData != null)
+                                {
+                                    foreach (ItemStackSaveData itemStackSaveData in savedContainerData.containedItemStackSaveDatas)
+                                    {
+                                        ItemData itemData = itemDatabase.GetItemDataFromIdentifier(itemStackSaveData.itemID);
+
+                                        if (itemData == null)
+                                            continue;
+
+                                        if (itemData is WeaponItemData)
+                                        {
+                                            weaponItemData = itemData as WeaponItemData;
+
+                                            AmmoItemData ammoItemData = null;
+
+                                            if (!string.IsNullOrEmpty(itemStackSaveData.loadedAmmoType))
+                                                ammoItemData = itemDatabase.GetItemDataFromIdentifier(itemStackSaveData.loadedAmmoType) as AmmoItemData;
+
+                                            newItem = new WeaponItem(weaponItemData, ammoItemData, itemStackSaveData.loadedAmmo);
+                                        }
+                                        else
+                                        {
+                                            newItem = new Item(itemData);
+                                        }
+
+                                        ItemStack stack = new ItemStack(newItem, itemStackSaveData.amount);
+                                        ContainerItemStack containerStack = new ContainerItemStack(itemStackSaveData.slotIndex, stack);
+                                        itemStacks.Add(containerStack);
+                                    }
+                                }
+                                spawnedContainer.LoadContainerItemStacks(itemStacks);
+                            } 
+                            else
+                            {
+                                itemNames.AddRange((List<object>)entityInstance.FieldInstances[2].Value);
+                                itemAmounts.AddRange((List<object>)entityInstance.FieldInstances[3].Value);
+                                for (int l = 0; l < itemNames.Count; l++)
+                                {
+                                    ItemData itemData = itemDatabase.GetItemDataFromIdentifier(itemNames[l].ToString());
+                                    int itemAmount = Convert.ToInt32(itemAmounts[l]);
+
+                                    weaponItemData = itemData as WeaponItemData;
+                                    if (weaponItemData)
+                                        newItem = new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, Convert.ToInt32(entityInstance.FieldInstances[3].Value));
+                                    else
+                                        newItem = new Item(itemData);
+
+                                    spawnedContainer.AddNewStoredItemStack(new ContainerItemStack(l, new ItemStack(newItem, itemAmount)));
+
+                                }
+                            }
+
+                            spawnedContainer.InitContainer(levelIndex, spawnCoords);
+                            levelData.AddContainer(spawnedContainer);
+
+
+                            break;
+                        case "NPC_Invis_Wall":
+                            newOccupant = new GridNodeOccupant(null, GridNodeOccupantType.NPCInaccessible);
+                            spawnNode.SetBaseOccupant(newOccupant);
+                            spawnNode.SetOccupant(newOccupant);
+                            break;
+                        case "Sign":
+                            Sign sign = Instantiate(signPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                            sign.SetSignText(LDtkFieldHelper.GetValue<string>(entityInstance.FieldInstances[1].Value));
+                            //interactable = sign;
+                            break;
+                        case "Secret_Area":
+                            SecretAreaTrigger trigger = Instantiate(secretAreaTriggerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                            float width = (entityInstance.Width / 16 * GRID_SIZE);
+                            float height = (entityInstance.Height / 16 * GRID_SIZE);
+                            trigger.SetColliderSize(width, height);
+                            trigger.SetExperienceValue(LDtkFieldHelper.GetValue<int>(entityInstance.FieldInstances[0].Value));
+                            levelData.AddSecret();
+                            break;
+                        case "Radiation_Emitter":
+                            RadiationEmitter radEmitter = Instantiate(radEmitterPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                            newOccupant = new GridNodeOccupant(radEmitter.gameObject, GridNodeOccupantType.RadiationEmitter);
+                            spawnNode.SetOccupant(newOccupant);
+                            radEmitter.Init(spawnNode, LDtkFieldHelper.GetValue<int>(entityInstance.FieldInstances[0].Value));
+                            break;
+
+                    }
+                    GenerateInteractables(levelData, entityInstance, spawnNode, context);
+                    GenerateTriggerables(levelData, entityInstance, spawnNode, context);
+                }
+            }
+        }
+    }
+    void GenerateRuntimeEntities(LevelData levelData, LevelGenerationContext context)
+    {
+        if (context.IsLoading)
+        {
+            GenerateRuntimeEntitiesFromSave(levelData, context.SaveData);
+            return;
+        }
+
+        GenerateRuntimeEntitiesFromLDtk(levelData);
+    }
+    void GenerateRuntimeEntitiesFromLDtk(LevelData levelData)
+    {
+        int levelIndex = levelData.LevelIndex;
+        GridNodeOccupant newOccupant;
+        EntityInstance entityInstance = null;
+
+        for (int k = 0; k < levelData.EntityLayer.EntityInstances.Length; k++)
+        {
+            entityInstance = levelData.EntityLayer.EntityInstances[k];
+            List<GridNode> nodes = levelDataByIndex[levelIndex].GetNodes();
+
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                GridNode spawnNode = nodes[i];
+                Vector2Int spawnCoords = spawnNode.Coords.Pos;
+
+                if (entityInstance.Grid[1] == -spawnCoords.x && entityInstance.Grid[0] == spawnCoords.y)
+                {
+                    switch (entityInstance.Identifier)
+                    {
+                        case "WorldItem":
+                            ItemStack itemStack = CreateItemStackFromLDtk(entityInstance);
+                            SpawnWorldItem(levelData, spawnNode, itemStack, DecideSpawnDir(entityInstance));
+                            break;
+
+                        case "Destructable_Wall":
+                            Destructable spawnedDestructable = null;
+                            spawnedDestructable = Instantiate(destructableWallPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                            spawnedDestructable.SetOccupyingNode(spawnNode);
+                            spawnedDestructable.SetLevelIndex(levelIndex);
+                            newOccupant = new GridNodeOccupant(spawnedDestructable.gameObject, GridNodeOccupantType.Obstacle);
+                            spawnNode.SetOccupant(newOccupant);
+                            break;
+                    }
+
+                    GenerateNPCs(levelData, entityInstance, spawnNode);
+                }
+            }
+        }
+    }
+    void GenerateRuntimeEntitiesFromSave(LevelData levelData, SaveableLevelData saveData)
+    {
+        GenerateWorldItemsFromSave(levelData, saveData);
+        GenerateNPCsFromSave(levelData, saveData);
+
+        // Later:
+        // GenerateDestructablesFromSave(levelData, saveData);
+    }
+
+    void GenerateWorldItemsFromSave(LevelData levelData, SaveableLevelData saveData)
+    {
+        foreach (SaveableLevelData.WorldItemSaveData savedWorldItem in saveData.worldItemSaveData)
+        {
+            Vector2Int coords = savedWorldItem.coords;
+            GridNode spawnNode = levelData.GetNodeAtCoords(coords);
+            Vector3 pos = savedWorldItem.position;
+            Vector3 rot = savedWorldItem.rotation;
+
+            if (spawnNode == null)
+                continue;
+
+            ItemData itemData = itemDatabase.GetItemDataFromIdentifier(savedWorldItem.itemStackSaveData.itemID);
+
+            if (itemData == null)
+                continue;
+
+            Item item;
+            if (itemData is WeaponItemData weaponItemData)
+            {
+                AmmoItemData ammoItemData = null;
+
+                if (!string.IsNullOrEmpty(savedWorldItem.itemStackSaveData.loadedAmmoType))
+                    ammoItemData = itemDatabase.GetItemDataFromIdentifier(savedWorldItem.itemStackSaveData.loadedAmmoType) as AmmoItemData;
+
+                item = new WeaponItem(weaponItemData, ammoItemData, savedWorldItem.itemStackSaveData.loadedAmmo);
+            }
+            else
+            {
+                item = new Item(itemData);
+            }
+
+            ItemStack stack = new ItemStack(item, savedWorldItem.itemStackSaveData.amount);
+
+            SpawnWorldItemFromSave(
+                pos,
+                rot,
+                levelData,
+                spawnNode,
+                stack
+            );
+        }
+    }
+    void GenerateNPCsFromSave(LevelData levelData, SaveableLevelData saveData)
+    {
+        foreach (SaveableLevelData.NPCSaveData savedNPC in saveData.npcSaveData)
+        {
+            Vector2Int coords = savedNPC.coords;
+            GridNode spawnNode = levelData.GetNodeAtCoords(coords);
+
+            if (spawnNode == null)
+                continue;
+
+            NPCController prefab = GetNPCPrefabFromIdentifier(savedNPC.npcData.identifier);
+
+            if (prefab == null)
+                continue;
+
+            SpawnNPC(
+                levelData,
+                spawnNode,
+                prefab,
+                savedNPC.rotation,
+                savedNPC.movementBehaviour,
+                savedNPC.currentHealth
+            );
+        }
+    }
+    void GenerateNPCs(LevelData levelData, EntityInstance entityInstance, GridNode spawnNode)
+    {
+        if (!spawnNPCs)
+            return;
+
+        NPCController prefab = GetNPCPrefabFromIdentifier(entityInstance.Identifier);
+
+        if (prefab == null)
+            return;
+
+        NPCMovementBehaviour movementBehaviour =
+            HelperFunctions.ToEnum<NPCMovementBehaviour>(entityInstance.FieldInstances[1].Value.ToString());
+
+        SpawnNPC(
+            levelData,
+            spawnNode,
+            prefab,
+            DecideSpawnDir(entityInstance),
+            movementBehaviour
+        );
+    }
+    void GenerateInteractables(LevelData levelData, EntityInstance entityInstance, GridNode spawnNode, LevelGenerationContext context)
+    {
+        if (entityInstance.Grid[1] == -spawnNode.Coords.Pos.x && entityInstance.Grid[0] == spawnNode.Coords.Pos.y)
+        {
+            GridNodeOccupant newOccupant;
+            IInteractable interactable = null;
+            switch (entityInstance.Identifier)
+            {
+                case "Lever":
+                    interactable = Instantiate(leverPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                    break;
+                case "Button":
+                    interactable = Instantiate(buttonPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                    break;
+                case "Keycard_Reader":
+                    KeycardReader keycardReader = Instantiate(keycardReaderPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                    keycardReader.SetRequiredKeycardType(LDtkFieldHelper.GetValue<string>(entityInstance.FieldInstances[4].Value));
+                    interactable = keycardReader;
+                    break;
+                case "Lock":
+                    Lock @lock = Instantiate(lockPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                    @lock.SetRequiredKeyType(LDtkFieldHelper.GetValue<string>(entityInstance.FieldInstances[4].Value));
+                    interactable = @lock;
+                    break;
+                case "Pressure_Plate":
+                    PressurePlate plate = Instantiate(pressurePlatePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                    plate.SetTriggerOnExit(LDtkFieldHelper.GetValue<bool>(entityInstance.FieldInstances[4].Value));
+                    interactable = plate;
+                    newOccupant = new GridNodeOccupant(interactable.GetGameObject(), GridNodeOccupantType.PressurePlate);
+                    spawnNode.SetBaseOccupant(newOccupant);
+                    spawnNode.SetOccupant(newOccupant);
+                    break;
+                case "Tripwire":
+                    Tripwire tripwire = Instantiate(tripwirePrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                    tripwire.InitTripwire();
+                    interactable = tripwire;
+                    break;
+                case "Shootable_Target":
+                    interactable = Instantiate(shootableTargetPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                    break;
+                case "Trigger":
+                    interactable = Instantiate(playerTriggerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                    break;
+            }
+
+            if (interactable == null)
+                return;
+
+
+            FieldInstance field = Array.Find(
+                entityInstance.FieldInstances,
+                f => f.Identifier == "Entities_To_Trigger"
+                );
+
+            if (field != null)
+            {
+                var list = field.Value as List<object>;
+                foreach (var item in list)
+                {
+                    if (item is Dictionary<string, object> dict)
+                    {
+                        interactable.AddEntityRefToTrigger(dict);
+                    }
+                    else
+                    {
+                        Debug.LogError($"Unexpected element type in EntityRef array: {item?.GetType().FullName}");
                     }
                 }
-
-                if (entityLayer.EntityInstances[k].FieldInstances.Length >= 3)
-                    interactable.SetTriggerOperation(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-
-                if (entityLayer.EntityInstances[k].FieldInstances.Length >= 4)
-                    interactable.SetIsSingleUse(LDtkFieldHelper.GetValue<bool>(entityLayer.EntityInstances[k].FieldInstances[3].Value));
-
-                interactable.SetLevelIndex(levelIndex);
-                interactable.SetOccupyingNode(spawnNode);
-                spawnedInteractables.Add(interactable);
             }
-        }
-    }
 
-    void GenerateTriggerables(int levelIndex, Vector2 loopIndices, Vector2 spawnCoords)
-    {
-        for (int k = 0; k < entityLayer.EntityInstances.Length; k++)
-        {
-            if (entityLayer.EntityInstances[k].Grid[1] == loopIndices.x && entityLayer.EntityInstances[k].Grid[0] == loopIndices.y)
+            if (entityInstance.FieldInstances.Length >= 3)
+                interactable.SetTriggerOperation(LDtkFieldHelper.GetValue<string>(entityInstance.FieldInstances[2].Value));
+
+            if (entityInstance.FieldInstances.Length >= 4)
+                interactable.SetIsSingleUse(LDtkFieldHelper.GetValue<bool>(entityInstance.FieldInstances[3].Value));
+
+            interactable.SetLevelIndex(levelData.LevelIndex);
+            interactable.SetOccupyingNode(spawnNode);
+
+            levelData.AddInteractable(interactable);
+
+            if (context.IsLoading)
             {
-                GridNode spawnNode = GetNodeAtCoords(spawnCoords);
-                GridNodeOccupant newOccupant;
-                ITriggerable triggerable = null;
-                switch (entityLayer.EntityInstances[k].Identifier)
-                {
-                    case "Door":
-                        Door spawnedDoor = null;
-                        switch (entityLayer.EntityInstances[k].FieldInstances[1].Value)
-                        {
-                            case "Door":
-                                spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                                break;
-                            case "Secret_Door":
-                                spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]), 0)), spawnNode.transform);
-                                break;
-                        }
-                        spawnedDoor.SetRequiredNumberOfTriggers(LDtkFieldHelper.GetValue<int>(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                        spawnedDoor.SetOccupyingNode(spawnNode);
-                        newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
-                        spawnNode.SetBaseOccupant(newOccupant);
-                        spawnNode.SetOccupant(newOccupant);
-                        spawnedDoor.SetIsTriggered(LDtkFieldHelper.GetValue<bool>(entityLayer.EntityInstances[k].FieldInstances[2].Value));
-                        triggerable = spawnedDoor;
-                        break;
-                    case "NPC_Spawner":
-                        NPCSpawner npcSpawner = Instantiate(npcSpawnerPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityLayer.EntityInstances[k]) + 180, 0)), spawnNode.transform);
-                        npcSpawner.AssignSpawnedNPCsList(ref spawnedNPCs);
-                        npcSpawner.SetOccupyingNode(spawnNode);
-                        npcSpawner.SetLevelIndex(levelIndex); //need to do it early to pass to spawnedNPC
-                        npcSpawner.SetSpawnBehaviour(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[1].Value));
-                        npcSpawner.SpawnNPC(LDtkFieldHelper.GetValue<string>(entityLayer.EntityInstances[k].FieldInstances[0].Value));
-                        triggerable = npcSpawner;
-                        break;
-                }
+                var savedInteractableData = context.SaveData.FindSavedInteractableData(interactable.GetCoords());
 
-                if (triggerable == null)
-                    return;
+                if (savedInteractableData != null)
+                    interactable.LoadData(savedInteractableData);
+            }
+        } 
+    }
+    void GenerateTriggerables(LevelData levelData, EntityInstance entityInstance, GridNode spawnNode, LevelGenerationContext context)
+    {
+        if (entityInstance.Grid[1] == -spawnNode.Coords.Pos.x && entityInstance.Grid[0] == spawnNode.Coords.Pos.y)
+        {
+            GridNodeOccupant newOccupant;
+            ITriggerable triggerable = null;
+            switch (entityInstance.Identifier)
+            {
+                case "Door":
+                    Door spawnedDoor = null;
+                    switch (entityInstance.FieldInstances[1].Value)
+                    {
+                        case "Door":
+                            spawnedDoor = Instantiate(doorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                            break;
+                        case "Secret_Door":
+                            spawnedDoor = Instantiate(secretDoorPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                            break;
+                    }
+                    spawnedDoor.SetRequiredNumberOfTriggers(LDtkFieldHelper.GetValue<int>(entityInstance.FieldInstances[2].Value));
+                    spawnedDoor.SetOccupyingNode(spawnNode);
+                    newOccupant = new GridNodeOccupant(spawnedDoor.gameObject, GridNodeOccupantType.Obstacle);
+                    spawnNode.SetBaseOccupant(newOccupant);
+                    spawnNode.SetOccupant(newOccupant);
+                    spawnedDoor.SetIsTriggered(LDtkFieldHelper.GetValue<bool>(entityInstance.FieldInstances[2].Value));
+                    triggerable = spawnedDoor;
+                    break;
+                case "NPC_Spawner":
+                    NPCSpawner npcSpawner = Instantiate(npcSpawnerPrefab, spawnNode.transform.position, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                    npcSpawner.AssignSpawnedNPCsList(ref levelData.GetNPCsListRef());
+                    npcSpawner.SetOccupyingNode(spawnNode);
+                    npcSpawner.SetLevelIndex(levelData.LevelIndex);
+                    npcSpawner.SetSpawnBehaviour(LDtkFieldHelper.GetValue<string>(entityInstance.FieldInstances[1].Value));
 
-                triggerable.SetEntityRef(entityLayer.EntityInstances[k].Iid);
-                triggerable.SetLevelIndex(levelIndex);
-                spawnedTriggerables.Add(triggerable);
+                    if(!context.IsLoading)
+                        npcSpawner.SpawnNPC(LDtkFieldHelper.GetValue<string>(entityInstance.FieldInstances[0].Value));
+
+                    triggerable = npcSpawner;
+                    break;
+            }
+
+            if (triggerable == null)
+                return;
+
+            triggerable.SetEntityRef(entityInstance.Iid);
+            triggerable.SetLevelIndex(levelData.LevelIndex);
+
+            levelData.AddTriggerable(triggerable);
+
+            if (context.IsLoading)
+            {
+                var savedTriggerableData = context.SaveData.FindSavedTriggerableData(triggerable.GetCoords());
+
+                if (savedTriggerableData != null)
+                    triggerable.LoadData(savedTriggerableData);
             }
         }
     }
-    #endregion
+
+    WorldItem SpawnWorldItem(LevelData levelData, GridNode spawnNode, ItemStack itemStack, float rotationY = 0)
+    {
+        WorldItem spawnedWorldItem = Instantiate(
+            worldItemPrefab,
+            spawnNode.transform.position + centeredEntitySpawnOffset + (Vector3.up * .5f),
+            Quaternion.Euler(0, rotationY, 0),
+            spawnNode.transform
+        );
+
+        spawnedWorldItem.InitWorldItem(levelData.LevelIndex, itemStack);
+        levelData.AddWorldItem(spawnedWorldItem);
+
+        return spawnedWorldItem;
+    }
+
+    WorldItem SpawnWorldItemFromSave(Vector3 position, Vector3 rotation, LevelData levelData, GridNode spawnNode, ItemStack itemStack)
+    {
+        WorldItem item = SpawnWorldItem(levelData, spawnNode, itemStack);
+        item.transform.position = position;
+        item.transform.rotation = Quaternion.Euler(rotation);
+
+        return item;
+    }
+    ItemStack CreateItemStackFromLDtk(EntityInstance entityInstance)
+    {
+        ItemData worldItemData = itemDatabase.GetItemDataFromIdentifier(entityInstance.FieldInstances[1].Value.ToString());
+        Item newItem;
+
+        if (worldItemData is WeaponItemData weaponItemData)
+        {
+            newItem = new WeaponItem(
+                weaponItemData,
+                weaponItemData.defaultLoadedAmmoData,
+                Convert.ToInt32(entityInstance.FieldInstances[3].Value)
+            );
+        }
+        else
+        {
+            newItem = new Item(worldItemData);
+        }
+
+        return new ItemStack(newItem, Convert.ToInt32(entityInstance.FieldInstances[2].Value));
+    }
+
+    NPCController SpawnNPC(LevelData levelData, GridNode spawnNode, NPCController npcPrefab, float rotationY, NPCMovementBehaviour movementBehaviour, int? healthOverride = null)
+    {
+        NPCController npc = Instantiate(
+            npcPrefab,
+            spawnNode.transform.position + centeredEntitySpawnOffset,
+            Quaternion.Euler(0, rotationY, 0),
+            spawnNode.transform
+        );
+
+        npc.InitNPC(levelData.LevelIndex, spawnNode);
+        npc.SetMovementBehaviour(movementBehaviour);
+
+        if (healthOverride.HasValue)
+            npc.healthController.SetHealth(healthOverride.Value);
+
+        levelData.AddNPC(npc);
+
+        return npc;
+    }
+    NPCController GetNPCPrefabFromIdentifier(string identifier)
+    {
+        switch (identifier)
+        {
+            case "NPC_Zombie":
+            case "zombie":
+                return zombieNpcPrefab;
+
+            case "NPC_Ranger":
+            case "ranger":
+                return rangerNpcPrefab;
+
+            case "NPC_Bug":
+            case "bug":
+                return bugNpcPrefab;
+        }
+
+        return null;
+    }
+
+    void PrepareLevelForLoad(int levelIndexToLoad)
+    {
+        bool loadingSameLevel = currentLevelIndex == levelIndexToLoad;
+
+        if (loadingSameLevel)
+        {
+            if (levelDataByIndex.TryGetValue(levelIndexToLoad, out LevelData sameLevel))
+            {
+                sameLevel.DestroyEntities();
+                sameLevel.ClearRuntimeNodeOccupants();
+            }
+
+            return;
+        }
+
+        if (levelDataByIndex.TryGetValue(currentLevelIndex, out LevelData currentLevel))
+        {
+            currentLevel.DestroyEntities();
+            currentLevel.ClearRuntimeNodeOccupants();
+            currentLevel.SetLevelActive(false);
+        }
+
+        if (levelDataByIndex.TryGetValue(levelIndexToLoad, out LevelData newLevel))
+        {
+            newLevel.DestroyEntities();
+            newLevel.ClearRuntimeNodeOccupants();
+            newLevel.SetLevelActive(true);
+
+            activeLevel = newLevel;
+            currentLevelIndex = levelIndexToLoad;
+        }
+    }
+
+    void ClearAllGeneratedEntities()
+    {
+        foreach (LevelData levelData in levelDataByIndex.Values)
+        {
+            levelData.DestroyEntities();
+            levelData.ClearRuntimeNodeOccupants();
+        }
+    }
 
     #region LoadGame
     private void LoadGame(LevelSaveData data)
     {
-        //Generate grid nodes but dont generate entities
-        //loop through grid nodes and generate entities using loaded data
-
-        foreach (Transform levelParent in levelParents)
-        {
-            Destroy(levelParent.gameObject);
-        }
-        levelParents.Clear();
-
-        foreach (LevelData levelData in levelDataDictionary.Values)
-        {
-            foreach (NPCController NPC in levelData.spawnedNPCs)
-            {
-                Destroy(NPC.gameObject);
-            }
-        }
-        levelDataDictionary.Clear();
-
-        activeNodes.Clear();
-        spawnedNPCs.Clear();
-        activeNPCs.Clear();
-        spawnedWorldItems.Clear();
-        spawnedContainers.Clear();
-        spawnedLevelTransitions.Clear();
-        spawnedInteractables.Clear();
-        spawnedTriggerables.Clear();
+        ClearAllGeneratedEntities();
 
         LoadLevels(data.levels);
 
         SetLevelActive(data.currentLevelIndex);
 
         SpawnPlayer();
+
+        MovePlayer(data.playerCoords);
+
         Time.timeScale = 1;
+
+        OnFinishedGeneratingLevel?.Invoke();
     }
 
     void LoadLevels(List<SaveableLevelData> loadableData)
     {
+        Dictionary<int, SaveableLevelData> saveDataByLevelIndex = new Dictionary<int, SaveableLevelData>();
+
+        foreach (SaveableLevelData saveData in loadableData)
+        {
+            saveDataByLevelIndex.Add(saveData.levelIndex, saveData);
+        }
+
         for (int i = 0; i < LDtkLevels.Count; i++)
         {
-            LoadLevel(i, loadableData[i]);
-            SaveLevel(i);
-            UnloadCurrentLevel();
-        }
-    }
+            LevelData levelData = levelDataByIndex[i];
 
-    void LoadLevel(int levelIndex, SaveableLevelData levelDataToLoad)
-    {
-        entityLayer = LDtkLevels[levelIndex].LayerInstances[ENTITY_LAYER_INDEX];
-        intGridLayer = LDtkLevels[levelIndex].LayerInstances[INTGRID_LAYER_INDEX];
-
-        LoadGridNodes(levelIndex, levelDataToLoad);
-
-        LinkInteractablesToTriggerables();
-
-        CacheGridNodeNeighbours();
-    }
-
-    void LoadGridNodes(int levelIndex, SaveableLevelData levelDataToLoad)
-    {
-        InstantiateLevel(levelIndex);
-
-        //Load Entities
-        LoadNPCs(levelIndex, levelDataToLoad);
-        LoadWorldItems(levelIndex, levelDataToLoad);
-        LoadContainers(levelIndex, levelDataToLoad);
-        LoadTriggerableData(levelDataToLoad);
-        LoadInteractableData(levelDataToLoad);
-
-        void LoadNPCs(int levelIndex, SaveableLevelData levelDataToLoad)
-        {
-            foreach (SaveableLevelData.NPCSaveData savedNPCData in levelDataToLoad.NPCs)
+            if (saveDataByLevelIndex.TryGetValue(i, out SaveableLevelData saveData))
             {
-                GridNode spawnNode = GetNodeAtCoords(savedNPCData.coords);
-                NPCController NPCClone = Instantiate(zombieNpcPrefab, spawnNode.transform.localPosition + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedNPCData.rotation, 0)), spawnNode.transform);
-                NPCClone.InitNPC(levelIndex, /*savedNPCData.npcData, */spawnNode);
-                NPCClone.healthController.SetHealth(savedNPCData.currentHealth);
-                NPCClone.SetActive(false);
-                spawnedNPCs.Add(NPCClone);
+                LevelGenerationContext context = LevelGenerationContext.Load(saveData);
+                GenerateEntities(levelData, context);
             }
-        }
-        void LoadWorldItems(int levelIndex, SaveableLevelData levelDataToLoad)
-        {
-            foreach (SaveableLevelData.WorldItemSaveData savedWorldItem in levelDataToLoad.worldItems)
+            else
             {
-                WorldItem spawnedWorldItem = Instantiate(worldItemPrefab, savedWorldItem.position, Quaternion.Euler(savedWorldItem.rotation));
-                spawnedWorldItem.InitWorldItem(levelIndex, savedWorldItem.itemStack);
-                spawnedWorldItems.Add(spawnedWorldItem);
-            }
-        }
-        void LoadContainers(int levelIndex, SaveableLevelData levelDataToLoad)
-        {
-            foreach (SaveableLevelData.ContainerSaveData savedContainer in levelDataToLoad.containers)
-            {
-                GridNode spawnNode = GetNodeAtCoords(savedContainer.coords);
-                IContainer spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, savedContainer.rotation, 0)), spawnNode.transform);
-                spawnedContainer.LoadContainerItemStacks(savedContainer.containedItemStacks);
-                //Debug.Log(savedContainer.containedItemStacks[0].itemStack.itemData);
-                spawnedContainer.InitContainer(levelIndex, savedContainer.coords);
-                spawnedContainers.Add(spawnedContainer);
-            }
-        }
-        void LoadTriggerableData(SaveableLevelData levelDataToLoad)
-        {
-            foreach (ITriggerable triggerable in spawnedTriggerables)
-            {
-                foreach (SaveableLevelData.TriggerableSaveData triggerableSaveData in levelDataToLoad.triggerableSaveData)
-                {
-                    if (triggerable.GetCoords() == triggerableSaveData.coords)
-                        triggerable.LoadData(triggerableSaveData);
-                }
-            }
-        }
-        void LoadInteractableData(SaveableLevelData levelDataToLoad)
-        {
-            foreach (IInteractable interactable in spawnedInteractables)
-            {
-                foreach (SaveableLevelData.InteractableSaveData interactableSaveData in levelDataToLoad.interactableSaveData)
-                {
-                    if (interactable.GetCoords() == interactableSaveData.coords)
-                        interactable.LoadData(interactableSaveData);
-                }
+                LevelGenerationContext context = LevelGenerationContext.NewGame();
+                GenerateEntities(levelData, context);
             }
         }
     }
     #endregion
-    
+
     private void RestartLevel()
     {
         //UnloadCurrentLevel();
@@ -839,97 +969,44 @@ public class GridController : MonoBehaviour
         //    InstantiateLevel(currentLevelIndex);
     }
 
-    public void BeginLevelTransition(int levelIndex, Vector2 playerMoveToCoords)
+    public void BeginLevelTransition(int levelIndex, Vector2Int playerMoveToCoords)
     {
-        SaveLevel(currentLevelIndex);
-        UnloadCurrentLevel();
-
         SetLevelActive(levelIndex);
 
         MovePlayer(playerMoveToCoords);
     }
 
-    private void MovePlayer(Vector2 coordsToMoveTo)
+    void MovePlayer(Vector2Int coordsToMoveTo)
     {
-        playerController.MoveToCoords(coordsToMoveTo);
-        if(activeNodes.TryGetValue(coordsToMoveTo, out GridNode node))
+        if (levelDataByIndex.TryGetValue(currentLevelIndex, out LevelData levelData))
         {
-            playerController.SetCurrentOccupiedNode(node);
+            GridNode node = levelData.GetNodeAtCoords(coordsToMoveTo);
+
+            if (node == null)
+            {
+                Debug.LogWarning($"Could not move player. No node found at {coordsToMoveTo} on level {currentLevelIndex}.");
+                return;
+            }
+
+            playerController.MoveToNode(node);
         }
-    }
-
-    void SaveLevel(int indexOfLevelToSave)
-    {
-        //Debug.Log("Saving level " + indexOfLevelToSave + " ...");
-
-        if (levelDataDictionary.TryGetValue(indexOfLevelToSave, out LevelData level))
-        {
-            level.UpdateLevelData(activeNodes, activeNPCs);
-            //Debug.Log("Updated level " + indexOfLevelToSave + " data ...");
-            return;
-        }
-
-        List<NPCController> npcsToSave = new List<NPCController>();
-        foreach (NPCController npc in spawnedNPCs)
-        {
-            if(npc.levelIndex ==  indexOfLevelToSave)
-                npcsToSave.Add(npc);
-
-        }
-
-        levelDataDictionary.Add(indexOfLevelToSave, new LevelData(activeNodes, npcsToSave, levelSecrets));
-        //Debug.Log("Added level "+ indexOfLevelToSave + " to levels list");
     }
 
     void SetLevelActive(int levelIndex)
     {
-        if (!levelDataDictionary.TryGetValue(levelIndex, out LevelData levelData))
+        foreach (LevelData levelData in levelDataByIndex.Values)
+        {
+            levelData.SetLevelActive(false);
+        }
+
+        if (!levelDataByIndex.TryGetValue(levelIndex, out LevelData newActiveLevel))
             return;
 
         currentLevelIndex = levelIndex;
 
-        if (nodesByIndexPerLevel.TryGetValue(levelIndex, out var arr))
-            nodesByIndex = arr;
-        else
-            nodesByIndex = null;
+        newActiveLevel.SetLevelActive(true);
 
-        foreach (GridNode node in levelData.GetNodes().Values)
-        {
-            node.SetActive(true);
-            activeNodes.Add(node.Coords.Pos, node);
-        }
-
-        foreach (NPCController NPC in levelData.GetNPCs())
-        {
-            NPC.SetActive(true);
-            activeNPCs.Add(NPC);
-        }
-    }
-
-    void UnloadCurrentLevel()
-    {
-        foreach (NPCController NPC in activeNPCs)
-        {
-            NPC.SetActive(false);
-        }
-        activeNPCs.Clear();
-
-        if (spawnedPlayerSpawnPoint)
-            Destroy(spawnedPlayerSpawnPoint);
-
-        foreach (GridNode node in activeNodes.Values)
-        {
-            node.SetActive(false);
-        }
-        activeNodes.Clear();
-    }
-
-    void CacheGridNodeNeighbours()
-    {
-        foreach (var node in activeNodes.Values)
-        {
-            node.CacheNeighbours();
-        }
+        activeLevel = newActiveLevel;
     }
 
     void SpawnPlayer()
@@ -944,23 +1021,6 @@ public class GridController : MonoBehaviour
 
         playerController = Instantiate(playerPrefab);
         playerController.InitPlayer(playerCharData);
-    }
-
-    void LinkInteractablesToTriggerables()
-    {
-        foreach (IInteractable interactable in spawnedInteractables)
-        {
-            foreach (string entityRef in interactable.GetEntityRefsToTrigger())
-            {
-                foreach (ITriggerable triggerable in spawnedTriggerables)
-                {
-                    if (triggerable.GetEntityRef() == entityRef)
-                    {
-                        interactable.AddObjectToTrigger(triggerable);
-                    }
-                }
-            }
-        }
     }
 
     public float DecideSpawnDir(EntityInstance dir)
@@ -989,16 +1049,9 @@ public class GridController : MonoBehaviour
     private List<SaveableLevelData> GetSaveableLevelData()
     {
         List<SaveableLevelData> saveableLevelDatas = new List<SaveableLevelData>();
-        foreach (int levelIndex in levelDataDictionary.Keys)
+        foreach (LevelData levelData in levelDataByIndex.Values)
         {
-            saveableLevelDatas.Add(new SaveableLevelData(
-                levelIndex,
-                spawnedInteractables,
-                spawnedTriggerables,
-                spawnedWorldItems,
-                spawnedContainers,
-                spawnedNPCs
-            ));
+            saveableLevelDatas.Add(new SaveableLevelData(levelData));
         }
 
         return saveableLevelDatas;
@@ -1009,6 +1062,7 @@ public class GridController : MonoBehaviour
         data.gameTime = gameTime;
         data.LevelData.currentLevelIndex = currentLevelIndex;
         data.LevelData.currentLevelName = GetLevelNameFromIndex(currentLevelIndex);
+        data.LevelData.playerCoords = playerController.currentOccupiedNode.Coords.Pos;
         data.LevelData.levels = GetSaveableLevelData();
     }
 

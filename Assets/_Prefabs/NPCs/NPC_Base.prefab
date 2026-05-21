@@ -204,11 +204,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelIndex: 0
-  healthController: {fileID: 0}
-  animController: {fileID: 0}
-  movementController: {fileID: 0}
-  attackController: {fileID: 0}
-  floatingTextController: {fileID: 0}
+  healthController: {fileID: 6484077099610081580}
+  animController: {fileID: 8367362053848180243}
+  movementController: {fileID: 4431687199735034610}
+  attackController: {fileID: 1706072055966778075}
+  floatingTextController: {fileID: 6982671803869812587}
   npcData: {fileID: 0}
   audioSource: {fileID: 7726222009108150833}
   currentlyOccupiedGridnode: {fileID: 0}
@@ -227,7 +227,6 @@ MonoBehaviour:
   currentHealth: 0
   maxHealth: 0
   currentArmourRating: 0
-  currentEvasionRating: 0
   guaranteedDrops: []
   randomDrops: []
 --- !u!114 &-2277669754247390270

@@ -239,7 +239,7 @@ public class NPCMovementController : MonoBehaviour
         currentMovementBehaviour = NPCMovementBehaviour.Pursue;
 
         if (roamPlanner != null) roamPlanner.CancelDestination();
-        currentPathToNavigate.Clear();
+        currentPathToNavigate?.Clear();
 
         ResetDeaggroTimer();
     }
@@ -249,7 +249,9 @@ public class NPCMovementController : MonoBehaviour
         //isAggro = false;
         currentMovementBehaviour = NPCMovementBehaviour.Roam;
 
-        currentPathToNavigate.Clear();
+        if (currentPathToNavigate != null)
+            currentPathToNavigate.Clear();
+
         if (roamPlanner != null) roamPlanner.CancelDestination();
 
         ResetDeaggroTimer();
@@ -345,7 +347,7 @@ public class NPCMovementController : MonoBehaviour
     {
         // NOTE: this call allocates because GetNeighbouringNodes builds a new list.
         // It's fine for now; later we can switch to cached neighbouringNodes.
-        List<GridNode> neighbours = new List<GridNode>(controller.currentlyOccupiedGridnode.GetNeighbouringNodes(false));
+        List<GridNode> neighbours = new List<GridNode>(controller.currentlyOccupiedGridnode.neighbouringNodes);
         List<GridNode> walkable = new List<GridNode>();
 
         foreach (GridNode node in neighbours)

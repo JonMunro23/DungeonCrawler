@@ -135,8 +135,8 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             ItemData itemData = startingItems[i];
             if (itemData == null) return;
 
-            WeaponItemData weaponItemData = itemData as WeaponItemData;
-            if(weaponItemData != null)
+            //WeaponItemData weaponItemData = itemData as WeaponItemData;
+            if(itemData is WeaponItemData weaponItemData)
                 spawnedInventorySlots[i].AddItem(new ItemStack(new WeaponItem(weaponItemData, weaponItemData.defaultLoadedAmmoData, weaponItemData.magSize), itemData.maxItemStackSize));
             else
                 spawnedInventorySlots[i].AddItem(new ItemStack(new Item(itemData), itemData.maxItemStackSize));
@@ -266,11 +266,14 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
             if (slot.IsSlotEmpty())
                 continue;
 
-            if(slot.GetItemStack().Item.ItemData == itemData)
+            if (slot.GetItemStack().Item != null)
             {
-                if(slot.GetItemStack().GetRemainingSpaceInStack() > 0)
+                if (slot.GetItemStack().Item.ItemData == itemData)
                 {
-                    slotsWithItemAndSpace.Add(slot);
+                    if (slot.GetItemStack().GetRemainingSpaceInStack() > 0)
+                    {
+                        slotsWithItemAndSpace.Add(slot);
+                    }
                 }
             }
         }
@@ -283,52 +286,41 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
 
     public int TryAddItem(ItemStack itemToAdd)
     {
-        InventorySlot[] slotsWithSpace = GetSlotWithItemWithSpace(itemToAdd.Item.ItemData);
-        if(slotsWithSpace != null && slotsWithSpace.Length > 0)
+        int remainingAmountToAdd = itemToAdd.ItemAmount;
+
+        if(itemToAdd.Item.ItemData.maxItemStackSize > 1)
         {
-            int remainingAmountToAdd = itemToAdd.ItemAmount;
-            foreach (InventorySlot slot in slotsWithSpace)
+            InventorySlot[] slotsWithSpace = GetSlotWithItemWithSpace(itemToAdd.Item.ItemData);
+            if (slotsWithSpace != null && slotsWithSpace.Length > 0)
             {
-                int spaceInSlot = slot.GetItemStack().GetRemainingSpaceInStack();
-                if (spaceInSlot > remainingAmountToAdd)
+                foreach (InventorySlot slot in slotsWithSpace)
                 {
-                    slot.AddToCurrentItemStack(remainingAmountToAdd);
-                    remainingAmountToAdd = 0;
-                    return remainingAmountToAdd;
+                    int spaceInSlot = slot.GetItemStack().GetRemainingSpaceInStack();
+                    if (spaceInSlot > remainingAmountToAdd)
+                    {
+                        slot.AddToCurrentItemStack(remainingAmountToAdd);
+                        remainingAmountToAdd = 0;
+                        return remainingAmountToAdd;
+                    }
+
+                    int amountToAdd = spaceInSlot;
+                    slot.AddToCurrentItemStack(amountToAdd);
+                    remainingAmountToAdd -= amountToAdd;
                 }
-
-                int amountToAdd = spaceInSlot;
-                slot.AddToCurrentItemStack(amountToAdd);
-                remainingAmountToAdd -= amountToAdd;
             }
-
-            if(remainingAmountToAdd > 0)
-            {
-                InventorySlot freeSlot = GetNextFreeSlot();
-                if (freeSlot)
-                {
-                     freeSlot.AddItem(new ItemStack(itemToAdd.Item, remainingAmountToAdd));
-
-                    return 0;
-                }
-
-                return remainingAmountToAdd;
-            }
-
-            return 0;
         }
-        else
+
+        if (remainingAmountToAdd > 0)
         {
             InventorySlot freeSlot = GetNextFreeSlot();
             if (freeSlot)
             {
-                freeSlot.AddItem(itemToAdd);
-
-                return 0;
+                freeSlot.AddItem(new ItemStack(itemToAdd.Item, remainingAmountToAdd));
+                remainingAmountToAdd = 0;
             }
-
-            return itemToAdd.ItemAmount;
         }
+
+        return remainingAmountToAdd;
     }
 
     public int TryGetRemainingAmmoOfType(AmmoItemData ammoTypeToGet)
@@ -508,27 +500,68 @@ public class PlayerInventoryManager : MonoBehaviour, IInventory
         return items;
     }
 
-    public void LoadItems(List<ItemStack> items)
+    public void LoadItems(List<ItemStackSaveData> itemsToLoad)
     {
-        RemoveAllSyringes();
-
-        foreach (InventorySlot slot in spawnedInventorySlots)
+        foreach (var slot in spawnedInventorySlots)
         {
-            if(!slot.IsSlotEmpty())
-            {
+            if (!slot.IsSlotEmpty())
                 slot.RemoveItem();
-            }
         }
 
-        for (int i = 0; i < items.Count; i++)
+        ItemDatabase itemDatabase = GridController.Instance.itemDatabase;
+        foreach (ItemStackSaveData savedItem in itemsToLoad)
         {
-            spawnedInventorySlots[i].AddItem(items[i]);
+            ItemData itemData = itemDatabase.GetItemDataFromIdentifier(savedItem.itemID);
+
+            if (itemData == null)
+                continue;
+
+            Item item;
+            if (itemData is WeaponItemData weaponItemData)
+            {
+                AmmoItemData ammoItemData = null;
+
+                if (!string.IsNullOrEmpty(savedItem.loadedAmmoType))
+                    ammoItemData = itemDatabase.GetItemDataFromIdentifier(savedItem.loadedAmmoType) as AmmoItemData;
+
+                item = new WeaponItem(weaponItemData, ammoItemData, savedItem.loadedAmmo);
+            }
+            else
+            {
+                item = new Item(itemData);
+            }
+
+            spawnedInventorySlots[savedItem.slotIndex].AddItem(new ItemStack(item, savedItem.amount));
         }
     }
 
     public void Save(ref PlayerSaveData data)
     {
-        data.storedItems = GetStoredItems();
+        var storedItems = GetStoredItems();
+        List<ItemStackSaveData> stackSaveData = new List<ItemStackSaveData>();
+
+        foreach (ItemStack item in storedItems)
+        {
+            ItemStackSaveData saveData = new ItemStackSaveData
+            {
+                itemID = item.Item.ItemData.itemIdentifier,
+                amount = item.ItemAmount,
+                slotIndex = item.SlotIndex
+            };
+
+            if (item.Item is WeaponItem weaponItem)
+            {
+                saveData.isWeapon = true;
+                saveData.loadedAmmoType = weaponItem.LoadedAmmoData != null
+                    ? weaponItem.LoadedAmmoData.itemIdentifier
+                    : "";
+                saveData.loadedAmmo = weaponItem.LoadedAmmo;
+            }
+
+            stackSaveData.Add(saveData);
+        }
+
+        data.storedItems = stackSaveData;
     }
 
     public void Load(PlayerSaveData data)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEngine;
 
 public class WeaponSlot : InventorySlot
 {
@@ -47,15 +48,13 @@ public class WeaponSlot : InventorySlot
 
     public override ItemStack SwapItem(ItemStack itemToSwap)
     {
-        WeaponItem weaponItemToSwap = itemToSwap.Item as WeaponItem;
-        if (weaponItemToSwap != null)
+        ItemStack itemToReturn = base.SwapItem(itemToSwap);
+        if (itemToSwap.Item is WeaponItem weaponItemToSwap)
         {
-            ItemStack itemToReturn = base.SwapItem(itemToSwap);
             onWeaponSwappedInSlot?.Invoke(GetSlotIndex(), weaponItemToSwap);
-            return itemToReturn;
         }
 
-        return null;
+        return itemToReturn;
     }
 
     public override ItemStack TakeItem()

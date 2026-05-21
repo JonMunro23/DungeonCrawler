@@ -273,11 +273,13 @@ public class PlayerWeaponManager : MonoBehaviour
     /// <param name="startingAmmo">The amount of loaded ammo the new weapon will start with</param>
     void OnWeaponAddedToSlot(int slotIndex, WeaponItem newWeaponAddedToSlot)
     {
-        if(addWeaponToSlotCoroutine != null)
-        {
-            StopCoroutine(addWeaponToSlotCoroutine);
-            addWeaponToSlotCoroutine = null;
-        }
+        //if(addWeaponToSlotCoroutine != null)
+        //{
+        //    StopCoroutine(addWeaponToSlotCoroutine);
+        //    addWeaponToSlotCoroutine = null;
+        //}
+
+        //commented out above as it was causing issues with loading, unsure if it currently breaks anything
 
         addWeaponToSlotCoroutine = StartCoroutine(AddNewWeaponToSlot(slotIndex, newWeaponAddedToSlot));
     }
@@ -295,11 +297,11 @@ public class PlayerWeaponManager : MonoBehaviour
 
     void OnWeaponSwappedInSlot(int slotIndex, WeaponItem newWeapon)
     {
-        if(swapWeaponInSlotCoroutine != null)
-        {
-            StopCoroutine(swapWeaponInSlotCoroutine);
-            swapWeaponInSlotCoroutine = null;
-        }
+        //if(swapWeaponInSlotCoroutine != null)
+        //{
+        //    StopCoroutine(swapWeaponInSlotCoroutine);
+        //    swapWeaponInSlotCoroutine = null;
+        //}
 
         swapWeaponInSlotCoroutine = StartCoroutine(SwapWeaponInSlot(slotIndex, newWeapon));
     }
@@ -451,13 +453,13 @@ public class PlayerWeaponManager : MonoBehaviour
         // is we have a throwable out, holster it and requip previous weapon
         if (playerController.playerThrowableManager.IsThrowableActive())
         {
-            Debug.Log("Throwable is active, holstering...");
+            //Debug.Log("Throwable is active, holstering...");
             yield return playerController.playerThrowableManager.HolsterThrowable();
             yield return DrawCurrentWeapon();
             yield break;
         }
 
-        Debug.Log(currentWeapon.CanUse());
+        //Debug.Log(currentWeapon.CanUse());
         if (!currentWeapon.CanUse())
             yield break;
 
@@ -596,24 +598,44 @@ public class PlayerWeaponManager : MonoBehaviour
         reloadWeaponCoroutine = null;
     }
 
-    List<WeaponSlotData> GetWeaponSlotData()
+    List<WeaponItem> GetWeaponItems()
     {
-        List<WeaponSlotData> slotData = new List<WeaponSlotData>();
+        List<WeaponItem> weaponItems = new List<WeaponItem>();
         foreach (WeaponSlot slot in spawnedWeaponSlots)
         {
             IWeapon slotWeapon = slot.GetWeapon();
             if (slotWeapon.IsDefaultWeapon())
                 continue;
 
-            slotData.Add(new WeaponSlotData(slot.GetSlotIndex(), slotWeapon.GetWeaponItem()));
+            weaponItems.Add(slotWeapon.GetWeaponItem());
         }
-        return slotData;
+        return weaponItems;
     }
 
     public void Save(ref PlayerSaveData data)
     {
         data.activeWeaponSlotIndex = activeSlotIndex;
-        data.weaponSlotData = GetWeaponSlotData();
+        //data.weaponItems = GetWeaponItems();
+
+        List<WeaponItem> weaponItems = GetWeaponItems();
+        List<ItemStackSaveData> stackSaveData = new List<ItemStackSaveData>();
+
+        foreach (WeaponItem item in weaponItems)
+        {
+            ItemStackSaveData saveData = new ItemStackSaveData
+            {
+                itemID = item.ItemData.itemIdentifier,
+                amount = 1,
+                isWeapon = true,
+                loadedAmmoType = item.LoadedAmmoData != null
+                    ? item.LoadedAmmoData.itemIdentifier
+                    : "",
+                loadedAmmo = item.LoadedAmmo
+            };
+            stackSaveData.Add(saveData);
+        }
+
+        data.weaponItems = stackSaveData;
     }
 
     public void Load(PlayerSaveData data)
@@ -622,17 +644,36 @@ public class PlayerWeaponManager : MonoBehaviour
         {
             slot.UnloadSlot();
         }
+
         activeSlotIndex = data.activeWeaponSlotIndex;
 
-        WeaponItem weaponItem;
-        for (int i = 0; i < data.weaponSlotData.Count; i++)
+        ItemDatabase itemDatabase = GridController.Instance.itemDatabase;
+        for (int i = 0; i < data.weaponItems.Count; i++)
         {
-            weaponItem = data.weaponSlotData[i].heldWeapon;
-            spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].AddItem(new ItemStack(weaponItem, 1));
-            //spawnedWeaponSlots[data.weaponSlotData[i].slotIndex].GetWeapon().GetRangedWeapon().SetCurrentLoadedAmmoData(data.weaponSlotData[i].currentWeaponLoadedAmmoData);
+            ItemStackSaveData savedItem = data.weaponItems[i];
+            ItemData itemData = itemDatabase.GetItemDataFromIdentifier(savedItem.itemID);
+
+            if (itemData == null)
+                continue;
+
+            Item item;
+            if (itemData is WeaponItemData weaponItemData)
+            {
+                AmmoItemData ammoItemData = null;
+
+                if (!string.IsNullOrEmpty(savedItem.loadedAmmoType))
+                    ammoItemData = itemDatabase.GetItemDataFromIdentifier(savedItem.loadedAmmoType) as AmmoItemData;
+
+                item = new WeaponItem(weaponItemData, ammoItemData, savedItem.loadedAmmo);
+            }
+            else
+            {
+                item = new Item(itemData);
+            }
+
+            spawnedWeaponSlots[i].AddItem(new ItemStack(item, 1));
         }
 
-
-        SetWeaponSlotActive(activeSlotIndex);
+        StartCoroutine(SetWeaponSlotActive(activeSlotIndex));
     }
 }

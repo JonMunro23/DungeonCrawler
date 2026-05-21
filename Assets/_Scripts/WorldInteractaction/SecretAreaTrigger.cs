@@ -27,7 +27,8 @@ public class SecretAreaTrigger : MonoBehaviour
 
     public void SetColliderSize(float width, float height)
     {
-        triggerCollider.size = new Vector3(width, 3, height);
+        if(triggerCollider)
+            triggerCollider.size = new Vector3(width, 3, height);
     }
 
     #endregion

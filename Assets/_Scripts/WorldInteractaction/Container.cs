@@ -3,16 +3,17 @@ using HighlightPlus;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static SaveableLevelData;
 
 [System.Serializable]
 public class ContainerItemStack
 {
-    public int containerIndex;
+    public int containerSlotIndex;
     public ItemStack itemStack;
 
     public ContainerItemStack(int containerIndex, ItemStack itemStack)
     {
-        this.containerIndex = containerIndex;
+        this.containerSlotIndex = containerIndex;
         this.itemStack = itemStack;
     }
 }
@@ -80,7 +81,7 @@ public class Container : MonoBehaviour, IContainer
 
     public void AddNewStoredItemStack(ContainerItemStack itemStackToAdd)
     {
-        storedItemStacks.Add(itemStackToAdd.containerIndex, itemStackToAdd.itemStack);
+        storedItemStacks.Add(itemStackToAdd.containerSlotIndex, itemStackToAdd.itemStack);
     }
 
     public void RemoveStoredItemFromSlot(int slotIndex)
@@ -135,6 +136,34 @@ public class Container : MonoBehaviour, IContainer
         }
 
         return storedItems;
+    }
+
+    public List<ItemStackSaveData> GetStoredItemsSaveData()
+    {
+        List<ContainerItemStack> storedContainerItemStacks = GetStoredItems();
+        List<ItemStackSaveData> itemStackSaveDatas = new List<ItemStackSaveData>();
+        foreach (ContainerItemStack containerItemStack in storedContainerItemStacks)
+        {
+            ItemStackSaveData itemStackSaveData = new ItemStackSaveData
+            {
+                itemID = containerItemStack.itemStack.Item.ItemData.itemIdentifier,
+                amount = containerItemStack.itemStack.ItemAmount,
+                slotIndex = containerItemStack.containerSlotIndex
+            };
+
+            if (containerItemStack.itemStack.Item is WeaponItem weaponItem)
+            {
+                itemStackSaveData.isWeapon = true;
+                itemStackSaveData.loadedAmmoType = weaponItem.LoadedAmmoData != null
+                    ? weaponItem.LoadedAmmoData.itemIdentifier
+                    : "";
+                itemStackSaveData.loadedAmmo = weaponItem.LoadedAmmo;
+            }
+
+            itemStackSaveDatas.Add(itemStackSaveData);
+        }
+
+        return itemStackSaveDatas;
     }
 
     public Vector2 GetCoords()

@@ -1,13 +1,15 @@
-//[System.Serializable]
+using UnityEngine;
+
+[System.Serializable]
 public class WeaponItem : Item
 {
-    WeaponItemData weaponItemData;
+    [SerializeField] WeaponItemData weaponItemData;
     public WeaponItemData WeaponItemData => weaponItemData;
 
-    AmmoItemData loadedAmmoData;
+    [SerializeField] AmmoItemData loadedAmmoData;
     public AmmoItemData LoadedAmmoData => loadedAmmoData;
 
-    int loadedAmmo;
+    [SerializeField] int loadedAmmo;
     public int LoadedAmmo => loadedAmmo;
 
     public WeaponItem(ItemData itemData, AmmoItemData loadedAmmoData, int loadedAmmo) : base(itemData)

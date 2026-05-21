@@ -6,11 +6,11 @@ public class NPCController : MonoBehaviour
 {
     public int levelIndex;
 
-    [HideInInspector] public NPCHealthController healthController;
-    [HideInInspector] public NPCAnimationController animController;
-    [HideInInspector] public NPCMovementController movementController;
-    [HideInInspector] public NPCAttackController attackController;
-    [HideInInspector] public NPCFloatingTextController floatingTextController;
+    public NPCHealthController healthController;
+    public NPCAnimationController animController;
+    public NPCMovementController movementController;
+    public NPCAttackController attackController;
+    public NPCFloatingTextController floatingTextController;
 
     public NPCData npcData;
 
@@ -27,16 +27,6 @@ public class NPCController : MonoBehaviour
     private void OnDisable()
     {
         GridController.OnFinishedGeneratingLevel -= OnLevelFinishedGenerating;
-    }
-
-    private void Awake()
-    {
-        healthController = GetComponent<NPCHealthController>();
-        animController = GetComponent<NPCAnimationController>();
-        movementController = GetComponent<NPCMovementController>();
-        attackController = GetComponent<NPCAttackController>();
-        floatingTextController = GetComponent<NPCFloatingTextController>();
-        audioSource = GetComponent<AudioSource>();
     }
 
     void OnLevelFinishedGenerating()
@@ -81,6 +71,11 @@ public class NPCController : MonoBehaviour
     public void SetMovementBehaviour(NPCMovementBehaviour spawnBehaviour)
     {
         movementController.SetSpawnBehaviour(spawnBehaviour);
+    }
+
+    public NPCMovementBehaviour GetMovementBehaviour()
+    {
+        return movementController.currentMovementBehaviour;
     }
 
     public void TryAttack()

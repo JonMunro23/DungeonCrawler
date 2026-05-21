@@ -16,10 +16,6 @@ public class PlayerMovementManager : MonoBehaviour
     [Header("Continuous Movement (Hold-to-move)")]
     [Tooltip("Enable chaining steps while holding down movement keys.")]
     public bool allowContinuousHold = true;
-    public KeyCode forwardKey = KeyCode.W;
-    public KeyCode backwardKey = KeyCode.S;
-    public KeyCode strafeLeftKey = KeyCode.A;
-    public KeyCode strafeRightKey = KeyCode.D;
     private bool isBusy;
 
     [Header("Start Ease")]
@@ -130,22 +126,22 @@ public class PlayerMovementManager : MonoBehaviour
 
     public void TryMoveForward()
     {
-        TryStartContinuousMove(transform.forward, forwardKey);
+        TryStartContinuousMove(transform.forward);
     }
 
     public void TryMoveBackward()
     {
-        TryStartContinuousMove(-transform.forward, backwardKey);
+        TryStartContinuousMove(-transform.forward);
     }
 
     public void TryStrafeLeft()
     {
-        TryStartContinuousMove(-transform.right, strafeLeftKey);
+        TryStartContinuousMove(-transform.right);
     }
 
     public void TryStrafeRight()
     {
-        TryStartContinuousMove(transform.right, strafeRightKey);
+        TryStartContinuousMove(transform.right);
     }
 
     public void Teleport(Vector3 destination)
@@ -161,7 +157,7 @@ public class PlayerMovementManager : MonoBehaviour
     /// at the moment of the key-down; subsequent tiles re-evaluate direction
     /// each time based on current input + camera/player facing.
     /// </summary>
-    private void TryStartContinuousMove(Vector3 worldDir, KeyCode startKey)
+    private void TryStartContinuousMove(Vector3 worldDir)
     {
         if (isBusy || playerController.currentOccupiedNode == null)
             return;
@@ -178,7 +174,7 @@ public class PlayerMovementManager : MonoBehaviour
         if (!IsNodeWalkable(firstTarget))
             return;
 
-        StartCoroutine(ContinuousMoveRoutine(worldDir, startKey));
+        StartCoroutine(ContinuousMoveRoutine(worldDir));
     }
 
     /// <summary>
@@ -190,7 +186,7 @@ public class PlayerMovementManager : MonoBehaviour
     ///   - Re-evaluate direction based on which movement key is currently held
     ///     and the current camera/player facing.
     /// </summary>
-    private IEnumerator ContinuousMoveRoutine(Vector3 firstDir, KeyCode startKey)
+    private IEnumerator ContinuousMoveRoutine(Vector3 firstDir)
     {
         isBusy = true;
 
@@ -200,7 +196,6 @@ public class PlayerMovementManager : MonoBehaviour
         while (true)
         {
             Vector3 moveDir;
-            KeyCode activeKey = startKey;
 
             if (isFirstTile)
             {
@@ -208,7 +203,7 @@ public class PlayerMovementManager : MonoBehaviour
             }
             else
             {
-                if (!GetCurrentMoveDirection(out moveDir, out activeKey))
+                if (!GetCurrentMoveDirection(out moveDir))
                     break;
             }
 
@@ -234,12 +229,9 @@ public class PlayerMovementManager : MonoBehaviour
             float distance = Vector3.Distance(startPos, endPos);
             if (distance <= Mathf.Epsilon)
             {
-                // Degenerate case, accept tile and continue
                 transform.position = endPos;
                 playerController.SetCurrentOccupiedNode(targetNode);
                 node = targetNode;
-
-                // No footstep here – we didn't really move.
 
                 if (!allowContinuousHold)
                     break;
@@ -248,7 +240,6 @@ public class PlayerMovementManager : MonoBehaviour
                 continue;
             }
 
-            // --- Speed calculation with optional ease-in on first tile ---
             float easeDuration = 0f;
             if (isFirstTile && startEaseFraction > 0f)
             {
@@ -267,7 +258,7 @@ public class PlayerMovementManager : MonoBehaviour
 
             float elapsedTileTime = 0f;
 
-            //track if we've played the mid-step sound for this tile
+            //track if played the mid-step sound for this tile
             bool footstepPlayedThisTile = false;
 
             // Move towards this tile centre
@@ -306,7 +297,6 @@ public class PlayerMovementManager : MonoBehaviour
                 yield return null;
             }
 
-            // Snap precisely to tile
             transform.position = endPos;
             playerController.SetCurrentOccupiedNode(targetNode);
             node = targetNode;
@@ -328,33 +318,28 @@ public class PlayerMovementManager : MonoBehaviour
 
     /// <summary>
     /// Decide current movement direction based on which key is held *right now*,
-    /// using the current transform orientation. Also returns which key we used.
+    /// using the current transform orientation.
     /// Priority: forward > backward > strafe left > strafe right.
     /// </summary>
-    private bool GetCurrentMoveDirection(out Vector3 dir, out KeyCode key)
+    private bool GetCurrentMoveDirection(out Vector3 dir)
     {
         dir = Vector3.zero;
-        key = KeyCode.None;
 
         if (controls.Player.MoveForward.IsPressed())
         {
             dir = transform.forward;
-            key = forwardKey;
         }
         else if (controls.Player.MoveBackward.IsPressed())
         {
             dir = -transform.forward;
-            key = backwardKey;
         }
         else if (controls.Player.MoveLeft.IsPressed())
         {
             dir = -transform.right;
-            key = strafeLeftKey;
         }
         else if (controls.Player.MoveRight.IsPressed())
         {
             dir = transform.right;
-            key = strafeRightKey;
         }
         else
         {
@@ -369,9 +354,6 @@ public class PlayerMovementManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Basic walkability check – adapt this to your game’s rules.
-    /// </summary>
     private bool IsNodeWalkable(GridNode node)
     {
         if (node == null)
@@ -418,7 +400,6 @@ public class PlayerMovementManager : MonoBehaviour
         cameraTransform.localPosition = cameraInitialLocalPos;
     }
 
-    // FOOTSTEPS -------------------------------
     private void PlayFootstep()
     {
         if (footstepAudioSource == null)
@@ -443,5 +424,4 @@ public class PlayerMovementManager : MonoBehaviour
         footstepAudioSource.pitch = pitch;
         footstepAudioSource.PlayOneShot(clip, footstepVolume);
     }
-    // ----------------------------------------
 }

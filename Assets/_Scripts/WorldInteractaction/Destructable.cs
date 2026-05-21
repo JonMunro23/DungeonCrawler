@@ -11,7 +11,7 @@ public class Destructable : MonoBehaviour, IDamageable, IGridNode
     GridNode occupyingNode;
     int levelIndex;
 
-    public Vector2 GetCoords()
+    public Vector2Int GetCoords()
     {
         return occupyingNode.Coords.Pos;
     }

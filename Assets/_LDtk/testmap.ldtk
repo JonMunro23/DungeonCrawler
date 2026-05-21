@@ -4459,7 +4459,7 @@
 						},
 						{
 							"__identifier": "NPC_Zombie",
-							"__grid": [18,3],
+							"__grid": [28,3],
 							"__pivot": [0.5,0.5],
 							"__tags": [ "NPC", "Triggerable" ],
 							"__tile": { "tilesetUid": 3, "x": 96, "y": 0, "w": 16, "h": 16 },
@@ -4468,15 +4468,15 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 7,
-							"px": [296,56],
+							"px": [456,56],
 							"fieldInstances": [
 								{ "__identifier": "Facing_Direction", "__type": "LocalEnum.Facing_Direction", "__value": "North", "__tile": null, "defUid": 9, "realEditorValues": [] },
-								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Idle", "__tile": null, "defUid": 154, "realEditorValues": [{
+								{ "__identifier": "NPC_Behaviour_On_Spawn", "__type": "LocalEnum.NPC_Action", "__value": "Pursue", "__tile": null, "defUid": 154, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["Idle"]
+									"params": ["Pursue"]
 								}] }
 							],
-							"__worldX": 296,
+							"__worldX": 456,
 							"__worldY": -456
 						},
 						{

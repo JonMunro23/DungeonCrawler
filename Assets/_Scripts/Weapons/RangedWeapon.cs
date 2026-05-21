@@ -364,6 +364,7 @@ public class RangedWeapon : Weapon
         weaponReadyTween?.Kill();
         onRangedWeaponReadied?.Invoke(isWeaponReady);
         transform.DOLocalRotate(new Vector3(0, 90, 15), weaponItemData.readyAnimDuration);
+        //throws error is weapon destroyed before weapon fully unreadied
     }
 
     private void IncreaseBulletSpreadMultiplierOverTime(float increaseAmount, float timeToIncrease)
