@@ -354,6 +354,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
                 if(weapon.GetRangedWeapon() != null)
                 {
+                    weapon.GetRangedWeapon().SetCurrentLoadedAmmoData(newWeapon.LoadedAmmoData);
                     weapon.GetRangedWeapon().UpdateLoadedAmmo(newWeapon.LoadedAmmo);
                 }
 

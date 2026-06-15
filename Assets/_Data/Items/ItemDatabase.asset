@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 704f0444503b3d64ba9be9fcd414189b, type: 3}
-  m_Name: ItemDataContainer
+  m_Name: ItemDatabase
   m_EditorClassIdentifier: 
   invalidItem: {fileID: 11400000, guid: 0874dd5fb31932c48bfccc275553a38f, type: 2}
   itemData: []
@@ -44,6 +44,8 @@ MonoBehaviour:
   keycardItemData:
   - {fileID: 11400000, guid: 1fa9d84123439c04488523ce042f0b2d, type: 2}
   - {fileID: 11400000, guid: f65187d1c2445de4db2565953f1906c4, type: 2}
+  - {fileID: 11400000, guid: 3fc96bffa6ef6c14ca902b3d20c86f2e, type: 2}
+  - {fileID: 11400000, guid: 9d94775e08a094146ae031cc89719548, type: 2}
   keyItemData:
   - {fileID: 11400000, guid: 2779c247e39081c45bc6ca1e17f7fc9d, type: 2}
   - {fileID: 11400000, guid: 292456d1c506a32429cc4f2a7c08c66e, type: 2}

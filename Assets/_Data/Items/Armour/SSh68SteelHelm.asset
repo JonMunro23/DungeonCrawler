@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SSh68SteelHelm
   m_EditorClassIdentifier: 
   itemName: SSh-68 Steel Helmet
-  itemIdentifier: SSh-68
+  itemIdentifier: steel_helmet
   itemDescription: A solid steel helment providing decent protection against small
     calibers
   itemSprite: {fileID: 21300000, guid: 9d08b42c233a3204eb145dbf80bfeb73, type: 3}

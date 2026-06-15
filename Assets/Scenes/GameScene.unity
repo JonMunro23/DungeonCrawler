@@ -2908,6 +2908,11 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
+      propertyPath: startingLevelIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
       propertyPath: centeredEntitySpawnOffset.y
       value: 0
       objectReference: {fileID: 0}

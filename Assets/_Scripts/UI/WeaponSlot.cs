@@ -161,6 +161,7 @@ public class WeaponSlot : InventorySlot
         WeaponItem weaponItem = GetItemStack().Item as WeaponItem;
         if (weaponItem != null)
         {
+            Debug.Log(newLoadedAmmoType);
             weaponItem.SetLoadedAmmoType(newLoadedAmmoType);
             UpdateTooltipData();
         }

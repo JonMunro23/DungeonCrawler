@@ -557,7 +557,7 @@ public class RangedWeapon : Weapon
     {
         this.loadedAmmo = loadedAmmo;
         occupyingSlot.SetLoadedAmmo(this.loadedAmmo);
-        occupyingSlot.SetLoadedAmmoType(currentLoadedAmmoData);
+        //occupyingSlot.SetLoadedAmmoType(currentLoadedAmmoData);
         onLoadedAmmoUpdated?.Invoke(occupyingSlot.GetSlotIndex(), this.loadedAmmo);
     }
 

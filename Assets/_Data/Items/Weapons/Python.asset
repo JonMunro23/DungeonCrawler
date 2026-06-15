@@ -29,7 +29,7 @@ MonoBehaviour:
   magDropPrefab: {fileID: 0}
   isTwoHanded: 0
   weaponType: 5
-  itemDamageMinMax: {x: 45, y: 80}
+  itemDamageMinMax: {x: 50, y: 65}
   itemRange: 5
   accuracy: 70
   critChance: 8
@@ -44,9 +44,10 @@ MonoBehaviour:
   defaultLoadedAmmoData: {fileID: 11400000, guid: d3475db692ba1f344838119acd690b14,
     type: 2}
   recoilData: {fileID: 11400000, guid: 3afd667deccd372408bf52a4c221db98, type: 2}
-  spreadReductionSpeed: 1
+  spreadReductionSpeed: 1.6
   perShotSpreadIncrease: 0.2
-  onWeaponReadiedSpreadAmount: 2
+  minWeaponSpreadAmount: 0.2
+  maxWeaponSpreadAmount: 1.1
   attackSFX:
   - {fileID: 8300000, guid: 19d35041f281bd242ac163aa8a6abcf5, type: 3}
   attackSFXVolume: 0.3

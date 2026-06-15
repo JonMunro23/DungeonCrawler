@@ -395,6 +395,10 @@ public class GridController : MonoBehaviour
                                     //change to Filling cabinet prefab
                                     spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
                                     break;
+                                case "Corpse":
+                                    //change to Corpse prefab
+                                    spawnedContainer = Instantiate(chestContainerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
+                                    break;
 
                             }
                             if (context.IsLoading)

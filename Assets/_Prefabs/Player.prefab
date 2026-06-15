@@ -641,10 +641,6 @@ MonoBehaviour:
   baseMoveDuration: 0.5
   weaponReadiedMoveDurationMultiplier: 1.25
   allowContinuousHold: 1
-  forwardKey: 119
-  backwardKey: 115
-  strafeLeftKey: 97
-  strafeRightKey: 100
   startEaseFraction: 0.4
   cameraInitialLocalPos: {x: 0, y: 0, z: 0}
   cameraTransform: {fileID: 854004732151512115}
@@ -703,10 +699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
-  startingItems:
-  - {fileID: 11400000, guid: ad0d94eaccfb98447bf02f9c65d5b502, type: 2}
-  - {fileID: 11400000, guid: 7fe1bceb4ffb0234da2bd4fdd98e2829, type: 2}
-  - {fileID: 11400000, guid: 7fe1bceb4ffb0234da2bd4fdd98e2829, type: 2}
+  startingItems: []
   inventorySlotPrefab: {fileID: 7020291520903631394, guid: 046c1b9b918236d4586166e99f1cbd9f,
     type: 3}
   totalNumInventorySlots: 30
