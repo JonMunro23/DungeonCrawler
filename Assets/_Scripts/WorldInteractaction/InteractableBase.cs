@@ -35,6 +35,8 @@ public abstract class InteractableBase : MonoBehaviour, IInteractable
 
     HighlightEffect highlightEffect;
 
+    public bool CanUse { get => canUse; }
+
     private void Awake()
     {
         highlightEffect = GetComponent<HighlightEffect>();

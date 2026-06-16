@@ -88,6 +88,8 @@ public class GridController : MonoBehaviour
     [SerializeField] ShootableTarget shootableTargetPrefab;
     [SerializeField] PlayerTrigger playerTriggerPrefab;
     [SerializeField] SecretAreaTrigger secretAreaTriggerPrefab;
+    [SerializeField] Keypad keypadPrefab;
+
     [SerializeField] Sign signPrefab;
 
     [Header("Triggerables")]
@@ -685,6 +687,12 @@ public class GridController : MonoBehaviour
                     break;
                 case "Trigger":
                     interactable = Instantiate(playerTriggerPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                    break;
+                case "Keypad":
+                    Keypad keypad = Instantiate(keypadPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance) + 180, 0)), spawnNode.transform);
+                    string code = LDtkFieldHelper.GetValue<int>(entityInstance.FieldInstances[4].Value).ToString();
+                    keypad.Init(code);
+                    interactable = keypad;
                     break;
             }
 

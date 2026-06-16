@@ -2885,6 +2885,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
       propertyPath: spawnNPCs
       value: 1
       objectReference: {fileID: 0}
@@ -2900,6 +2905,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: bbf786f9fec6a344abaa6097c2f9d10c,
         type: 2}
+    - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
+        type: 3}
+      propertyPath: keypadPrefab
+      value: 
+      objectReference: {fileID: 7970069013618425184, guid: c4317f4e9051e254485572b1c426f68b,
+        type: 3}
     - target: {fileID: 1564344409349390903, guid: 5561bb32ab597074f893e819f7c68ad0,
         type: 3}
       propertyPath: radEmitterPrefab

@@ -208,6 +208,8 @@ public class WorldInteractionManager : MonoBehaviour
             }
             else if (hit.transform.TryGetComponent(out IInteractable interactable))
             {
+                if (!interactable.CanUse) return;
+
                 if (interactable.RequiresItem())
                 {
                     if (!hasGrabbedItem) return;
@@ -261,13 +263,17 @@ public class WorldInteractionManager : MonoBehaviour
             }
             else if (hit.transform.TryGetComponent(out IInteractable interactable))
             {
-                if (highlightedTarget != null)
-                    if (interactable != highlightedTarget)
-                        highlightedTarget.SetHighlighted(false);
+                if(interactable.CanUse)
+                {
+                    if (highlightedTarget != null)
+                        if (interactable != highlightedTarget)
+                            highlightedTarget.SetHighlighted(false);
 
-                interactable.SetHighlighted(true);
-                highlightedTarget = interactable;
-                onLookAtTargetChanged?.Invoke(LookAtTarget.Interactable);
+                    interactable.SetHighlighted(true);
+                    highlightedTarget = interactable;
+                    onLookAtTargetChanged?.Invoke(LookAtTarget.Interactable);
+                }
+
             }
             else
             {
