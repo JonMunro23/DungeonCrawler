@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0027f25eebf4cc34bb9084d2b99b8c8d, type: 3}
+  m_Name: Note
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: Note
+  itemIdentifier: note
+  itemDescription: 
+  itemSprite: {fileID: 21300000, guid: 167a36e80a838490cbc8c0349c877687, type: 3}
+  itemWorldModel: {fileID: 4680394331905497859, guid: c36844bead316514fa2e7bf20b7217b2,
+    type: 3}
+  itemWeight: 0.01
+  isItemStackable: 0
+  maxItemStackSize: 1

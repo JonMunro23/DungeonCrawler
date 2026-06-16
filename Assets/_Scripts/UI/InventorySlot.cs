@@ -236,23 +236,27 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
         tooltipTrigger.SetImage("ItemImage", currentSlotItemStack.Item.ItemData.itemSprite);
         tooltipTrigger.SetText("TitleText", currentSlotItemStack.Item.ItemData.itemName);
         tooltipTrigger.SetText("Description", currentSlotItemStack.Item.ItemData.itemDescription);
-        tooltipTrigger.SetText("Stats", string.Empty);
+        //tooltipTrigger.SetText("Stats", string.Empty);
 
         WeaponItem weaponItem = currentSlotItemStack.Item as WeaponItem;
-
-        EquipmentItemData equipmentItem = currentSlotItemStack.Item.ItemData as EquipmentItemData;
-        if(equipmentItem)
+        if(currentSlotItemStack.Item.ItemData is EquipmentItemData equipmentItem)
         {
+            tooltipTrigger.TurnSectionOn("Stats");
             StringBuilder statsText = new StringBuilder();
             if(weaponItem != null)
             {
-                statsText.AppendLine($"Loaded Ammo: {weaponItem.LoadedAmmo}");
-                statsText.AppendLine($"Loaded Ammo Type: " +
-                    $"{(weaponItem.LoadedAmmoData != null ? weaponItem.LoadedAmmoData.ammoType : "None")}");
+                WeaponItemData weaponItemData = weaponItem.WeaponItemData;
+                statsText.AppendLine($"Damage: {weaponItemData.itemDamageMinMax.x}-{weaponItemData.itemDamageMinMax.y}");
+                statsText.AppendLine($"Cooldown: {weaponItemData.itemCooldown}s");
+                statsText.AppendLine($"Range: {weaponItemData.itemRange}");
+                statsText.AppendLine($"Mag Size: {weaponItemData.magSize}");
+                statsText.AppendLine($"Reload Speed: {weaponItemData.reloadAnimDuration}s");
+                statsText.AppendLine($"Loaded Ammo: {weaponItem.LoadedAmmo}, {(weaponItem.LoadedAmmoData != null ? weaponItem.LoadedAmmoData.ammoType : "None")}");
+                statsText.AppendLine($"Ammo Type: {weaponItemData.weaponType}");
+                statsText.AppendLine($"Weight: {weaponItemData.itemWeight}");
             }
             if(equipmentItem.statModifiers.Count > 0)
             {
-                tooltipTrigger.TurnSectionOn("Stats");
                 foreach (var item in equipmentItem.statModifiers)
                 {
                     string modifyOperator = string.Empty;
@@ -274,15 +278,11 @@ public class InventorySlot : MonoBehaviour, ISlot, IPointerClickHandler
                             isPercentage = true;
                             break;
                     }
-
                     statsText.AppendLine($"{modifyOperator}{item.modifyAmount}{(isPercentage ? "%" : string.Empty)} {item.statToModify}");
                 }
-
-                tooltipTrigger.SetText("Stats", statsText.ToString());
             }
-
+            tooltipTrigger.SetText("Stats", statsText.ToString());
         }
-
     }
     
 

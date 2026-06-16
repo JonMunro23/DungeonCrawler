@@ -525,13 +525,17 @@ public class GridController : MonoBehaviour
 
                 if (entityInstance.Grid[1] == -spawnCoords.x && entityInstance.Grid[0] == spawnCoords.y)
                 {
+                    ItemStack itemStack;
                     switch (entityInstance.Identifier)
                     {
                         case "WorldItem":
-                            ItemStack itemStack = CreateItemStackFromLDtk(entityInstance);
+                            itemStack = CreateItemStackFromLDtk(entityInstance);
                             SpawnWorldItem(levelData, spawnNode, itemStack, DecideSpawnDir(entityInstance));
                             break;
-
+                        case "NoteItem":
+                            itemStack = CreateNoteItemStackFromLDtk(entityInstance);
+                            SpawnWorldItem(levelData, spawnNode, itemStack, DecideSpawnDir(entityInstance));
+                            break;
                         case "Destructable_Wall":
                             Destructable spawnedDestructable = null;
                             spawnedDestructable = Instantiate(destructableWallPrefab, spawnNode.transform.position + centeredEntitySpawnOffset, Quaternion.Euler(new Vector3(0, DecideSpawnDir(entityInstance), 0)), spawnNode.transform);
@@ -842,6 +846,16 @@ public class GridController : MonoBehaviour
         }
 
         return new ItemStack(newItem, Convert.ToInt32(entityInstance.FieldInstances[2].Value));
+    }
+
+    ItemStack CreateNoteItemStackFromLDtk(EntityInstance entityInstance)
+    {
+        ItemData worldItemData = itemDatabase.GetItemDataFromIdentifier("note");
+        Item newItem;
+        
+        newItem = new Item(worldItemData);
+
+        return new ItemStack(newItem);
     }
 
     NPCController SpawnNPC(LevelData levelData, GridNode spawnNode, NPCController npcPrefab, float rotationY, NPCMovementBehaviour movementBehaviour, int? healthOverride = null)

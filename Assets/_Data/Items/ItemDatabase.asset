@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: ItemDatabase
   m_EditorClassIdentifier: 
   invalidItem: {fileID: 11400000, guid: 0874dd5fb31932c48bfccc275553a38f, type: 2}
-  itemData: []
+  itemData:
+  - {fileID: 11400000, guid: 46ff2a59f0e502440becab31d7f7102d, type: 2}
   weaponItemData:
   - {fileID: 11400000, guid: 46d9529cb8ae27d4192e35c7d06f26f5, type: 2}
   - {fileID: 11400000, guid: 6db1391fd6b91d84996e4464914a9cee, type: 2}
